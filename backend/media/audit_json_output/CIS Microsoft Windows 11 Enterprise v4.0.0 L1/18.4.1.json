@@ -1,0 +1,17 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.4.1 (L1) Ensure 'Apply UAC restrictions to local accounts on network logons' is set to 'Enabled'",
+  "info": "'This setting controls whether local accounts can be used for remote administration via network logon (e.g., NET USE, connecting to C$, etc.). Local accounts are at high risk for credential theft when the same account and password is configured on multiple systems. Enabling this policy significantly reduces that risk.",
+  "Enabled": "Applies UAC token-filtering to local accounts on network logons. Membership in powerful group such as Administrators is disabled and powerful privileges are removed from the resulting access token. This configures the LocalAccountTokenFilterPolicy registry value to 0 This is the default behavior for Windows.",
+  "Disabled": "Allows local accounts to have full administrative rights when authenticating via network logon, by configuring the LocalAccountTokenFilterPolicy registry value to 1\n\nFor more information about local accounts and credential theft, review the \\'\n\nMitigating Pass-the-Hash (PtH) Attacks and Other Credential Theft Techniques\n\n\\' documents.\n\nFor more information about LocalAccountTokenFilterPolicy see Microsoft Knowledge Base article 951016:\n\nDescription of User Account Control and remote restrictions in Windows Vista\n\n.\n\nThe recommended state for this setting is: Enabled\n\nLocal accounts are at high risk for credential theft when the same account and password is configured on multiple systems. Ensuring this policy is Enabled significantly reduces that risk.'",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\MS Security Guide\\Apply UAC restrictions to local accounts on network logons",
+  "Note": "This Group Policy path does not exist by default. An additional Group Policy template ( SecGuide.admx/adml ) is required - it is available from Microsoft at\n\nthis link\n\n.",
+  "Impact": "None - this is the default behavior.\"",
+  "reference": "800-171|3.1.1,800-171r3|03.01.01,800-53|AC-2(9),800-53r5|AC-2(9),CN-L3|8.1.4.2(c),CSCv7|4.3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.8.2,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1A,NIAv2|AM16,PCI-DSSv3.2.1|8.5,PCI-DSSv4.0|8.2.2,PCI-DSSv4.0|8.2.3,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/21318",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+  "reg_item": "LocalAccountTokenFilterPolicy",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

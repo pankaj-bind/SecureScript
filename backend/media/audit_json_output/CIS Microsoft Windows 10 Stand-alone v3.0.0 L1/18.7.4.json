@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.7.4 (L1) Ensure 'Configure RPC connection settings: Use authentication for outgoing RPC connections' is set to 'Enabled: Default'",
+  "info": "This policy setting controls which protocol and protocol settings to use for outgoing Remote Procedure Call (RPC) connections to a remote print spooler.\n\nThe recommended state for this setting is: Enabled: Default\n\nThis setting can prevent the use of named pipes for RPC connections to the print spooler and forces the use of TCP which is a more secure communication method.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Default :\n\nComputer Configuration\\Policies\\Administrative Templates\\Printers\\Configure RPC connection settings: Use authentication for outgoing RPC connections",
+  "Note": "This Group Policy path is provided by the Group Policy template Printing.admx/adml that is included with the Microsoft Windows 11 Release 22H2 Administrative Templates v1.0 (or newer).",
+  "Impact": "Warning: Many existing print configurations may be using the older named pipes protocol and therefore will cease to function.\"",
+  "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17129",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC",
+  "reg_item": "RpcAuthentication",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

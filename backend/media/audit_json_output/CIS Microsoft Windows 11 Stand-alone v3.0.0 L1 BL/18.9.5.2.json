@@ -1,0 +1,16 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.9.5.2 (L1) Ensure 'Turn On Virtualization Based Security: Select Platform Security Level' is set to 'Secure Boot' or higher",
+  "info": "\"This policy setting specifies whether Virtualization Based Security (VBS) is enabled. VBS uses the Windows Hypervisor to provide support for security services.\n\nThe recommended state for this setting is: Secure Boot or Secure Boot and DMA Protection",
+  "Note": "This setting was moved from the Next Generation (NG) profile to the Level 1 (L1) profile for the Windows 11 Operating System only NG profile settings were isolated from the L1 profile due to potential hardware compatibility issues. The Windows 11 Operating System is dependent on the same hardware as the NG settings, so hardware compatibility is no longer an issue.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Secure Boot or Secure Boot and DMA Protection :\n\nComputer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Select Platform Security Level",
+  "Impact": "Choosing the Secure Boot option provides the system with as much protection as is supported by the computer's hardware. A system with input/output memory management units (IOMMUs) will have Secure Boot with DMA protection. A system without IOMMUs will simply have Secure Boot enabled without DMA protection.\n\nChoosing the Secure Boot with DMA protection option requires the system to have IOMMUs in order to enable VBS. Without IOMMU hardware support, VBS will be disabled.",
+  "Warning": "All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible.\"",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17603",
+  "value_type": "POLICY_DWORD",
+  "value_data": "3\" || \"1",
+  "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard",
+  "reg_item": "RequirePlatformSecurityFeatures",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

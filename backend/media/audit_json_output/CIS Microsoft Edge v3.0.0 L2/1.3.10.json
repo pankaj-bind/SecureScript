@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.3.10 (L2) Ensure 'Default setting for third-party storage partitioning' is set to 'Enabled: Block third-party storage partitioning from being enabled.'",
+  "info": "This policy setting configures the use of third-party storage partitioning. When using storage partitioning, a site cannot join data across different sites to track the user across the web.\n\nThe recommended state for this setting is: Enabled: Block third-party storage partitioning from being enabled.\n\nThird-party storage partitioning can prevent certain types of side-channel cross-site tracking.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Block third-party storage partitioning from being enabled. :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Cast\\Default setting for third-party storage partitioning",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "Impact": "This setting may cause users to experience issues with sites they regularly visit that already grant access to third-parties.\"",
+  "reference": "800-171|3.13.1,800-53|SC-7(10),800-53r5|SC-7(10),CN-L3|8.1.10.6(j),CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(10),LEVEL|2A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|33.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "2",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "DefaultThirdPartyStoragePartitioningSetting",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

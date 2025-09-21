@@ -1,0 +1,68 @@
+{
+     "name": "frontend",
+     "version": "0.1.0",
+     "main": "main.js",
+     "private": true,
+     "homepage": "./",
+     "dependencies": {
+       "@testing-library/jest-dom": "^5.17.0",
+       "@testing-library/react": "^13.4.0",
+       "@testing-library/user-event": "^13.5.0",
+       "@types/jest": "^27.5.2",
+       "@types/node": "^16.18.97",
+       "@types/react": "^18.3.2",
+       "@types/react-dom": "^18.3.0",
+       "axios": "^1.7.2",
+       "electron-is-dev": "^3.0.1",
+       "react": "^18.3.1",
+       "react-dom": "^18.3.1",
+       "react-router-dom": "^6.23.1",
+       "react-scripts": "5.0.1",
+       "typescript": "^4.9.5",
+       "web-vitals": "^2.1.4"
+     },
+     "devDependencies": {
+       "autoprefixer": "^10.4.19",
+       "electron": "^37.2.5",
+       "postcss": "^8.4.38",
+       "tailwindcss": "^3.4.3",
+       "concurrently": "^9.0.1",
+       "wait-on": "^8.0.1",
+       "electron-builder": "^25.1.8"
+     },
+     "scripts": {
+       "start": "react-scripts start",
+       "build": "react-scripts build",
+       "test": "react-scripts test",
+       "eject": "react-scripts eject",
+       "electron": "electron .",
+       "dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+       "package": "npm run build && electron-builder"
+     },
+     "build": {
+       "appId": "com.example.frontend",
+       "productName": "Frontend App",
+       "files": [
+         "build/**/*",
+         "main.js",
+         "preload.js"
+       ],
+       "win": {
+         "target": "nsis"
+       },
+       "mac": {
+         "target": "dmg"
+       },
+       "linux": {
+         "target": "AppImage"
+       }
+     },
+     "browserslist": {
+       "production": [
+         "electron 37.2"
+       ],
+       "development": [
+         "last 1 electron version"
+       ]
+     }
+   }

@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.63 (L1) Ensure 'Configure browser process code integrity guard setting' is set to 'Enabled: Enable code integrity guard enforcement in the browser process.'",
+  "info": "This policy setting controls the use of code integrity guard in the browser process, which only allows Microsoft signed binaries to load.\n\nThe recommended state for this setting is: Enabled: Enable code integrity guard enforcement in the browser process.\n\nCode Integrity Guard ensures Microsoft's digital signature is present when loading binaries into a process. Binaries without Microsoft's digital signature are blocked to protect the system from unknown binaries and prevent the injection of untrustworthy binaries into a process.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Enable code integrity guard enforcement in the browser process. :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Configure browser process code integrity guard setting",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "Impact": "Binaries without Microsoft's digital signature are blocked from being loaded into a process.\"",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "2",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "browserCodeIntegritySetting",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

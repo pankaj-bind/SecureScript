@@ -1,0 +1,319 @@
+#TRUSTED 88e653a34a8db2790cf1d230ec780faec51b5f7c1ce014673a8a94ebc1c5f88bbb5101751f8c13cbd461e690c863cea610833630fbbc6ccef4a22993b4434924d7573106f335075c351e3b4b93b11ca4cd2d32b3a8f8a804d73e8b479bb873bd902644c286a7b7375d8f365ca78ad75464e731903e99ba656c700413baa6e6e93b4bbf980692d8c3157f8dee7fe4cc47f98522116fb184a0684ba6dcaf9797db408a323d9c1debee0385bac480463012290aa37bd7c78b65df5f8c34b421aebaf4cebd4b1079f3fa2144c2af142141b9e905cdb4ffcb3f43336e1154bc50d79204b4eb9f35f80273c7cd2598a8988fd4f28ad421956cee16d746dc931be91a667e99322b5f755c4ee24a151f96f82c437177c242ff561555e5e12044fa38629745cf83085585b1e3bea3cc73f1718c1f875662ac6a4163bb53b5dd76e6a07e2206c45387a54b70d69e7d3ddd3ac0d3ab06f47d271dcc09deedd85e3153425e88e421bc20b581b90976b22d963cfc069c10cca37b98b4ca05610f59b45ad801c60971cfb4e5f21092b1173fd4b4486e209e6a86b60ac0a6ed16fd93cd5d3d49ed7138ab392af87c572bbf10bd0ec080115584731304bb15e8117ccd31416d70566e42b3901be8e4dea8d0968423a9a614a5e1fd2f8d3a447f7d54f93ee0fd4473999ec1ddf1b5c5fdc89e920b282d63efe70ceac4130984de743a410a2d59956b
+#TRUST-RSA-SHA256 66866805f8b4dcfaa231d3b21b65525ded27dd5cd00f3d4cd724563beca83575f9b5ad721099bd072e6b5288ae3c9e5e8a9f05d90e0fb0772dcf8acdbccdc62078ae1b0c0b7aa7a70e243a0c11ebc630c213eeb60bc244f78e5b297049fb9eeb9d3a8898daae1c4a9ec7c728eeeb570e822c3c700c97151d3b6d60dd48ce38ca2cb25b2c6bae43e528505fb2530e09f9378126ae252680714ea18c7c84600234f10589126532d62de24a3c9536bf5851b61f9dcd64c1418e70f819b72775a7cb0bd12c664d14a38eac373a965449f6db259f077b8c526391d0d7ae0062ae799299055f655bbb172ce33086563737757e042da8b6d4c2f7a16f0cbd89e4dfae59b6d0a915ed6c63565d71d0eb5cbf4b7fcbefdb28ff3dffba44ea337266ad7331a20d1d79fe4731a4a6043cc9944af7dc6b22ff31d467d5216e314c591e5912d248dd247ea76e4d2a771bd0d014a9b6f5cfe8a960706503392de415fed3a1659b7c1d59a2b85a3015d7ac2bddd82221ec3e8b1b15b23083bae289c6871ba69518faf5b6aa46ea5e72339313938ceb46063622262fcfb7b6d1ef8772bd6edbc415e7922774cef5808d8101f5697931ab4bf01ffeff59c8604dc903f8f05204c467e4476bc846ebd95bf37138f730bff3d19d1f133343ccc5407bca9bc94cfbdf4f5946bd411785a848a38c3f3d5bee1867a228413876ebdf3a88585f2ba5a1e189
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.8 $
+# $Date: 2024/06/17 $
+#
+# Description : This document implements the security configuration as recommended by the
+#               CIS MongoDB 4 benchmark v1.0.0
+#
+#<ui_metadata>
+#<display_name>CIS MongoDB 4 L2 OS Windows v1.0.0</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>MongoDB 4</name>
+#  <profile>L2 OS Windows</profile>
+#  <version>1.0.0</version>
+#  <link>https://workbench.cisecurity.org/files/3463</link>
+#</spec>
+#<labels>ms_mongodb_4,cis,update_20230227</labels>
+#<benchmark_refs>CCE,CIS_Recommendation,CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>MONGOD_CONF_FULL_PATH</name>
+#    <default>C:\Program Files\MongoDB\Server\4.4\bin\mongod.cfg</default>
+#    <description>Full path to the mongodb conf file</description>
+#    <info>Full path to the mongodb conf file</info>
+#    <value_type>WIN_FILE_PATH</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Windows" version:"2">
+<group_policy:"CIS MongoDB 4">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "Check for MongoDB 4"
+      value_type      : POLICY_TEXT
+      value_data      : "^4"
+      powershell_args : "Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*, HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object { $_.DisplayName -Clike 'Mongo*'} | Select-Object DisplayVersion"
+      check_type      : CHECK_REGEX
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_MongoDB_4_Benchmark_Level_2_OS_Windows_v1.0.0.audit from CIS MongoDB 4 Benchmark"
+      see_also    : "https://workbench.cisecurity.org/files/3463"
+    </report>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "4.1 Ensure legacy TLS protocols are disabled"
+      info            : "Only modern TLS protocols should be enabled in MongoDB for all client connections and upstream connections. Removing legacy TLS and SSL protocols (SSL 3.0, TLS 1.0 and 1.1), and enabling emerging and stable TLS protocols (TLS 1.2, and TLS 1.3), ensures users are able to take advantage of strong security capabilities and protects them from insecure legacy protocols.
+
+Rationale:
+
+Why disable TLS 1.0: TLS 1.0 was deprecated from use when PCI DSS Compliance mandated that it not be used for any applications processing credit card numbers in June 2018.
+
+Why disable TLS 1.1: Because of the increased security associated with higher versions of TLS, TLS 1.0 should be disabled."
+      solution        : "Make changes to configuration file, to configure your mongod or mongos instance to disable legacy protocols, shut down the instance and update the configuration file with the following setting:
+
+net:
+  tls:
+    mode: requireTLS
+    certificateKeyFile: /etc/ssl/mongodb.pem
+    CAFile: /etc/ssl/caToValidateClientCertificates.pem
+    disabledProtocols: TLS1_0,TLS1_1
+
+Start mongod or mongos instance with the configuration file.
+
+mongod --config /etc/mongod.conf
+
+Default Value:
+
+TLS1_0, TLS1_1, TLS1_2
+
+Note: Starting in version 4.0.4 (and 3.6.9)TLS1_3 is added to the default value."
+      reference       : "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|18.11,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3"
+      see_also        : "https://workbench.cisecurity.org/files/3463"
+      value_type      : POLICY_TEXT
+      value_data      : "^[\s]*disabledProtocols[\s]*:[\s]*(?=.*TLS1_0)(?=.*TLS1_1).*"
+      powershell_args : "get-content '@MONGOD_CONF_FULL_PATH@' | select-string -pattern 'net:' -context 0,10"
+      check_type      : CHECK_REGEX
+    </custom_item>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "4.4 Ensure Federal Information Processing Standard (FIPS) is enabled"
+      info            : "The Federal Information Processing Standard (FIPS) is a computer security standard used to certify software modules and libraries that encrypt and decrypt data securely. You can configure MongoDB to run with a FIPS 140-2 certified library for OpenSSL.
+
+FIPS is a property of the encryption system and not the access control system. However, the environment requires FIPS compliant encryption and access control. Organizations must ensure that the access control system uses only FIPS-compliant encryption.
+
+Rationale:
+
+FIPS is an industry standard which dictates how data should be encrypted at rest and during transmission."
+      solution        : "Configuring FIPS mode, ensure that your certificate is FIPS compliant. Run mongod or mongos instance in FIPS mode.
+Make changes to configuration file, to configure your mongod or mongos instance to use FIPS mode, shut down the instance and update the configuration file with the following setting:
+
+net:
+   tls:
+      FIPSMode: true
+
+Start mongod or mongos instance with a configuration file.
+
+mongod --config /etc/mongod.conf
+
+Default Value:
+
+Not configured"
+      reference       : "800-171|3.13.8,800-171|3.13.16,800-53|SC-8,800-53|SC-28,800-53r5|SC-8,800-53r5|SC-28,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(a),CN-L3|8.1.4.8(b),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv7|14.8,CSF|PR.DS-1,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|2A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also        : "https://workbench.cisecurity.org/files/3463"
+      value_type      : POLICY_TEXT
+      value_data      : "^[\s]*FIPSMode[\s]*:[\s]*true"
+      powershell_args : "get-content '@MONGOD_CONF_FULL_PATH@' | select-string -pattern 'net:' -context 0,10"
+      check_type      : CHECK_REGEX
+    </custom_item>
+
+    <report type:"WARNING">
+      description : "4.5 Ensure Encryption of Data at Rest"
+      info        : "Encryption of data at rest must be enabled to ensure compliance with security and privacy standards including HIPAA, PCI-DSS, and FERPA.
+
+Encryption at rest, when used in conjunction with transport encryption and good security policies that protect relevant accounts, passwords, and encryption keys.
+
+Rationale:
+
+Unauthorized users, such as intruders who are attempting security attacks, cannot read the data from storage and back up media unless they have the master encryption key to decrypt it.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+      solution    : "It is recommended to enable the data at rest encryption to protect the data.
+Protecting Data at Rest Including following steps.
+
+Generating a master key.
+
+Generating keys for each database.
+
+Encrypting data with the database keys.
+
+Encrypting the database keys with the master key.
+
+Only the master key is external to the server and requires external management. To manage the master key, MongoDB's encrypted storage engine supports two key management options:
+
+Integration with a third-party key management appliance via the Key Management Interoperability Protocol (KMIP). Recommended
+
+Use of local key management via a keyfile.
+
+The encryption occurs transparently in the storage layer; i.e. all data files are fully encrypted from a filesystem perspective, and data only exists in an unencrypted state in memory and during transmission.
+To enable Encryption on Database follow below step mentioned in below Link
+https://docs.mongodb.com/manual/tutorial/configure-encryption/
+Rotation of Key is also important. This can be enabled by following mentioned steps in below link.
+https://docs.mongodb.com/manual/tutorial/rotate-encryption-key/"
+      reference   : "800-171|3.13.16,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|14.8,CSF|PR.DS-1,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|2M,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/files/3463"
+    </report>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "5.2 Ensure that audit filters are configured properly"
+      info            : "MongoDB Enterprise supports auditing of various operations. When enabled, the audit facility, by default, records all auditable operations as detailed in Audit Event Actions, Details, and Results. To specify which events to record, the audit feature includes the --auditFilter option. This check is only for Enterprise editions.
+
+Rationale:
+
+All operations carried out on the database are logged. This helps in backtracking and tracing any incident that occurs."
+      solution        : "Set the audit filters based on the organization's requirements.
+
+Default Value:
+
+Not configured"
+      reference       : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(a),CN-L3|8.1.4.3(b),CSCv7|6.2,CSCv7|6.3,CSCv8|8.2,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2M,NESA|M1.2.2,NESA|M5.5.1,NESA|T3.6.2,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also        : "https://workbench.cisecurity.org/files/3463"
+      value_type      : POLICY_TEXT
+      value_data      : "^[\s]*filter[\s]*:[\s]*.+$"
+      powershell_args : "get-content '@MONGOD_CONF_FULL_PATH@' | select-string -pattern 'auditLog' -context 0,10"
+      check_type      : CHECK_REGEX
+    </custom_item>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "5.3 Ensure that logging captures as much information as possible"
+      info            : "The SystemLog.quiet option stops logging of information such as:
+
+connection events
+
+authentication events
+
+replication sync activities
+
+evidence of some potentially impactful commands being run (eg: drop, dropIndexes, validate)
+
+This information should be logged whenever possible. This check is only for Enterprise editions.
+
+Rationale:
+
+The use of SystemLog.quiet makes troubleshooting problems and investigating possible security incidents much more difficult."
+      solution        : "Set
+
+'SystemLog:
+       quiet: false'
+
+to false in the /etc/mongod.conf file to disable it."
+      reference       : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(a),CN-L3|8.1.4.3(b),CSCv7|6.2,CSCv7|6.3,CSCv8|8.2,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NESA|T3.6.2,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also        : "https://workbench.cisecurity.org/files/3463"
+      value_type      : POLICY_TEXT
+      value_data      : "^[\s]*quiet[\s]*:[\s]*false"
+      powershell_args : "get-content '@MONGOD_CONF_FULL_PATH@' | select-string -pattern 'systemLog' -context 0,10"
+      check_type      : CHECK_REGEX
+    </custom_item>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "5.4 Ensure that new entries are appended to the end of the log file"
+      info            : "By default, new log entries will overwrite old entries after a restart of the mongod or Mongols service. Enabling the systemLog.logAppend setting causes new entries to be appended to the end of the log file rather than overwriting the existing content of the log when the mongos or mongod instance restarts.
+
+Rationale:
+
+Allowing old entries to be overwritten by new entries instead of appending new entries to the end of the log may destroy old log data that is needed for a variety of purposes."
+      solution        : "Set
+
+'systemLog:
+    logAppend: true'
+
+to true in the /etc/mongod.conf file."
+      reference       : "800-53|AU-11,800-53r5|AU-11,CSCv7|6.4,CSCv8|8.10,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-11,LEVEL|2A,NESA|M5.2.3,NESA|T3.6.2,NIAv2|SM7,PCI-DSSv3.2.1|10.7,PCI-DSSv4.0|10.5.1,QCSC-v1|8.2.1,QCSC-v1|13.2"
+      see_also        : "https://workbench.cisecurity.org/files/3463"
+      value_type      : POLICY_TEXT
+      value_data      : "^[\s]*logAppend[\s]*:[\s]*true"
+      powershell_args : "get-content '@MONGOD_CONF_FULL_PATH@' | select-string -pattern 'logAppend' -context 0,10"
+      check_type      : CHECK_REGEX
+    </custom_item>
+
+    <report type:"WARNING">
+      description : "6.2 Ensure that operating system resource limits are set for MongoDB"
+      info        : "Operating systems provide ways to limit and control the usage of system resources such as threads, files, and network connections on a per-process and per-user basis
+
+Rationale:
+
+These ulimits prevent a single user from consuming too many system resources.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+      solution    : "Every deployment may have unique requirements and settings. Recommended thresholds and settings are particularly important for MongoDB deployments:
+
+
+f (file size): unlimited
+
+
+t (cpu time): unlimited
+
+
+v (virtual memory): unlimited [1]
+
+
+n (open files): 64000
+
+
+m (memory size): unlimited [1] [2]
+
+
+u (processes/threads): 64000
+
+Restart the mongod and mongos instances after changing the ulimit settings to ensure that the changes take effect.
+
+Default Value:
+
+Not configured"
+      reference   : "800-53|SC-6,800-53r5|SC-6,CN-L3|7.1.3.7(c),CN-L3|7.1.3.7(d),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-6,ITSG-33|SC-6a.,LEVEL|2M,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/files/3463"
+    </report>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "6.3 Ensure that server-side scripting is disabled if not needed"
+      info            : "MongoDB supports the execution of JavaScript code for certain server-side operations: mapReduce, group, $where, $accumulator, and $function aggregation operations that allow users to define custom aggregation expressions. If you do not use these operations, server-side scripting should be disabled.
+
+Rationale:
+
+If server-side scripting is not needed and is not disabled, this introduces unnecessary risk which may allow an attacker to take advantage of insecure coding.
+
+Impact:
+
+Disabling server-side scripting will block all server-side scripts from executing."
+      solution        : "If server-side scripting is not required, for mongod instance disable it by using the --noscripting option on the command line, or setting security.javascriptEnabled to false in the configuration file.
+Starting in MongoDB 4.4 this is also applicable to mongos.
+
+Default Value:
+
+Enabled"
+      reference       : "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|2M,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2"
+      see_also        : "https://workbench.cisecurity.org/files/3463"
+      value_type      : POLICY_TEXT
+      value_data      : "^[\s]*javascriptEnabled[\s]*:[\s]*false"
+      powershell_args : "get-content '@MONGOD_CONF_FULL_PATH@' | select-string -pattern 'security' -context 0,10"
+      check_type      : CHECK_REGEX
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_MongoDB_4_Benchmark_Level_2_OS_Windows_v1.0.0.audit from CIS MongoDB 4 Benchmark"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/files/3463"
+    </report>
+  </else>
+</if>
+
+</group_policy>
+</check_type>

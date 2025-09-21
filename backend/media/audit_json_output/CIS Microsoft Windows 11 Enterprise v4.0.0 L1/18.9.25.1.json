@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.9.25.1 (L1) Ensure 'Configure password backup directory' is set to 'Enabled: Active Directory' or 'Enabled: Azure Active Directory'",
+  "info": "\"This policy setting configures which directory Windows LAPS will use to back up the local admin account password.\n\nThe recommended state for this setting is: Enabled: Active Directory or Enabled: Azure Active Directory",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template LAPS.admx/adml that is included with the Microsoft Windows 11 Release 22H2 Administrative Templates v3.0 (or newer).",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Active Directory or Enabled: Azure Active Directory :\n\nComputer Configuration\\Policies\\Administrative Templates\\System\\LAPS\\Configure password backup directory",
+  "Impact": "The passwords managed by Windows LAPS will only be retrievable from the configured directory type.\"",
+  "reference": "800-171|3.8.9,800-171r3|03.08.09,800-53|CP-9,800-53r5|CP-9,CSF|PR.IP-4,CSF2.0|PR.DS-01,CSF2.0|PR.DS-10,CSF2.0|PR.DS-11,CSF2.0|RC.RP-03,GDPR|32.1.b,GDPR|32.1.c,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.29,ISO-27001-2022|A.5.33,ISO-27001-2022|A.8.13,ISO/IEC-27001|A.12.3.1,ITSG-33|CP-9,LEVEL|1A,NESA|M5.2.3,NESA|T2.2.4",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/21318",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1\" || \"2",
+  "reg_key": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\LAPS",
+  "reg_item": "BackupDirectory",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

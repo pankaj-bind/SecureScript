@@ -1,0 +1,1061 @@
+#TRUSTED 456eda61f5cbcc4fa74575bb3861b9cc99b999d72ec81dc85bcceb102cc747207f7c12cc7efb36e1ff0b0e6ce152b393fd7a71d6ecf6f5c710a0bf10e0076240b6fadd8558a58a8e2649ed2300949302c8a56af81aeea4c8d2d1e356f6da8c9f07c63ac98a2177f43bb4915f506248c61ce025ffbf38fbbe4b4d7e84169506c3d91974b9fe065d0ce158a44d3bbe3be429bba2d00005de448adc6bb1b4fd897f41b2faa20bebd49a05e8c9c8be4a9f3bcddeb27977c6250264a1776f545b6823841af6268099fe5388ee931295ed17190efb91301f9b174fac3525e89cd16517c33fd24b5ad1aa1f06d4ee4f830d5acf0eabad76e3a6a7116d17e7b5a70bb411c72e9f157882508ef4cbbd1c920b275286146adf4072b9b7cbb44d789bd3ab7564c371e44c63a312dbbe52c7322bdb38528e3db238df55babfb9e558d70e00e899809a99ad2e42c4fc65c89a1eb0cb8967512c2feafb875aea6eb9498df0710752a075048fe276f22a55fe76cd830ece479f0dcad64de3bdeeceb5cc5e15809b5e1e70e60c04791a0ee72264824e0db2acf529cfa45df23226653f7299eb6f57f1d88f9d5c6d88af160925ed9b2886af7d9712c1f4c182c4b2f6e0f1067384a6e83e7edd7ddfb4efe322c8b0523e01c7aa87cfe5b8f8c9f2e89de2973e4ea22878479a94437d6f717df9e6c90f55786e4655475da4541095311db66745485ff8
+#TRUST-RSA-SHA256 4f0073810442ea8fc7f124bba92ac5a02acfe5e3ba7b9528116e9d049f2f90d5a20a773e923c733c7c79f45f0f17326e5697c7d46f875da4da64adf26b6dff76af1c9f0731a4ddb2794eb0591f78e0ee76b78296dda36c288f6b6b89df59934f5242e0387b27ba3fa41041b6dff36154d042a897719198f16525eeb92f5c9797419256799d4c3d65a11ed2cee8117aa2071e9c6e3b913cde87513b348705e2c0ad7783daad916ce87e0593ff7981fd426b1b9a5001f4a8e234300774f19a50272d390a653769f1d1727b21d85228ebea89d4f00d14d93f8a15d2c4a8838cf0eea0e69e856c0efcf6beac705e438e06161fd459a1b0102465ebb376a5474cabed4380b3f8dbd14c36f5743566eb0a01b2cee976cbbe1c304e314a4336f8c805bc50f3c0ca895015090ca67f98b9bdee3bb08c0dded5b7bb6cef9c1eb60906046e6ad5f7330c11c9d462ffc9c2420eae8269ce1ed41021ac3c3ae11aff38f9465147ec0e72b3f10658a019fe102b7211ca29183b5de99a8a633f20e90aa1d676822039e0169c7fc8b85752387958f9eabe41500e9f68494b81bf4647daaf063c05df459d69db6aeaaf2112d60b41ed9235053f70987e0a44c2d4dfa179b8cd83cd5e161b8b2abd1638d9c03c3ddf5f894e57fc7b9c7316307d3e27cb2efe4193dc43df8bab1e7fd932886a9dc052a7ea14e5bd653ee761e7524bbad69c69e5f652
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2024/10/18 $
+#
+# description : This .audit is designed against the CIS Snowflake Foundations Benchmark 1.0.0
+#
+#<ui_metadata>
+#<display_name>CIS Snowflake Foundations v1.0.0 L1</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Snowflake Foundations</name>
+#  <profile>L1</profile>
+#  <version>1.0.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/14781</link>
+#</spec>
+#<labels>cis,snowflake_foundations</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#</ui_metadata>
+
+<check_type:"Snowflake">
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.1 Ensure single sign-on (SSO) is configured for your account / organization"
+  info        : "Federated authentication enables users to connect to Snowflake using secure SSO (single sign-on). With SSO enabled, users authenticate through an external (SAML 2.0-compliant or OAuth 2.0) identity provider (IdP). Once authenticated by an IdP, users can access their Snowflake account for the duration of their IdP session without having to authenticate to Snowflake again. Users can choose to initiate their sessions from within the interface provided by the IdP or directly in Snowflake.
+
+Snowflake offers native support for federated authentication and SSO through Okta and Microsoft ADFS.
+
+Snowflake also supports most SAML 2.0-compliant vendors as an IdP, including Google G Suite, Microsoft Azure Active Directory, OneLogin, and Ping Identity PingOne. To use an IdP other than Okta or ADFS, you must define a custom application for Snowflake in the IdP.
+
+There are two ways to configure SAML:
+
+ - By creating the security integration (recommended)
+ - By setting the SAML_IDENTITY_PROVIDER account parameter (deprecated)
+
+Configuring your Snowflake authentication so that users can log in using SSO reduces the attack surface for your organization because users only log in once across multiple applications and do not have to manage a separate set of credentials for their Snowflake account."
+  solution    : "The steps for configuring an IdP differ depending on whether you choose SAML2 or OAuth. They further differ depending on what identity provider you choose: Okta, AD FS, Ping Identity, Azure AD, or custom. For specific instructions, see Snowflake documentation on
+
+SAML
+
+and
+
+External OAuth
+
+.
+
+Note: If your SAML integration is configured using the deprecated account parameter SAML_IDENTITY_PROVIDER you should migrate to creating a security integration using the system$migrate_saml_idp_registration function. For more information, see the
+
+Migrating to a SAML2 Security Integration
+
+documentation.
+
+Impact:
+
+There may be costs associated with provisioning and using an IdP service."
+  reference   : "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSCv7|16.2,CSCv8|5.6,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SHOW SECURITY INTEGRATIONS;"
+  sql_types   : REGEX_OR_NULL, REGEX, REGEX_OR_NULL, REGEX, REGEX_OR_NULL, REGEX_OR_NULL
+  sql_expect  : ".*", "EXTERNAL_OAUTH|SAML2", ".*", "true", ".*", ".*"
+  match_all   : NO
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.10 Limit the number of users with ACCOUNTADMIN and SECURITYADMIN"
+  info        : "By default, ACCOUNTADMIN is the most powerful role in a Snowflake account. Users with the SECURITYADMIN role grant can trivially escalate their privileges to that of ACCOUNTADMIN
+
+Following the principle of least privilege that prescribes limiting user's privileges to those that are strictly required to do their jobs, the ACCOUNTADMIN and SECURITYADMIN roles should be assigned to a limited number of designated users (e.g., less than 10, but at least 2 to ensure that access can be recovered if one ACCOUNTAMIN user is having login difficulties).
+
+While it is important to apply the principle of least privilege to all access grants, it is especially important to apply it to highly privileged roles. Examples of such roles are ACCOUNTADMIN SECURITYADMIN and their equivalents. The fewer users with full administrator privileges, the smaller the attack surface and the probability of a full account compromise."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+For each user <username> that does not need all the privileges a role provides to fulfill their job responsibilities, revoke the ACCOUNTADMIN or all equivalently privileged roles.
+
+REVOKE ROLE ACCOUNTADMIN FROM USER <username>
+ -
+
+For each user <username> that does not need all the privileges a role provides to fulfill their job responsibilities, revoke the SECURITYADMIN or all equivalently privileged roles.
+
+REVOKE ROLE SECURITYADMIN FROM USER <username>
+
+Impact:
+
+Users who lose the ACCOUNTADMIN or SECURITYADMIN role grant and are not granted a more scoped down role appropriate to their job function may lose certain privileges required to do their job."
+  reference   : "800-171|3.1.5,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-6,LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SELECT DISTINCT A.GRANTEE_NAME AS NAME, A.ROLE FROM SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_USERS AS A LEFT JOIN SNOWFLAKE.ACCOUNT_USAGE.USERS AS B ON A.GRANTEE_NAME = B.NAME WHERE A.ROLE IN ('ACCOUNTADMIN', 'SECURITYADMIN') AND A.DELETED_ON IS NULL AND B.DELETED_ON IS NULL AND NOT B.DISABLED ORDER BY A.ROLE;"
+  sql_types   : REGEX, REGEX
+  sql_expect  : ".*", ".*"
+  num_rows    : [2..9]
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.11 Ensure that all users granted the ACCOUNTADMIN role have an email address assigned"
+  info        : "Every Snowflake user can be assigned an email address. The email addresses are then used by Snowflake features like
+
+notification integration
+
+,
+
+resource monitor
+
+and
+
+support cases
+
+to deliver email notifications to Snowflake users. In trial Snowflake accounts these email addresses are used for password reset functionality.
+
+The email addresses assigned to ACCOUNTADMIN users are used by Snowflake to notify administrators about important events related to their accounts. For example, ACCOUNTADMIN users are notified about impending expiration of SAML2 certificates or SCIM access tokens.
+
+If users with the ACCOUNTADMIN role are not assigned working email addresses that are being monitored and if SAML2 certificate used in SSO integration is not proactively renewed, expiration of SAML2 certificate may break the SSO authentication flow. Similarly, uncaught expiration of SCIM access token may break the SCIM integration.
+
+Additionally, emails assigned to ACCOUNTADMIN users can be used by Snowflake Support to contact account administrators in urgent situations."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+For every ACCOUNTADMIN user <username> that does not have email assigned run the following command to assign it:
+
+ALTER USER <username>	SET EMAIL = <email_address>;
+
+Impact:
+
+None."
+  reference   : "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SELECT DISTINCT a.grantee_name as name, b.email FROM snowflake.account_usage.grants_to_users AS a LEFT JOIN snowflake.account_usage.users AS b ON a.grantee_name = b.name WHERE a.role = 'ACCOUNTADMIN' AND a.deleted_on IS NULL AND b.email IS NULL AND b.deleted_on IS NULL AND NOT b.disabled;"
+  sql_types   : REGEX
+  sql_expect  : ".*"
+  num_rows    : 0
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.12 Ensure that no users have ACCOUNTADMIN or SECURITYADMIN as the default role"
+  info        : "The ACCOUNTADMIN system role is the most powerful role in a Snowflake account and is intended for performing initial setup and managing account-level objects. SECURITYADMIN role can trivially escalate their privileges to that of ACCOUNTADMIN Neither of these roles should be used for performing daily non-administrative tasks in a Snowflake account.
+
+Instead, users should be assigned custom roles containing only those privileges that are necessary for successfully completing their job responsibilities.
+
+When ACCOUNTADMIN is not set as a default user role, it forces account administrators to explicitly change their role to ACCOUNTADMIN each time they log in. This can help make account administrators aware of the purpose of roles in the system, prevent them from inadvertently using the ACCOUNTADMIN role for non-administrative tasks, and encourage them to change to the appropriate role for a given task. Same logic applies to the SECURITYADMIN role."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+For each user <user_name> who has ACCOUNTADMIN or SECURITYADMIN as their default role, choose a less privileged role <job_appropriate_role> appropriate for their daily job responsibilities and run the following query:
+
+ALTER USER <user_name>	SET DEFAULT_ROLE = <job_appropriate_role>;
+
+Note: You could also unset the default role, thus forcing users to explicitly assume a role every time they log in.
+
+Impact:
+
+None."
+  reference   : "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SELECT NAME, DEFAULT_ROLE FROM SNOWFLAKE.ACCOUNT_USAGE.USERS WHERE DEFAULT_ROLE IN ('ACCOUNTADMIN', 'SECURITYADMIN') AND DELETED_ON IS NULL AND NOT DISABLED;"
+  sql_types   : REGEX
+  sql_expect  : ".*"
+  num_rows    : 0
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.13 Ensure that the ACCOUNTADMIN or SECURITYADMIN role is not granted to any custom role"
+  info        : "The principle of least privilege requires that every identity is only given privileges that are necessary to complete its tasks.
+
+The ACCOUNTADMIN system role is the most powerful role in a Snowflake account and is intended for performing initial setup and managing account-level objects. SECURITYADMIN role can trivially escalate their privileges to that of ACCOUNTADMIN Neither of these roles should be used for performing daily non-administrative tasks in a Snowflake account.
+
+Granting ACCOUNTADMIN role to any custom role effectively elevates privileges of that role to the ACCOUNTADMIN role privileges. Roles that include the ACCOUNTADMIN role can then be mistakenly used in access grants that do not require ACCOUNTADMIN privileges thus violating the principle of least privilege and increasing the attack surface. The same logic applies to the SECURITYADMIN role."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI, find all custom roles that are granted ACCOUNTADMIN role and revoke that grant.
+
+REVOKE SECURITYADMIN ON ACCOUNT FROM ROLE <custom_role>;
+REVOKE ACCOUNTADMIN ON ACCOUNT FROM ROLE <custom_role>;
+
+Impact:
+
+Users who lose the ACCOUNTADMIN or SECURITYADMIN privileges granted to them indirectly through a custom role may not be able to perform their job duties until they regain privileges they legitimately require through a more scoped down role."
+  reference   : "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SELECT GRANTEE_NAME AS CUSTOM_ROLE, PRIVILEGE AS GRANTED_PRIVILEGE, NAME AS GRANTED_ROLE FROM SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_ROLES WHERE GRANTED_ON = 'ROLE' AND NAME IN ('ACCOUNTADMIN','SECURITYADMIN') AND DELETED_ON IS NULL;"
+  sql_types   : REGEX, REGEX, REGEX
+  sql_expect  : "ACCOUNTADMIN", "USAGE", "SECURITYADMIN"
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.14 Ensure that Snowflake tasks are not owned by the ACCOUNTADMIN or SECURITYADMIN roles"
+  info        : "The ACCOUNTADMIN system role is the most powerful role in a Snowflake account and is intended for performing initial setup and managing account-level objects. SECURITYADMIN role can trivially escalate their privileges to that of ACCOUNTADMIN Neither of these roles should be used for running Snowflake tasks. A task should be running using a custom role containing only those privileges that are necessary for successful execution of the task.
+
+Snowflake executes tasks with the privileges of the task owner. The role that has OWNERSHIP privilege on the task owns the task.
+
+To avoid granting a task inappropriate privileges, the OWNERSHIP privilege on the task run as owner should be assigned to a custom role containing only those privileges that are necessary for successful execution of the task.
+
+The principle of least privilege requires that every identity, including service identities, is only given privileges that are necessary to complete its job.
+
+If a threat actor finds a way to influence or hijack the task execution flow, they may be able to exploit privileges given to the task. In the case of an ACCOUNTADMIN or SECURITYADMIN roles, that may lead to a full account takeover. Additionally, a mistake in the task implementation coupled with excessive privileges may lead to a reliability incident, e.g. accidentally dropping database objects."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+For each task <task_name> that runs with ACCOUNTADMIN or SECURITYADMIN privileges, create a new role <task_specific_role> and assign it to the tasks:
+
+CREATE ROLE <task_specific_role>;GRANT OWNERSHIP ON TASK <task_name> TO ROLE <task_specific_role>;
+ -
+
+After creating a new role and granting ownership of each task to it, for each task <task_name> that is owned by ACCOUNTADMIN or SECURITYADMIN roles, ensure all privileges on the tasks are revoked from the roles:
+
+REVOKE ALL PRIVILEGES ON TASK <task_name> FROM ROLE ACCOUNTADMIN;REVOKE ALL PRIVILEGES ON TASK <task_name> FROM ROLE SECURITYADMIN;
+
+Impact:
+
+Existing stored procedures that are owned by the ACCOUNTADMIN or SECURITYADMIN roles and run with their privileges will need to be updated to use a task specific custom role. If that role does not have all the privileges required by the task, the task execution may fail."
+  reference   : "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SELECT NAME AS STORED_PROCEDURE_NAME, GRANTED_TO, GRANTEE_NAME AS ROLE_NAME, PRIVILEGE FROM SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_ROLES WHERE GRANTED_ON = 'TASK' AND DELETED_ON IS NULL AND GRANTED_TO = 'ROLE' AND PRIVILEGE = 'OWNERSHIP' AND GRANTEE_NAME IN ('ACCOUNTADMIN' , 'SECURITYADMIN');"
+  sql_types   : REGEX
+  sql_expect  : ".*"
+  num_rows    : 0
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.15 Ensure that Snowflake tasks do not run with the ACCOUNTADMIN or SECURITYADMIN role privileges"
+  info        : "The ACCOUNTADMIN system role is the most powerful role in a Snowflake account and is intended for performing initial setup and managing account-level objects. SECURITYADMIN role can trivially escalate their privileges to that of ACCOUNTADMIN Neither of these roles should be used for running Snowflake tasks. A task should be running using a custom role containing only those privileges that are necessary for successful execution of the task.
+
+The principle of least privilege requires that every identity, including service identities, is only given privileges that are necessary to complete its job.
+
+If a threat actor finds a way to influence or hijack the task execution flow, they may be able to exploit privileges given to the task. In the case of an ACCOUNTADMIN or SECURITYADMIN roles, that may lead to a full account takeover. Additionally, a mistake in the task implementation coupled with excessive privileges may lead to a reliability incident, e.g. accidentally dropping database objects."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+For each task <task_name> that runs with ACCOUNTADMIN or SECURITYADMIN privileges, create a new role <task_specific_role> and assign it to the tasks:
+
+CREATE ROLE <task_specific_role>;GRANT OWNERSHIP ON TASK <task_name> TO ROLE <task_specific_role>;
+ -
+
+After creating a new role and granting privileges to each task, ensure all privileges on the tasks are revoked from the ACCOUNTADMIN and SECURITYADMIN roles:
+
+REVOKE ALL PRIVILEGES ON TASK <task_name> FROM ROLE ACCOUNTADMIN;REVOKE ALL PRIVILEGES ON TASK <task_name> FROM ROLE SECURITYADMIN;
+
+Impact:
+
+Existing stored procedures that are owned by the ACCOUNTADMIN or SECURITYADMIN roles and run with their privileges will need to be updated to use a task specific custom role. If that role does not have all the privileges required by the task, the task execution may fail."
+  reference   : "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SELECT NAME AS STORED_PROCEDURE_NAME, GRANTED_TO, GRANTEE_NAME AS ROLE_NAME, PRIVILEGE FROM SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_ROLES WHERE GRANTED_ON = 'TASK' AND DELETED_ON IS NULL AND GRANTED_TO = 'ROLE' AND GRANTEE_NAME IN ('ACCOUNTADMIN' , 'SECURITYADMIN');"
+  sql_types   : REGEX
+  sql_expect  : ".*"
+  num_rows    : 0
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.16 Ensure that Snowflake stored procedures are not owned by the ACCOUNTADMIN or SECURITYADMIN roles"
+  info        : "The ACCOUNTADMIN system role is the most powerful role in a Snowflake account and is intended for performing initial setup and managing account-level objects. SECURITYADMIN role can trivially escalate their privileges to that of ACCOUNTADMIN Neither of these roles should be used for running Snowflake stored procedures. A stored procedure should be running using a custom role containing only those privileges that are necessary for successful execution of the stored procedure.
+
+Snowflake executes stored procedures with the privileges of the stored procedure owner or the caller. Role that has OWNERSHIP privilege on the stored procedure owns it.
+
+To avoid granting a stored procedure inappropriate privileges, the OWNERSHIP privilege on the stored procedure run as owner should be assigned to a custom role containing only those privileges that are necessary for successful execution of the stored procedure.
+
+The principle of least privilege requires that every identity, including service identities, is only given privileges that are necessary to complete its job.
+
+If a threat actor finds a way to influence or hijack the stored procedure execution flow, they may be able to exploit privileges given to the stored procedure. In the case of an ACCOUNTADMIN or SECURITYADMIN roles, that may lead to a full account takeover. Additionally, a mistake in the stored procedure implementation coupled with excessive privileges may lead to a reliability incident, e.g. accidentally dropping database objects."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+For each stored procedure <procedure_name> that runs with ACCOUNTADMIN or SECURITYADMIN privileges, create a new role <procedure_specific_role> and assign it to the stored procedure:
+
+CREATE ROLE <procedure_specific_role>;GRANT OWNERSHIP ON PROCEDURE <procedure_name> TO ROLE <procedure_specific_role>;
+ -
+
+After creating a new role and granting ownership of each stored procedure to it, for each stored procedure that is owned by ACCOUNTADMIN or SECURITYADMIN roles, ensure all privileges on the stored procedure are revoked from the roles:
+
+REVOKE ALL PRIVILEGES ON PROCEDURE <procedure_name> FROM ROLE ACCOUNTADMIN;REVOKE ALL PRIVILEGES ON PROCEDURE <procedure_name> FROM ROLE SECURITYADMIN;
+
+Impact:
+
+Existing stored procedures that are owned by the ACCOUNTADMIN or SECURITYADMIN roles and run with their privileges will need to be updated to use a stored procedure specific custom role. If that role does not have all the privileges required by the stored procedure, the stored procedure execution may fail."
+  reference   : "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.PROCEDURES WHERE DELETED IS NULL AND PROCEDURE_OWNER IN ('ACCOUNTADMIN','SECURITYADMIN');"
+  sql_types   : REGEX
+  sql_expect  : ".*"
+  num_rows    : 0
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.17 Ensure Snowflake stored procedures do not run with ACCOUNTADMIN or SECURITYADMIN role privileges"
+  info        : "The ACCOUNTADMIN system role is the most powerful role in a Snowflake account; it is intended for performing initial setup and managing account-level objects. Users and stored procedures with the SECURITYADMIN role can escalate their privileges to ACCOUNTADMIN
+
+Snowflake stored procedures should not run with the ACCOUNTADMIN or SECURITYADMIN roles. Instead, stored procedures should be run using a custom role containing only those privileges that are necessary for successful execution of the stored procedure.
+
+The principle of least privilege requires that every identity, including service identities, is only given privileges that are necessary to complete its job.
+
+If a threat actor finds a way to influence or hijack the stored procedure execution flow, they may be able to exploit privileges given to the stored procedure. In the case of an ACCOUNTADMIN or SECURITYADMIN roles, that may lead to a full account takeover. Additionally, a mistake in the stored procedure implementation coupled with excessive privileges may lead to a reliability incident, e.g. accidentally dropping database objects."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or using the SnowSQL CLI:
+
+ -
+
+For each stored procedure <procedure_name> that runs with ACCOUNTADMIN or SECURITYADMIN privileges, create a new role <procedure_specific_role> and assign it to the stored procedure:
+
+CREATE ROLE <procedure_specific_role>;GRANT OWNERSHIP ON PROCEDURE <procedure_name> TO ROLE <procedure_specific_role>;
+ -
+
+After creating a new role and granting privileges to each stored procedure, ensure all privileges on the stored procedure <procedure_name> are revoked from the ACCOUNTADMIN and SECURITYADMIN roles:
+
+REVOKE ALL PRIVILEGES ON PROCEDURE <procedure_name> FROM ROLE ACCOUNTADMIN;REVOKE ALL PRIVILEGES ON PROCEDURE <procedure_name> FROM ROLE SECURITYADMIN;
+
+Impact:
+
+Existing stored procedures that are owned by the ACCOUNTADMIN or SECURITYADMIN roles and run with their privileges will need to be updated to use a stored procedure specific custom role. If that role does not have all the privileges required by the stored procedure, the stored procedure execution may fail."
+  reference   : "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SELECT NAME AS STORED_PROCEDURE_NAME, GRANTED_TO, GRANTEE_NAME AS ROLE_NAME FROM SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_ROLES WHERE GRANTED_ON = 'PROCEDURE' AND DELETED_ON IS NULL AND GRANTED_TO = 'ROLE' AND GRANTEE_NAME IN ('ACCOUNTADMIN' , 'SECURITYADMIN');"
+  sql_types   : REGEX
+  sql_expect  : ".*"
+  num_rows    : 0
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.3 Ensure that Snowflake password is unset for SSO users"
+  info        : "Ensure that Snowflake password is unset for SSO users.
+
+Allowing users to sign in with Snowflake passwords in the presence of a configured third-party identity provider SSO may undermine mandatory security controls configured on the SSO and degrade the security posture of the account. For example, the SSO sign-in flow may be configured to require multi-factor authentication (MFA), whereas the Snowflake password sign-in flow may not.
+
+Note :
+
+ - This benchmark does not preclude configuration of
+
+key pair authentication
+
+for SSO users. Key pair authentication may be necessary for users to interact with Snowflake programmatically or through third party tools.
+ - To mitigate the risk of users not being able to sign-in due to SSO provider outage, ensure that at least one SSO break-glass user exists with Snowflake password reset privileges for account users. This break-glass user should be able to sign in using a Snowflake native password (coupled with MFA) or a key pair.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+For each SSO user <username> with a password, run the following command to set password to null :
+
+ALTER USER <username>
+    SET PASSWORD = NULL;
+
+Impact:
+
+Users will not be able to sign into their Snowflake accounts if SSO sign-in flow breaks, for example due to SSO provider outage."
+  reference   : "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|1M,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SELECT NAME, HAS_PASSWORD FROM SNOWFLAKE.ACCOUNT_USAGE.USERS WHERE HAS_PASSWORD AND DELETED_ON IS NULL AND NOT DISABLED;"
+  sql_types   : STRING
+  sql_expect  : "^Manual Review Required$"
+  severity    : MEDIUM
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.4 Ensure multi-factor authentication (MFA) is turned on for all human users with password-based authentication"
+  info        : "Multi-factor authentication (MFA) is a security control used to add an additional layer of login security. It works by requiring the user to present two or more proofs (factors) of user identity. An MFA example would be requiring a password and a verification code delivered to the user's phone during user sign-in.
+
+The MFA feature for Snowflake users is powered by the Duo Security service.
+
+MFA mitigates security threats of users creating weak passwords and user passwords being stolen or accidentally leaked."
+  solution    : "Users have to individually enroll into MFA using the Snowflake web UI.
+
+From the UI:
+
+ - Each user with a password should go to
+
+https://app.snowflake.com/
+
+and sign into their Snowflake account.
+ - Click on the username on the top left side.
+ - Click on Profile
+ - Next to Multi-factor authentication click Enroll
+ - Click Start setup
+ - Select the type of device and click Continue
+ - Follow the steps to finish the enrollment.
+
+If MFA needs to be enabled for a large population of users, consider prioritizing users with ACCOUNTADMIN SECURITYADMIN or other highly privileged roles.
+
+For specific instructions, see the documentation page
+
+Enrolling in MFA (Multi-Factor Authentication)
+
+.
+
+Note : If you use SSO authentication, you will have to check and configure MFA with your Identity Provider.
+
+Impact:
+
+If users lose access to the second factor of authentication, an account admin may need to reset their access."
+  reference   : "800-171|3.5.3,800-53|IA-2(1),800-53|IA-2(2),800-53r5|IA-2(1),800-53r5|IA-2(2),CN-L3|7.1.2.7(b),CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSCv7|4.5,CSCv7|16.3,CSCv8|6.3,CSCv8|6.5,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),ITSG-33|IA-2(2),LEVEL|1A,NESA|T5.4.2,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "select u.name, u.ext_authn_duo as mfa_enabled from snowflake.account_usage.users u left outer join snowflake.account_usage.tag_references tr on u.name = tr.object_name where u.deleted_on is null and not u.disabled and u.has_password and (tr.tag_value is null or tr.tag_value <> 'service');"
+  sql_types   : REGEX, REGEX
+  sql_expect  : ".*", "true"
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.5 Ensure minimum password length is set to 14 characters or more"
+  info        : "To mitigate the risk of unauthorized access to a Snowflake account through easily guessable password, Snowflake enforces the following password policy as a minimum requirement while using the ALTER USER command and the web interface:
+
+ - Must be at least 8 characters long.
+ - Must contain at least 1 digit.
+ - Must contain at least 1 uppercase letter and 1 lowercase letter.
+
+Snowflake password policies
+
+can be used to specify and enforce further constraints on password length and complexity.
+
+Snowflake supports setting a password policy for your Snowflake account and for individual users. Only one password policy can be set at any given time for your Snowflake account or a user. If a password policy exists for the Snowflake account and another password policy is set for a user in the same Snowflake account, the user-level password policy takes precedence over the account-level password policy.
+
+The password policy applies to new passwords that are set in your Snowflake account. To ensure that users with existing passwords meet the password policy requirements, require users to change their password during their next login to Snowflake as shown in
+
+Step 6: Require a Password Change
+
+.
+
+While Snowflake recommends configuring SSO authentication for users and ensuring that SSO users do not have a password set, there may be exceptions when users still need to log in with a password (e.g., setting up a break-glass user with password login to recover from SSO outages). For those few users that still need to have a password, setting a password policy can help ensure that, throughout subsequent password changes, the passwords used remain complex and therefore harder to guess or brute-force.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution    : "Follow the following steps to set and enforce a password policy:
+
+ -
+
+Create the password policy if it does not exist:
+
+CREATE PASSWORD POLICY <password_policy>	PASSWORD_MIN_LENGTH = 14	PASSWORD_MAX_AGE_DAYS = 0;
+ -
+
+Set password policy on the account level:
+
+ALTER ACCOUNT	SET PASSWORD POLICY <password_policy>;
+
+Note: It may take up to 2 hours for the password policies created to show up in the account usage view. For more information on latency, see the
+
+Data latency for Account Usage
+
+documentation.
+
+Impact:
+
+None."
+  reference   : "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.PASSWORD_POLICIES;"
+  sql_types   : STRING
+  sql_expect  : "^Manual Review Required$"
+  severity    : MEDIUM
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.6 Ensure that service accounts use key pair authentication"
+  info        : "Service account is an identity used by scripts, jobs, applications, pipelines, etc. to talk to Snowflake. It is also sometimes known as \"application user\", \"service principal\", \"system account\", or \"daemon user\".
+
+On the platform level Snowflake does not differentiate between Snowflake users created for and used by humans and Snowflake users created for and used by services.
+
+Password-based authentication used by humans can be augmented by a second factor (MFA), e.g. a hardware token, or a security code pushed to a mobile device. Services and automation cannot be easily configured to authenticate with a second factor. Instead, for such use cases, Snowflake supports using key pair authentication as a more secure alternative to password-based authentication.
+
+Note that password-based authentication for a service account can be enabled along with a key-based authentication. To ensure that only key-based authentication is enabled for a service account, the PASSWORD parameter for that Snowflake user must be set to null
+
+Password-based authentication has a set of disadvantages that increase probability of a security incident, especially when used without MFA:
+
+ - Passwords created by humans are generally more predictable and less random than keys generated by a computer. Consequently, passwords are easier to brute force both online (against a live service) or offline (against a hashed password database).
+ - Passwords are usually transmitted over the network and can be leaked when the transmission channel is insecure or when an application is accidentally misconfigured to log passwords.
+ - Passwords are easier to leak by writing them down on a sticky note attached to the back of a keyboard.
+ - It is easier to trick (phish) a user into revealing their password to an unauthorized party.
+
+Using key-based authentication for service accounts helps with mitigating the aforementioned issues."
+  solution    : "Programmatically:
+
+For every non-compliant service account:
+
+ -
+
+Follow the
+
+Configuring Key Pair Authentication
+
+instructions to generate the key <rsa_public_key>.
+
+ -
+
+In a Snowsight worksheet or through the SnowSQL CLI, run the following command:
+
+ALTER USER <service_account_name>	SET RSA_PUBLIC_KEY='<rsa_public_key>';
+ -
+
+Update configuration of the automation and services that rely on the service account to use key-based authentication. This is going to be specific to the service in question.
+
+ -
+
+Disable password-based authentication:
+
+ALTER USER <service_account_name> SET PASSWORD = null;
+
+Impact:
+
+Snowflake authentication for existing automation and services that use service accounts with password-based authentication will be broken if corresponding configuration is not updated before service accounts passwords are set to null."
+  reference   : "800-171|3.5.2,800-53|IA-5(2),800-53r5|IA-5(2),CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "select tr.object_name from snowflake.account_usage.tag_references tr left join snowflake.account_usage.users u on tr.object_name = u.name where  tr.tag_name = 'ACCOUNT_TYPE' and tr.tag_value = 'service' and tr.domain = 'USER' and u.deleted_on is null and (u.has_password = true OR has_rsa_public_key = false);"
+  sql_types   : REGEX
+  sql_expect  : ".*"
+  num_rows    : 0
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.7 Ensure authentication key pairs are rotated every 180 days"
+  info        : "Snowflake supports using RSA key pair authentication as an alternative to password authentication and as a primary way to authenticate service accounts.
+
+Authentication key pair rotation is a process of replacing an existing authentication key pair with a freshly generated key pair.
+
+Snowflake supports two active authentication key pairs to allow for uninterrupted key rotation. Rotate and replace your authentication key pairs based on the expiration schedule at least once every 180 days.
+
+Periodic authentication key pair rotation mitigates the threat of compromised or leaked keys. It reduces the window of opportunity during which a given key is valid and can be used by a threat actor."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+For every Snowflake service account whose authentication key pair age is >= 180 days, generate a new RSA authentication keypair.
+
+ -
+
+Update either RSA_PUBLIC_KEY and RSA_PUBLIC_KEY_2 properties of a user, whichever is currently unset.
+
+ALTER USER <username> SET RSA_PUBLIC_KEY_2='JERUEHtcve...';
+ -
+
+Identify all services and automation that authenticate using existing keypair and update them to authenticate using freshly generated keypair.
+
+ -
+
+Unset either RSA_PUBLIC_KEY or RSA_PUBLIC_KEY_2 properties of a user, whichever is assigned the old public key.
+
+ALTER USER <username> UNSET RSA_PUBLIC_KEY;
+
+For more information, see
+
+Configuring Key Pair Rotation
+
+.
+
+Impact:
+
+Existing automation and services that rely on key pair authentication may break if they are not updated to use a new authentication key before the old key is inactivated."
+  reference   : "800-171|3.5.2,800-53|IA-5(2),800-53r5|IA-5(2),CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "WITH FILTERED_QUERY_HISTORY AS (SELECT END_TIME AS SET_TIME, UPPER(REGEXP_SUBSTR(QUERY_TEXT, 'USER\\s+\"?([\\w]+)\"?', 1, 1, 'i', 1)) AS PROCESSED_USERNAME, QUERY_TEXT FROM SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY WHERE EXECUTION_STATUS = 'SUCCESS' AND QUERY_TYPE IN ('ALTER_USER', 'CREATE_USER') AND TO_DATE(SET_TIME) < DATEADD(day, -180, CURRENT_DATE()) AND (QUERY_TEXT ILIKE '%rsa_public_key%' OR QUERY_TEXT ILIKE '%rsa_public_key_2%')), EXTRACTED_KEYS AS (SELECT SET_TIME, PROCESSED_USERNAME, CASE WHEN POSITION('rsa_public_key' IN LOWER(QUERY_TEXT)) > 0 THEN 'rsa_public_key' WHEN POSITION('rsa_public_key_2' IN LOWER(QUERY_TEXT)) > 0 THEN 'rsa_public_key_2' ELSE NULL END AS RSA_KEY_NAME FROM FILTERED_QUERY_HISTORY WHERE POSITION('rsa_public_key' IN LOWER(QUERY_TEXT)) > 0 OR POSITION('rsa_public_key_2' IN LOWER(QUERY_TEXT)) > 0), RECENT_KEYS AS (SELECT EK.SET_TIME, EK.PROCESSED_USERNAME AS USERNAME, EK.RSA_KEY_NAME AS RSA_PUBLIC_KEY, ROW_NUMBER() OVER (PARTITION BY ek.processed_username, ek.rsa_key_name ORDER BY ek.set_time DESC) AS rnum FROM EXTRACTED_KEYS EK INNER JOIN SNOWFLAKE.ACCOUNT_USAGE.USERS AU ON EK.PROCESSED_USERNAME = AU.NAME WHERE AU.DELETED_ON IS NULL AND AU.DISABLED = FALSE AND EK.RSA_KEY_NAME IS NOT NULL) SELECT SET_TIME, USERNAME, RSA_PUBLIC_KEY FROM RECENT_KEYS WHERE RNUM = 1;"
+  sql_types   : REGEX
+  sql_expect  : ".*"
+  num_rows    : 0
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.8 Ensure that users who did not log in for 90 days are disabled"
+  info        : "Access grants tend to accumulate over time unless explicitly set to expire. Regularly revoking unused access grants and disabling inactive user accounts is a good countermeasure to this dynamic.
+
+If credentials of an inactive user account are leaked or stolen, it may take longer to discover the compromise.
+
+In Snowflake an user account can be disabled by users with the ACCOUNTADMIN role.
+
+Disabling inactive user accounts supports the principle of least privilege and generally reduces attack surface."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+For each user <user_name> that has not logged in in the last 90 days, run the following query to disable their account:
+
+ALTER USER <user_name> SET DISABLED = true;
+
+If there is a need for re-enabling an account, a user must contact one of the Snowflake account administrative users.
+
+Impact:
+
+There is a chance of disabling users or service accounts that are used consistently, but very infrequently, e.g. once or twice a year. Such users should be tagged and filtered out in the audit query."
+  reference   : "800-171|3.1.1,800-53|AC-2(3),800-53r5|AC-2(3),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CSCv7|16.9,CSCv8|5.3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-2(3),LEVEL|1A,NIAv2|AM26,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "select name, disabled, last_success_login from snowflake.account_usage.users WHERE last_success_login < DATEADD('DAY', -90, CURRENT_TIMESTAMP());"
+  sql_types   : REGEX
+  sql_expect  : ".*"
+  num_rows    : 0
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "1.9 Ensure that the idle session timeout is set to 15 minutes or less for users with the ACCOUNTADMIN and SECURITYADMIN roles"
+  info        : "A session begins when a user connects to Snowflake and authenticates successfully using a Snowflake programmatic client, Snowsight, or the classic web interface.
+
+A session is maintained indefinitely with continued user activity. After a period of inactivity in the session, known as the idle session timeout, the user must authenticate to Snowflake again. Session policies can be used to modify the idle session timeout period. The idle session timeout has a maximum value of four hours.
+
+Tightening up the idle session timeout reduces sensitive data exposure risk when users forget to sign out of Snowflake and an unauthorized person gains access to their device.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+In the Snowsight UI or from the SnowSQL CLI:
+
+ -
+
+Create the session policy if it does not exist yet. Execute the following commands to create and set the idle session timeout for highly privileged users in your Snowflake account:
+
+CREATE SESSION POLICY <session_policy>	SESSION_IDLE_TIMEOUT_MINS = 15,	SESSION_UI_IDLE_TIMEOUT_MINS = 15;
+ -
+
+Set session policy for every highly privileged user.
+
+ALTER USER <username> SET SESSION POLICY <session_policy>;
+
+Impact:
+
+Too short idle session timeout may result in poor user experience due to users continuously being logged out of their accounts."
+  reference   : "800-171|3.1.1,800-171|3.1.10,800-171|3.1.11,800-53|AC-2(5),800-53|AC-11,800-53|AC-11(1),800-53|AC-12,800-53r5|AC-2(5),800-53r5|AC-11,800-53r5|AC-11(1),800-53r5|AC-12,CN-L3|7.1.2.2(d),CN-L3|7.1.3.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),CSCv7|16.11,CSCv8|4.3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(iii),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.11.2.8,ITSG-33|AC-2(5),ITSG-33|AC-11,ITSG-33|AC-11(1),ITSG-33|AC-12,LEVEL|1A,NIAv2|AM23c,NIAv2|AM23d,NIAv2|AM28,NIAv2|NS5j,NIAv2|NS49,NIAv2|SS14e,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.1,TBA-FIISB|37.1.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SELECT * FROM SNOWFLAKE.ACCOUNT_USAGE.SESSION_POLICIES;"
+  sql_types   : STRING
+  sql_expect  : "^Manual Review Required$"
+  severity    : MEDIUM
+</custom_item>
+
+<report type:"WARNING">
+  description : "2.1 Ensure monitoring and alerting exist for ACCOUNTADMIN and SECURITYADMIN role grants"
+  info        : "By default, ACCOUNTADMIN is the most powerful role in a Snowflake account and users with SECURITYADMIN role grant can trivially escalate their privileges to that of ACCOUNTADMIN
+
+Following the principle of least privilege that prescribes limiting user's privileges to those that are strictly required to do their jobs, the ACCOUNTADMIN and SECURITYADMIN roles should be assigned to a limited number of designated users. Any new ACCOUNTADMIN and SECURITYADMIN role grants should be scrutinized.
+
+Every new ACCOUNTADMIN and SECURITYADMIN role assignment increases the attack surface of a Snowflake environment. It may also indicate unauthorized privilege escalation performed by a threat actor.
+
+If monitoring for ACCOUNTADMIN role assignments is not configured, inappropriate or unauthorized ACCOUNTADMIN role access grants may be missed. The latter can lead to eventual security posture degradation or late detection of an ongoing security incident. The same logic applies to the SECURITYADMIN role.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+Configure your monitoring task to alert on ACCOUNTADMIN and SECURITYADMIN role grants. You can find those grants with the following query:
+
+SELECT *FROM SNOWFLAKE.ACCOUNT_USAGE.GRANTS_TO_ROLESWHERE NAME IN ('ACCOUNTADMIN', 'SECURITYADMIN');
+
+Impact:
+
+If the principle of least privilege is not strictly applied and ACCOUNTADMIN and SECURITYADMIN role assignments happen frequently, monitoring and alerting on this event may generate undue load on the detection and response team."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-6,800-53|AU-6(1),800-53|AU-7(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7(1),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(d),CSCv7|6.7,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7(1),LEVEL|1M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+</report>
+
+<report type:"WARNING">
+  description : "2.2 Ensure monitoring and alerting exist for MANAGE GRANTS privilege grants"
+  info        : "The MANAGE GRANTS privilege is one of the most powerful privileges in the Snowflake environment. This privilege gives the ability to grant or revoke privileges on any object as if the invoking role were the owner of the object.
+
+A custom role with the MANAGE GRANTS privilege on account level will not be able to grant privileges on the account level as that privilege is implicitly reserved for the ACCOUNTADMIN and SECURITYADMIN roles. However, such custom roles will be able to grant any privileges on any objects below the account level.
+
+Following the principle of least privilege and given how powerful the MANAGE GRANTS privilege is, any new MANAGE GRANTS privilege grants should be scrutinized.
+
+Every new role granted the MANAGE GRANTS privilege increases the attack surface of a Snowflake environment. It may also indicate unauthorized privilege escalation performed by a threat actor.
+
+If monitoring for MANAGE GRANTS privilege grants is not configured, inappropriate or unauthorized MANAGE GRANTS privilege grants may be missed. The latter can lead to eventual security posture degradation or late detection of an ongoing security incident.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ - Configure your monitoring task to alert on manage grants privilege grants. select end_time, query_type	query_text,	user_name,	role_namefrom snowflake.account_usage.query_historywhere execution_status = 'SUCCESS'	and query_type = 'GRANT'	and regexp_instr(query_text, 'manage\\s*grants', 1, 1, 0, 'i') > 0	order by end_time desc;
+
+Impact:
+
+If MANAGE GRANTS privilege grants happen frequently, monitoring and alerting on this event may generate undue load on the detection and response team."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-6,800-53|AU-6(1),800-53|AU-7(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7(1),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(d),CSCv7|6.7,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7(1),LEVEL|1M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+</report>
+
+<report type:"WARNING">
+  description : "2.3 Ensure monitoring and alerting exist for password sign-ins of SSO users"
+  info        : "The security benefit of SSO is to relieve users from having to set up and manage distinct sets of credentials for distinct applications and services. It also allows security administrators to focus on hardening and defending only one identity storage and limited number of user credentials.
+
+Allowing users to sign in with Snowflake passwords in the presence of a configured third-party identity provider SSO may undermine mandatory security controls configured on the SSO and degrade security posture of the account. For example, the SSO sign-in flow may be configured to require multi-factor authentication (MFA), where Snowflake password sign-in flow may not.
+
+Every Snowflake password-based sign-in may indicate an unapproved authentication flow taking place.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+Configure your security monitoring solution to alert on password sign-ins of SSO users. The following query can be run periodically.
+
+select event_timestamp,	user_name,	client_ip,	reported_client_type,	reported_client_version,	first_authentication_factor,	second_authentication_factorfrom snowflake.account_usage.login_historywhere first_authentication_factor = 'PASSWORD'order by event_timestamp desc;
+
+Impact:
+
+If password sign-in events happen frequently, monitoring and alerting on this event may generate undue load on the detection and response team."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-6,800-53|AU-6(1),800-53|AU-7(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7(1),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(d),CSCv7|6.7,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7(1),LEVEL|1M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+</report>
+
+<report type:"WARNING">
+  description : "2.4 Ensure monitoring and alerting exist for password sign-in without MFA"
+  info        : "Multi-factor authentication (MFA) is a security control used to add an additional layer of login security. It works by requiring the user to present two or more proofs (factors) of user identity. An MFA example would be requiring a password and a verification code delivered to the user's phone during user sign-in.
+
+The MFA feature for Snowflake users is powered by the Duo Security service.
+
+MFA mitigates security threats of users creating weak passwords and user passwords being stolen or accidentally leaked.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+Configure your security monitoring solution to alert on password sign-ins without MFA. The following query can be run periodically.
+
+select event_timestamp,	user_name,	client_ip,	reported_client_type,	reported_client_version, 	first_authentication_factor,	second_authentication_factorfrom snowflake.account_usage.login_historywhere first_authentication_factor = 'PASSWORD'	and second_authentication_factor is null order by event_timestamp desc;
+
+Impact:
+
+If password sign-in events without MFA happen frequently, monitoring and alerting on this event may generate undue load on the detection and response team."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-6,800-53|AU-6(1),800-53|AU-7(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7(1),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(d),CSCv7|6.7,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7(1),LEVEL|1M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+</report>
+
+<report type:"WARNING">
+  description : "2.5 Ensure monitoring and alerting exist for creation, update and deletion of security integrations"
+  info        : "Security integration object is used to configure SSO and SCIM integrations.
+
+Creation of an unauthorized security integration, in case of SCIM, can lead to creation of rogue Snowflake users. Incase of SSO, it can lead to hijacking of existing Snowflake users through rogue authentication flow.
+
+Update or deletion of an existing security integration can lead to weakening security posture of that integration or denial of service, e.g. when users cannot sign into Snowflake accounts due to broken SSO authentication flow.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+Configure your security monitoring solution to alert on creation, update and deletion of security integrations.
+
+select end_time,	query_type,	query_text,	user_name,	role_namefrom snowflake.account_usage.query_historywhere execution_status = 'SUCCESS'	and query_type in ('CREATE', 'ALTER', 'DROP')	and query_text ilike '%security integration%'order by end_time desc;
+
+Impact:
+
+If security integration creation, update and deletion events happen frequently, monitoring and alerting on this event may generate undue load on the detection and response team."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-6,800-53|AU-6(1),800-53|AU-7(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7(1),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(d),CSCv7|6.7,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7(1),LEVEL|1M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+</report>
+
+<report type:"WARNING">
+  description : "2.6 Ensure monitoring and alerting exist for changes to network policies and associated objects"
+  info        : "Network policies allow restricting access to a Snowflake account based on source IP addresses. A network policy can be configured either on the account level, for all users of the account, or on the user level, for a specific user. In the presence of both account-level and user-level policies the latter takes precedence.
+
+A network policy can also be configured on the SCIM and Snowflake OAuth security integrations to restrict the list of source IP addresses allowed when exchanging an authorization code for an access or refresh token and when using a refresh token to obtain a new access token. If network policy is not set on the security integration of the aforementioned types, the account-level network policy, if any, is used.
+
+Creation and application of unauthorized network policies can weaken access control through expansion of the allowed source IP addresses, or lead to a denial of service through blocklisting legitimate source IP addresses. Unauthorized changes and deletions of existing network policies can lead to the same undesirable results.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+Configure your security monitoring solution to alert on changes to network policies.
+
+select end_time,	query_type,	query_text,	user_name,	role_namefrom snowflake.account_usage.query_historywhere execution_status = 'SUCCESS'	and (	query_type in ('CREATE_NETWORK_POLICY', 'ALTER_NETWORK_POLICY', 	'DROP_NETWORK_POLICY')	or (query_text ilike '%set%network_policy%' 	or query_text ilike '%unset%network_policy%'))order by end_time desc;
+
+Impact:
+
+If network policy creation, update, deletion and object association events happen frequently, monitoring and alerting on this event may generate undue load on the detection and response team."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-6,800-53|AU-6(1),800-53|AU-7(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7(1),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(d),CSCv7|6.7,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7(1),LEVEL|1M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+</report>
+
+<report type:"WARNING">
+  description : "2.7 Ensure monitoring and alerting exist for SCIM token creation"
+  info        : "The System for Cross-domain Identity Management (
+
+SCIM
+
+) is an open specification designed to help facilitate the automated management of user identities and groups (i.e. roles) in cloud applications using RESTful APIs.
+
+Snowflake supports SCIM 2.0 integration with Okta, Microsoft Azure AD and custom identity providers. Users and groups from the identity provider can be provisioned into Snowflake, which functions as the service provider.
+
+SCIM access token is a bearer token used by SCIM clients to authenticate to Snowflake SCIM server.
+
+SCIM access tokens generated without proper authorization may be used for configuring rogue SCIM integrations. Such SCIM integrations can then be used for provisioning rogue users that through existing roles are granted unauthorized access to Snowflake data and other objects.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+Configure your security monitoring solution to alert on SCIM token creation. The following query can be run periodically.
+
+select end_time,	query_type,	query_text,	user_name,	role_namefrom snowflake.account_usage.query_historywhere execution_status = 'SUCCESS'		and query_type = 'SELECT'	 	and regexp_instr(query_text, 'system\\$generate_scim_access_token\\s*\\(', 1, 1, 0, 'i') > 0order by end_time desc;
+
+Impact:
+
+If SCIM access token creation events happen frequently, monitoring and alerting on this event may generate undue load on the detection and response team. That said, a SCIM access token is valid for 6 months and there is usually only one SCIM integration per account. Frequent SCIM access token creation would likely be an unusual event."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-6,800-53|AU-6(1),800-53|AU-7(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7(1),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(d),CSCv7|6.7,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7(1),LEVEL|1M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+</report>
+
+<report type:"WARNING">
+  description : "2.8 Ensure monitoring and alerting exists for new share exposures"
+  info        : "Snowflake tables, views and UDFs can be shared across Snowflake accounts using share objects created by data providers and imported by data consumers.
+
+To expose a share to another account, the share provider account needs to add or set consumer accounts on a share using the ALTER SHARE command. The consumer account can then import the share using the CREATE DATABASE FROM SHARE command.
+
+A share exposed to another Snowflake account can be used for data exfiltration.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL CLI:
+
+ -
+
+Configure your security monitoring solution to alert on new share exposures. The following query can be run periodically.
+
+select end_time,	query_type,	query_text,	user_name,	role_namefrom snowflake.account_usage.query_historywhere execution_status = 'SUCCESS'		and query_type = 'ALTER'		and regexp_instr(query_text, '^alter\\s*share.*(add|set)\\s*accounts\\s*=', 1, 1, 0, 'is') > 0order by end_time desc;
+
+Impact:
+
+If exposing shares to another account event happens frequently, monitoring and alerting on this event may generate undue load on the detection and response team."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-6,800-53|AU-6(1),800-53|AU-7(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7(1),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(d),CSCv7|6.7,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7(1),LEVEL|1M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+</report>
+
+<report type:"WARNING">
+  description : "3.2 Ensure that user-level network policies have been configured for service accounts"
+  info        : "Network policies allow restricting access to a Snowflake account based on source IP addresses. A network policy can be configured either on the account level, for all users of the account, or on the user level, for a specific user. In the presence of both account-level and user-level policies, the user-level policies take precedence.
+
+A service account is a Snowflake user whose credentials are used by scripts, jobs, applications, pipelines, etc. to talk to Snowflake. Other names include \"application user\", \"service principal\", \"system account\", or \"daemon user\". Service account is not a Snowflake specific term.
+
+Network policies help mitigate the threat of leaked user credentials. If network policies are not configured limiting source IP addresses, leaked Snowflake credentials can be used from anywhere in the world.
+
+Service accounts often have direct access to raw sensitive data not appropriate for most human users. Service accounts are also generally deployed in production environments with source IP address ranges distinct from the IP address ranges used by the human users. To decrease the risk of inappropriate data access with service account credentials, user-level network policies can be applied to service accounts.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or through the SnowSQL ALI:
+
+ - Create a network policy. Replace <policy_name> with the name you want to give the policy, and customize the list of allowed and blocked IP addresses: CREATE NETWORK POLICY <policy_name> ALLOWED_IP_LIST=('192.168.1.0/24');
+ - For each service account user <service_account_name> set the desired network policy <policy_name> : ALTER USER <service_account_name> SET NETWORK_POLICY = <policy_name>;
+
+For more information, see the documentation on
+
+creating network policies
+
+.
+
+Note:
+
+ - When a network policy includes values for both ALLOWED_IP_LIST and BLOCKED_IP_LIST Snowflake applies the blocked list first.
+ - Do not add 0.0.0.0/0 to BLOCKED_IP_LIST Because Snowflake applies the blocked list first, this would block your own access. Additionally, in order to block all IP addresses except a select list, you only need to add IP addresses to ALLOWED_IP_LIST Snowflake automatically blocks all IP addresses not included in the allowed list.
+
+Impact:
+
+If a network policy is misconfigured to disallow IP addresses from which service accounts access Snowflake, it can cause a reliability impact.
+
+If a user with permissions to configure network policies on the account accidentally locks themselves and everybody else with such permission out, they will need to contact Snowflake customer support to restore access to their account."
+  reference   : "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.4,CSCv8|4.4,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|ID.AM-03,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1M,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+</report>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "4.2 Ensure AES encryption key size used to encrypt files stored in internal stages is set to 256 bits"
+  info        : "All ingested data stored in Snowflake tables is encrypted using 256-bit long AES encryption keys. However, data uploaded to internal stages is by default encrypted with 128-bit long AES encryption keys.
+
+The field of cryptanalysis is continuously advancing and new vulnerabilities and attacks are discovered that obsolete cryptographic primitives that once were considered secure.
+
+The 128-bit long AES encryption keys are still considered secure today and there are no strong reasons to believe this will change soon. Usage of the 256-bit long AES encryption keys today is generally recommended out of an abundance of caution."
+  solution    : "Programmatically:
+
+To set the length of the AES encryption keys used to encrypt data uploaded to internal stages, run the following command:
+
+ALTER ACCOUNT
+    SET CLIENT_ENCRYPTION_KEY_SIZE=256;
+
+Impact:
+
+None."
+  reference   : "800-171|3.5.2,800-171|3.13.16,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|14.8,CSCv8|3.11,CSF|PR.AC-1,CSF|PR.DS-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|1A,NESA|T5.2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|28.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SHOW PARAMETERS LIKE 'CLIENT_ENCRYPTION_KEY_SIZE' IN ACCOUNT;"
+  sql_types   : REGEX, REGEX, REGEX_OR_NULL, REGEX_OR_NULL, REGEX_OR_NULL, REGEX_OR_NULL
+  sql_expect  : "CLIENT_ENCRYPTION_KEY_SIZE", "256", ".*", ".*", ".*", ".*"
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "4.5 Ensure that the REQUIRE_STORAGE_INTEGRATION_FOR_STAGE_CREATION account parameter is set to true"
+  info        : "Ensure that creating an external stage to access a private cloud storage location requires referencing a storage integration object as cloud credentials.
+
+Using storage integration removes the need to supply credentials when creating external stages or when loading or unloading data. This reduces the risk of those credentials being leaked and data compromised.
+
+Requiring a storage integration when creating a new stage reduces the risk or data exfiltration by accidentally exporting sensitive data to an external stage that does not have the appropriate network security, access control, or encryption security and is not approved by the organization's security team."
+  solution    : "Programmatically:
+
+In a Snowsight worksheet or from the SNOWSQL cli, run the following command to set the parameter value to true :
+
+ALTER ACCOUNT
+	SET REQUIRE_STORAGE_INTEGRATION_FOR_STAGE_CREATION=true;
+
+Note: To avoid disruption of existing workflow relying on creation of external stages not referencing a storage integration, all such workflows should be identified and migrated to creation of external stages referencing storage integrations.
+
+Impact:
+
+Setting the REQUIRE_STORAGE_INTEGRATION_FOR_STAGE_CREATION account level parameter to true can break existing manual and automated flows relying on creation of external stages not backed by a storage integration."
+  reference   : "800-53|AU-11,800-53|SI-12,800-53r5|AU-11,800-53r5|CM-12,800-53r5|SI-12,CSCv8|3.1,CSF|PR.PT-1,CSF2.0|ID.AM-07,CSF2.0|ID.AM-08,CSF2.0|PR.PS-04,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-11,ITSG-33|SI-12,ITSG-33|SI-12a.,LEVEL|1A,NESA|M5.2.3,NESA|M5.2.4,NESA|M5.3.1,NESA|T3.6.2,NIAv2|DR1,NIAv2|DR1a,NIAv2|DR1b,NIAv2|DR1c,NIAv2|DR2,NIAv2|DR3,NIAv2|DR4,NIAv2|DR5,NIAv2|DR6,NIAv2|SM7,PCI-DSSv3.2.1|3.1,PCI-DSSv3.2.1|10.7,PCI-DSSv4.0|3.2.1,PCI-DSSv4.0|10.5.1,QCSC-v1|8.2.1,QCSC-v1|13.2"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SHOW PARAMETERS LIKE 'REQUIRE_STORAGE_INTEGRATION_FOR_STAGE_CREATION' IN ACCOUNT;"
+  sql_types   : REGEX, REGEX, REGEX_OR_NULL, REGEX_OR_NULL, REGEX_OR_NULL, REGEX_OR_NULL
+  sql_expect  : "REQUIRE_STORAGE_INTEGRATION_FOR_STAGE_CREATION", "true", ".*", ".*", ".*", ".*"
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "4.6 Ensure that the REQUIRE_STORAGE_INTEGRATION_FOR_STAGE_OPERATION account parameter is set to true"
+  info        : "Ensure that loading data from or unloading data to a private cloud storage location requires using a named external stage that references a storage integration object.
+
+If this parameter is not set, then users can specify the explicit cloud provider credentials directly in the COPY statement.
+
+Using storage integration removes the need to supply credentials when loading and unloading data from external stages or when loading or unloading data to a private cloud storage location. This reduces the risk of data exfiltration by accidentally exporting sensitive data to an external stage that does not have the appropriate network security, access control, or encryption security and is not approved by the organization's security team."
+  solution    : "Programmatically:
+
+Set the REQUIRE_STORAGE_INTEGRATION_FOR_STAGE_OPERATION on the account level to true :
+
+ALTER ACCOUNT
+   SET REQUIRE_STORAGE_INTEGRATION_FOR_STAGE_OPERATION=true;
+
+NOTE:
+
+To avoid disruption of existing workflow relying on external stages not referencing a storage integration, all such workflows should be identified and migrated to external stages referencing storage integrations.
+
+Impact:
+
+Setting the REQUIRE_STORAGE_INTEGRATION_FOR_STAGE_OPERATION account level parameter to true can break existing manual and automated flows relying on loading or unloading data to external stages not backed by a storage integration."
+  reference   : "800-53|AU-11,800-53|SI-12,800-53r5|AU-11,800-53r5|CM-12,800-53r5|SI-12,CSCv8|3.1,CSF|PR.PT-1,CSF2.0|ID.AM-07,CSF2.0|ID.AM-08,CSF2.0|PR.PS-04,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-11,ITSG-33|SI-12,ITSG-33|SI-12a.,LEVEL|1A,NESA|M5.2.3,NESA|M5.2.4,NESA|M5.3.1,NESA|T3.6.2,NIAv2|DR1,NIAv2|DR1a,NIAv2|DR1b,NIAv2|DR1c,NIAv2|DR2,NIAv2|DR3,NIAv2|DR4,NIAv2|DR5,NIAv2|DR6,NIAv2|SM7,PCI-DSSv3.2.1|3.1,PCI-DSSv3.2.1|10.7,PCI-DSSv4.0|3.2.1,PCI-DSSv4.0|10.5.1,QCSC-v1|8.2.1,QCSC-v1|13.2"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SHOW PARAMETERS LIKE 'REQUIRE_STORAGE_INTEGRATION_FOR_STAGE_OPERATION' IN ACCOUNT;"
+  sql_types   : REGEX, REGEX, REGEX_OR_NULL, REGEX_OR_NULL, REGEX_OR_NULL, REGEX_OR_NULL
+  sql_expect  : "REQUIRE_STORAGE_INTEGRATION_FOR_STAGE_OPERATION", "true", ".*", ".*", ".*", ".*"
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "4.7 Ensure that all external stages have storage integrations"
+  info        : "External stage is a Snowflake object used for loading data from external storage locations into Snowflake tables and unloading data from Snowflake tables into external storage locations. Currently supported external storage locations are Amazon S3 buckets, Google Cloud Storage buckets and Microsoft Azure containers.
+
+Storage integration is a Snowflake object that encapsulates external storage authentication configuration as well as an optional set of allowed or blocked storage locations. When configuring an external stage, a storage integration can be referenced in lieu of storage service credentials.
+
+Using storage integration removes the need to supply credentials when creating external stages or when loading or unloading data. This reduces the risk of those credentials being leaked and data compromised.
+
+Additionally, security administrators creating storage integration can constrain CSP storage locations allowed to be used as destinations in external stages. This further reduces the risk of data being leaked or compromised.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution    : "Programmatically:
+
+ -
+
+For each external stage, create a storage integration <my_storage_integration> :
+
+CREATE STORAGE INTEGRATION <my_storage_integration>	TYPE = EXTERNAL_STAGE	STORAGE_PROVIDER = 'S3'	ENABLED = TRUE	STORAGE_AWS_ROLE_ARN = 'arn:aws:iam::001234567890:role/myrole';
+ -
+
+Update the external stage <my_external_stage> to use the new storage integration:
+
+ALTER STAGE <my_external_stage> SET STORAGE_INTEGRATION = <my_storage_integration>;
+
+Impact:
+
+None."
+  reference   : "800-53|AU-11,800-53|SI-12,800-53r5|AU-11,800-53r5|CM-12,800-53r5|SI-12,CSCv8|3.1,CSF|PR.PT-1,CSF2.0|ID.AM-07,CSF2.0|ID.AM-08,CSF2.0|PR.PS-04,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-11,ITSG-33|SI-12,ITSG-33|SI-12a.,LEVEL|1A,NESA|M5.2.3,NESA|M5.2.4,NESA|M5.3.1,NESA|T3.6.2,NIAv2|DR1,NIAv2|DR1a,NIAv2|DR1b,NIAv2|DR1c,NIAv2|DR2,NIAv2|DR3,NIAv2|DR4,NIAv2|DR5,NIAv2|DR6,NIAv2|SM7,PCI-DSSv3.2.1|3.1,PCI-DSSv3.2.1|10.7,PCI-DSSv4.0|3.2.1,PCI-DSSv4.0|10.5.1,QCSC-v1|8.2.1,QCSC-v1|13.2"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SHOW STAGES;"
+  sql_types   : STRING
+  sql_expect  : "^Manual Review Required$"
+  severity    : MEDIUM
+</custom_item>
+
+<custom_item>
+  type        : SQL_POLICY
+  description : "4.8 Ensure that the PREVENT_UNLOAD_TO_INLINE_URL account parameter is set to true"
+  info        : "Prevent ad hoc data unload operations to external cloud storage by enabling the PREVENT_UNLOAD_TO_INLINE_URL account parameter.
+
+Direct data unloading can be employed by threat actors to exfiltrate sensitive data from Snowflake to a supported external storage location of their choice. A well-intended employee with a legitimate business task can unknowingly unload data to publicly available storage locations and unintentionally leak it. Prevention of the direct data unloading reduces risk of data exfiltration and leakage.
+
+Setting the PREVENT_UNLOAD_TO_INLINE_URL account parameter to true will prevent ad hoc data unload operations to external cloud storage locations (i.e. through COPY INTO <location> statements that specify the cloud storage URL and access settings directly in the statement)."
+  solution    : "Programmatically:
+
+Set the PREVENT_UNLOAD_TO_INLINE_URL on the account level to true :
+
+ALTER ACCOUNT
+    SET PREVENT_UNLOAD_TO_INLINE_URL=true;
+
+NOTE : To avoid disruption of existing workflow relying on direct unloading data to external storage locations, all such workflows should be identified and migrated to unloading data to external stages referencing storage integrations.
+
+Impact:
+
+Setting the PREVENT_UNLOAD_TO_INLINE_URL account level parameter to true can break existing manual and automated flows relying on direct unloading data to external storage locations."
+  reference   : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|AU-11,800-53|MP-2,800-53|SI-12,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|AU-11,800-53r5|CM-12,800-53r5|MP-2,800-53r5|SI-12,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-1,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|ID.AM-07,CSF2.0|ID.AM-08,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,CSF2.0|PR.PS-04,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|AU-11,ITSG-33|MP-2,ITSG-33|MP-2a.,ITSG-33|SI-12,ITSG-33|SI-12a.,LEVEL|1A,NESA|M5.2.3,NESA|M5.2.4,NESA|M5.3.1,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T3.6.2,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|DR1,NIAv2|DR1a,NIAv2|DR1b,NIAv2|DR1c,NIAv2|DR2,NIAv2|DR3,NIAv2|DR4,NIAv2|DR5,NIAv2|DR6,NIAv2|SM7,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|3.1,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.7,PCI-DSSv4.0|3.2.1,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,PCI-DSSv4.0|10.5.1,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/14781"
+  sql_request : "SHOW PARAMETERS LIKE 'PREVENT_UNLOAD_TO_INLINE_URL' IN ACCOUNT;"
+  sql_types   : REGEX, REGEX, REGEX_OR_NULL, REGEX_OR_NULL, REGEX_OR_NULL, REGEX_OR_NULL
+  sql_expect  : "PREVENT_UNLOAD_TO_INLINE_URL", "true", ".*", ".*", ".*", ".*"
+</custom_item>
+
+</check_type>

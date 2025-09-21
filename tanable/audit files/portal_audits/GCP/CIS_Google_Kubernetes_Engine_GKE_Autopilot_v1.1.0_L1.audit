@@ -1,0 +1,485 @@
+#TRUSTED 0006605e51050101e4e45f7f334c01de961a697ff06db56d6016e8f536677c1e084740af743128d02fbc0f01bb3e4a77e0c0001f22cc5fc61119bea1c020b601230276f252558a99786938cbdde650a136ab1db701004f044f58fa7bb26b82dd3cd848109f185e82c368f199954a6d54482a1d3b306dfe6a7205a69f9701d1c131da814a2e25373cccbc4ac61cd32b561761ba08034da255c770c730ddf6c27072dc61a93b13bd05b2e4aa60152d8545ded6b40644c26f4edb7397aa39c85c14a88e637b50a602f4951c554f98347b883354742d7aa10eded2e1d93fd7ee19288fc7ebe1d7345e35aca0198d1a038db51e03489a0008035f676131baf8d3647429514316538412bfb13545d3dae58226e928792fdb0ba7665ca6dc5ff9aff29d3f79f5692bff8cc669e66fa72219698e97ee9fcf63cb944212077145279658e0b8aafe3fe3ee3fcd16375907facd67c25725752b1d0942933749d2a9578cae07bf42916e81fe02c98175762dcd02c28e14443f5e25465b0141749b915d397ef9b95c45c954b9bf0681f025dc9dff0f8e31f7f9a9324f3f80a3945cea3dc13bff643bc6461214d8851748f626ee70455198f2d8c0d4561f7f35873ead1705137a117a2c952ea53f6c4378a3d9273696f637eddcf4093f689b6c32c9f05c5686af4d2ccc7b75beca6bc93cb0ef4f6ce9b9064918c08886bf19ee3c7d6038694ae8
+#TRUST-RSA-SHA256 39f8c22e056623b4fe52128684311810982c43226de8ec20d0054e0b34864c68ecd8b375ca77212acbb07fbf0d37aaf6afc20e78d6efb80a9f859d8ff5eab62675f09ed043e16cfaedbc37a4fec8a6d96a579f3b6f550d25e0181f30a839534f4d4956a045fded895b5caf9e0f3b53a5679bb6156359f76b7fcd3f0c7d20b5cac21636d0e7802adbf18234de853336ee0f87d1b860bb6d52d92e7372092e9b43c9457fcb09605e70fafb5a7a8c5beb1ddd6788aee6f02d3a332473f86578334b7f28fefd9f7d6d1d5a1bb1a08fa6c2115cf6f12499e1f1cc0f07de2780e79d1e7d611e004fe755bd24ee4e7ff90846817add4cd8e12093ff290e3c00c3018a7e810d9c96013498a9a6463e0818dcfdc72f9ac14f398a825a5329b057b37158f4cd3e90bbde9273be021168ad272ed5f35764774301a30a922a798df33dfbe21d9970c45463032d78bfe45056c50ce13ee94b31745ff8a59897fd4465e210bd9f9b9de6c71822ee49d44fa215917c6f1cda6fe97e3e3744e3e68fe0402f8b94b7f9050adae72fa1ccbabd7fcdaf0dab73a1246689ebb0d96cf90bebf288110ad5a2abe7be66f9e7e027396ffccea8d4fdd1f15916d987061184d285eedc80118c566e01c32113565e30a769e596f22d253e7ffd619781cf2987369521865b0c79763eae50a1f10dccb7784dcc759a14c0c8994a0459e2a70474d97eb8e40c1c53
+#
+# This script is Copyright (C) 2004-2025 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2025/02/28 $
+#
+# description : This .audit is designed against the CIS Google Kubernetes Engine (GKE) Autopilot Benchmark 1.1.0
+#
+#<ui_metadata>
+#<display_name>CIS Google Kubernetes Engine (GKE) Autopilot v1.1.0 L1</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Google Kubernetes Engine (GKE) Autopilot</name>
+#  <profile>L1</profile>
+#  <version>1.1.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/18794</link>
+#</spec>
+#<labels>gcp,cis,google_kubernetes_engine_(gke)_autopilot</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#</ui_metadata>
+
+<check_type:"GCP">
+
+<custom_item>
+  type           : REST_API
+  description    : "4.1.1 Ensure that the cluster-admin role is only used where required"
+  info           : "The RBAC role cluster-admin provides wide-ranging powers over the environment and should be used only where and when needed.
+
+Kubernetes provides a set of default roles where RBAC is used. Some of these roles such as cluster-admin provide wide-ranging privileges which should only be applied where absolutely necessary. Roles such as cluster-admin allow super-user access to perform any action on any resource. When used in a ClusterRoleBinding it gives full control over every resource in the cluster and in all namespaces. When used in a RoleBinding it gives full control over every resource in the rolebinding's namespace, including the namespace itself.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution       : "Identify all clusterrolebindings to the cluster-admin role. Check if they are used and if they need this role or if they could use a role with fewer privileges.
+
+Where possible, first bind users to a lower-privileged role and then remove the clusterrolebinding to the cluster-admin role :
+
+kubectl delete clusterrolebinding [name]
+
+Impact:
+
+Care should be taken before removing any clusterrolebindings from the environment to ensure they were not required for operation of the cluster. Specifically, modifications should not be made to clusterrolebindings with the system: prefix as they are required for the operation of system components."
+  reference      : "800-171|3.1.5,800-171|3.1.6,800-171r3|03.01.06a.,800-171r3|03.01.06b.,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.15,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.18,ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/18794"
+  request        : "listClusterRolebindings"
+  json_transform : ".projects[] | .projectNumber as $projectNumber | .projectId as $projectId | .value.clusters[] | .name as $clusterName | .value.items[] | .roleRef as $role | .subjects[] | \"Project Number: \($projectNumber), Project ID: \($projectId), Cluster Name: \($clusterName), Role: \($role.name), Subject: \(.name)\""
+  regex          : "Role: cluster-admin"
+  not_expect     : "Role: cluster-admin"
+  severity       : MEDIUM
+</custom_item>
+
+<if>
+  <condition auto:"WARNING" type:"AND">
+    <custom_item>
+      type           : REST_API
+      description    : "check for cluster role bindings to system:authenticated"
+      request        : "listClusterRolebindings"
+      json_transform : ".projects[] | .projectNumber as $projectNumber | .projectId as $projectId | .value.clusters[] | .name as $clusterName | .value.items[] | .roleRef as $role | .subjects[] | \"Project Number: \($projectNumber), Project ID: \($projectId), Cluster Name: \($clusterName), Role: \($role.name), Subject: \(.name)\""
+      regex          : "Subject: system:authenticated"
+      expect         : "Role: system:(basic-user|discovery|public-info-viewer)"
+      match_all      : YES
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      type           : REST_API
+      description    : "check for role bindings to system:authenticated"
+      request        : "listRoleBindings"
+      json_transform : ".projects[] | .projectNumber as $projectNumber | .projectId as $projectId | .value.clusters[] | .name as $clusterName | .value.items[] | .roleRef as $role | .subjects[] | \"Project Number: \($projectNumber), Project ID: \($projectId), Cluster Name: \($clusterName), Role: \($role.name), Subject: \(.name)\""
+      regex          : "Subject: system:authenticated"
+      not_expect     : "Subject: system:authenticated"
+      match_all      : YES
+      severity       : MEDIUM
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "4.1.10 Avoid non-default bindings to system:authenticated"
+      info        : "Avoid non-default ClusterRoleBindings and RoleBindings with the group system:authenticated except the ClusterRoleBindings system:basic-user system:discovery and system:public-info-viewer
+
+Google's approach to authentication is to make authenticating to Google Cloud and GKE as simple and secure as possible without adding complex configuration steps. The group system:authenticated includes all users with a Google account, which includes all Gmail accounts. Consider your authorization controls with this extended group scope when granting permissions. Thus, group system:authenticated is not recommended for non-default use.
+
+GKE assigns the group system:authenticated to API server requests made by any user who is signed in with a Google Account, including all Gmail accounts. In practice, this isn't meaningfully different from system:unauthenticated because anyone can create a Google Account.
+
+Binding a role to the group system:authenticated gives any user with a Google Account, including all Gmail accounts, the permissions granted by that role and is strongly discouraged.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "Identify all non-default clusterrolebindings and rolebindings to the group system:authenticated Check if they are used and review the permissions associated with the binding using the commands in the Audit section above or refer to GKE documentation.
+
+Strongly consider replacing non-default, unsafe bindings with an authenticated, user-defined group. Where possible, bind to non-default, user-defined groups with least-privilege roles.
+
+If there are any non-default, unsafe bindings to the group system:authenticated proceed to delete them after consideration for cluster operations with only necessary, safer bindings.
+
+kubectl delete clusterrolebinding
+[CLUSTER_ROLE_BINDING_NAME] kubectl delete rolebinding
+[ROLE_BINDING_NAME]
+--namespace
+[ROLE_BINDING_NAMESPACE]
+
+Impact:
+
+Authenticated users in group system:authenticated should be treated similarly to users in system:unauthenticated having privileges and permissions associated with roles associated with the configured bindings.
+
+Care should be taken before removing any non-default clusterrolebindings or rolebindings from the environment to ensure they were not required for operation of the cluster. Leverage a more specific and authenticated user for cluster operations."
+      reference   : "800-171|3.1.1,800-171r3|03.01.01,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSCv7|16.8,CSCv8|5.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.8.2,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18794"
+      show_output : YES
+    </report>
+  </then>
+</if>
+
+<report type:"WARNING">
+  description : "4.1.2 Minimize access to secrets"
+  info        : "The Kubernetes API stores secrets, which may be service account tokens for the Kubernetes API or credentials used by workloads in the cluster. Access to these secrets should be restricted to the smallest possible group of users to reduce the risk of privilege escalation.
+
+Inappropriate access to secrets stored within the Kubernetes cluster can allow for an attacker to gain additional access to the Kubernetes cluster or external resources whose credentials are stored as secrets.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Where possible, remove get list and watch access to secret objects in the cluster.
+
+Impact:
+
+Care should be taken not to remove access to secrets to system components which require this for their operation"
+  reference   : "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-171r3|03.04.01,800-171r3|03.04.02,800-171r3|03.04.06,800-171r3|03.16.01,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.2,CSCv8|4.1,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|ID.AM-08,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-09,CSF2.0|PR.DS-10,CSF2.0|PR.IR-03,CSF2.0|PR.PS-01,CSF2.0|PR.PS-06,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.2,ISO-27001-2022|A.5.8,ISO-27001-2022|A.8.9,ISO-27001-2022|A.8.25,ISO-27001-2022|A.8.26,ISO-27001-2022|A.8.27,ISO-27001-2022|A.8.28,ISO-27001-2022|A.8.30,ISO-27001-2022|A.8.31,ISO-27001-2022|A.8.32,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/18794"
+</report>
+
+<if>
+  <condition auto:"WARNING" type:"AND">
+    <custom_item>
+      type           : REST_API
+      description    : "Cluster Roles"
+      request        : "listClusterRoles"
+      json_transform : ".projects[] | .projectNumber as $projectNumber | .projectId as $projectId | .value.clusters[] | .name as $clusterName | .value.items[] | .metadata.name as $roleName | .rules[] | \"Project Number: \($projectNumber), Project ID: \($projectId), Cluster Name: \($clusterName), Role: \($roleName), API Groups: \(.apiGroups), Resources: \(.resources), Verbs: \(.verbs)\""
+      regex          : "\*"
+      not_expect     : "\*"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      type           : REST_API
+      description    : "Roles"
+      request        : "listRoles"
+      json_transform : ".projects[] | .projectNumber as $projectNumber | .projectId as $projectId | .value.clusters[] | .name as $clusterName | .value.items[] | .metadata.name as $roleName | .rules[] | \"Project Number: \($projectNumber), Project ID: \($projectId), Cluster Name: \($clusterName), Role: \($roleName), API Groups: \(.apiGroups), Resources: \(.resources), Verbs: \(.verbs)\""
+      regex          : "\*"
+      not_expect     : "\*"
+      severity       : MEDIUM
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "4.1.3 Minimize wildcard use in Roles and ClusterRoles"
+      info        : "Kubernetes Roles and ClusterRoles provide access to resources based on sets of objects and actions that can be taken on those objects. It is possible to set either of these to be the wildcard \"*\", which matches all items.
+
+Use of wildcards is not optimal from a security perspective as it may allow for inadvertent access to be granted when new resources are added to the Kubernetes API either as CRDs or in later versions of the product.
+
+The principle of least privilege recommends that users are provided only the access required for their role and nothing more. The use of wildcard rights grants is likely to provide excessive rights to the Kubernetes API.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "Where possible replace any use of wildcards in clusterroles and roles with specific objects or actions."
+      reference   : "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18794"
+      show_output : YES
+    </report>
+  </then>
+</if>
+
+<report type:"WARNING">
+  description : "4.1.4 Ensure that default service accounts are not actively used"
+  info        : "The default service account should not be used to ensure that rights granted to applications can be more easily audited and reviewed.
+
+Kubernetes provides a default service account which is used by cluster workloads where no specific service account is assigned to the pod.
+
+Where access to the Kubernetes API from a pod is required, a specific service account should be created for that pod, and rights granted to that service account.
+
+The default service account should be configured such that it does not provide a service account token and does not have any explicit rights assignments.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Create explicit service accounts wherever a Kubernetes workload requires specific access to the Kubernetes API server.
+
+Modify the configuration of each default service account to include this value
+
+automountServiceAccountToken: false
+
+Impact:
+
+All workloads which require access to the Kubernetes API will require an explicit service account to be created."
+  reference   : "800-171|3.1.1,800-171r3|03.01.01f.,800-53|AC-2(3),800-53r5|AC-2(3),CN-L3|7.1.3.2(e),CN-L3|8.1.4.2(c),CSCv7|4.3,CSCv7|5.2,CSCv7|16.9,CSCv8|5.3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.8.2,ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.6,ITSG-33|AC-2(3),LEVEL|1A,NIAv2|AM26,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.2"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/18794"
+</report>
+
+<report type:"WARNING">
+  description : "4.1.5 Ensure that Service Account Tokens are only mounted where necessary"
+  info        : "Service accounts tokens should not be mounted in pods except where the workload running in the pod explicitly needs to communicate with the API server
+
+Mounting service account tokens inside pods can provide an avenue for privilege escalation attacks where an attacker is able to compromise a single pod in the cluster.
+
+Avoiding mounting these tokens removes this attack avenue.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Modify the definition of pods and service accounts which do not need to mount service account tokens to disable it.
+
+Impact:
+
+Pods mounted without service account tokens will not be able to communicate with the API server, except where the resource is available to unauthenticated principals."
+  reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|14.7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/18794"
+</report>
+
+<custom_item>
+  type           : REST_API
+  description    : "4.1.6 Avoid use of system:masters group"
+  info           : "The special group system:masters should not be used to grant permissions to any user or service account, except where strictly necessary (e.g. bootstrapping access prior to RBAC being fully available)
+
+The system:masters group has unrestricted access to the Kubernetes API hard-coded into the API server source code. An authenticated user who is a member of this group cannot have their access reduced, even if all bindings and cluster role bindings which mention it, are removed.
+
+When combined with client certificate authentication, use of this group can allow for irrevocable cluster-admin level credentials to exist for a cluster.
+
+GKE includes the CertificateSubjectRestriction admission controller which rejects requests for the system:masters group.
+
+CertificateSubjectRestriction \"This admission controller observes creation of CertificateSigningRequest resources that have a spec.signerName of kubernetes.io/kube-apiserver-client. It rejects any request that specifies a 'group' (or 'organization attribute') of system:masters.\"
+
+https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#certificatesubjectrestriction
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution       : "Remove the system:masters group from all users in the cluster.
+
+Impact:
+
+Once the RBAC system is operational in a cluster system:masters should not be specifically required, as ordinary bindings from principals to the cluster-admin cluster role can be made where unrestricted access is required."
+  reference      : "800-171|3.1.5,800-171|3.1.6,800-171r3|03.01.06a.,800-171r3|03.01.06b.,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.15,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.18,ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/18794"
+  request        : "listClusterRolebindings"
+  json_transform : ".projects[] | .projectNumber as $projectNumber | .projectId as $projectId | .value.clusters[] | .name as $clusterName | .value.items[] | .roleRef as $role | .subjects[] | \"Project Number: \($projectNumber), Project ID: \($projectId), Cluster Name: \($clusterName), Role: \($role.name), Subject: \(.name)\""
+  regex          : "Subject: system:masters"
+  not_expect     : "Subject: system:masters"
+  severity       : MEDIUM
+</custom_item>
+
+<report type:"WARNING">
+  description : "4.1.7 Limit use of the Bind, Impersonate and Escalate permissions in the Kubernetes cluster"
+  info        : "Cluster roles and roles with the impersonate, bind or escalate permissions should not be granted unless strictly required. Each of these permissions allow a particular subject to escalate their privileges beyond those explicitly granted by cluster administrators
+
+The impersonate privilege allows a subject to impersonate other users gaining their rights to the cluster. The bind privilege allows the subject to add a binding to a cluster role or role which escalates their effective permissions in the cluster. The escalate privilege allows a subject to modify cluster roles to which they are bound, increasing their rights to that level.
+
+Each of these permissions has the potential to allow for privilege escalation to cluster-admin level.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Where possible, remove the impersonate, bind and escalate rights from subjects.
+
+Impact:
+
+There are some cases where these permissions are required for cluster service operation, and care should be taken before removing these permissions from system service accounts."
+  reference   : "800-171|3.1.5,800-171|3.1.6,800-171r3|03.01.06a.,800-171r3|03.01.06b.,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.15,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.18,ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/18794"
+</report>
+
+<if>
+  <condition auto:"WARNING" type:"AND">
+    <custom_item>
+      type           : REST_API
+      description    : "check for role bindings to system:anonymous"
+      request        : "listRoleBindings"
+      json_transform : ".projects[] | .projectNumber as $projectNumber | .projectId as $projectId | .value.clusters[] | .name as $clusterName | .value.items[] | .roleRef as $role | .subjects[] | \"Project Number: \($projectNumber), Project ID: \($projectId), Cluster Name: \($clusterName), Role: \($role.name), Subject: \(.name)\""
+      regex          : "Subject: system:anonymous"
+      not_expect     : "Subject: system:anonymous"
+      match_all      : YES
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      type           : REST_API
+      description    : "check for cluster role bindings to system:anonymous"
+      request        : "listClusterRolebindings"
+      json_transform : ".projects[] | .projectNumber as $projectNumber | .projectId as $projectId | .value.clusters[] | .name as $clusterName | .value.items[] | .roleRef as $role | .subjects[] | \"Project Number: \($projectNumber), Project ID: \($projectId), Cluster Name: \($clusterName), Role: \($role.name), Subject: \(.name)\""
+      regex          : "Subject: system:anonymous"
+      expect         : "Role: system:public-info-viewer"
+      match_all      : YES
+      severity       : MEDIUM
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "4.1.8 Avoid bindings to system:anonymous"
+      info        : "Avoid ClusterRoleBindings nor RoleBindings with the user system:anonymous
+
+Kubernetes assigns user system:anonymous to API server requests that have no authentication information provided. Binding a role to user system:anonymous gives any unauthenticated user the permissions granted by that role and is strongly discouraged.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "Identify all clusterrolebindings and rolebindings to the user system:anonymous. Check if they are used and review the permissions associated with the binding using the commands in the Audit section above or refer to GKE
+
+documentation
+
+.
+
+Strongly consider replacing unsafe bindings with an authenticated, user-defined group. Where possible, bind to non-default, user-defined groups with least-privilege roles.
+
+If there are any unsafe bindings to the user system:anonymous proceed to delete them after consideration for cluster operations with only necessary, safer bindings.
+
+kubectl delete clusterrolebinding
+[CLUSTER_ROLE_BINDING_NAME] kubectl delete rolebinding
+[ROLE_BINDING_NAME]
+--namespace
+[ROLE_BINDING_NAMESPACE]
+
+Impact:
+
+Unauthenticated users will have privileges and permissions associated with roles associated with the configured bindings.
+
+Care should be taken before removing any clusterrolebindings or rolebindings from the environment to ensure they were not required for operation of the cluster. Use a more specific and authenticated user for cluster operations."
+      reference   : "800-171|3.1.1,800-171r3|03.01.01,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSCv7|16.8,CSCv8|5.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.8.2,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|2A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18794"
+      show_output : YES
+    </report>
+  </then>
+</if>
+
+<if>
+  <condition auto:"WARNING" type:"AND">
+    <custom_item>
+      type           : REST_API
+      description    : "check for cluster role bindings to system:unauthenticated"
+      request        : "listClusterRolebindings"
+      json_transform : ".projects[] | .projectNumber as $projectNumber | .projectId as $projectId | .value.clusters[] | .name as $clusterName | .value.items[] | .roleRef as $role | .subjects[] | \"Project Number: \($projectNumber), Project ID: \($projectId), Cluster Name: \($clusterName), Role: \($role.name), Subject: \(.name)\""
+      regex          : "Subject: system:unauthenticated"
+      expect         : "Role: system:public-info-viewer"
+      match_all      : YES
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      type           : REST_API
+      description    : "check for role bindings to system:unauthenticated"
+      request        : "listRoleBindings"
+      json_transform : ".projects[] | .projectNumber as $projectNumber | .projectId as $projectId | .value.clusters[] | .name as $clusterName | .value.items[] | .roleRef as $role | .subjects[] | \"Project Number: \($projectNumber), Project ID: \($projectId), Cluster Name: \($clusterName), Role: \($role.name), Subject: \(.name)\""
+      regex          : "Subject: system:unauthenticated"
+      not_expect     : "Subject: system:unauthenticated"
+      match_all      : YES
+      severity       : MEDIUM
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "4.1.9 Avoid non-default bindings to system:unauthenticated"
+      info        : "Avoid non-default ClusterRoleBindings and RoleBindings with the group system:unauthenticated except the ClusterRoleBinding system:public-info-viewer
+
+Kubernetes assigns the group system:unauthenticated to API server requests that have no authentication information provided. Binding a role to this group gives any unauthenticated user the permissions granted by that role and is strongly discouraged.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "Identify all non-default clusterrolebindings and rolebindings to the group system:unauthenticated Check if they are used and review the permissions associated with the binding using the commands in the Audit section above or refer to GKE
+
+documentation
+
+.
+
+Strongly consider replacing non-default, unsafe bindings with an authenticated, user-defined group. Where possible, bind to non-default, user-defined groups with least-privilege roles.
+
+If there are any non-default, unsafe bindings to the group system:unauthenticated proceed to delete them after consideration for cluster operations with only necessary, safer bindings.
+
+kubectl delete clusterrolebinding
+[CLUSTER_ROLE_BINDING_NAME] kubectl delete rolebinding
+[ROLE_BINDING_NAME]
+--
+namespace
+[ROLE_BINDING_NAMESPACE]
+
+Impact:
+
+Unauthenticated users will have privileges and permissions associated with roles associated with the configured bindings.
+
+Care should be taken before removing any non-default clusterrolebindings or rolebindings from the environment to ensure they were not required for operation of the cluster. Leverage a more specific and authenticated user for cluster operations."
+      reference   : "800-171|3.1.1,800-171r3|03.01.01,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSCv7|16.8,CSCv8|5.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.8.2,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18794"
+      show_output : YES
+    </report>
+  </then>
+</if>
+
+<report type:"WARNING">
+  description : "4.2.1 Ensure that the cluster enforces Pod Security Standard Baseline profile or stricter for all namespaces."
+  info        : "The Pod Security Standard Baseline profile defines a baseline for container security. You can enforce this by using the built-in Pod Security Admission controller.
+
+Without an active mechanism to enforce the Pod Security Standard Baseline profile, it is not possible to limit the use of containers with access to underlying cluster nodes, via mechanisms like privileged containers, or the use of hostPath volume mounts.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Ensure that Pod Security Admission is in place for every namespace which contains user workloads.
+
+Run the following command to enforce the Baseline profile in a namespace:
+
+kubectl label namespace <namespace-name> pod-security.kubernetes.io/enforce=baseline"
+  reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|5.1,CSCv7|5.2,CSCv8|16.7,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/18794"
+</report>
+
+<report type:"WARNING">
+  description : "4.6.1 Create administrative boundaries between resources using namespaces"
+  info        : "Use namespaces to isolate your Kubernetes objects.
+
+Limiting the scope of user permissions can reduce the impact of mistakes or malicious activities. A Kubernetes namespace allows you to partition created resources into logically named groups. Resources created in one namespace can be hidden from other namespaces. By default, each resource created by a user in Kubernetes cluster runs in a default namespace, called default You can create additional namespaces and attach resources and users to them. You can use Kubernetes Authorization plugins to create policies that segregate access to namespace resources between different users.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Follow the documentation and create namespaces for objects in your deployment as you need them.
+
+Impact:
+
+You need to switch between namespaces for administration."
+  reference   : "800-171|3.13.1,800-171|3.13.5,800-171r3|03.13.01,800-53|SC-7,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|12,CSCv8|13,CSF|DE.CM-1,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.8.16,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,LEVEL|1M,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/18794"
+</report>
+
+<custom_item>
+  type           : REST_API
+  description    : "5.4.1 Enable VPC Flow Logs and Intranode Visibility"
+  info           : "Enable VPC Flow Logs and Intranode Visibility to see pod-level traffic, even for traffic within a worker node.
+
+Enabling Intranode Visibility makes intranode pod to pod traffic visible to the networking fabric. With this feature, VPC Flow Logs or other VPC features can be used for intranode traffic."
+  solution       : "Enable Intranode Visibility:Using Google Cloud Console:
+
+ - Go to Kubernetes Engine by visiting:
+
+https://console.cloud.google.com/kubernetes/list
+
+.
+ - Select Kubernetes clusters for which intranode visibility is disabled.
+ - Within the Details pane, under the Network section, click on the pencil icon named Edit intranode visibility
+ - Check the box next to Enable Intranode visibility
+ - Click SAVE CHANGES
+
+Using Command Line:
+
+To enable intranode visibility on an existing cluster, run the following command:
+
+gcloud container clusters update <cluster_name> --enable-intra-node-visibility
+
+Enable VPC Flow Logs:Using Google Cloud Console:
+
+ - Go to Kubernetes Engine by visiting:
+
+https://console.cloud.google.com/kubernetes/list
+
+.
+ - Select Kubernetes clusters for which VPC Flow Logs are disabled.
+ - Select Nodes tab.
+ - Select Node Pool without VPC Flow Logs enabled.
+ - Select an Instance Group within the node pool.
+ - Select an Instance Group Member
+ - Select the Subnetwork under Network Interfaces.
+ - Click on EDIT
+ - Set Flow logs to On
+ - Click SAVE
+
+Using Command Line:
+
+ - Find the subnetwork name associated with the cluster.
+
+gcloud container clusters describe <cluster_name> --region <cluster_region> --format json | jq '.subnetwork' <xhtml:ol start=\"2\"> - Update the subnetwork to enable VPC Flow Logs.
+
+gcloud compute networks subnets update <subnet_name> --enable-flow-logs
+
+Impact:
+
+Enabling it on existing cluster causes the cluster master and the cluster nodes to restart, which might cause disruption."
+  reference      : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171r3|03.03.02a.,800-171r3|03.03.02b.,800-171r3|03.03.03,800-171r3|03.03.06a.,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.28,ISO-27001-2022|A.8.15,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|1A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/18794"
+  request        : "listContainerClusters"
+  json_transform : ".projects[] | .projectNumber as $projectNumber | .projectId as $projectId | .value.clusters[] | \"Project Number: \($projectNumber), Project ID: \($projectId), Cluster Name: \(.name), Enable Intra Node Visibility: \(.networkConfig.enableIntraNodeVisibility)\""
+  regex          : "Enable Intra Node Visibility"
+  expect         : "Enable Intra Node Visibility: true"
+  match_all      : YES
+</custom_item>
+
+</check_type>

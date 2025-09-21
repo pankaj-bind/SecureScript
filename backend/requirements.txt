@@ -1,0 +1,16 @@
+# Django and related packages
+django
+djangorestframework
+dj-rest-auth[with_social]
+django-allauth
+
+# Database
+# This project uses the built-in sqlite3, which doesn't need to be listed here.
+# If you were using another database like PostgreSQL, you'd add its driver, e.g., psycopg2-binary.
+
+# PDF Generation
+reportlab
+
+# Other necessary libraries
+# pillow (for ImageField)
+Pillow

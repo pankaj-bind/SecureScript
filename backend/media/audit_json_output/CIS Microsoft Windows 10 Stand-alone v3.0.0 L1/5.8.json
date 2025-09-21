@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "5.8 (L1) Ensure 'Internet Connection Sharing (ICS) (SharedAccess)' is set to 'Disabled'",
+  "info": "Provides network access translation, addressing, name resolution and/or intrusion prevention services for a home or small office network.\n\nThe recommended state for this setting is: Disabled\n\nInternet Connection Sharing (ICS) is a feature that allows someone to 'share' their Internet connection with other machines on the network - it was designed for home or small office environments where only one machine has Internet access - it effectively turns that machine into an Internet router. This feature causes the bridging of networks and likely bypassing other, more secure pathways. It should not be used on any enterprise-managed system.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to: Disabled\n\nComputer Configuration\\Policies\\Windows Settings\\Security Settings\\System Services\\Internet Connection Sharing (ICS)",
+  "Impact": "Internet Connection Sharing (ICS) will not be available. Wireless connections using Miracast will also be prevented.",
+  "Note": "This service is a prerequisite for the\n\nMicrosoft Defender Application Guard\n\nfeature in Windows 10, so an exception should be made to this recommendation if intending to use Microsoft Defender Application Guard.\n\nNote #2: If your organization is using Windows Subsystem for Linux (WSL) this service is needed for WSL to function, so an exception should be made to this recommendation. For more information, please visit the following Microsoft Blog:\n\nTroubleshooting Windows Subsystem for Linux | Microsoft Docs\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17129",
+  "value_type": "POLICY_DWORD",
+  "value_data": "4",
+  "reg_key": "HKLM\\System\\CurrentControlSet\\Services\\SharedAccess",
+  "reg_item": "Start",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

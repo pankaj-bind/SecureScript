@@ -1,0 +1,488 @@
+#TRUSTED 2123c1c24ad7511c27d105c4e3010696e0b0cf81f555b753c22e7feffa10596b416ed137474ebe12284dd24ab9f57107aa6e36d67a846507990f4027903fc7a4cc6a624117397271155b1482515043df02bdbd2820e4af8abd5f690d7ae42248942a9b7ecc162cbbde04bba72945bb0d12c842a840332e7144fbf5f64c5f35028cf9cd5ff97a27bc5ef6d85797cbf6799844777060f37bb042e340ce1055a29049c4fa7719496fef9fecb1ffedd01d57a21bb5b2f1b192099b4d3831e411bba40167e0017f05ed471ea86feba8fd0b99143d31b22a58ce268678acbe3dac3448f52bcff7ce3d1efb8ab520d5b8cc83b163304075fef53a2138cfb45f23741010849d7efb3a0933e49c7008b08e7535153c0d73a6906e9ffc8ed819a482ce73c6675585e0057e4614caa8bad151333c143bf2c00bb395472156a2eb35dce907bdd37d65b2e9c9fddd6c2ae00034c81d038376751dcd7e62eb0c22ac5142b5c569463f26eb5be45922a3a0d1d73e0406fc2e24023a450a78219dff7d6ccede87c32ba5efa52ae86c55b091240e18cb1adce283a62b69b87aee7fbc365c730bab699ad61ef8ac18f78688b8f2a7e2eca1b329d61af5357a1bc306fa6e95a196452e2ef177a582890c1087620d5b53924f4859027e71c4e83453f50954653fc043b0bc8d3b5dd8a4cacd0b938603ee4d79ff5c2adc5c87fdbd75f82fd5d42337d2b1
+#TRUST-RSA-SHA256 851ea25e6ed3dbff8165df25fcfea9cfc98dc42886b56f6a6e9ff86f0b5cd23d8a66ddc90cd0c3516aba0109268795e734fd5cd2976634b2e44157bb4ae91628df67ebcc671f5a3d2d7293182066233400d7cba27c200c983b8c1cc53e9757daf2f30f7384259657fffdaa9ff335a18dd06589c37ef5460aa878886f456f927efb45f058ea12bccf1ce20997ba05cb7c92211bd2ac9b36656503bf5e06872d76c3df7e0442816669cbda0e38f956c2d986b0f583484989113ed5621b80e53bea4c6e892dc8bc78d86bd53adaac1e00380e631ed1370b5d18de2393f6694917a44e3d7267378e8b636daceb03caac7cf7bda48593f26a88573fd5670786c15c4c68877dbed6ebd501cc917398bd01226867053b13c6e69274f56b9da6714064ff8979abd8dfd1466891d839eb0c0336b0cc4b5021e1ade56e124e1bef85edfe1665360c3c7eddbd9fe462b38b67bfd2689bc3decc0338828654f2fb8d369d67a67f7928ab1dd6b2e08b73bad63bcdd8c383b020e6adf00cca8e59bdcc6ad9e291fc481b95cf9dd2f47d64e9dbf947b0c7f44db8a7b40761df1f2ac1ecf1444649585d8468d177ebf1c64f732b020cfd47f7a05a7be34dd0abf99898dec7bd8fdd1a85cb4dda86fea0081665de7d09ef63dc9d63c7e5f0c94dc711414def1485d7b30de5eb9a7a76e3c2fd941c0be5f83f1ff9a03a6616809b069fefe14a260001
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2024/10/02 $
+#
+# description : This document implements the security configuration as recommended by the
+#               CIS NGINX Benchmark v2.1.0
+#
+#<ui_metadata>
+#<display_name>CIS NGINX Benchmark v2.1.0 L2 Webserver</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>NGINX</name>
+#  <profile>L2 Webserver</profile>
+#  <version>2.1.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/17381</link>
+#</spec>
+#<labels>nginx,webserver,agent,unix</labels>
+#<benchmark_refs>CCE,CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#</ui_metadata>
+
+<check_type:"Unix">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : CMD_EXEC
+      description : "Check if NGINX installed"
+      cmd         : "nginx -v"
+      expect      : "nginx[\\s]+version[\\s]*:"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_NGINX_v2.1.0_Level_2_Webserver.audit from CIS NGINX Benchmark v2.1.0"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17381"
+    </report>
+
+    <custom_item>
+      type          : CMD_EXEC
+      description   : "1.1.2 Ensure NGINX is installed from source"
+      info          : "Installing NGINX directly from source allows you to install NGINX without the use of a package manager.
+
+Rationale:
+
+Installing NGINX from source allows you to harden your instance of NGINX by minimizing modules. NGINX is unable to remove modules when installed using a package manager. By installing from source, you are able to minimize modules, however, some additional configuration will be required and updates will not be automated out of the box for you.
+
+Impact:
+
+By installing NGINX from source, you will have to manually upgrade NGINX or automate upgrades yourself. The default values for NGINX may also vary from this guide using this method."
+      solution      : "Installation depends on the operating system platform. For a source build, consult the NGINX documentation 'Building nginx from Sources'.
+
+Default Value:
+
+NGINX is not installed by default."
+      reference     : "800-53|SA-22,800-53r5|SA-22,CSCv7|2.2,CSCv8|2.2,CSF2.0|ID.AM-08,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|2M"
+      see_also      : "https://workbench.cisecurity.org/benchmarks/17381"
+      cmd           : "nginx -v"
+      expect        : "nginx[\\s]+version[\\s]*:"
+      dont_echo_cmd : YES
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "2.1.1 Ensure only required modules are installed"
+      info        : "This NGINX installation comes with several modules out of the box. These modules are not all always needed. Installations of NGINX should be hardened to ensure only the necessary modules are installed.
+
+Rationale:
+
+Minimizing features and functionality built into NGINX can help to reduce the number of vulnerabilities your server has, which reduces the likelihood of a successful compromise by attackers.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "Consult the NGINX module documentation to determine which modules are needed for your specific installation.
+Modules may be removed using the configure command."
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53|CM-7(1),800-53r5|CM-7,800-53r5|CM-7(1),CSCv7|2.8,CSCv8|2.6,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,ITSG-33|CM-7(1),LEVEL|2M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17381"
+      cmd         : "nginx -V 2>&1"
+      expect      : "Manual Review Required"
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      type          : CMD_EXEC
+      description   : "2.1.2 Ensure HTTP WebDAV module is not installed"
+      info          : "The http_dav_module enables HTTP Extensions for Web Distributed Authoring and Versioning (WebDAV) as defined by RFC 4918. This enables file-based operations on your web server, such as the ability to create, delete, change and move files on your server. Most modern architectures have replaced this functionality with cloud-based object storage, in which case the module should not be installed.
+
+Rationale:
+
+WebDAV functionality opens up an unnecessary path for exploiting your web server. Through misconfigurations of WebDAV operations, an attacker may be able to access and manipulate files on the server."
+      solution      : "To remove the http_dav_module, recompile nginx from source without the --with-http_dav_module flag.
+
+Default Value:
+
+The HTTP WebDAV module is not installed by default when installing from source. It does come by default when installed using dnf."
+      reference     : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53|CM-7(1),800-53r5|CM-7,800-53r5|CM-7(1),CSCv7|2.8,CSCv8|2.6,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,ITSG-33|CM-7(1),LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+      see_also      : "https://workbench.cisecurity.org/benchmarks/17381"
+      cmd           : "nginx -V 2>&1 | grep arguments"
+      expect        : "^((?!http_dav_module).)*$"
+      dont_echo_cmd : YES
+    </custom_item>
+
+    <custom_item>
+      type          : CMD_EXEC
+      description   : "2.1.3 Ensure modules with gzip functionality are disabled"
+      info          : "gzip is used for compression. Compression functionality should be disabled to prevent certain types of attacks from being performed successfully.
+
+Rationale:
+
+Compression has been linked with the Breach attack and others. While the Breach attack has been mitigated with modern usages of the HTTP protocol, disabling the use of compression is considered a defense-in-depth strategy to mitigate other attacks."
+      solution      : "In order to disable the http_gzip_module and the http_gzip_static_module, NGINX must be recompiled from source. This can be accomplished using the below command in the folder you used during your original compilation. This must be done without the --with-http_gzip_static_module or --with-http_gzip_module configuration directives.
+
+./configure --without-http_gzip_module --without-http_gzip_static_module
+
+Default Value:
+
+The http_gzip_module is enabled by default in the source build, and the http_gzip_static_module is not. Only the http_gzip_static_module is enabled by default in the dnf package."
+      reference     : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53|CM-7(1),800-53r5|CM-7,800-53r5|CM-7(1),CSCv7|2.8,CSCv8|2.6,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,ITSG-33|CM-7(1),LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+      see_also      : "https://workbench.cisecurity.org/benchmarks/17381"
+      cmd           : "nginx -V 2>&1 | grep arguments"
+      expect        : "^((?!http_gzip_module|http_gzip_static_module).)*$"
+      dont_echo_cmd : YES
+    </custom_item>
+
+    <custom_item>
+      type          : CMD_EXEC
+      description   : "2.5.3 Ensure hidden file serving is disabled"
+      info          : "Disabling hidden files is a defense-in-depth mechanism to help prevent accidentally exposing sensitive information.
+
+Rationale:
+
+Disabling hidden files prevents an attacker from being able to reference a hidden file that may be put in your location and have sensitive information, like .git files.
+
+Impact:
+
+This may break well-known hidden files that are needed for functionality. For example, it may prevent functionality used by LetsEncrypt. To enable, configure a location exception like that shown below:
+
+location ~ /\.well-known\/acme-challenge {
+
+    allow all;
+
+}"
+      solution      : "Edit the nginx.conf file and add the following line:
+
+location ~ /\.  { deny all; return 404; }
+
+Default Value:
+
+This is not set by default."
+      reference     : "800-53|SA-3,800-53r5|SA-3,CSCv7|18.1,CSCv8|16.1,CSF|PR.IP-2,CSF2.0|ID.AM-08,CSF2.0|PR.PS-06,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SA-3,LEVEL|2M,NESA|T7.2.1"
+      see_also      : "https://workbench.cisecurity.org/benchmarks/17381"
+      cmd           : "nginx -T | grep '^[ ]*location[ ]*'"
+      expect        : "location[\\s]+~[\\s]+/\\\\\.[\\s]+\\{.*deny[\\s]+all[\\s]*;.*\\}"
+      dont_echo_cmd : YES
+    </custom_item>
+
+    <custom_item>
+      type          : CMD_EXEC
+      description   : "3.5 Ensure error logs are sent to a remote syslog server"
+      info          : "Centralized log management helps ensure logs are forensically sound and are available at a central location for auditing and incident investigation.
+
+Rationale:
+
+A centralized logging solution aggregates logs from multiple systems to ensure logs can be referenced in the event systems are thought to be compromised. Centralized log servers are also often used to correlate logs for potential patterns of attack. If a centralized logging solution is not used and systems (and their logs) are believed to be compromised, then logs may not be permitted to be used as evidence."
+      solution      : "To enable central logging for your error logs, add the below line to your server block in your server configuration file. 192.168.2.1 should be replaced with the location of your central log server.
+
+error_log syslog:server=192.168.2.1 info;
+
+Default Value:
+
+Syslog is not configured by default."
+      reference     : "800-171|3.3.1,800-171|3.3.5,800-53|AU-6(3),800-53r5|AU-6(3),CN-L3|7.1.3.3(d),CSCv7|6.5,CSCv8|8.9,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|PR.PS-04,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6(3),LEVEL|2M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also      : "https://workbench.cisecurity.org/benchmarks/17381"
+      cmd           : "nginx -T | grep '^[ ]*error_log[ ]*'"
+      expect        : "^[\\s]*error_log[\\s]+syslog:server=.*[\\s]*info;"
+      dont_echo_cmd : YES
+    </custom_item>
+
+    <custom_item>
+      type          : CMD_EXEC
+      description   : "3.6 Ensure access logs are sent to a remote syslog server"
+      info          : "Centralized log management helps ensure logs are forensically sound and are available at a central location for auditing and incident investigation.
+
+Rationale:
+
+A centralized logging solution aggregates logs from multiple systems to ensure logs can be referenced in the event systems are thought to be compromised. Centralized log servers are also often used to correlate logs for potential patterns of attack. If a centralized logging solution is not used and systems (and their logs) are believed to be compromised, then logs may not be permitted to be used as evidence."
+      solution      : "To enable central logging for your access logs, add the below line to your server block in your server configuration file. 192.168.2.1 should be replaced with the location of your central log server. The local logging facility may be changed to any unconfigured facility on your server.
+
+access_log syslog:server=192.168.2.1,facility=local7,tag=nginx,severity=info combined;
+
+Default Value:
+
+Syslog is not set up by default."
+      reference     : "800-171|3.3.1,800-171|3.3.5,800-53|AU-6(3),800-53r5|AU-6(3),CN-L3|7.1.3.3(d),CSCv7|6.5,CSCv8|8.9,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|PR.PS-04,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-6(3),LEVEL|2M,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also      : "https://workbench.cisecurity.org/benchmarks/17381"
+      cmd           : "nginx -T | grep '^[ ]*access_log[ ]*'"
+      expect        : "^[\\s]*access_log[\\s]+syslog:server=.*"
+      dont_echo_cmd : YES
+    </custom_item>
+
+    <report type:"WARNING">
+      description : "4.1.11 Ensure your domain is preloaded"
+      info        : "Preloading your domain hardcodes it as only being accessible through HTTPS by browsers.
+
+Note: Preloading should only be done with careful consideration! Your website and all its subdomains will be forced over HTTPS. If your website or any of its subdomains are not able to support preloading, you should not preload your site. Preloading should be opt-in only, and if done, may impact more sites than the nginx instance you are working on. Removing preloading can be slow and painful, and should only be done with careful consideration according to https://hstspreload.org.
+
+Rationale:
+
+Preloading your domain helps prevent HTTP downgrade attacks and increases trust.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+      solution    : "In order to successfully preload your website, you must meet the below criteria:
+
+Serve a valid certificate.
+
+This may be accomplished by following recommendation 4.1.2.
+
+Redirect from HTTP to HTTPS if using port 80.
+
+This may be accomplished by following recommendation 4.1.1.
+
+Configure all subdomains to support HTTPS only.
+
+This will require you to configure all subdomains for HTTPS only. For example, a subdomain of cissecurity.org is workbench.cissecurity.org and would need to be configured for HTTPS only.
+
+Configure an HSTS header on your base domain, as shown below for nginx.
+
+If your base domain is nginx, you may accomplish this with several modifications from the HSTS recommendation. Change your header to include the preload directive and the includesubdomains directive, and make your max-length one year or longer. The header should be modified similar to the below snippet.
+
+add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload';
+
+After you have met these requirements, add your site to the list by following the instructions at https://hstspreload.org/.
+
+Default Value:
+
+Your website is not preloaded by default."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2M,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17381"
+    </report>
+
+    <custom_item>
+      type          : CMD_EXEC
+      description   : "4.1.12 Ensure session resumption is disabled to enable perfect forward security"
+      info          : "Session resumption for HTTPS sessions should be disabled so perfect forward secrecy can be achieved.
+
+Rationale:
+
+Perfect forward secrecy is an encryption mechanism that enables past session keys to not be compromised even if the server's private key is compromised. If an attacker recorded all traffic to a server and stored it and then obtained the private key without perfect forward secrecy, all communications would be compromised. With perfect forward secrecy, session keys are generated using Diffie-Hellman for every session a user initiates, which isolates session compromise to only that communication session. Allowing session resumption breaks perfect forward secrecy; this expands the surface area for an attacker to compromise past sessions and communications with a server if they are able to compromise the session."
+      solution      : "Turn off the ssl_session_tickets directive as part of any server block in your nginx configuration:
+
+ssl_session_tickets off;
+
+Default Value:
+
+Perfect forward security is not enabled by default."
+      reference     : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also      : "https://workbench.cisecurity.org/benchmarks/17381"
+      cmd           : "nginx -T | grep '^[ ]*ssl_session_tickets[ ]*'"
+      expect        : "^[\\s]*ssl_session_tickets[\\s]+off[\\s]*;"
+      dont_echo_cmd : YES
+    </custom_item>
+
+    <custom_item>
+      type          : CMD_EXEC
+      description   : "4.1.13 Ensure HTTP/2.0 is used"
+      info          : "HTTP/2.0 is an optimized and more secure version of the HTTP protocol. It should be enabled so users can take advantage of it.
+
+Note: Legacy user agents may not be able to connect to a server using HTTP/2.0.
+
+Rationale:
+
+HTTP/2.0 introduces both performance benefits through full multiplexing and several security benefits. HTTP/2.0 has improved cipher suite requirements and denylists. It also disables session renegotiation and TLS compression. This helps protect against vulnerabilities like CRIME and ensures we have stronger encryption.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution      : "Open the nginx server configuration file and configure all listening ports with http2, similar to that of this example:
+
+server {
+    listen 443 ssl http2;
+}
+
+Default Value:
+
+By default, HTTP/1.1 is used."
+      reference     : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also      : "https://workbench.cisecurity.org/benchmarks/17381"
+      cmd           : "nginx -T | grep '[ ]*http2[ ]*'"
+      expect        : "Manual Review Required"
+      dont_echo_cmd : YES
+      severity      : MEDIUM
+    </custom_item>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type          : CMD_EXEC
+          description   : "ssl_ciphers"
+          cmd           : "nginx -T | grep '^[ ]*ssl_ciphers[ ]*'"
+          expect        : "^[\\s]*ssl_ciphers[\\s]+EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA[\\s]*;"
+          dont_echo_cmd : YES
+        </custom_item>
+
+        <custom_item>
+          type          : CMD_EXEC
+          description   : "proxy_ssl_ciphers"
+          cmd           : "nginx -T | grep '^[ ]*proxy_ssl_ciphers[ ]*'"
+          expect        : "^[\\s]*proxy_ssl_ciphers[\\s]+EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA[\\s]*;"
+          dont_echo_cmd : YES
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "4.1.14 Ensure only Perfect Forward Secrecy Ciphers are Leveraged"
+          info        : "Perfect forward secrecy protects users of your website by ensuring that even if your private key is compromised that your user's sessions are not able to be compromised. This improves upon other ciphers where if your private key was compromised all user sessions can also be compromised retroactively.
+
+Rationale:
+
+Perfect Forward Secrecy (PFS) helps to reduce the impact of a private key compromise."
+          solution    : "Ensure that only ciphers that are compatible with perfect forward secrecy are used. ECDHE/EECDH ciphers and DHE/EDH ciphers support this capability. Its recommended to leverage ECDHE ciphers unless you need to support legacy clients because they are considered stronger and faster. An example configuration that may be used is: 'EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA'.
+The below configuration will only enable ciphers compatible with perfect forward secrecy.
+Web Server:
+
+ssl_ciphers EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA;
+
+Proxy:
+
+proxy_ssl_ciphers EECDH:EDH:!NULL:!SSLv2:!RC4:!aNULL:!3DES:!IDEA;
+
+Default Value:
+
+Perfect Forward Secrecy is not the only default negotiable cipher suite."
+          reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2M,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/17381"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <report type:"WARNING">
+      description : "5.1.1 Ensure allow and deny filters limit access to specific IP addresses"
+      info        : "IP-based restrictions act as a defense in depth mechanism. They allow you to allowlist legitimate paths to your applications and explicitly deny IP addresses you believe to be malicious.
+
+Rationale:
+
+IP restrictions help you to only allow traffic based on the concept of least privilege. You may specify vlans, countries, or specific servers that may be allowed or denied on your site. It is recommended that you implicitly deny all traffic and only allow those with a legitimate use case to access your website if choosing to take this approach. This allows you to limit the surface area an attack may come from.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+      solution    : "Compile a list of network ranges or IP addresses you would want to access your web server or proxy. Then add these ranges with the allow directive. The deny directive should be included with all IP addresses implicitly denied.
+
+location / {
+    allow 10.1.1.1;
+    deny all;
+}
+
+Default Value:
+
+This is not configured by default."
+      reference   : "800-171|3.13.1,800-53|SC-7(8),800-53r5|SC-7(8),CN-L3|8.1.10.6(j),CSCv7|9.5,CSCv8|13.10,CSF|PR.AC-5,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(8),LEVEL|2M,NESA|T4.5.4,NIAv2|SU4,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,TBA-FIISB|43.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17381"
+    </report>
+
+    <report type:"WARNING">
+      description : "5.2.4 Ensure the number of connections per IP address is limited"
+      info        : "The maximum number of simultaneous connections allowed from a single IP address to your server should be limited. It should be set to a value that meets your organizational policies.
+
+Rationale:
+
+Limiting the number of simultaneous connections is an effective way to prevent slow denial of service attacks that try to use as many server resources as possible. This can also help prevent brute force attacks on a login page.
+
+Impact:
+
+Users of your system that are behind a corporate web proxy using network address translation or a proxy service such as tor may have an increased chance of being blocked due to this configuration. This is because multiple users in these scenarios come from the same IP address. You should always consider your user base when setting a connection limit.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+      solution    : "Implement the below directives under the HTTP and server blocks of your nginx configuration or any include files. The below configuration creates a memory zone of 10 megabytes called limitperip. It will limit the number of connections per IP address to 10 simultaneous connections. The number of simultaneous connections to allow may be different depending on your organization's policies and use cases.
+
+http {
+  limit_conn_zone $binary_remote_addr zone=limitperip:10m;
+  server {
+    limit_conn limitperip 10;
+  }
+}
+
+Default Value:
+
+This value is not set by default."
+      reference   : "800-53|SA-3,800-53r5|SA-3,CSCv7|18.1,CSCv8|16.1,CSF|PR.IP-2,CSF2.0|ID.AM-08,CSF2.0|PR.PS-06,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SA-3,LEVEL|2M,NESA|T7.2.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17381"
+    </report>
+
+    <report type:"WARNING">
+      description : "5.2.5 Ensure rate limits by IP address are set"
+      info        : "Rate limiting should be enabled to limit the number of requests an IP address may make to a server in a given period of time. The configuration values should be set based on your application's needs and your organizational policy.
+
+Rationale:
+
+Rate limiting allows you to mitigate potential denial of service attacks as a defense in depth mechanism.
+
+Impact:
+
+If you serve a high traffic API, this may prevent users from being able to call your website. You may also limit users behind a corporate web proxy or a proxy service such as tor if they use your website heavily.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+      solution    : "Implement the below directives under the HTTP and server blocks of your nginx configuration or any include files. The below configuration creates a memory zone of 10 megabytes called 'ratelimit' and sets the number of requests per second that can be sent by any given IP address to 5. Further, this configuration sets a burst of 10 to ensure that requests may come more frequently and sets no delay to ensure that the bursting may be all at once and not queued.
+
+http {
+  limit_req_zone $binary_remote_addr zone=ratelimit:10m rate=5r/s;
+  server {
+    location / {
+      limit_req zone=ratelimit burst=10 nodelay;
+    }
+  }
+}
+
+Default Value:
+
+This is not set by default."
+      reference   : "800-53|SA-3,800-53r5|SA-3,CSCv7|18.1,CSCv8|16.1,CSF|PR.IP-2,CSF2.0|ID.AM-08,CSF2.0|PR.PS-06,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SA-3,LEVEL|2M,NESA|T7.2.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17381"
+    </report>
+
+    <custom_item>
+      type          : CMD_EXEC
+      description   : "5.3.3 Ensure that Content Security Policy (CSP) is enabled and configured properly"
+      info          : "Content Security Policy allows administrators to specify the locations from which allowable scripts may be executed, or if scripts may be executed at all. Content Security Policy should be used to improve user trust of your website.
+
+Rationale:
+
+Content Security Policies assist organizations in mitigating and reporting cross-site scripting (XSS) attacks."
+      solution      : "Open your nginx configuration file that contains your server blocks. Add the below line into your server block to add Content-Security-Policy and direct your user agent to accept documents from only specific origins.
+
+add_header Content-Security-Policy 'default-src 'self'' always;
+
+Default Value:
+
+This is not enabled by default."
+      reference     : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7,800-53|CM-7(1),800-53|SI-7,800-53|SI-7(1),800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|SI-7,800-53r5|SI-7(1),CN-L3|7.1.3.5(b),CSCv7|2.9,CSCv8|2.7,CSF|PR.DS-6,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|ID.RA-09,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(c)(1),HIPAA|164.312(c)(2),HIPAA|164.312(e)(2)(i),ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|SI-7,ITSG-33|SI-7a.,ITSG-33|SI-7(1),LEVEL|2M,NESA|T3.4.1,NESA|T7.3.2,NESA|T7.3.3,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,PCI-DSSv3.2.1|10.5.5,QCSC-v1|3.2,SWIFT-CSCv1|2.3,SWIFT-CSCv1|6.2"
+      see_also      : "https://workbench.cisecurity.org/benchmarks/17381"
+      cmd           : "nginx -T | grep '[ ]*Content-Security-Policy[ ]*'"
+      expect        : "^[\\s]*add_header[\\s]+Content-Security-Policy[\\s]+[\"']default-src [\"']self[\"'][\"'][\\s]*always;"
+      dont_echo_cmd : YES
+    </custom_item>
+
+    <custom_item>
+      type          : CMD_EXEC
+      description   : "5.3.4 Ensure the Referrer Policy is enabled and configured properly"
+      info          : "When an origin site directs a user to another site, a referrer is sent that identifies the URL the user came from. Depending on your site's specific use, this may present a privacy concern to your users. The Referrer Policy enables organizations to define what sites should see that a referral came from your site, which helps protect user privacy.
+
+Rationale:
+
+A Referrer header may expose sensitive data in another web server's log if you use sensitive data in your URL parameters, such as personal information, username, and password or persistent sessions. Ultimately, depending on your application design, not using a properly configured Referrer Policy may allow session hijacking, credential gathering, or sensitive data exposure in a third party's logs."
+      solution      : "Add the below line to the server blocks within your nginx configuration. The policy should be customized for your specific organization's needs. The below policy will ensure your website is never allowed in a referrer.
+
+add_header Referrer-Policy 'no-referrer';
+
+Default Value:
+
+This policy is not set by default."
+      reference     : "800-53|SA-3,800-53r5|SA-3,CSCv7|18.1,CSCv8|16.1,CSF|PR.IP-2,CSF2.0|ID.AM-08,CSF2.0|PR.PS-06,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SA-3,LEVEL|2M,NESA|T7.2.1"
+      see_also      : "https://workbench.cisecurity.org/benchmarks/17381"
+      cmd           : "nginx -T | grep '[ ]*Referrer-Policy[ ]*'"
+      expect        : "^[\\s]*add_header[\\s]+Referrer-Policy[\\s]+[\"']no-referrer[\"']"
+      dont_echo_cmd : YES
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_NGINX_v2.1.0_Level_2_Webserver.audit from CIS NGINX Benchmark v2.1.0"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17381"
+    </report>
+  </else>
+</if>
+
+</check_type>

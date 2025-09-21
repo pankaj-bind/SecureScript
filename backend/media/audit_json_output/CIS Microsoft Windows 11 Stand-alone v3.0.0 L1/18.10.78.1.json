@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.10.78.1 (L1) Ensure 'Enable ESS with Supported Peripherals' is set to 'Enabled: 1'",
+  "info": "Enhanced Sign-in Security isolates Windows Hello biometric (face and fingerprint) template data and matching operations to trusted hardware or specified memory regions.\n\nThe recommended state for this setting is: Enabled: 1 (Enhanced Sign-in Security Enabled)\n\nBecause the channel of communication between the sensors and the algorithm is secured, it is impossible for malware to inject or replay data in order to simulate a user signing in or to lock a user out of their machine.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: 1 (Enhanced Sign-in Security Enabled):\n\nComputer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Hello for Business\\Enable ESS with Supported Peripherals",
+  "Note": "This Group Policy path is provided by the Group Policy template Passport.admx/adml that is included with the Microsoft Windows 11 Release 22H2 Administrative Templates v1.0 (or newer).",
+  "Impact": "None - this is the default behavior.\"",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17603",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Microsoft\\Policies\\PassportForWork\\Biometrics",
+  "reg_item": "EnableESSwithSupportedPeripherals",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

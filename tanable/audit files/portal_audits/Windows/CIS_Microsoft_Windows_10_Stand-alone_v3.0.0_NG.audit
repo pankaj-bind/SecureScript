@@ -1,0 +1,605 @@
+#TRUSTED 65409f9733a81b16e32e9ef4093966bcc83b245a012b5602d1c04eb3e84fb1126d7279a65ade53c9bce70217ccd9478b7bc1167141d427e59a2cc7e8e236d83fcfd3d772330060524ce660ed2264c215de2cb0a3988e2b05c2c6ee32b9aa87d229d08a098d15c569320ef36aa1ba6084921eafea31160054f0cb4f1bca60101f649aaf4183e453c3c78d6a986e7dcfffd6fb81e26cd8e3b259dd7cd614fb0f59779673c9568cadac48967db8e38c9bb6027b72bc6e02823370fd528f0dd95b20e93d7693003cbf3fd1ace94ddc3119a0eb47cdd8485f8f14d393315533fad0818610e2a3677cca26f03deb2242e3d962244372e93bf74751c78e45f0f360e216dfea48a164abe3a358f40a01cdf1cfda3e7f2b5f08837204567e84aa2e424fea711592839a96f90ffb44f14f8e459335e75144956bf5fea176bedddc464c5e9e8ee85cd118b6b819408a9c9103fd11e365cf7cd9c6d41868a610b0b4b19d2886b9b29df805da64a3dcf082592d7714ccf100db7a904e1395da1df59f63185238c76c080feb46bfa60c491004f89ae1c329e1075c7035c34a8525e3afdd0ad6513b5b24cfc14bf90262a65c72f1d89e8399af7f7b7a2c968f56e59a06982c332f15cf09898f753b88cdb7e877b57c2c28b9eca615024bdfd5017b81ec8d3b536a9f1bc7945114421e6ed48950feb07eb61c272ea7315ad9a0d1c5b01bfd3243a0
+#TRUST-RSA-SHA256 a383cc4acf1c5e914fa2a853e59c8e25a1117f0102c93054a2dd69578b2049dac8e8ddefa507e83aeb20da6795e2709bd26659f9ed52187154a7a2c87aba81c1afe119ae3d13ec037f29b6a661612a04b20a848fba08d909783449b44154e8860590843e77d40b5d1fd6ff80a2e2c9ddc902300a268a647260c7873794a69efd271094a5815e7f6542634e62678264640edbbcf309f10f291b350df38c8bcd893e799131640bb972aba1d20d88aa0e54eeb26e3c7d0792fe71522f3bbda8afc02616d4a3d2824400fd0ab20d2d095d959c94724925cffb0c246fd030d89ac94d1c7ca7cf7d09e78ee9123c4c95fe9004efc892e98cb9f59dfa8bb6608b5e78b07be05a0137e45144a389af56653faa2ceaf33b7fd061d24606b6c878bc13191d6bb9de17494c0abb2072b8d40f565572577eff54c004fd9ec530081a50a715d04459b08f225349fb47aef0ca448aa1780bb0fe2195ecab359b8298138e956936abefa80d23682120b40654e61d2aae9d551b0932385f970c95fa5e2d104faac8b3fe37f152a888cd9213f66a9612334b8d4fabf8384444ee5fad0605b938bc4f4a837bc4909888b8bccfc6b10c015540d200abcd456cbe24ca4ed3bcfd8ec6f38b0ecceba6aa8eed648f36cbfccbf7dc595786c9a01c17acae8267e7dbd5cd6a23654ab4b6b3702380bc0b2680189ca8eaa1c0c841e56906fd79a27996d1f053
+#
+# This script is Copyright (C) 2004-2025 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.2 $
+# $Date: 2025/01/06 $
+#
+# description : This .audit is designed against the CIS Microsoft Windows 10 Stand-alone Benchmark v3.0.0
+#
+#<ui_metadata>
+#<display_name>CIS Microsoft Windows 10 Stand-alone v3.0.0 NG</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Microsoft Windows 10 Stand-alone</name>
+#  <profile>NG</profile>
+#  <version>3.0.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/17129</link>
+#</spec>
+#<labels>cis,windows_10,agent</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>BUILD_VERSION</name>
+#    <default>(1900[0-9]|190[1-9][0-9]|1[0-9][1-9][0-9]{2})</default>
+#    <description>Windows Build Version</description>
+#    <info>Windows build Version found under HKLM\Software\Microsoft\Windows Nt\Currentversion:CurrentBuild</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>PLATFORM_VERSION</name>
+#    <default>10</default>
+#    <description>Windows Version</description>
+#    <info>The version of Windows 10 to match against in the platform check.</info>
+#    <value_type>INTEGER</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Windows" version:"2">
+<group_policy:"CIS Microsoft Windows 10 Stand-alone Benchmark">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "Windows 10 build version"
+      value_type  : POLICY_TEXT
+      value_data  : "@BUILD_VERSION@"
+      reg_key     : "HKLM\Software\Microsoft\Windows Nt\Currentversion"
+      reg_item    : "CurrentBuild"
+      check_type  : CHECK_REGEX
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "Windows 10 is installed"
+      value_type  : POLICY_TEXT
+      value_data  : "^[Ww][Ii][Nn][Dd][Oo][Ww][Ss] @PLATFORM_VERSION@.+$"
+      reg_key     : "HKLM\Software\Microsoft\Windows Nt\Currentversion"
+      reg_item    : "ProductName"
+      check_type  : CHECK_REGEX
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_Microsoft_Windows_10_Stand-alone_v3.0.0_NG.audit from CIS Microsoft Windows 10 Stand-alone Benchmark v3.0.0"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+    </report>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.10.43.1 (NG) Ensure 'Allow auditing events in Microsoft Defender Application Guard' is set to 'Enabled'"
+      info        : "This policy setting allows you to decide whether auditing events can be collected from Microsoft Defender Application Guard.
+
+The recommended state for this setting is: Enabled
+
+Note: Microsoft Defender Application Guard requires a 64-bit version of Windows and a CPU supporting hardware-assisted CPU virtualization (Intel VT-x or AMD-V). This feature is not officially supported on virtual hardware, although it can work on VMs (especially for testing) provided that the hardware-assisted CPU virtualization feature is exposed by the host to the guest VM.
+
+More information on system requirements for this feature can be found at
+
+System requirements for Microsoft Defender Application Guard (Windows 10) | Microsoft Docs
+
+Note #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+Auditing of Microsoft Defender Application Guard events may be useful when investigating a security incident."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled:
+
+Computer Configuration\Policies\Administrative Templates\Windows Components\Microsoft Defender Application Guard\Allow auditing events in Microsoft Defender Application Guard
+
+Note: This Group Policy path is provided by the Group Policy template AppHVSI.admx/adml that is included with the Microsoft Windows 10 Release 1709 Administrative Templates (or newer).
+
+Note #2: In older Microsoft Windows Administrative Templates, this setting was initially named
+
+Allow auditing events in Windows Defender Application Guard
+
+, but it was renamed to
+
+Allow auditing events in Microsoft Defender Application Guard
+
+starting with the Windows 10 Release 2004 Administrative Templates.
+
+Impact:
+
+Microsoft Defender Application Guard will inherit its auditing policies from Microsoft Edge and start to audit system events specifically for Microsoft Defender Application Guard. Collected logs are available for review on Microsoft Edge, outside of Application Guard."
+      reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|NGA,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\AppHVSI"
+      reg_item    : "AuditApplicationGuard"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.10.43.2 (NG) Ensure 'Allow camera and microphone access in Microsoft Defender Application Guard' is set to 'Disabled'"
+      info        : "The policy allows you to determine whether applications inside Microsoft Defender Application Guard can access the device's camera and microphone.
+
+The recommended state for this setting is: Disabled
+
+Note: Microsoft Defender Application Guard requires a 64-bit version of Windows and a CPU supporting hardware-assisted CPU virtualization (Intel VT-x or AMD-V). This feature is not officially supported on virtual hardware, although it can work on VMs (especially for testing) provided that the hardware-assisted CPU virtualization feature is exposed by the host to the guest VM.
+
+More information on system requirements for this feature can be found at
+
+System requirements for Microsoft Defender Application Guard (Windows 10) | Microsoft Docs
+
+Note #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+In effort to stop sensitive information from being obtained for malicious use, untrusted sites within the Microsoft Defender Application Guard container should not be accessing the computers microphone or camera."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled
+
+Computer Configuration\Policies\Administrative Templates\Windows Components\Microsoft Defender Application Guard\Allow camera and microphone access in Microsoft Defender Application Guard
+
+Note: This Group Policy path is provided by the Group Policy template AppHVSI.admx/adml that is included with the Microsoft Windows 10 Release 1809 &amp; Server 2019 Administrative Templates (or newer).
+
+Note #2: In older Microsoft Windows Administrative Templates, this setting was initially named
+
+Allow camera and microphone access in Windows Defender Application Guard
+
+, but it was renamed to
+
+Allow camera and microphone access in Microsoft Defender Application Guard
+
+starting with the Windows 10 Release 2004 Administrative Templates.
+
+Impact:
+
+This is the default value so impact should be minimal to enforce this setting."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|NGA,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\AppHVSI"
+      reg_item    : "AllowCameraMicrophoneRedirection"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.10.43.3 (NG) Ensure 'Allow data persistence for Microsoft Defender Application Guard' is set to 'Disabled'"
+      info        : "This policy setting allows you to decide whether data should persist across different sessions in Microsoft Defender Application Guard.
+
+The recommended state for this setting is: Disabled
+
+Note: Microsoft Defender Application Guard requires a 64-bit version of Windows and a CPU supporting hardware-assisted CPU virtualization (Intel VT-x or AMD-V). This feature is not officially supported on virtual hardware, although it can work on VMs (especially for testing) provided that the hardware-assisted CPU virtualization feature is exposed by the host to the guest VM.
+
+More information on system requirements for this feature can be found at
+
+System requirements for Microsoft Defender Application Guard (Windows 10) | Microsoft Docs
+
+Note #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+The primary purpose of Microsoft Defender Application Guard is to present a 'sandboxed container' for visiting untrusted websites. If data persistence is allowed, then it reduces the effectiveness of the sandboxing, and malicious content will be able to remain active in the Microsoft Defender Application Guard container between sessions."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled:
+
+Computer Configuration\Policies\Administrative Templates\Windows Components\Microsoft Defender Application Guard\Allow data persistence for Microsoft Defender Application Guard
+
+Note: This Group Policy path is provided by the Group Policy template AppHVSI.admx/adml that is included with the Microsoft Windows 10 Release 1709 Administrative Templates (or newer).
+
+Note #2: In older Microsoft Windows Administrative Templates, this setting was initially named
+
+Allow data persistence for Windows Defender Application Guard
+
+, but it was renamed to
+
+Allow data persistence for Microsoft Defender Application Guard
+
+starting with the Windows 10 Release 2004 Administrative Templates.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|8.3,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|NGA,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\AppHVSI"
+      reg_item    : "AllowPersistence"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.10.43.4 (NG) Ensure 'Allow files to download and save to the host operating system from Microsoft Defender Application Guard' is set to 'Disabled'"
+      info        : "This policy setting determines whether to save downloaded files to the host operating system from the Microsoft Defender Application Guard container.
+
+The recommended state for this setting is: Disabled
+
+Note: Microsoft Defender Application Guard requires a 64-bit version of Windows and a CPU supporting hardware-assisted CPU virtualization (Intel VT-x or AMD-V). This feature is not officially supported on virtual hardware, although it can work on VMs (especially for testing) provided that the hardware-assisted CPU virtualization feature is exposed by the host to the guest VM.
+
+More information on system requirements for this feature can be found at
+
+System requirements for Microsoft Defender Application Guard (Windows 10) | Microsoft Docs
+
+Note #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+The primary purpose of Microsoft Defender Application Guard is to present a 'sandboxed container'. Potentially malicious files should not be copied to the host OS from the sandboxed environment, which could put the host at risk."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Windows Components\Microsoft Defender Application Guard\Allow files to download and save to the host operating system from Microsoft Defender Application Guard
+
+Note: This Group Policy path is provided by the Group Policy template AppHVSI.admx/adml that is included with the Microsoft Windows 10 Release 1803 Administrative Templates (or newer).
+
+Note #2: In older Microsoft Windows Administrative Templates, this setting was initially named
+
+Allow files to download and save to the host operating system from Windows Defender Application Guard
+
+, but it was renamed to
+
+Allow files to download and save to the host operating system from Microsoft Defender Application Guard
+
+starting with the Windows 10 Release 2004 Administrative Templates.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|8.3,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|NGA,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\AppHVSI"
+      reg_item    : "SaveFilesToHost"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.10.43.5 (NG) Ensure 'Configure Microsoft Defender Application Guard clipboard settings: Clipboard behavior setting' is set to 'Enabled: Enable clipboard operation from an isolated session to the host'"
+      info        : "This policy setting allows you to decide how the clipboard behaves while in Microsoft Defender Application Guard.
+
+The recommended state for this setting is: Enabled: Enable clipboard operation from an isolated session to the host
+
+Note: Microsoft Defender Application Guard requires a 64-bit version of Windows and a CPU supporting hardware-assisted CPU virtualization (Intel VT-x or AMD-V). This feature is not officially supported on virtual hardware, although it can work on VMs (especially for testing) provided that the hardware-assisted CPU virtualization feature is exposed by the host to the guest VM.
+
+More information on system requirements for this feature can be found at
+
+System requirements for Microsoft Defender Application Guard (Windows 10) | Microsoft Docs
+
+Note #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+The primary purpose of Microsoft Defender Application Guard is to present a 'sandboxed container' for visiting untrusted websites. If the host clipboard is made available to Microsoft Defender Application Guard, a compromised Microsoft Defender Application Guard session will have access to its content, potentially exposing sensitive information to a malicious website or application. However, the risk is reduced if the Microsoft Defender Application Guard clipboard is made accessible to the host, and indeed that functionality may often be necessary from an operational standpoint."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Enable clipboard operation from an isolated session to the host
+
+Computer Configuration\Policies\Administrative Templates\Windows Components\Microsoft Defender Application Guard\Configure Microsoft Defender Application Guard clipboard settings: Clipboard behavior setting
+
+Note: This Group Policy path is provided by the Group Policy template AppHVSI.admx/adml that is included with the Microsoft Windows 10 Release 1703 Administrative Templates (or newer).
+
+Note #2: In older Microsoft Windows Administrative Templates, this setting was initially named
+
+Configure Windows Defender Application Guard clipboard settings: Clipboard behavior setting
+
+, but it was renamed to
+
+Configure Microsoft Defender Application Guard clipboard settings: Clipboard behavior setting
+
+starting with the Windows 10 Release 2004 Administrative Templates.
+
+Impact:
+
+Microsoft Defender Application Guard sessions will not be able to access the host device's clipboard, however the host device will be able to access the Microsoft Defender Application Guard session clipboard."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|8.3,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|NGA,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\AppHVSI"
+      reg_item    : "AppHVSIClipboardSettings"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.10.43.6 (NG) Ensure 'Turn on Microsoft Defender Application Guard in Managed Mode' is set to 'Enabled: 1'"
+      info        : "This policy setting enables application isolation through Microsoft Defender Application Guard (Application Guard).
+
+There are 4 options available:
+
+ - <xhtml:ol start='0'> - Disable Microsoft Defender Application Guard
+
+ -
+ - Enable Microsoft Defender Application Guard for Microsoft Edge ONLY
+
+ - <xhtml:ol start='2'> - Enable Microsoft Defender Application Guard for Microsoft Office ONLY
+
+ - <xhtml:ol start='3'> - Enable Microsoft Defender Application Guard for Microsoft Edge AND Microsoft Office
+
+The recommended state for this setting is: Enabled: 1 (Enable Microsoft Defender Application Guard for Microsoft Edge ONLY).
+
+Note: Microsoft Defender Application Guard requires a 64-bit version of Windows and a CPU supporting hardware-assisted CPU virtualization (Intel VT-x or AMD-V). This feature is not officially supported on virtual hardware, although it can work on VMs (especially for testing) provided that the hardware-assisted CPU virtualization feature is exposed by the host to the guest VM.
+
+More information on system requirements for this feature can be found at
+
+System requirements for Microsoft Defender Application Guard (Windows 10) | Microsoft Docs
+
+Note #2: At time of publication, Microsoft Defender Application Guard in all currently released versions of Windows 10 does not yet support protection for Microsoft Office, only for Microsoft Edge. Therefore the additional available options of 2 and 3 in this setting are not yet valid.
+
+Note #3: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+Microsoft Defender Application Guard uses Windows Hypervisor to create a virtualized environment for apps that are configured to use virtualization-based security isolation. While in isolation, improper user interactions and app vulnerabilities can't compromise the kernel or any other apps running outside of the virtualized environment."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: 1 :
+
+Computer Configuration\Policies\Administrative Templates\Windows Components\Microsoft Defender Application Guard\Turn on Microsoft Defender Application Guard in Managed Mode
+
+Note: This Group Policy path is provided by the Group Policy template AppHVSI.admx/adml that is included with the Microsoft Windows 10 Release 1703 Administrative Templates (or newer).
+
+Note #2: In older Microsoft Windows Administrative Templates, this setting was initially named
+
+Turn on Windows Defender Application Guard in Enterprise Mode
+
+, but it was renamed to
+
+Turn on Windows Defender Application Guard in Managed Mode
+
+starting with the Windows 10 Release 1903 Administrative Templates. It was again renamed to
+
+Turn on Microsoft Defender Application Guard in Managed Mode
+
+starting with the Windows 10 Release 2004 Administrative Templates.
+
+Impact:
+
+Microsoft Defender Application Guard will be turned on for Microsoft Edge.
+
+Note: Microsoft Defender Application Guard requires the
+
+Internet Connection Sharing (ICS) (SharedAccess)
+
+service in order to operate, so an exception to disabling this service (see Section 5 in the CIS Microsoft Windows 10 benchmark only) will be required if choosing to enable Microsoft Defender Application Guard."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|NGA"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\AppHVSI"
+      reg_item    : "AllowAppHVSI_ProviderSet"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.9.5.1 (NG) Ensure 'Turn On Virtualization Based Security' is set to 'Enabled'"
+      info        : "This policy setting specifies whether Virtualization Based Security is enabled. Virtualization Based Security uses the Windows Hypervisor to provide support for security services.
+
+The recommended state for this setting is: Enabled
+
+Note: Virtualization Based Security requires a 64-bit version of Windows with Secure Boot enabled, which in turn requires that Windows was installed with a UEFI BIOS configuration, not a Legacy BIOS configuration. In addition, if running Windows on a virtual machine, the hardware-assisted CPU virtualization feature (Intel VT-x or AMD-V) must be exposed by the host to the guest VM.
+
+More information on system requirements for this feature can be found at
+
+Windows Defender Credential Guard Requirements (Windows 10) | Microsoft Docs
+
+Note #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+Note #3: If implementing Virtualization Based Security (in Microsoft Defender Application Guard) with the Next Generation Windows Security (NGWS) profile, the Internet Connection Sharing (ICS) (SharedAccess) service must not be Disabled (from Section 5).
+
+Note #4: If the Level 2 recommendation to configure
+
+Log on as a service
+
+(from Section 2.2) is implemented, the additional security principal WDAGUtilityAccount must also be granted that User Right Assignment in order for Virtualization Based Security (in Microsoft Defender Application Guard) with the Next Generation Windows Security (NGWS) profile to function.
+
+Kerberos, NTLM, and Credential manager isolate secrets by using virtualization-based security. Previous versions of Windows stored secrets in the Local Security Authority (LSA). Prior to Windows 10, the LSA stored secrets used by the operating system in its process memory. With Windows Defender Credential Guard enabled, the LSA process in the operating system talks to a new component called the isolated LSA process that stores and protects those secrets. Data stored by the isolated LSA process is protected using virtualization-based security and is not accessible to the rest of the operating system."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\System\Device Guard\Turn On Virtualization Based Security
+
+Note: This Group Policy path is provided by the Group Policy template DeviceGuard.admx/adml that is included with the Microsoft Windows 10 RTM (Release 1507) Administrative Templates (or newer).
+
+Impact:
+
+Warning: All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|NGA"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\DeviceGuard"
+      reg_item    : "EnableVirtualizationBasedSecurity"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.9.5.2 (NG) Ensure 'Turn On Virtualization Based Security: Select Platform Security Level' is set to 'Secure Boot' or higher"
+      info        : "This policy setting specifies whether Virtualization Based Security (VBS) is enabled. VBS uses the Windows Hypervisor to provide support for security services.
+
+The recommended state for this setting is: Secure Boot or Secure Boot and DMA Protection
+
+Note: VBS requires a 64-bit version of Windows with Secure Boot enabled, which in turn requires that Windows was installed with a UEFI BIOS configuration, not a Legacy BIOS configuration. In addition, if running Windows on a virtual machine, the hardware-assisted CPU virtualization feature (Intel VT-x or AMD-V) must be exposed by the host to the guest VM.
+
+More information on system requirements for this feature can be found at
+
+Windows Defender Credential Guard Requirements (Windows 10) | Microsoft Docs
+
+Note #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+Secure Boot can help reduce the risk of bootloader attacks and in conjunction with DMA protections to help protect data from being scraped from memory."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Secure Boot or Secure Boot and DMA Protection :
+
+Computer Configuration\Policies\Administrative Templates\System\Device Guard\Turn On Virtualization Based Security: Select Platform Security Level
+
+Note: This Group Policy path is provided by the Group Policy template DeviceGuard.admx/adml that is included with the Microsoft Windows 10 RTM (Release 1507) Administrative Templates (or newer).
+
+Impact:
+
+Choosing the Secure Boot option provides the system with as much protection as is supported by the computer's hardware. A system with input/output memory management units (IOMMUs) will have Secure Boot with DMA protection. A system without IOMMUs will simply have Secure Boot enabled without DMA protection.
+
+Choosing the Secure Boot with DMA protection option requires the system to have IOMMUs in order to enable VBS. Without IOMMU hardware support, VBS will be disabled.
+
+Warning: All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|NGA"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "3" || "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\DeviceGuard"
+      reg_item    : "RequirePlatformSecurityFeatures"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.9.5.3 (NG) Ensure 'Turn On Virtualization Based Security: Virtualization Based Protection of Code Integrity' is set to 'Enabled with UEFI lock'"
+      info        : "This setting enables virtualization based protection of Kernel Mode Code Integrity. When this is enabled, kernel mode memory protections are enforced and the Code Integrity validation path is protected by the Virtualization Based Security feature.
+
+The recommended state for this setting is: Enabled with UEFI lock
+
+Note: Virtualization Based Security requires a 64-bit version of Windows with Secure Boot enabled, which in turn requires that Windows was installed with a UEFI BIOS configuration, not a Legacy BIOS configuration. In addition, if running Windows on a virtual machine, the hardware-assisted CPU virtualization feature (Intel VT-x or AMD-V) must be exposed by the host to the guest VM.
+
+More information on system requirements for this feature can be found at
+
+Windows Defender Credential Guard Requirements (Windows 10) | Microsoft Docs
+
+Note #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+The Enabled with UEFI lock option ensures that Virtualization Based Protection of Code Integrity cannot be disabled remotely."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled with UEFI lock :
+
+Computer Configuration\Policies\Administrative Templates\System\Device Guard\Turn On Virtualization Based Security: Virtualization Based Protection of Code Integrity
+
+Note: This Group Policy path is provided by the Group Policy template DeviceGuard.admx/adml that is included with the Microsoft Windows 10 RTM (Release 1507) Administrative Templates (or newer).
+
+Impact:
+
+Warning: All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible.
+
+Warning #2: Once this setting is turned on and active, Virtualization Based Security cannot be disabled solely via GPO or any other remote method. After removing the setting from GPO, the features must also be manually disabled
+
+locally at the machine
+
+using the steps provided at this link:
+
+Manage Windows Defender Credential Guard (Windows 10) | Microsoft Docs"
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|NGA"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\DeviceGuard"
+      reg_item    : "HypervisorEnforcedCodeIntegrity"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.9.5.4 (NG) Ensure 'Turn On Virtualization Based Security: Require UEFI Memory Attributes Table' is set to 'True (checked)'"
+      info        : "This option will only enable Virtualization Based Protection of Code Integrity on devices with UEFI firmware support for the Memory Attributes Table. Devices without the UEFI Memory Attributes Table may have firmware that is incompatible with Virtualization Based Protection of Code Integrity which in some cases can lead to crashes or data loss or incompatibility with certain plug-in cards. If not setting this option the targeted devices should be tested to ensure compatibility.
+
+The recommended state for this setting is: True (checked)
+
+Note: Virtualization Based Security requires a 64-bit version of Windows with Secure Boot enabled, which in turn requires that Windows was installed with a UEFI BIOS configuration, not a Legacy BIOS configuration. In addition, if running Windows on a virtual machine, the hardware-assisted CPU virtualization feature (Intel VT-x or AMD-V) must be exposed by the host to the guest VM.
+
+More information on system requirements for this feature can be found at
+
+Windows Defender Credential Guard Requirements (Windows 10) | Microsoft Docs
+
+Note #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+This setting will help protect this control from being enabled on a system that is not compatible which could lead to a crash or data loss."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to TRUE :
+
+Computer Configuration\Policies\Administrative Templates\System\Device Guard\Turn On Virtualization Based Security: Require UEFI Memory Attributes Table
+
+Note: This Group Policy path is provided by the Group Policy template DeviceGuard.admx/adml that is included with the Microsoft Windows 10 Release 1703 Administrative Templates (or newer).
+
+Impact:
+
+Warning: All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|NGA"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\DeviceGuard"
+      reg_item    : "HVCIMATRequired"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.9.5.5 (NG) Ensure 'Turn On Virtualization Based Security: Credential Guard Configuration' is set to 'Enabled with UEFI lock'"
+      info        : "This setting lets users turn on Credential Guard with virtualization-based security to help protect credentials. The 'Enabled with UEFI lock' option ensures that Credential Guard cannot be disabled remotely. In order to disable the feature, you must set the Group Policy to 'Disabled' as well as remove the security functionality from each computer, with a physically present user, in order to clear configuration persisted in UEFI.
+
+The recommended state for this setting is: Enabled with UEFI lock
+
+Note: Virtualization Based Security requires a 64-bit version of Windows with Secure Boot enabled, which in turn requires that Windows was installed with a UEFI BIOS configuration, not a Legacy BIOS configuration. In addition, if running Windows on a virtual machine, the hardware-assisted CPU virtualization feature (Intel VT-x or AMD-V) must be exposed by the host to the guest VM.
+
+More information on system requirements for this feature can be found at
+
+Windows Defender Credential Guard Requirements (Windows 10) | Microsoft Docs
+
+Note #2: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+The Enabled with UEFI lock option ensures that Credential Guard cannot be disabled remotely."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled with UEFI lock :
+
+Computer Configuration\Policies\Administrative Templates\System\Device Guard\Turn On Virtualization Based Security: Credential Guard Configuration
+
+Note: This Group Policy path is provided by the Group Policy template DeviceGuard.admx/adml that is included with the Microsoft Windows 10 Release 1511 Administrative Templates (or newer).
+
+Impact:
+
+Warning: All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible.
+
+Warning #2: Once this setting is turned on and active, Credential Guard cannot be disabled solely via GPO or any other remote method. After removing the setting from GPO, the features must also be manually disabled
+
+locally at the machine
+
+using the steps provided at this link:
+
+Manage Windows Defender Credential Guard (Windows 10) | Microsoft Docs"
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|NGA"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\DeviceGuard"
+      reg_item    : "LsaCfgFlags"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "18.9.5.6 (NG) Ensure 'Turn On Virtualization Based Security: Secure Launch Configuration' is set to 'Enabled'"
+      info        : "Secure Launch protects the Virtualization Based Security environment from exploited vulnerabilities in device firmware.
+
+The recommended state for this setting is: Enabled
+
+Note: Credential Guard and Device Guard are not currently supported when using Azure IaaS VMs.
+
+Secure Launch changes the way Windows boots to use Intel Trusted Execution Technology (TXT) and Runtime BIOS Resilience features to prevent firmware exploits from being able to impact the security of the Windows Virtualization Based Security environment."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\System\Device Guard\Turn On Virtualization Based Security: Secure Launch Configuration
+
+Note: This Group Policy path is provided by the Group Policy template DeviceGuard.admx/adml that is included with the Microsoft Windows 10 Release 1809 &amp; Server 2019 Administrative Templates (or newer).
+
+Impact:
+
+Warning : All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|NGA"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\DeviceGuard"
+      reg_item    : "ConfigureSystemGuardLaunch"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_Microsoft_Windows_10_Stand-alone_v3.0.0_NG.audit from CIS Microsoft Windows 10 Stand-alone Benchmark v3.0.0"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/benchmarks/17129"
+    </report>
+  </else>
+</if>
+
+</group_policy>
+</check_type>

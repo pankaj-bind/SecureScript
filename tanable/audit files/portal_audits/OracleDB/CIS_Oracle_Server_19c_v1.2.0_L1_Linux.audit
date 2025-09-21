@@ -1,0 +1,183 @@
+#TRUSTED 21f2174537873f1baf6eb30fe43b7000f6bbce177e33f6842f233459f8719cefd80cc22bffcd228a3c92fc95bd18368d27cc76579ff52be16b02a1abc0fa27800cd0996812a238bf0f136fb6c6754feb844a65ae4dcd23212bd0b17530a0444d4e201bfb98348ca8b5346db27a6b917e039cd048d20aedb06822c7b3052ec8434d99a0602106348d0bd44fc00c27f9389f7bdb4259c7c2e6609aea0bfa135d2eb9b5180ca513f733c3c671d36cf64689ab799f1ca719b33c64224e7fafc75ecd936ff0dd9aa9cba151a29b1ad27df104f7768ebf0bd826c4f6f9d55d8f1ea409e136b7ab468117b2814f3660fbb397c210b92eeced54c2e9897047ce727f8d75cabd98d84ab488d1a90a1610c383c479537411984f0cb5b0bfb253e5a4687b0e535e7b1ad3b6fcdd702bf0bc7304ecc7e5726d9b635cfda092e253fca8bb88cd6d9bde7ae364064e31a4b1a7ebf1bd64a19c5026660d8d995c52101bf2df35d06c5b2922b3c9085fec4e4bb66aa4eef4b86bc002e5a921543d5753d98c52a0e96d62946321cba196d8a915c01dbeba64cdf18f8076c5b49cab6fd2384a795c539e1734ed1cbde9d902d4406d7820d9f5f005fc6253d0e659bd2cda32d1a644e7c615dc22678e94db55020f31273f28a93bcc1a2c4ad7ba1c851e5ad734a4f526480867d6e8d99826556c114a1cd5b8e2861fe49c0bbee78f8d16dc0eb35b7919
+#TRUST-RSA-SHA256 12d63990bc9dbc093e1ec041fa97a02ac784c57a1eafe72b80f60c4e187766a635f7d09f5f3be51e73d5811abcef82abedb1e5898b221e776ac926dc494eb408002e45bc64cfb4bf7c6901ad9e6079f6d422899853ee41128a87f5472c4a8213d6cd52ed46b8727eea8abbfd68ffef77caa1064bdf21d72b950a7b6859fc89ccc3c84cff63d9168d79c6b94f870bd2cca38abe4629b6681658f191a8289d8ca68e8f594617550b2bf0d5c9681feac336ea7de5fcfe0e95a988b657057342c513ea0016544fb0e3e1fa2cde1482bb7be8466af731dfe0a400b148b5f3a7848a4a797b62e155f8c6b4b3212677bfddb2e8d628e54091e5417104e059850949ed4ed3b61f2ecae3d928410f0089b4e2ad6ba61f16d622133bd320372c54abec54ee9c28a1b3d0946be2f3bc93c7bc77dbe28f5e38ca3b919788f3a1420ec8d7f2a0301b0165be8ecfda17179ab70951c0e4126c5a7882bd1059299f7e59af3da8fd7cab2498dc016b670f3bd0e809db306f2b4fb666f620153dd0e0234037a2ec50c00aa97f059b9fea8fa26bed1cd5f5d84bcf3266d190eac1ff12ecc82cb9590079fcc8910167e3b72a3344215148e51efd9d03526f0795cb6ecc2c01db465f8fd54ee3c2ca2cb593339ae78b896fc12ec5dd0372072a9a97ac0021cec576bf521ffd80bfab8b9f23d6009fa8a96f738365a878e2989ac8f33fd167560cc3a93b
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.2 $
+# $Date: 2024/07/15 $
+#
+# description : This document implements the security configuration as recommended by the
+#               CIS Oracle Database 19c Benchmark v1.2.0
+#
+#               https://workbench.cisecurity.org/files/2741
+#
+#<ui_metadata>
+#<display_name>CIS Oracle Server 19c Linux v1.2.0</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Oracle Server 19c</name>
+#  <profile>L1 OS Linux</profile>
+#  <version>1.2.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/11760</link>
+#</spec>
+#<labels>database,cis,oracle,oracle_19c,distribution_independent_linux</labels>
+#<benchmark_refs>CCE,CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>ORACLE_HOME</name>
+#    <default>/u01/app/oracle/product/19c/dbhome_1</default>
+#    <description>Oracle Home</description>
+#    <info>The directory where your Oracle installation is located.</info>
+#    <value_type>UNIX_FILE_PATH</value_type>
+#  </variable>
+#  <variable>
+#    <name>LISTENER_NAME</name>
+#    <default>LISTENER</default>
+#    <description>Listener defined in listener.ora</description>
+#    <info>The listener name defined in your listener.ora file. If multiple listeners should be difined they can be notated as LISTENER1|LISTENER2|LISTENER3</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Unix">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : CMD_EXEC
+      description : "Linux found"
+      cmd         : "uname -a"
+      expect      : "Linux"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_Oracle_Server_19c_v1.2.0_L1_Linux.audit from CIS Oracle Database 19c Benchmark v1.2.0"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/11760"
+    </report>
+
+    <custom_item>
+      type          : FILE_CONTENT_CHECK_NOT
+      description   : "2.1.1 Ensure 'extproc' Is Not Present in 'listener.ora'"
+      info          : "extproc should be removed from the listener.ora to mitigate the risk that OS libraries can be invoked by the Oracle instance.
+
+Rationale:
+
+extproc allows the database to run procedures from OS libraries. These library calls can, in turn, run any OS command."
+      solution      : "To remediate this recommendation:
+
+Remove extproc from the listener.ora file."
+      reference     : "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1"
+      see_also      : "https://workbench.cisecurity.org/benchmarks/11760"
+      file          : "@ORACLE_HOME@/network/admin/listener.ora"
+      regex         : "(?i)extproc(?-i)"
+      expect        : "(?i)extproc(?-i)"
+      file_required : YES
+    </custom_item>
+
+    <custom_item>
+      type            : FILE_CONTENT_CHECK
+      description     : "2.1.2 Ensure 'ADMIN_RESTRICTIONS_' Is Set to 'ON'"
+      info            : "The admin_restrictions_<listener_name> setting in the listener.ora file can require that any attempted real-time alteration of the parameters in the listener via the set command file be refused unless the listener.ora file is manually altered, then restarted by a privileged user.
+
+Rationale:
+
+Blocking unprivileged users from making alterations of the listener.ora file, where remote data/service settings are specified, will help protect data confidentiality."
+      solution        : "To remediate this recommendation:
+
+Use a text editor such as vi to set the admin_restrictions_<listener_name> to the value ON.
+
+Default Value:
+
+Not set."
+      reference       : "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+      see_also        : "https://workbench.cisecurity.org/benchmarks/11760"
+      file            : "@ORACLE_HOME@/network/admin/listener.ora"
+      regex           : "^[\\s]*(?i)admin_restrictions(?-i)_.+[\\s]*="
+      expect          : "^[\\s]*(?i)admin_restrictions(?-i)_(@LISTENER_NAME@)[\\s]*=[\\s]*(?i)on(?-i)[\\s]*$"
+      file_required   : YES
+      string_required : YES
+    </custom_item>
+
+    <custom_item>
+      type            : FILE_CONTENT_CHECK
+      description     : "2.3.1 Ensure 'ENCRYPTION_SERVER' Is Set to 'REQUIRED'"
+      info            : "The setting sqlnet.encryption_server=required requires that the connections to the database are encrypted through Oracle SQL*Net native encryption. The encryption setting implements data-in-transit encryption for the Oracle database connections. This setting is configured in the sqlnet.ora file on the database server.
+
+Rationale:
+
+Without this setting, malicious users could potentially eavesdrop on the database connections, compromising the confidentiality of the data.
+
+Impact:
+
+The setting sqlnet.encryption_server=required could reject/deny connection requests from those database users who don't support the Oracle native network encryption."
+      solution        : "To remediate this recommendation:
+
+Use a text editor such as vi to set the sqlnet.
+
+encryption_server = required
+
+Additional Information:
+
+Oracle database network encryption configured through TLS/SSL is also an acceptable mechanism and may be implemented in lieu of this setting."
+      reference       : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also        : "https://workbench.cisecurity.org/benchmarks/11760"
+      file            : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex           : "^[\\s]*(?i)encryption_server(?-i)[\\s]*="
+      expect          : "^[\\s]*(?i)encryption_server(?-i)[\\s]*=[\\s]*(?i)required(?-i)[\\s]*$"
+      file_required   : YES
+      string_required : YES
+    </custom_item>
+
+    <custom_item>
+      type            : FILE_CONTENT_CHECK
+      description     : "2.3.2 Ensure 'SQLNET.CRYPTO_CHECKSUM_SERVER' Is Set to 'REQUIRED'"
+      info            : "The setting sqlnet.crypto_checksum_server=required requires that the connections to the database are encrypted through Oracle SQL*Net native encryption. The encryption setting implements data-in-transit encryption for the Oracle database connections. This setting is configured in the sqlnet.ora file on the database server.
+
+Rationale:
+
+Without this setting, malicious users could potentially eavesdrop on the database connections, compromising the confidentiality of the data.
+
+Impact:
+
+The setting sqlnet.encryption_server=required could reject/deny connection requests from those database users who don't support the Oracle native network encryption."
+      solution        : "To remediate this recommendation:
+
+Use a text editor such as vi to set:
+
+sqlnet.crypto_checksum_server = required
+
+Additional Information:
+
+Oracle database network encryption configured through TLS/SSL is also an acceptable mechanism and may be implemented in lieu of this setting."
+      reference       : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also        : "https://workbench.cisecurity.org/benchmarks/11760"
+      file            : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex           : "^[\\s]*(?i)sqlnet.crypto_checksum_server(?-i)[\\s]*="
+      expect          : "^[\\s]*(?i)sqlnet.crypto_checksum_server(?-i)[\\s]*=[\\s]*(?i)required(?-i)[\\s]*$"
+      file_required   : YES
+      string_required : YES
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_Oracle_Server_19c_v1.2.0_L1_Linux.audit from CIS Oracle Database 19c Benchmark v1.2.0"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/benchmarks/11760"
+    </report>
+  </else>
+</if>
+
+</check_type>

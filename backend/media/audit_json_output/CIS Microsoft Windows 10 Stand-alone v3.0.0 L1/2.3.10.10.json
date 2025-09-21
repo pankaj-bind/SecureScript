@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.3.10.10 (L1) Ensure 'Network access: Restrict clients allowed to make remote calls to SAM' is set to 'Administrators: Remote Access: Allow'",
+  "info": "\"This policy setting allows you to restrict remote RPC connections to SAM.\n\nThe recommended state for this setting is: Administrators: Remote Access: Allow",
+  "Note": "A Windows 10 R1607, Server 2016 or newer OS is required to access and set this value in Group Policy.\n\nNote #2: This setting was originally only supported on Windows 10 R1607 or newer, then support for it was added to Windows 7 or newer via the March 2017 security patches.\n\nNote #3: If your organization is using Microsoft Defender for Identity (formerly Azure Advanced Threat Protection (Azure ATP)), the (organization-named) Defender for Identity Directory Service Account (DSA), will also need to be granted the same Remote Access: Allow permission. For more information on adding the service account please see\n\nConfigure SAM-R to enable lateral movement path detection in Microsoft Defender for Identity | Microsoft Docs\n\n.\n\nTo ensure that an unauthorized user cannot anonymously list local account names or groups and use the information to attempt to guess passwords or perform social engineering attacks. (Social engineering attacks try to deceive users in some way to obtain passwords or some form of security information.)\"",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Administrators: Remote Access: Allow :\n\nComputer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Network access: Restrict clients allowed to make remote calls to SAM",
+  "Impact": "None - this is the default behavior.\"",
+  "reference": "800-171|3.1.5,800-53|AC-6(3),800-53r5|AC-6(3),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.1.2,ISO/IEC-27001|A.9.4.4,ITSG-33|AC-6(3),LEVEL|1A,NESA|T5.1.1,NESA|T5.5.4,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17129",
+  "value_type": "POLICY_TEXT",
+  "value_data": "O:BAG:BAD:(A;;RC;;;BA)",
+  "reg_key": "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa",
+  "reg_item": "restrictremotesam",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

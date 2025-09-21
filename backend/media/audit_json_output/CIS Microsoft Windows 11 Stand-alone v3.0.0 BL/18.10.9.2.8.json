@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.10.9.2.8 (BL) Ensure 'Choose how BitLocker-protected operating system drives can be recovered: Save BitLocker recovery information to AD DS for operating system drives' is set to 'Enabled: True'",
+  "info": "This policy setting allows you to control how BitLocker-protected operating system drives are recovered in the absence of the required startup key information. This policy setting is applied when you turn on BitLocker.\n\nIn 'Save BitLocker recovery information to Active Directory Domain Services', choose which BitLocker recovery information to store in AD DS for operating system drives. If you select 'Backup recovery password and key package', both the BitLocker recovery password and key package are stored in AD DS. Storing the key package supports recovering data from a drive that has been physically corrupted. If you select 'Backup recovery password only', only the recovery password is stored in AD DS.\n\nThe recommended state for this setting is: Enabled: True (checked).\n\nShould a user lose their primary means for accessing an encrypted OS volume, or should the system not pass its boot time integrity checks, the system will go into recovery mode. If the recovery key has not been backed up to Active Directory, the user would need to have saved the recovery key to another location such as a USB flash drive, or have printed the recovery password, and now have access to one of those in order to recovery the system. If the user is unable to produce the recovery key, then the user will be denied access to the encrypted volume and subsequently any data that is stored there.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: True (checked):\n\nComputer Configuration\\Policies\\Administrative Templates\\Windows Components\\BitLocker Drive Encryption\\Operating System Drives\\Choose how BitLocker-protected operating system drives can be recovered: Save BitLocker recovery information to AD DS for operating system drives",
+  "Note": "This Group Policy path is provided by the Group Policy template VolumeEncryption.admx/adml that is included with the Microsoft Windows 7 &amp; Server 2008 R2 Administrative Templates (or newer).",
+  "Impact": "BitLocker recovery information for the operating system drive will be backed up to AD DS. Users will need to be domain connected to turn on BitLocker. This policy is not FIPS complaint.\"",
+  "reference": "800-171|3.13.16,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17603",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Microsoft\\FVE",
+  "reg_item": "OSActiveDirectoryBackup",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "5.44 (L1) Ensure 'Xbox Live Game Save (XblGameSave)' is set to 'Disabled'",
+  "info": "This service syncs save data for Xbox Live save enabled games.\n\nThe recommended state for this setting is: Disabled\n\nXbox Live is a gaming service and has no place in an enterprise managed environment (perhaps unless it is a gaming company).",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to: Disabled\n\nComputer Configuration\\Policies\\Windows Settings\\Security Settings\\System Services\\Xbox Live Game Save",
+  "Impact": "Game save data will not upload to or download from Xbox Live.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17129",
+  "value_type": "POLICY_DWORD",
+  "value_data": "4",
+  "reg_key": "HKLM\\System\\CurrentControlSet\\Services\\XblGameSave",
+  "reg_item": "Start",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

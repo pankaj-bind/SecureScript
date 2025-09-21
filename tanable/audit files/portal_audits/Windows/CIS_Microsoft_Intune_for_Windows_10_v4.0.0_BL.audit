@@ -1,0 +1,1339 @@
+#TRUSTED 23e263ade72408137ae5c2c89663384089b48b70aabf291819d8cdd3d3167a15022c89aa93d355a93f8ff761780f46b6893ff549b5a7bd8247cde7ec1ce6c8367952b93f25a28d1b1e36e7c0d6015b2795c93c70f14b2630adb1c7e02d19b6ce8b457aaeda2966f594ff1f53694eeff3133f3723109414094cdc24e8bc875dfe0ba5d7a910e8d7dd4c41b47eaad86612a6875c1ba124740fdb9f29ca5236d31849ce069a7c9e2bcb4302d78ebebaa7a8bea095444450f852fda4e30c3056758e2f29511ffd7da7823ac872aa2b18c0137819c6ee23219f49de89756d152935f890dbc8e994e990211b38536107787732d5a1710342c9b4937b2805979abadd26ca8fd1f45c86f3f56340f3ae2a72410eb03208f24117fa670f4eef469db2a58f35cd20855860bd686c61af9db910d8a65da58a5c2ba7c88d112eec6842662abef076b4d8163a38bd0107e9952553dd4bada8eabb7ae626faef763853d28cfbfa52097b0e3219e64ecc4a50f5a61783414a511c99b939ac01dff617d2e5fff55dc6f22d10097105b2e0195b2b18025fb405903ccffc2c3311ac8147b29c717e71b33459e8d58856bff8dc93c4e7bd4a4e3ca2168020d0b42dc24e33058effc96f8743d666eeb799d38b7e37f32f81e85a7a5dc05a4d525c8d8bdc3bf11c7cfcdbd6497eead7b7367c056cf278e5a1398ec319140560307aa4c3e27faa43cf60d8
+#TRUST-RSA-SHA256 4d4f7748aa9cc2348abc0f922e5ab507d288a3e217426e999313932de34d1a15eda1638252de4f4c63ab0ef9111f1ffa96ff07aed3996f629220a0845ea5ba5a789effa67f7256c3f5e5cb36f35ac8ffef30122de726596df9113d229dfe07d86053875006c36159b87c9c079b924ff04fad12cfff5676c33d89dd0054ef9803a6e9ab2febd85f47444fd8f7895484051ec1607ded62f749d3f5a0621a8dd93922bf3ac29a6e3838ba7ad32e850927f85d771fb01c85a2edd039cb591b313f04e5de9bff89c2ebe2ef639d572187b1c1f4cca7e2518b4dc9238450a1fde24d64e4fb18a7f6d62c8778f7778b5611c323d4d150392a680495cf78b04398b4e61d90bcbae870942a5e384fc911656edcc5c42b682d3e622177c8857842d8420fc05ccdc2823830cec4254f829e49fe4d7d8ab56c8f424ca000b109fa3166ad85f0e58e08c2e407a420d286a987ee5c443e158972f865ae68440773dc1a38dc010e37e2c1b6ccdf8d62a606dfb84b8413707e8ff3f67b67c402ea2ea7e59ade9b6e7b4b2871c25f0736e86e3cf156eacbf83c351106e8a38c1da96e02d702154289e3e127807b4e5032b48278baf4c6c8a6254ea645f46fba34d1efd3ea6763abebf0989373d947c6c7fb5b4e7c6590354372fc7dba49dc309ca5447c7ae12ae04f5a16da2c2681feae8cc754d19e63ae90097f5dd04a60497b629477e6e1381102
+#
+# This script is Copyright (C) 2004-2025 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2025/06/25 $
+#
+# description : This .audit is designed against the CIS Microsoft Intune for Windows 10 Benchmark 4.0.0
+#
+#<ui_metadata>
+#<display_name>CIS Microsoft Intune for Windows 10 v4.0.0 BL</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Microsoft Intune for Windows 10</name>
+#  <profile>BL</profile>
+#  <version>4.0.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/21767</link>
+#</spec>
+#<labels>windows,cis,microsoft_intune_for_windows_10,agent</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>BUILD_VERSION</name>
+#    <default>(1900[0-9]|190[1-9][0-9]|1[0-9][1-9][0-9]{2})</default>
+#    <description>Windows Build Version</description>
+#    <info>Windows build Version found under HKLM\Software\Microsoft\Windows Nt\Currentversion:CurrentBuild</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>PLATFORM_VERSION</name>
+#    <default>10</default>
+#    <description>Windows Version</description>
+#    <info>The version of Windows 10 to match against in the platform check.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Windows" version:"2">
+<group_policy:"CIS Microsoft Intune for Windows 10">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "Windows 10 build installed"
+      value_type  : POLICY_TEXT
+      value_data  : "@BUILD_VERSION@"
+      reg_key     : "HKLM\Software\Microsoft\Windows Nt\Currentversion"
+      reg_item    : "CurrentBuild"
+      check_type  : CHECK_REGEX
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "Windows 10 is installed"
+      value_type  : POLICY_TEXT
+      value_data  : "^[Ww][Ii][Nn][Dd][Oo][Ww][Ss] @PLATFORM_VERSION@.+$"
+      reg_key     : "HKLM\Software\Microsoft\Windows Nt\Currentversion"
+      reg_item    : "ProductName"
+      check_type  : CHECK_REGEX
+    </custom_item>
+
+    <custom_item>
+      type        : REG_CHECK
+      description : "Target is enrolled with Microsoft Intune"
+      value_type  : POLICY_TEXT
+      value_data  : "HKLM\Software\Microsoft\Provisioning\OMADM\Logger"
+      reg_option  : MUST_EXIST
+      key_item    : "CurrentEnrollmentId"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_Microsoft_Intune_for_Windows_10_v4.0.0_BL.audit from CIS Microsoft Intune for Windows 10 Benchmark v4.0.0"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      show_output : YES
+    </report>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "28.1 (BL) Ensure 'Device Enumeration Policy' is set to 'Block all (most restrictive)'"
+      info        : "This policy is intended to provide additional security against external DMA-capable devices. It allows for more control over the enumeration of external DMA-capable devices that are not compatible with DMA Remapping/device memory isolation and sandboxing.
+
+The recommended state for this setting is: Block all (most restrictive)
+
+Note : This policy does not apply to 1394, PCMCIA or ExpressCard devices. The protection also only applies to Windows 10 R1803 or higher and requires a UEFI BIOS to function.
+
+Note #2 : More information on this feature is available at this link:
+
+Kernel DMA Protection for Thunderbolt(TM) 3 (Windows 10) | Microsoft Docs
+
+.
+
+Device memory sandboxing allows the OS to leverage the I/O Memory Management Unit (IOMMU) of a device to block unpermitted I/O, or memory access, by the peripheral."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Block all (most restrictive)
+
+Dma Guard\Device Enumeration Policy
+
+Impact:
+
+External devices that are not compatible with DMA-remapping will not be enumerated and will not function unless/until the user has logged in successfully
+
+and
+
+has an unlocked user session. Once enumerated, these devices will continue to function, regardless of the state of the session. Devices that are compatible with DMA-remapping will be enumerated immediately, with their device memory isolated."
+      reference   : "800-171|3.4.1,800-171r3|03.04.10,800-53|CM-8,800-53r5|CM-8,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv7|1.4,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,CSF2.0|ID.AM-01,CSF2.0|ID.AM-02,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.9,ISO-27001-2022|A.8.9,ITSG-33|CM-8,LEVEL|BLA,NESA|T1.2.1,NESA|T1.2.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\Kernel DMA Protection"
+      reg_item    : "DeviceEnumerationPolicy"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.10.9.1.1 (BL) Ensure 'Prevent installation of devices that match any of these device IDs' is set to 'Enabled'"
+      info        : "This policy setting allows you to specify a list of Plug and Play hardware IDs and compatible IDs for devices that Windows is prevented from installing. This policy setting takes precedence over any other policy setting that allows Windows to install a device.
+
+If you enable this policy setting, Windows is prevented from installing a device whose hardware ID or compatible ID appears in the list you create. If you enable this policy setting on a remote desktop server, the policy setting affects redirection of the specified devices from a remote desktop client to the remote desktop server.
+
+If you disable or do not configure this policy setting, devices can be installed and updated as allowed or prevented by other policy settings.
+
+The recommended state for this setting is: Enabled
+
+Note: In versions of Windows 10 Release 1803 (or newer), there is a new control named
+
+Enumeration policy for external devices incompatible with Kernel DMA Protection
+
+available that mitigates much of the risk for malicious devices that may perform Direct Memory Access (DMA) attacks. The newer control is also now part of the Windows 10 CIS benchmark, in section 18.8.26. However, if your environment still contains any Windows 10 Release 1709 (or older) workstations, then the newer control will not work, so this setting remains important to disable Thunderbolt devices on those systems.
+
+A BitLocker-protected computer may be vulnerable to Direct Memory Access (DMA) attacks when the computer is turned on or is in the Standby power state - this includes when the workstation is locked.
+
+BitLocker with TPM-only authentication lets a computer enter the power-on state without any pre-boot authentication. Therefore, an attacker may be able to perform DMA attacks.
+
+This issue is documented in Microsoft Knowledge Base article 2516445:
+
+Blocking the SBP-2 driver and Thunderbolt controllers to reduce 1394 DMA and Thunderbolt DMA threats to BitLocker
+
+."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled
+
+Administrative Templates\System\Device Installation\Device Installation Restrictions\Prevent installation of devices that match any of these device IDs
+
+Impact:
+
+Devices matching the specified device IDs will be prevented from installation."
+      reference   : "800-171|3.8.7,800-171r3|03.08.07,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.10,ISO-27001-2022|A.7.10,ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,LEVEL|BLA,NESA|T1.4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\DeviceInstall\Restrictions"
+      reg_item    : "DenyDeviceIDs"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.10.9.1.2 (BL) Ensure 'Prevent installation of devices that match any of these device IDs: Also apply to matching devices that are already installed.' is set to 'True' (checked)"
+      info        : "This policy setting allows you to specify a list of Plug and Play hardware IDs and compatible IDs for devices that Windows is prevented from installing. This policy setting takes precedence over any other policy setting that allows Windows to install a device.
+
+If you enable this policy setting, Windows is prevented from installing a device whose hardware ID or compatible ID appears in the list you create. If you enable this policy setting on a remote desktop server, the policy setting affects redirection of the specified devices from a remote desktop client to the remote desktop server.
+
+If you disable or do not configure this policy setting, devices can be installed and updated as allowed or prevented by other policy settings.
+
+The recommended state for this setting is: True (checked)
+
+Note: In versions of Windows 10 Release 1803 (or newer), there is a new control named
+
+Enumeration policy for external devices incompatible with Kernel DMA Protection
+
+available that mitigates much of the risk for malicious devices that may perform Direct Memory Access (DMA) attacks. The newer control is also now part of the Windows 10 CIS benchmark, in section 18.8.26. However, if your environment still contains any Windows 10 Release 1709 (or older) workstations, then the newer control will not work, so this setting remains important to disable Thunderbolt devices on those systems.
+
+A BitLocker-protected computer may be vulnerable to Direct Memory Access (DMA) attacks when the computer is turned on or is in the Standby power state - this includes when the workstation is locked.
+
+BitLocker with TPM-only authentication lets a computer enter the power-on state without any pre-boot authentication. Therefore, an attacker may be able to perform DMA attacks.
+
+This issue is documented in Microsoft Knowledge Base article 2516445:
+
+Blocking the SBP-2 driver and Thunderbolt controllers to reduce 1394 DMA and Thunderbolt DMA threats to BitLocker
+
+."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled and check the Also apply to matching devices that are already installed. button.
+
+Administrative Templates\System\Device Installation\Device Installation Restrictions\Prevent installation of devices that match any of these device IDs
+
+Impact:
+
+Existing devices (that match the device IDs specified) that were previously installed prior to the hardening will be disabled or removed."
+      reference   : "800-171|3.8.7,800-171r3|03.08.07,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.10,ISO-27001-2022|A.7.10,ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,LEVEL|BLA,NESA|T1.4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\DeviceInstall\Restrictions"
+      reg_item    : "DenyDeviceIDsRetroactive"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.10.9.1.3 (BL) Ensure 'Prevent installation of devices that match any of these device IDs: Prevent installation of devices that match any of these device IDs' is set to 'PCI\CC_0C0A'"
+      info        : "This policy setting allows you to specify a list of Plug and Play hardware IDs and compatible IDs for devices that Windows is prevented from installing. This policy setting takes precedence over any other policy setting that allows Windows to install a device.
+
+If you enable this policy setting, Windows is prevented from installing a device whose hardware ID or compatible ID appears in the list you create. If you enable this policy setting on a remote desktop server, the policy setting affects redirection of the specified devices from a remote desktop client to the remote desktop server.
+
+If you disable or do not configure this policy setting, devices can be installed and updated as allowed or prevented by other policy settings.
+
+The recommended state for this setting is: PCI\CC_0C0A
+
+Note: This device ID is for Thunderbolt controllers. The USB Type-C (USB-C) port standard that is now common in many computers, especially laptops, utilizes Thunderbolt technology, and therefore may be affected by this restriction. If your organization needs to use USB-C extensively, you may need to decide, internally, to allow yourselves an exception to this recommendation. However, please ensure that all necessary decision-makers have accepted the increased risk of BitLocker encryption key theft (and therefore data theft) via malicious Thunderbolt devices (when left unattended), by doing so.
+
+Note #2: In versions of Windows 10 Release 1803 (or newer), there is a new control named
+
+Enumeration policy for external devices incompatible with Kernel DMA Protection
+
+available that mitigates much of the risk for malicious devices that may perform Direct Memory Access (DMA) attacks. The newer control is also now part of the Windows 10 CIS benchmark, in section 18.8.26. However, if your environment still contains any Windows 10 Release 1709 (or older) workstations, then the newer control will not work, so this setting remains important to disable Thunderbolt devices on those systems.
+
+A BitLocker-protected computer may be vulnerable to Direct Memory Access (DMA) attacks when the computer is turned on or is in the Standby power state - this includes when the workstation is locked.
+
+BitLocker with TPM-only authentication lets a computer enter the power-on state without any pre-boot authentication. Therefore, an attacker may be able to perform DMA attacks.
+
+This issue is documented in Microsoft Knowledge Base article 2516445:
+
+Blocking the SBP-2 driver and Thunderbolt controllers to reduce 1394 DMA and Thunderbolt DMA threats to BitLocker
+
+."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled and add PCI\CC_0C0A to the Device IDs list.
+
+Administrative Templates\System\Device Installation\Device Installation Restrictions\Prevent installation of devices that match any of these device IDs
+
+Impact:
+
+Thunderbolt controllers will be prevented from being installed in Windows."
+      reference   : "800-171|3.8.7,800-171r3|03.08.07,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.10,ISO-27001-2022|A.7.10,ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,LEVEL|BLA,NESA|T1.4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_TEXT
+      value_data  : "PCI\CC_0C0A"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\DeviceInstall\Restrictions\DenyDeviceIDs"
+      reg_item    : "1"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.10.9.1.4 (BL) Ensure 'Prevent installation of devices using drivers that match these device setup classes' is set to 'Enabled'"
+      info        : "This policy setting allows you to specify a list of device setup class globally unique identifiers (GUIDs) for device drivers that Windows is prevented from installing. This policy setting takes precedence over any other policy setting that allows Windows to install a device.
+
+If you enable this policy setting, Windows is prevented from installing or updating device drivers whose device setup class GUIDs appear in the list you create. If you enable this policy setting on a remote desktop server, the policy setting affects redirection of the specified devices from a remote desktop client to the remote desktop server.
+
+If you disable or do not configure this policy setting, Windows can install and update devices as allowed or prevented by other policy settings.
+
+The recommended state for this setting is: Enabled
+
+A BitLocker-protected computer may be vulnerable to Direct Memory Access (DMA) attacks when the computer is turned on or is in the Standby power state - this includes when the workstation is locked.
+
+BitLocker with TPM-only authentication lets a computer enter the power-on state without any pre-boot authentication. Therefore, an attacker may be able to perform DMA attacks.
+
+This issue is documented in Microsoft Knowledge Base article 2516445:
+
+Blocking the SBP-2 driver and Thunderbolt controllers to reduce 1394 DMA and Thunderbolt DMA threats to BitLocker
+
+."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled
+
+Administrative Templates\System\Device Installation\Device Installation Restrictions\Prevent installation of devices using drivers that match these device setup classes
+
+Impact:
+
+Devices matching the specified device setup classes will be prevented from installation."
+      reference   : "800-171|3.8.7,800-171r3|03.08.07,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.10,ISO-27001-2022|A.7.10,ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,LEVEL|BLA,NESA|T1.4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\DeviceInstall\Restrictions"
+      reg_item    : "DenyDeviceClasses"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.10.9.1.5 (BL) Ensure 'Prevent installation of devices using drivers that match these device setup classes: Also apply to matching devices that are already installed.' is set to 'True' (checked)"
+      info        : "This policy setting allows you to specify a list of device setup class globally unique identifiers (GUIDs) for device drivers that Windows is prevented from installing. This policy setting takes precedence over any other policy setting that allows Windows to install a device.
+
+If you enable this policy setting, Windows is prevented from installing or updating device drivers whose device setup class GUIDs appear in the list you create. If you enable this policy setting on a remote desktop server, the policy setting affects redirection of the specified devices from a remote desktop client to the remote desktop server.
+
+If you disable or do not configure this policy setting, Windows can install and update devices as allowed or prevented by other policy settings.
+
+The recommended state for this setting is: True (checked)
+
+A BitLocker-protected computer may be vulnerable to Direct Memory Access (DMA) attacks when the computer is turned on or is in the Standby power state - this includes when the workstation is locked.
+
+BitLocker with TPM-only authentication lets a computer enter the power-on state without any pre-boot authentication. Therefore, an attacker may be able to perform DMA attacks.
+
+This issue is documented in Microsoft Knowledge Base article 2516445:
+
+Blocking the SBP-2 driver and Thunderbolt controllers to reduce 1394 DMA and Thunderbolt DMA threats to BitLocker
+
+."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled and check the Also apply to matching devices that are already installed. button.
+
+Administrative Templates\System\Device Installation\Device Installation Restrictions\Prevent installation of devices using drivers that match these device setup classes
+
+Impact:
+
+Existing devices (that match the device setup classes specified) that were previously installed prior to the hardening will be disabled or removed."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|BLA"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\Windows\DeviceInstall\Restrictions"
+      reg_item    : "DenyDeviceClassesRetroactive"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "4.10.9.1.6 (BL) Ensure 'Prevent installation of devices using drivers that match these device setup classes: Prevent installation of devices using drivers for these device setup' is set to 'IEEE 1394 device setup classes'"
+      info            : "This policy setting allows you to specify a list of device setup class globally unique identifiers (GUIDs) for device drivers that Windows is prevented from installing. This policy setting takes precedence over any other policy setting that allows Windows to install a device.
+
+If you enable this policy setting, Windows is prevented from installing or updating device drivers whose device setup class GUIDs appear in the list you create. If you enable this policy setting on a remote desktop server, the policy setting affects redirection of the specified devices from a remote desktop client to the remote desktop server.
+
+If you disable or do not configure this policy setting, Windows can install and update devices as allowed or prevented by other policy settings.
+
+Here are the four entries we recommend and what they translate to:
+
+ - {d48179be-ec20-11d1-b6b8-00c04fa372a7} - IEEE 1394 devices that support the SBP2 Protocol Class
+ - {7ebefbc0-3200-11d2-b4c2-00a0C9697d07} - IEEE 1394 devices that support the IEC-61883 Protocol Class
+ - {c06ff265-ae09-48f0-812c-16753d7cba83} - IEEE 1394 devices that support the AVC Protocol Class
+ - {6bdd1fc1-810f-11d0-bec7-08002be2092f} - IEEE 1394 Host Bus Controller Class
+
+The full list of system-defined device setup classes available in Windows is here:
+
+System-Defined Device Setup Classes Available to Vendors | Microsoft Docs
+
+The recommended state for this setting is: {d48179be-ec20-11d1-b6b8-00c04fa372a7} {7ebefbc0-3200-11d2-b4c2-00a0C9697d07} {c06ff265-ae09-48f0-812c-16753d7cba83} and {6bdd1fc1-810f-11d0-bec7-08002be2092f}
+
+Note: IEEE 1394 has also been known/branded as
+
+FireWire
+
+(by Apple),
+
+i.LINK
+
+(by Sony) and
+
+Lynx
+
+(by Texas Instruments).
+
+A BitLocker-protected computer may be vulnerable to Direct Memory Access (DMA) attacks when the computer is turned on or is in the Standby power state - this includes when the workstation is locked.
+
+BitLocker with TPM-only authentication lets a computer enter the power-on state without any pre-boot authentication. Therefore, an attacker may be able to perform DMA attacks.
+
+This issue is documented in Microsoft Knowledge Base article 2516445:
+
+Blocking the SBP-2 driver and Thunderbolt controllers to reduce 1394 DMA and Thunderbolt DMA threats to BitLocker
+
+."
+      solution        : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled and add {d48179be-ec20-11d1-b6b8-00c04fa372a7} {7ebefbc0-3200-11d2-b4c2-00a0C9697d07} {c06ff265-ae09-48f0-812c-16753d7cba83} and {6bdd1fc1-810f-11d0-bec7-08002be2092f} to the device setup classes list.
+
+Administrative Templates\System\Device Installation\Device Installation Restrictions\Prevent installation of devices using drivers that match these device setup classes
+
+Impact:
+
+IEEE 1394 drives & devices will be prevented from being installed in Windows."
+      reference       : "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-171r3|03.14.02c.02,800-53|SI-3c.2.,800-53r5|SI-3c.2.,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSF|DE.CM-4,CSF|DE.DP-3,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.7,ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3c.b.,LEVEL|BLA,NESA|T3.4.1,NIAv2|NS24,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.3.2,PCI-DSSv4.0|5.3.3,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7"
+      see_also        : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type      : POLICY_TEXT
+      value_data      : "STATUS: PASSED"
+      powershell_args : "$values = '{d48179be-ec20-11d1-b6b8-00c04fa372a7}', '{7ebefbc0-3200-11d2-b4c2-00a0C9697d07}', '{c06ff265-ae09-48f0-812c-16753d7cba83}', '{6bdd1fc1-810f-11d0-bec7-08002be2092f}'; $path = 'Registry::HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Deviceinstall\Restrictions\DenyDeviceClasses'; Get-Item -Path $path -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Property | ForEach-Object { $value = (Get-ItemProperty -Path $path -Name $_).$_; if ($values -contains $value) { $values = $values | Where-Object { $_ -ne $value } } }; if ($values) { 'The following values are missing:'; ''; $values; ''; 'STATUS: FAILED' } else { 'STATUS: PASSED' }"
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.1.1 (BL) Ensure 'Choose how BitLocker-protected fixed drives can be recovered' is set to 'Enabled'"
+      info        : 'This policy setting allows you to control how BitLocker-protected fixed data drives are recovered in the absence of the required credentials. This policy setting is applied when you turn on BitLocker.
+
+The \'Allow data recovery agent\' check box is used to specify whether a Data Recovery Agent can be used with BitLocker-protected fixed data drives. Before a Data Recovery Agent can be used it must be added from the Public Key Policies item in either the Group Policy Management Console or the Local Group Policy Editor. Consult the BitLocker Drive Encryption Deployment Guide on Microsoft TechNet for more information about adding Data Recovery Agents.
+
+In \'Configure user storage of BitLocker recovery information\' select whether users are allowed, required, or not allowed to generate a 48-digit recovery password or a 256-bit recovery key.
+
+Select \'Omit recovery options from the BitLocker setup wizard\' to prevent users from specifying recovery options when they enable BitLocker on a drive. This means that you will not be able to specify which recovery option to use when you enable BitLocker, instead BitLocker recovery options for the drive are determined by the policy setting.
+
+In \'Save BitLocker recovery information to Active Directory Domain Services\' choose which BitLocker recovery information to store in AD DS for fixed data drives. If you select \'Backup recovery password and key package\', both the BitLocker recovery password and key package are stored in AD DS. Storing the key package supports recovering data from a drive that has been physically corrupted. If you select \'Backup recovery password only\', only the recovery password is stored in AD DS.
+
+Select the \'Do not enable BitLocker until recovery information is stored in AD DS for fixed data drives\' check box if you want to prevent users from enabling BitLocker unless the computer is connected to the domain and the backup of BitLocker recovery information to AD DS succeeds.
+
+Note: If the \'Do not enable BitLocker until recovery information is stored in AD DS for fixed data drives\' check box is selected, a recovery password is automatically generated.
+
+The recommended state for this setting is: Enabled
+
+Administrators should always have a safe, secure way to access encrypted data in the event users cannot access their data.
+
+Additionally, as with any authentication method, a drive can be compromised by guessing or finding the authentication information used to access the drive.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Fixed Data Drives\Choose how BitLocker-protected fixed drives can be recovered
+
+Impact:
+
+To use BitLocker, a Data Recovery Agent will need to be configured for fixed drives. To recover a drive will require highly-controlled access to the Data Recovery Agent private key."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\FVE"
+      reg_item    : "FDVRecovery"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.1.2 (BL) Ensure 'Choose how BitLocker-protected fixed drives can be recovered: Recovery Key' is set to 'Enabled: Allow 256-bit recovery key'"
+      info        : 'This policy setting allows you to control how BitLocker-protected fixed data drives are recovered in the absence of the required credentials. This policy setting is applied when you turn on BitLocker.
+
+In \'Configure user storage of BitLocker recovery information\' select whether users are allowed, required, or not allowed to generate a 48-digit recovery password or a 256-bit recovery key.
+
+The recommended state for this setting is: Enabled: Allow 256-bit recovery key
+
+Administrators should always have a safe, secure way to access encrypted data in the event users cannot access their data.
+
+Additionally, as with any authentication method, a drive can be compromised by guessing or finding the authentication information used to access the drive.
+
+To use BitLocker, a Data Recovery Agent will need to be configured for fixed drives. To recover a drive will require highly-controlled access to the Data Recovery Agent private key.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: Allow 256-bit recovery key
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Fixed Data Drives\Choose how BitLocker-protected fixed drives can be recovered: Recovery Key
+
+Impact:
+
+A 256-bit recovery key will be permitted for fixed drives."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "2"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "FDVRecoveryKey"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.1.3 (BL) Ensure 'Choose how BitLocker-protected fixed drives can be recovered: Recovery Password' is set to 'Enabled: Allow 48-digit recovery password'"
+      info        : 'This policy setting allows you to control how BitLocker-protected fixed data drives are recovered in the absence of the required credentials. This policy setting is applied when you turn on BitLocker.
+
+In \'Configure user storage of BitLocker recovery information\' select whether users are allowed, required, or not allowed to generate a 48-digit recovery password or a 256-bit recovery key.
+
+The recommended state for this setting is: Enabled: Allow 48-digit recovery password
+
+Administrators should always have a safe, secure way to access encrypted data in the event users cannot access their data.
+
+Additionally, as with any authentication method, a drive can be compromised by guessing or finding the authentication information used to access the drive.
+
+To use BitLocker, a Data Recovery Agent will need to be configured for fixed drives. To recover a drive will require highly-controlled access to the Data Recovery Agent private key.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: Allow 48-digit recovery password
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Fixed Data Drives\Choose how BitLocker-protected fixed drives can be recovered: Recovery Password
+
+Impact:
+
+A 48-digit recovery password will be permitted for fixed drives."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "2"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "FDVRecoveryPassword"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.1.4 (BL) Ensure 'Choose how BitLocker-protected fixed drives can be recovered: Allow data recovery agent' is set to 'Enabled: True'"
+      info        : 'This policy setting allows you to control how BitLocker-protected fixed data drives are recovered in the absence of the required credentials. This policy setting is applied when you turn on BitLocker.
+
+The \'Allow data recovery agent\' check box is used to specify whether a Data Recovery Agent can be used with BitLocker-protected fixed data drives. Before a Data Recovery Agent can be used it must be added from the Public Key Policies item in either the Group Policy Management Console or the Local Group Policy Editor. Consult the BitLocker Drive Encryption Deployment Guide on Microsoft TechNet for more information about adding Data Recovery Agents.
+
+The recommended state for this setting is: Enabled: True
+
+Administrators should always have a safe, secure way to access encrypted data in the event users cannot access their data.
+
+Additionally, as with any authentication method, a drive can be compromised by guessing or finding the authentication information used to access the drive.
+
+To use BitLocker, a Data Recovery Agent will need to be configured for fixed drives. To recover a drive will require highly-controlled access to the Data Recovery Agent private key.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: True
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Fixed Data Drives\Choose how BitLocker-protected fixed drives can be recovered: Allow data recovery agent
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "FDVManageDRA"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.1.5 (BL) Ensure 'Choose how BitLocker-protected fixed drives can be recovered: Configure storage of BitLocker recovery information to AD DS' is set to 'Enabled: Backup recovery passwords and key packages'"
+      info        : 'This policy setting allows you to control how BitLocker-protected fixed data drives are recovered in the absence of the required credentials. This policy setting is applied when you turn on BitLocker.
+
+In \'Save BitLocker recovery information to Active Directory Domain Services\' choose which BitLocker recovery information to store in AD DS for fixed data drives. If you select \'Backup recovery password and key package\', both the BitLocker recovery password and key package are stored in AD DS. Storing the key package supports recovering data from a drive that has been physically corrupted. If you select \'Backup recovery password only\', only the recovery password is stored in AD DS.
+
+The recommended state for this setting is: Enabled: Backup recovery passwords and key packages
+
+Administrators should always have a safe, secure way to access encrypted data in the event users cannot access their data.
+
+Additionally, as with any authentication method, a drive can be compromised by guessing or finding the authentication information used to access the drive.
+
+To use BitLocker, a Data Recovery Agent will need to be configured for fixed drives. To recover a drive will require highly-controlled access to the Data Recovery Agent private key.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: Backup recovery passwords and key packages
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Fixed Data Drives\Choose how BitLocker-protected fixed drives can be recovered: Configure storage of BitLocker recovery information to AD DS:
+
+Impact:
+
+None - this value is ignored when the checkbox above it (
+
+Save BitLocker recovery information to AD DS for fixed data drives
+
+) is False (unchecked). If that checkbox is set to True (checked), both recovery passwords and key packages for fixed drives will be saved to AD DS."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "FDVActiveDirectoryInfoToStore"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.1.6 (BL) Ensure 'Choose how BitLocker-protected fixed drives can be recovered: Do not enable BitLocker until recovery information is stored to AD DS for fixed data drives' is set to 'Enabled: False'"
+      info        : 'This policy setting allows you to control how BitLocker-protected fixed data drives are recovered in the absence of the required credentials. This policy setting is applied when you turn on BitLocker.
+
+Select the \'Do not enable BitLocker until recovery information is stored in AD DS for fixed data drives\' check box if you want to prevent users from enabling BitLocker unless the computer is connected to the domain and the backup of BitLocker recovery information to AD DS succeeds.
+
+Note: If the \'Do not enable BitLocker until recovery information is stored in AD DS for fixed data drives\' check box is selected, a recovery password is automatically generated.
+
+The recommended state for this setting is: Enabled: False
+
+Administrators should always have a safe, secure way to access encrypted data in the event users cannot access their data.
+
+Additionally, as with any authentication method, a drive can be compromised by guessing or finding the authentication information used to access the drive.
+
+To use BitLocker, a Data Recovery Agent will need to be configured for fixed drives. To recover a drive will require highly-controlled access to the Data Recovery Agent private key.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: False
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Fixed Data Drives\Choose how BitLocker-protected fixed drives can be recovered: Do not enable BitLocker until recovery information is stored to AD DS for fixed data drives
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "FDVRequireActiveDirectoryBackup"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.1.7 (BL) Ensure 'Choose how BitLocker-protected fixed drives can be recovered: Omit recovery options from the BitLocker setup wizard' is set to 'Enabled: True'"
+      info        : 'This policy setting allows you to control how BitLocker-protected fixed data drives are recovered in the absence of the required credentials. This policy setting is applied when you turn on BitLocker.
+
+Select \'Omit recovery options from the BitLocker setup wizard\' to prevent users from specifying recovery options when they enable BitLocker on a drive. This means that you will not be able to specify which recovery option to use when you enable BitLocker, instead BitLocker recovery options for the drive are determined by the policy setting.
+
+The recommended state for this setting is: Enabled: True
+
+Administrators should always have a safe, secure way to access encrypted data in the event users cannot access their data.
+
+Additionally, as with any authentication method, a drive can be compromised by guessing or finding the authentication information used to access the drive.
+
+To use BitLocker, a Data Recovery Agent will need to be configured for fixed drives. To recover a drive will require highly-controlled access to the Data Recovery Agent private key.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: True
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Fixed Data Drives\Choose how BitLocker-protected fixed drives can be recovered: Omit recovery options from the BitLocker setup wizard
+
+Impact:
+
+The ability to manually select recovery options for fixed drives will not be presented to the user in the BitLocker setup wizard."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "FDVHideRecoveryPage"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.1.8 (BL) Ensure 'Choose how BitLocker-protected fixed drives can be recovered: Save BitLocker recovery information to AD DS for fixed data drives' is set to 'Enabled: False'"
+      info        : 'This policy setting allows you to control how BitLocker-protected fixed data drives are recovered in the absence of the required credentials. This policy setting is applied when you turn on BitLocker.
+
+In \'Save BitLocker recovery information to Active Directory Domain Services\' choose which BitLocker recovery information to store in AD DS for fixed data drives. If you select \'Backup recovery password and key package\', both the BitLocker recovery password and key package are stored in AD DS. Storing the key package supports recovering data from a drive that has been physically corrupted. If you select \'Backup recovery password only\', only the recovery password is stored in AD DS.
+
+The recommended state for this setting is: Enabled: False
+
+Administrators should always have a safe, secure way to access encrypted data in the event users cannot access their data.
+
+Additionally, as with any authentication method, a drive can be compromised by guessing or finding the authentication information used to access the drive.
+
+To use BitLocker, a Data Recovery Agent will need to be configured for fixed drives. To recover a drive will require highly-controlled access to the Data Recovery Agent private key.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: False
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Fixed Data Drives\Choose how BitLocker-protected fixed drives can be recovered: Save BitLocker recovery information to AD DS for fixed data drives
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "FDVActiveDirectoryBackup"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.1 (BL) Ensure 'Choose how BitLocker-protected operating system drives can be recovered' is set to 'Enabled'"
+      info        : 'This policy setting allows you to control how BitLocker-protected operating system drives are recovered in the absence of the required startup key information. This policy setting is applied when you turn on BitLocker.
+
+The \'Allow certificate-based data recovery agent\' check box is used to specify whether a Data Recovery Agent can be used with BitLocker-protected operating system drives. Before a Data Recovery Agent can be used it must be added from the Public Key Policies item in either the Group Policy Management Console or the Local Group Policy Editor. Consult the BitLocker Drive Encryption Deployment Guide on Microsoft TechNet for more information about adding Data Recovery Agents.
+
+In \'Configure user storage of BitLocker recovery information\' select whether users are allowed, required, or not allowed to generate a 48-digit recovery password or a 256-bit recovery key.
+
+Select \'Omit recovery options from the BitLocker setup wizard\' to prevent users from specifying recovery options when they enable BitLocker on a drive. This means that you will not be able to specify which recovery option to use when you enable BitLocker, instead BitLocker recovery options for the drive are determined by the policy setting.
+
+In \'Save BitLocker recovery information to Active Directory Domain Services\', choose which BitLocker recovery information to store in AD DS for operating system drives. If you select \'Backup recovery password and key package\', both the BitLocker recovery password and key package are stored in AD DS. Storing the key package supports recovering data from a drive that has been physically corrupted. If you select \'Backup recovery password only\', only the recovery password is stored in AD DS.
+
+Select the \'Do not enable BitLocker until recovery information is stored in AD DS for operating system drives\' check box if you want to prevent users from enabling BitLocker unless the computer is connected to the domain and the backup of BitLocker recovery information to AD DS succeeds.
+
+Note: If the \'Do not enable BitLocker until recovery information is stored in AD DS for operating system drives\' check box is selected, a recovery password is automatically generated.
+
+The recommended state for this setting is: Enabled
+
+Should a user lose their primary means for accessing an encrypted OS volume, or should the system not pass its boot time integrity checks, the system will go into recovery mode. If the recovery key has not been backed up to Active Directory, the user would need to have saved the recovery key to another location such as a USB flash drive, or have printed the recovery password, and now have access to one of those in order to recovery the system. If the user is unable to produce the recovery key, then the user will be denied access to the encrypted volume and subsequently any data that is stored there.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Choose how BitLocker-protected operating system drives can be recovered
+
+Impact:
+
+Users will need to be domain connected to turn on BitLocker. This policy is not FIPS complaint."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "OSRecovery"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.10 (BL) Ensure 'Require additional authentication at startup: Allow BitLocker without a compatible TPM (requires a password or a startup key on a USB flash drive)' is set to 'Enabled: False'"
+      info        : "This policy setting allows you to configure whether you can use BitLocker without a Trusted Platform Module (TPM), instead using a password or startup key on a USB flash drive. This policy setting is applied when you turn on BitLocker.
+
+The recommended state for this setting is: Enabled: False
+
+TPM without use of a PIN will only validate early boot components and does not require a user to enter any additional authentication information. If a computer is lost or stolen in this configuration, BitLocker will not provide any additional measure of protection beyond what is provided by native Windows authentication unless the early boot components are tampered with or the encrypted drive is removed from the machine."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: False
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Require additional authentication at startup: Allow BitLocker without a compatible TPM
+
+Impact:
+
+A compatible TPM will be required in order to use BitLocker."
+      reference   : "800-171|3.1.19,800-171r3|03.01.18c.,800-53|AC-19(5),800-53r5|AC-19(5),CSCv7|13.6,CSF|PR.AC-3,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.7.9,ISO-27001-2022|A.8.1,ISO/IEC-27001|A.6.2.1,ITSG-33|AC-19,LEVEL|BLA,NIAv2|OS5,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "EnableBDEWithNoTPM"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.11 (BL) Ensure 'Require additional authentication at startup: Configure TPM startup key and PIN:' is set to 'Enabled: Do not allow startup key and PIN with TPM'"
+      info        : "This policy setting allows you to configure whether BitLocker requires additional authentication each time the computer starts. This policy setting is applied when you turn on BitLocker.
+
+Note: Only one of the additional authentication options can be
+
+required
+
+at startup, otherwise a policy error occurs.
+
+On a computer with a compatible TPM, four types of authentication methods can be used at startup to provide added protection for encrypted data. When the computer starts, it can use only the TPM for authentication, or it can also require insertion of a USB flash drive containing a startup key, the entry of a 4-digit to 20-digit personal identification number (PIN), or both.
+
+Note #2: If you want to require the use of a startup PIN and a USB flash drive, you must configure BitLocker settings using the command-line tool manage-bde instead of the BitLocker Drive Encryption setup wizard.
+
+The recommended state for this setting is: Enabled: Do not allow startup key and PIN with TPM
+
+TPM without use of a PIN will only validate early boot components and does not require a user to enter any additional authentication information. If a computer is lost or stolen in this configuration, BitLocker will not provide any additional measure of protection beyond what is provided by native Windows authentication unless the early boot components are tampered with or the encrypted drive is removed from the machine."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: Do not allow startup key and PIN with TPM
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Require additional authentication at startup: Configure TPM startup key and PIN:
+
+Impact:
+
+A TPM, PIN
+
+and
+
+startup key will not be a permitted combination for BitLocker authentication. A PIN requires physical presence to restart the computer. This functionality is not compatible with Wake on LAN solutions."
+      reference   : "800-171|3.1.19,800-171r3|03.01.18c.,800-53|AC-19(5),800-53r5|AC-19(5),CSCv7|13.6,CSF|PR.AC-3,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.7.9,ISO-27001-2022|A.8.1,ISO/IEC-27001|A.6.2.1,ITSG-33|AC-19,LEVEL|BLA,NIAv2|OS5,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "UseTPMKeyPIN"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.12 (BL) Ensure 'Require additional authentication at startup: Configure TPM startup key:' is set to 'Enabled: Do not allow startup key with TPM'"
+      info        : "This policy setting allows you to configure whether BitLocker requires additional authentication each time the computer starts. This policy setting is applied when you turn on BitLocker.
+
+Note: Only one of the additional authentication options can be
+
+required
+
+at startup, otherwise a policy error occurs.
+
+On a computer with a compatible TPM, four types of authentication methods can be used at startup to provide added protection for encrypted data. When the computer starts, it can use only the TPM for authentication, or it can also require insertion of a USB flash drive containing a startup key, the entry of a 4-digit to 20-digit personal identification number (PIN), or both.
+
+Note #2: If you want to require the use of a startup PIN and a USB flash drive, you must configure BitLocker settings using the command-line tool manage-bde instead of the BitLocker Drive Encryption setup wizard.
+
+The recommended state for this setting is: Enabled: Do not allow startup key with TPM
+
+TPM without use of a PIN will only validate early boot components and does not require a user to enter any additional authentication information. If a computer is lost or stolen in this configuration, BitLocker will not provide any additional measure of protection beyond what is provided by native Windows authentication unless the early boot components are tampered with or the encrypted drive is removed from the machine."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: Do not allow startup key with TPM
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Require additional authentication at startup: Configure TPM startup key:
+
+Impact:
+
+A TPM and a startup key will not be a permitted combination for BitLocker authentication."
+      reference   : "800-171|3.1.19,800-171r3|03.01.18c.,800-53|AC-19(5),800-53r5|AC-19(5),CSCv7|13.6,CSF|PR.AC-3,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.7.9,ISO-27001-2022|A.8.1,ISO/IEC-27001|A.6.2.1,ITSG-33|AC-19,LEVEL|BLA,NIAv2|OS5,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "UseTPMKey"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.13 (BL) Ensure 'Require additional authentication at startup: Configure TPM startup PIN:' is set to 'Enabled: Require startup PIN with TPM'"
+      info        : "This policy setting allows you to configure whether BitLocker requires additional authentication each time the computer starts. This policy setting is applied when you turn on BitLocker.
+
+Note: Only one of the additional authentication options can be
+
+required
+
+at startup, otherwise a policy error occurs.
+
+On a computer with a compatible TPM, four types of authentication methods can be used at startup to provide added protection for encrypted data. When the computer starts, it can use only the TPM for authentication, or it can also require insertion of a USB flash drive containing a startup key, the entry of a 4-digit to 20-digit personal identification number (PIN), or both.
+
+The recommended state for this setting is: Enabled: Require startup PIN with TPM
+
+Warning: If silent encryption is desired, this setting must be configured to Do not allow startup PIN with TPM and an exception to this recommendation will be needed. Please also see recommendation
+
+Require additional authentication at startup: Configure TPM startup:' is set to 'Enabled: Do not allow TPM'
+
+for needed configuration change for silent encryption.
+
+TPM without use of a PIN will only validate early boot components and does not require a user to enter any additional authentication information. If a computer is lost or stolen in this configuration, BitLocker will not provide any additional measure of protection beyond what is provided by native Windows authentication unless the early boot components are tampered with or the encrypted drive is removed from the machine."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: Require startup PIN with TPM
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Require additional authentication at startup: Configure TPM startup PIN:
+
+Impact:
+
+A startup PIN will be required in addition to a TPM for BitLocker authentication. A PIN requires physical presence to restart the computer. This functionality is not compatible with Wake on LAN solutions."
+      reference   : "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|13.6,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|BLA,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "UseTPMPIN"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.14 (BL) Ensure 'Require additional authentication at startup: Configure TPM startup:' is set to 'Enabled: Do not allow TPM'"
+      info        : "This policy setting allows you to configure whether BitLocker requires additional authentication each time the computer starts. This policy setting is applied when you turn on BitLocker.
+
+Note: Only one of the additional authentication options can be
+
+required
+
+at startup, otherwise a policy error occurs.
+
+On a computer with a compatible TPM, four types of authentication methods can be used at startup to provide added protection for encrypted data. When the computer starts, it can use only the TPM for authentication, or it can also require insertion of a USB flash drive containing a startup key, the entry of a 4-digit to 20-digit personal identification number (PIN), or both.
+
+The recommended state for this setting is: Enabled: Do not allow TPM
+
+Warning: If silent encryption is desired, this setting must be configured to Require TPM and an exception to this recommendation will be needed. Please also see recommendation
+
+'Require additional authentication at startup: Configure TPM startup PIN:' is set to 'Enabled: Require startup PIN with TPM'
+
+for needed configuration change for silent encryption.
+
+TPM without use of a PIN will only validate early boot components and does not require a user to enter any additional authentication information. If a computer is lost or stolen in this configuration, BitLocker will not provide any additional measure of protection beyond what is provided by native Windows authentication unless the early boot components are tampered with or the encrypted drive is removed from the machine."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: Do not allow TPM
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Require additional authentication at startup: Configure TPM startup:
+
+Impact:
+
+A TPM alone will be insufficient authentication for use with BitLocker."
+      reference   : "800-171|3.1.19,800-171r3|03.01.18c.,800-53|AC-19(5),800-53r5|AC-19(5),CSCv7|13.6,CSF|PR.AC-3,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.7.9,ISO-27001-2022|A.8.1,ISO/IEC-27001|A.6.2.1,ITSG-33|AC-19,LEVEL|BLA,NIAv2|OS5,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "UseTPM"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.15 (BL) Ensure 'Enforce drive encryption type on operating system drives: Select the encryption type: (Device)' is set to 'Enabled: Used Space Only encryption' or 'Enabled: Full encryption'"
+      info        : "This policy setting configures the encryption type (space only and whole) used by BitLocker Drive Encryption.
+
+The recommended state for this setting is: Enabled: Used Space Only encryption or Enabled: Full encryption
+
+Note: Changing the encryption type does not affect drives that are already encrypted or if encryption is in progress.
+
+Note #2: If the option
+
+full encryption
+
+is selected, the entire drive be encrypted. If the option
+
+used space only encryption
+
+is selected, only the portion of the drive used to store data will be encrypted.
+
+The type of encryption (used space only or full) used by BitLocker should be an organizational decision and not an end user decision."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Used Space Only encryption or Full encryption
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Enforce drive encryption type on operating system drives: Select the encryption type: (Device)
+
+Impact:
+
+An organization will have to choose which method is used when BitLocker is enabled. The end user will not be able to choose the encryption type.
+
+Note: This policy is ignored when shrinking or expanding a volume, and BitLocker uses the current encryption method. Example: When a drive uses
+
+Space Only encryption
+
+and is expanded, the new free space isn't wiped as it is for a drive that uses
+
+Full encryption
+
+."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28(1),800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.33,ITSG-33|SC-28(1),LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,TBA-FIISB|28.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1" || "2"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\FVE"
+      reg_item    : "OSEncryptionType"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.2 (BL) Ensure 'Choose how BitLocker-protected operating system drives can be recovered: Recovery Key' is set to 'Enabled: Do not allow 256-bit recovery key'"
+      info        : 'This policy setting allows you to control how BitLocker-protected operating system drives are recovered in the absence of the required startup key information. This policy setting is applied when you turn on BitLocker.
+
+In \'Configure user storage of BitLocker recovery information\' select whether users are allowed, required, or not allowed to generate a 48-digit recovery password or a 256-bit recovery key.
+
+The recommended state for this setting is: Enabled: Do not allow 256-bit recovery key
+
+Should a user lose their primary means for accessing an encrypted OS volume, or should the system not pass its boot time integrity checks, the system will go into recovery mode. If the recovery key has not been backed up to Active Directory, the user would need to have saved the recovery key to another location such as a USB flash drive, or have printed the recovery password, and now have access to one of those in order to recovery the system. If the user is unable to produce the recovery key, then the user will be denied access to the encrypted volume and subsequently any data that is stored there.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: Do not allow 256-bit recovery key
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Choose how BitLocker-protected operating system drives can be recovered: Recovery Key
+
+Impact:
+
+A 256-bit recovery key will not be permitted for the operating system drive. Users will need to be domain connected to turn on BitLocker. This policy is not FIPS complaint."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "OSRecoveryKey"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.3 (BL) Ensure 'Choose how BitLocker-protected operating system drives can be recovered: Recovery Password' is set to 'Enabled: Require 48-digit recovery password'"
+      info        : 'This policy setting allows you to control how BitLocker-protected operating system drives are recovered in the absence of the required startup key information. This policy setting is applied when you turn on BitLocker.
+
+In \'Configure user storage of BitLocker recovery information\' select whether users are allowed, required, or not allowed to generate a 48-digit recovery password or a 256-bit recovery key.
+
+The recommended state for this setting is: Enabled: Require 48-digit recovery password
+
+Should a user lose their primary means for accessing an encrypted OS volume, or should the system not pass its boot time integrity checks, the system will go into recovery mode. If the recovery key has not been backed up to Active Directory, the user would need to have saved the recovery key to another location such as a USB flash drive, or have printed the recovery password, and now have access to one of those in order to recovery the system. If the user is unable to produce the recovery key, then the user will be denied access to the encrypted volume and subsequently any data that is stored there.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: Require 48-digit recovery password
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Choose how BitLocker-protected operating system drives can be recovered: Recovery Password
+
+Impact:
+
+A 48-digit recovery password will be required for the operating system drive. Users will need to be domain connected to turn on BitLocker. This policy is not FIPS complaint."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "OSRecoveryPassword"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.4 (BL) Ensure 'Choose how BitLocker-protected operating system drives can be recovered: Allow data recovery agent' is set to 'Enabled: False'"
+      info        : 'This policy setting allows you to control how BitLocker-protected operating system drives are recovered in the absence of the required startup key information. This policy setting is applied when you turn on BitLocker.
+
+The \'Allow certificate-based data recovery agent\' check box is used to specify whether a Data Recovery Agent can be used with BitLocker-protected operating system drives. Before a Data Recovery Agent can be used it must be added from the Public Key Policies item in either the Group Policy Management Console or the Local Group Policy Editor. Consult the BitLocker Drive Encryption Deployment Guide on Microsoft TechNet for more information about adding Data Recovery Agents.
+
+The recommended state for this setting is: Enabled: False
+
+Should a user lose their primary means for accessing an encrypted OS volume, or should the system not pass its boot time integrity checks, the system will go into recovery mode. If the recovery key has not been backed up to Active Directory, the user would need to have saved the recovery key to another location such as a USB flash drive, or have printed the recovery password, and now have access to one of those in order to recovery the system. If the user is unable to produce the recovery key, then the user will be denied access to the encrypted volume and subsequently any data that is stored there.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: False
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Choose how BitLocker-protected operating system drives can be recovered: Allow data recovery agent
+
+Impact:
+
+A Data Recovery Agent will not be permitted for the operating system drive. Users will need to be domain connected to turn on BitLocker. This policy is not FIPS complaint."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "OSManageDRA"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.5 (BL) Ensure 'Choose how BitLocker-protected operating system drives can be recovered: Configure storage of BitLocker recovery information to AD DS:' is set to 'Enabled: Store recovery passwords and key packages'"
+      info        : 'This policy setting allows you to control how BitLocker-protected operating system drives are recovered in the absence of the required startup key information. This policy setting is applied when you turn on BitLocker.
+
+In \'Save BitLocker recovery information to Active Directory Domain Services\', choose which BitLocker recovery information to store in AD DS for operating system drives. If you select \'Backup recovery password and key package\', both the BitLocker recovery password and key package are stored in AD DS. Storing the key package supports recovering data from a drive that has been physically corrupted. If you select \'Backup recovery password only\', only the recovery password is stored in AD DS.
+
+The recommended state for this setting is: Enabled: Store recovery passwords and key packages
+
+Should a user lose their primary means for accessing an encrypted OS volume, or should the system not pass its boot time integrity checks, the system will go into recovery mode. If the recovery key has not been backed up to Active Directory, the user would need to have saved the recovery key to another location such as a USB flash drive, or have printed the recovery password, and now have access to one of those in order to recovery the system. If the user is unable to produce the recovery key, then the user will be denied access to the encrypted volume and subsequently any data that is stored there.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: Store recovery passwords and key packages
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Choose how BitLocker-protected operating system drives can be recovered: Configure storage of BitLocker recovery information to AD DS:
+
+Impact:
+
+Both the recovery password and the key package for the operating system drive will be saved to AD DS. Users will need to be domain connected to turn on BitLocker. This policy is not FIPS complaint."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "OSActiveDirectoryInfoToStore"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.6 (BL) Ensure 'Choose how BitLocker-protected operating system drives can be recovered: Do not enable BitLocker until recovery information is stored to AD DS for operating system drives' is set to 'Enabled: True'"
+      info        : 'This policy setting allows you to control how BitLocker-protected operating system drives are recovered in the absence of the required startup key information. This policy setting is applied when you turn on BitLocker.
+
+Select the \'Do not enable BitLocker until recovery information is stored in AD DS for operating system drives\' check box if you want to prevent users from enabling BitLocker unless the computer is connected to the domain and the backup of BitLocker recovery information to AD DS succeeds.
+
+Note: If the \'Do not enable BitLocker until recovery information is stored in AD DS for operating system drives\' check box is selected, a recovery password is automatically generated.
+
+The recommended state for this setting is: Enabled: True
+
+Should a user lose their primary means for accessing an encrypted OS volume, or should the system not pass its boot time integrity checks, the system will go into recovery mode. If the recovery key has not been backed up to Active Directory, the user would need to have saved the recovery key to another location such as a USB flash drive, or have printed the recovery password, and now have access to one of those in order to recovery the system. If the user is unable to produce the recovery key, then the user will be denied access to the encrypted volume and subsequently any data that is stored there.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: True
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Choose how BitLocker-protected operating system drives can be recovered: Do not enable BitLocker until recovery information is stored to AD DS for operating system drives
+
+Impact:
+
+Users will need to be domain connected and the back up of BitLocker recovery information for the operating system drive must succeed in order to turn on BitLocker. This policy is not FIPS complaint."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "OSRequireActiveDirectoryBackup"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.7 (BL) Ensure 'Choose how BitLocker-protected operating system drives can be recovered: Omit recovery options from the BitLocker setup wizard' is set to 'Enabled: True'"
+      info        : 'This policy setting allows you to control how BitLocker-protected operating system drives are recovered in the absence of the required startup key information. This policy setting is applied when you turn on BitLocker.
+
+Select \'Omit recovery options from the BitLocker setup wizard\' to prevent users from specifying recovery options when they enable BitLocker on a drive. This means that you will not be able to specify which recovery option to use when you enable BitLocker, instead BitLocker recovery options for the drive are determined by the policy setting.
+
+The recommended state for this setting is: Enabled: True
+
+Should a user lose their primary means for accessing an encrypted OS volume, or should the system not pass its boot time integrity checks, the system will go into recovery mode. If the recovery key has not been backed up to Active Directory, the user would need to have saved the recovery key to another location such as a USB flash drive, or have printed the recovery password, and now have access to one of those in order to recovery the system. If the user is unable to produce the recovery key, then the user will be denied access to the encrypted volume and subsequently any data that is stored there.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: True
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Choose how BitLocker-protected operating system drives can be recovered: Omit recovery options from the BitLocker setup wizard
+
+Impact:
+
+The ability to manually select recovery options for the operating drive will not be presented to the user in the BitLocker setup wizard."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "OSHideRecoveryPage"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.8 (BL) Ensure 'Choose how BitLocker-protected operating system drives can be recovered: Save BitLocker recovery information to AD DS for operating system drives' is set to 'Enabled: True'"
+      info        : 'This policy setting allows you to control how BitLocker-protected operating system drives are recovered in the absence of the required startup key information. This policy setting is applied when you turn on BitLocker.
+
+In \'Save BitLocker recovery information to Active Directory Domain Services\', choose which BitLocker recovery information to store in AD DS for operating system drives. If you select \'Backup recovery password and key package\', both the BitLocker recovery password and key package are stored in AD DS. Storing the key package supports recovering data from a drive that has been physically corrupted. If you select \'Backup recovery password only\', only the recovery password is stored in AD DS.
+
+The recommended state for this setting is: Enabled: True
+
+Should a user lose their primary means for accessing an encrypted OS volume, or should the system not pass its boot time integrity checks, the system will go into recovery mode. If the recovery key has not been backed up to Active Directory, the user would need to have saved the recovery key to another location such as a USB flash drive, or have printed the recovery password, and now have access to one of those in order to recovery the system. If the user is unable to produce the recovery key, then the user will be denied access to the encrypted volume and subsequently any data that is stored there.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: True
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Choose how BitLocker-protected operating system drives can be recovered: Do not enable BitLocker until recovery information is stored to AD DS for operating system drives
+
+Impact:
+
+BitLocker recovery information for the operating system drive will be backed up to AD DS. Users will need to be domain connected to turn on BitLocker. This policy is not FIPS complaint."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "OSActiveDirectoryBackup"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.2.9 (BL) Ensure 'Require additional authentication at startup' is set to 'Enabled'"
+      info        : 'This policy setting allows you to configure whether BitLocker requires additional authentication each time the computer starts and whether you are using BitLocker with or without a Trusted Platform Module (TPM). This policy setting is applied when you turn on BitLocker.
+
+Note: Only one of the additional authentication options can be required at startup, otherwise a policy error occurs.
+
+If you want to use BitLocker on a computer without a TPM, select the \'Allow BitLocker without a compatible TPM\' check box. In this mode a USB drive is required for start-up and the key information used to encrypt the drive is stored on the USB drive, creating a USB key. When the USB key is inserted the access to the drive is authenticated and the drive is accessible. If the USB key is lost or unavailable you will need to use one of the BitLocker recovery options to access the drive.
+
+On a computer with a compatible TPM, four types of authentication methods can be used at startup to provide added protection for encrypted data. When the computer starts, it can use only the TPM for authentication, or it can also require insertion of a USB flash drive containing a startup key, the entry of a 4-digit to 20-digit personal identification number (PIN), or both.
+
+Users can configure advanced startup options in the BitLocker setup wizard.
+
+Note #2: If you want to require the use of a startup PIN and a USB flash drive, you must configure BitLocker settings using the command-line tool manage-bde instead of the BitLocker Drive Encryption setup wizard.
+
+The recommended state for this setting is: Enabled
+
+TPM without use of a PIN will only validate early boot components and does not require a user to enter any additional authentication information. If a computer is lost or stolen in this configuration, BitLocker will not provide any additional measure of protection beyond what is provided by native Windows authentication unless the early boot components are tampered with or the encrypted drive is removed from the machine.'
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Operating System Drives\Require additional authentication at startup
+
+Impact:
+
+A PIN requires physical presence to restart the computer. This functionality is not compatible with Wake on LAN solutions."
+      reference   : "800-171|3.1.19,800-171r3|03.01.18c.,800-53|AC-19(5),800-53r5|AC-19(5),CSCv7|13.6,CSF|PR.AC-3,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.7.9,ISO-27001-2022|A.8.1,ISO/IEC-27001|A.6.2.1,ITSG-33|AC-19,LEVEL|BLA,NIAv2|OS5,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "UseAdvancedStartup"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.3.1 (BL) Ensure 'Deny write access to removable drives not protected by BitLocker' is set to 'Enabled'"
+      info        : "This policy setting configures whether BitLocker protection is required for a computer to be able to write data to a removable data drive.
+
+All removable data drives that are not BitLocker-protected will be mounted as read-only. If the drive is protected by BitLocker, it will be mounted with read and write access.
+
+The recommended state for this setting is: Enabled
+
+Users may not voluntarily encrypt removable drives prior to saving important data to the drive."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Removable Data Drives\Deny write access to removable drives not protected by BitLocker
+
+Impact:
+
+All removable data drives that are not BitLocker-protected will be mounted as read-only. If the drive is protected by BitLocker, it will be mounted with read and write access."
+      reference   : "800-171|3.8.5,800-171|3.8.7,800-171r3|03.08.05,800-171r3|03.08.07,800-53|MP-5,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSCv7|13.6,CSCv7|13.8,CSCv8|3.9,CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.10,ISO-27001-2022|A.7.9,ISO-27001-2022|A.7.10,ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,ITSG-33|MP-5,LEVEL|BLA,NESA|T1.4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\System\CurrentControlSet\Policies\Microsoft\FVE"
+      reg_item    : "RDVDenyWriteAccess"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.3.2 (BL) Ensure 'Deny write access to removable drives not protected by BitLocker: Do not allow write access to devices configured in another organization' is set to 'Enabled: False'"
+      info        : "This policy setting configures whether the computer will be able to write data to BitLocker-protected removable drives that were configured in another organization.
+
+The recommended state for this setting is: Enabled: False
+
+Restricting write access to BitLocker-protected removable drives that were configured in another organization can hinder legitimate business operations where encrypted data sharing is necessary."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled: False
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Removable Data Drives\Deny write access to removable drives not protected by BitLocker: Do not allow write access to devices configured in another organization
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.8.5,800-171|3.8.7,800-171r3|03.08.05,800-171r3|03.08.07,800-53|MP-5,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSCv7|13.6,CSCv7|13.8,CSCv8|3.9,CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.10,ISO-27001-2022|A.7.9,ISO-27001-2022|A.7.10,ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,ITSG-33|MP-5,LEVEL|BLA,NESA|T1.4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\Software\Policies\Microsoft\FVE"
+      reg_item    : "RDVDenyCrossOrg"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.4 (BL) Ensure 'Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later): Select the encryption method for fixed data drives' is set to 'XTS-AES 128-bit (default)' or 'XTS-AES 256-bit'"
+      info        : "This policy setting determines which encryption method should be used for fixed data drives.
+
+The recommended state for this setting is: XTS-AES 128-bit (default) or XTS-AES 256-bit
+
+Enforcing the default value of XTS-AES 128-bit (default) or higher helps ensure that a weaker cipher is not used to protect data on fixed data drives."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to XTS-AES 128-bit (default) or XTS-AES 256-bit
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later)\Select the encryption method for fixed data drives
+
+Impact:
+
+None - this setting enforces the default value or higher."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "6" || "7"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\FVE"
+      reg_item    : "EncryptionMethodWithXtsFdv"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.5 (BL) Ensure 'Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later): Select the encryption method for operating system drives' is set to 'XTS-AES 128-bit (default)' or 'XTS-AES 256-bit'"
+      info        : "This policy setting determines which encryption method should be used for operating system drives.
+
+The recommended state for this setting is: XTS-AES 128-bit (default) or XTS-AES 256-bit
+
+Enforcing the default value of XTS-AES 128-bit (default) or higher helps ensure that a weaker cipher is not used to protect data on operating system drives."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to XTS-AES 128-bit (default) or XTS-AES 256-bit
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later)\Select the encryption method for operating system drives:
+
+Impact:
+
+None - this setting enforces the default value or higher."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "6" || "7"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\FVE"
+      reg_item    : "EncryptionMethodWithXtsOs"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "4.11.7.6 (BL) Ensure 'Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later): Select the encryption method for removable data drives' is set to 'XTS-AES 128-bit' or higher"
+      info        : "This policy setting determines which encryption method should be used for operating system drives.
+
+The recommended state for this setting is: XTS-AES 128-bit or XTS-AES 256-bit
+
+The default value of AES-CBC 128-bit is used for backwards compatibility with other operating systems. Using the other available ciphers will increase the level of security for sensitive data, but it may impact compatibility with other operating systems.
+
+This setting is included in the benchmark because it is automatically added when 'Choose drive encryption method and cipher strength' is enabled. System administrators should use the most secure cipher available to them whenever possible."
+      solution    : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to: XTS-AES 128-bit or XTS-AES 256-bit
+
+Administrative Templates\Windows Components\BitLocker Drive Encryption\Choose drive encryption method and cipher strength (Windows 10 [Version 1511] and later)\Select the encryption method for removable data drives:
+
+Impact:
+
+Using settings beyond the default value of AES-CBC 128-bit may decrease the backwards compatibility of encrypted removable drives when used in other systems."
+      reference   : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type  : POLICY_DWORD
+      value_data  : "6" || "7"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\FVE"
+      reg_item    : "EncryptionMethodWithXtsRdv"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type         : GUID_REGISTRY_SETTING
+      description  : "8.1 (BL) Ensure 'Require Device Encryption' is set to 'Enabled'"
+      info         : "This setting allows the Admin to require encryption to be turned on using BitLocker\Device Encryption. Disabling the policy won't turn off the encryption on the system drive. But will stop prompting the user to turn it on.
+
+The recommended state for this setting is: Enabled
+
+Note: Setting this policy to Enabled triggers encryption of all drives (silently or non-silently based on AllowWarningForOtherDiskEncryption policy).
+
+Note #2: Currently only full disk encryption is supported when using this CSP for silent encryption. For non-silent encryption, encryption type will depend on SystemDrivesEncryptionType and FixedDrivesEncryptionType configured on the device.
+
+Encrypting drives on end-user devices helps prevent sensitive data at rest from being read in the event a device is lost or stolen. Enabling this setting is also a requirement to turning encryption on machines silently without prompting the end user."
+      solution     : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled :
+
+Bitlocker\Require Device Encryption"
+      reference    : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also     : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type   : POLICY_DWORD
+      value_data   : "1"
+      reg_key      : "HKLM\Software\Microsoft\PolicyManager\Providers\{GUID}\Default\Device\Bitlocker"
+      reg_item     : "RequireDeviceEncryption"
+      reg_option   : CAN_NOT_BE_NULL
+      guid_reg_key : "HKLM\Software\Microsoft\PolicyManager\Current\Device\Bitlocker"
+    </custom_item>
+
+    <custom_item>
+      type         : GUID_REGISTRY_SETTING
+      description  : "8.2 (BL) Ensure 'Allow Warning For Other Disk Encryption' is set to 'Disabled'"
+      info         : "This setting allows Admin to disable all UI (notification for encryption and warning prompt for other disk encryption) and turn on encryption on the user machines silently.
+
+When you disable the warning prompt, the OS drive's recovery key will back up to the user's Microsoft Entra account. When you allow the warning prompt, the user who receives the prompt can select where to back up the OS drive's recovery key.
+
+The endpoint for a fixed data drive's backup is chosen in the following order:
+
+ - The user's Windows Server Active Directory Domain Services account.
+ - The user's Microsoft Entra account.
+ - The user's personal OneDrive (MDM/MAM only).
+
+Encryption will wait until one of these three locations backs up successfully.
+
+The recommended state for this setting is: Disabled
+
+Note: Starting in Windows 10, version 1803, the value 0 can only be set for Microsoft Entra joined devices. Windows will attempt to silently enable BitLocker for value 0.
+
+Silent encryption enables BitLocker to encrypt data without prompting the user, ensuring the encryption process is uninterrupted."
+      solution     : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Disabled :
+
+Bitlocker\Allow Warning For Other Disk Encryption
+
+Impact:
+
+Enabling BitLocker on a device with third party encryption may render the device unusable and will require reinstallation of Windows."
+      reference    : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also     : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type   : POLICY_DWORD
+      value_data   : "0"
+      reg_key      : "HKLM\Software\Microsoft\PolicyManager\Providers\{GUID}\Default\Device\Bitlocker"
+      reg_item     : "AllowWarningForOtherDiskEncryption"
+      reg_option   : CAN_NOT_BE_NULL
+      guid_reg_key : "HKLM\Software\Microsoft\PolicyManager\Current\Device\BitLocker"
+    </custom_item>
+
+    <custom_item>
+      type         : GUID_REGISTRY_SETTING
+      description  : "8.3 (BL) Ensure 'Allow Warning For Other Disk Encryption: Allow Standard User Encryption' is set to 'Enabled'"
+      info         : 'This setting allows Admins to enforce \'Require Device Encryption\' policy for scenarios where policy is pushed while current logged-on user is non-admin/standard user.
+
+This policy is tied to \'Allow Warning For Other Disk Encryption\' policy being set to \'0\', i.e, Silent encryption is enforced.
+
+If \'Allow Warning For Other Disk Encryption\' isn\'t set, or is set to \'1\', \'Require Device Encryption\' policy won\'t try to encrypt drive(s) if a standard user is the current logged-on user in the system.
+
+The recommended state for this setting is: Enabled
+
+Enabling this ensures all fixed drives are encrypted regardless of the privileges assigned to the currently logged in user.'
+      solution     : "To establish the recommended configuration via configuration profiles, set the following Settings Catalog path to Enabled :
+
+Bitlocker\Allow Standard User Encryption
+
+Impact:
+
+Enabling BitLocker on a device with third party encryption may render the device unusable and will require reinstallation of Windows."
+      reference    : "800-171|3.13.16,800-171r3|03.13.08,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also     : "https://workbench.cisecurity.org/benchmarks/21767"
+      value_type   : POLICY_DWORD
+      value_data   : "1"
+      reg_key      : "HKLM\Software\Microsoft\PolicyManager\Providers\{GUID}\Default\Device\BitLocker"
+      reg_item     : "AllowStandardUserEncryption"
+      reg_option   : CAN_NOT_BE_NULL
+      guid_reg_key : "HKLM\Software\Microsoft\PolicyManager\Current\Device\BitLocker"
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_Microsoft_Intune_for_Windows_10_v4.0.0_BL.audit from CIS Microsoft Intune for Windows 10 Benchmark v4.0.0"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/benchmarks/21767"
+      show_output : YES
+    </report>
+  </else>
+</if>
+
+</group_policy>
+</check_type>

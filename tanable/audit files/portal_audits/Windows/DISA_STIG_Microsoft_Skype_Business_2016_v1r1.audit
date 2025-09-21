@@ -1,0 +1,117 @@
+#TRUSTED 60f0dfdfdc8b0ab158844aa4b0ee6473a09964d95e593c9019c7f878bde658a6dd474e142658b0e19f899d4dd894c75acce938f4e8d8f26bfccca074b7dc09b80f8a4e685ab681d49576a770adfd2025bac948b979b63864b3f83659c36d201a57fa27e7de406b04f707c760ec4c7fd906b7738010bedff65c889a7b0f08916ce24dc866a24bc37f68e9d4fb7d4e876df191d18d218ba26921dd969dedaca66c96c53990c8e4bf579f8e72fef17630ddf45fc797560ef3776c9998c6431d50d6868b659e4f9c018838276da995bafe4df891c55f09b6f34ad03ffb28cd8caf9e0b15582c80ee138ac74e1fcbf15daeaa1928e55ffc116abc576506c0b00815f5c4074eed3d4c9086314668bcccf713546912f3239a77012254f510b2bfa85a287a84a05f1a5a3c5ccbdc6c151a0e4ea81f9462a7cf26dffe6a27ca199d373f49015f77903acf63492a0611eb729219fcbafd48a39bf51ca9006307215b3e8314d38de8a7a04047b79ef9df09848bb4206dc9f96d89a223de3f0ab42068bbabf07bfa2b7bc777da219e35cbe20b9e96b147e6217304cce9532e33733bd068a90be79373459af9305544bc46c562c96179a021322c377be287276efba74d5c7db0a668e30324e45c1bd5b39908964443d5b3462a82eedda0527790ab8bdde2fb1b4cb8a2b7d695aded50ca4373752feebcd8f8d1e8bfdf4a639953f59efd503309
+#TRUST-RSA-SHA256 11b1c45b844ee522e7d8af0d6b562c28bc9fd365bb86264151c8b6d05f25e50cd2a365495f6df53d907db5cb45e8ba2b310b0622426c27af7c40f449fa110396b654fddb5d6e1d80573d48743674743676634fc609ebcffed8e2af3918d71b510347f778fce63a229a1dc75f781eeb203358a3cc9477a017df41cd72d5d56887bba735f9df156f69fb6dcd161226711e4ec7f35eba0edf070efd6b6b098aa49f5e5c64fb97e379b6d30f09c14fd35eaed01fc07db159cc3bc8a0615118cba8e62669cf375509d479f8080abdbd5f52583aada3c1c1e858ff9a1b5346aaa09c5ba1e21b89e54b9811dc07792ea508fd5198aad8a94eb17767b33567fbc15a9fe1ab08e8b5691e569bb18686486e27b9394d4caea62ae6b93d8c87e66dde9c517a928c468c3aa8744deb172040847d08702a4a1e3f1ca0d63fedb45b90b4dc1e9d28fcd500166e9675d685a05fc386cf0dce7867f0cd01e13ca9b89ae6f97240e419bf4bb57bc704001335bd5d06baefea7198213e64c2df3d0414854505686975e5830efc73e740bd406b397342259759605975af4a1ee1f973378b5ad9522c4fc1171a891d73df10ae7c07ab1c056bacd74676ee0e5e80e5651305a8882754fd7676f25beced43e634c07f18d1a5281ba63d9728905aab2b355a4f4cf110339f01b81a401dd7658a754e12918a9680f38b368b9a5e240f9d6aa1757046048869
+#
+# This script is Copyright (C) 2004-2025 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+#
+# $Revision: 1.12 $
+# $Date: 2025/01/06 $
+#
+# Description : This .audit is designed to query the Microsoft Skype for Business 2016
+# 	        as defined by DISA in the Microsoft Skype for Business 2016 STIG, v1r1
+#
+# Tenable has made a best effort to map the settings specified in the standard to a proprietary
+# .audit format that will be used by the Windows compliance module to perform the audit.
+#
+# See Also:
+# http://iasecontent.disa.mil/stigs/zip/U_Microsoft_Skype_for_Business_2016_V1R1_STIG.zip
+#
+#<ui_metadata>
+#<display_name>DISA STIG Microsoft Skype for Business 2016 v1r1</display_name>
+#<spec>
+#  <type>DISA STIG</type>
+#  <name>Microsoft Skype for Business 2016</name>
+#  <version>1.1.0</version>
+#  <link>http://iasecontent.disa.mil/stigs/zip/U_Microsoft_Skype_for_Business_2016_V1R1_STIG.zip</link>
+#</spec>
+#<labels>windows_skype_business_2016,agent</labels>
+#<benchmark_refs>CAT,CCE,CCI,DISA_Benchmark,Group-ID,Rule-ID,STIG-ID,STIG-Legacy,Vuln-ID</benchmark_refs>
+#</ui_metadata>
+
+<check_type:"Windows" version:"2">
+<group_policy:"MS Skype for Business 2016">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "Check if Skype for Business 2016 is installed"
+      value_type  : POLICY_TEXT
+      value_data  : ".+"
+      reg_key     : "HKLM\Software\Microsoft\Office\16.0\lync\Installroot"
+      reg_item    : "Path"
+      reg_option  : MUST_EXIST
+      check_type  : CHECK_REGEX
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "DISA_STIG_Microsoft_Skype_Business_2016_v1r1.audit from DISA STIG Microsoft Skype for Business 2016 v1r1"
+    </report>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "DTOO420 - The ability to store user passwords in Skype must be disabled."
+      info        : "Allows Microsoft Lync to store user passwords. If you enable this policy setting, Microsoft Lync can store a password on request from the user. If you disable this policy setting, Microsoft Lync cannot store a password. If you do not configure this policy setting and the user logs on to a domain, Microsoft Lync does not store the password. If you do not configure this policy setting and the user does not log on to a domain (for example, if the user logs on to a workgroup), Microsoft Lync can store the password. Note: You can configure this policy setting under both Computer Configuration and User Configuration, but the policy setting under Computer Configuration takes precedence."
+      solution    : "Set the policy value for Computer Configuration -> Administrative Templates -> Skype for Business 2016 -> Microsoft Lync Feature Policies 'Allow storage of user passwords' to 'Disabled'."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|Microsoft_Skype_for_Business_2016,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-85525r1_rule,STIG-ID|DTOO420,SWIFT-CSCv1|2.3,Vuln-ID|V-70901"
+      see_also    : "http://iasecontent.disa.mil/stigs/zip/U_Microsoft_Skype_for_Business_2016_V1R1_STIG.zip"
+      value_type  : POLICY_DWORD
+      value_data  : 0
+      reg_key     : "HKLM\Software\Policies\Microsoft\office\16.0\lync"
+      reg_item    : "savepassword"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "DTOO421 - Session Initiation Protocol (SIP) security mode must be configured."
+      info        : "When Lync connects to the server, it supports various authentication mechanisms.  This policy allows the user to specify whether Digest and Basic authentication are supported.  Disabled (default):  NTLM/Kerberos/TLS-DSK/Digest/Basic     Enabled:  Authentication mechanisms:  NTLM/Kerberos/TLS-DSK  Gal Download: Requires HTTPS if user is not logged in as an internal user."
+      solution    : "Set the policy value for Computer Configuration -> Administrative Templates -> Skype for Business 2016 -> Microsoft Lync Feature Policies 'Configure SIP security mode' to 'Enabled'."
+      reference   : "800-171|3.13.15,800-53|SC-23,800-53r5|SC-23,CAT|II,CCI|CCI-001184,DISA_Benchmark|Microsoft_Skype_for_Business_2016,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23,ITSG-33|SC-23a.,NESA|T4.5.1,QCSC-v1|5.2.1,Rule-ID|SV-85527r1_rule,STIG-ID|DTOO421,Vuln-ID|V-70903"
+      see_also    : "http://iasecontent.disa.mil/stigs/zip/U_Microsoft_Skype_for_Business_2016_V1R1_STIG.zip"
+      value_type  : POLICY_DWORD
+      value_data  : 1
+      reg_key     : "HKLM\Software\Policies\Microsoft\office\16.0\lync"
+      reg_item    : "enablesiphighsecuritymode"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "DTOO422 - In the event a secure SIP connection fails, the connection must be restricted from resorting to the unencrypted HTTP."
+      info        : "Prevents from HTTP being used for SIP connection in case TLS or TCP fail."
+      solution    : "Set the policy value for Computer Configuration -> Administrative Templates -> Skype for Business 2016 -> Microsoft Lync Feature Policies 'Disable HTTP fallback for SIP connection' to 'Enabled'."
+      reference   : "800-171|3.13.15,800-53|SC-23,800-53r5|SC-23,CAT|II,CCI|CCI-001184,DISA_Benchmark|Microsoft_Skype_for_Business_2016,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23,ITSG-33|SC-23a.,NESA|T4.5.1,QCSC-v1|5.2.1,Rule-ID|SV-85529r1_rule,STIG-ID|DTOO422,Vuln-ID|V-70905"
+      see_also    : "http://iasecontent.disa.mil/stigs/zip/U_Microsoft_Skype_for_Business_2016_V1R1_STIG.zip"
+      value_type  : POLICY_DWORD
+      value_data  : 1
+      reg_key     : "HKLM\Software\Policies\Microsoft\office\16.0\lync"
+      reg_item    : "disablehttpconnect"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "DISA_STIG_Microsoft_Skype_Business_2016_v1r1.audit from DISA STIG Microsoft Skype for Business 2016 v1r1"
+      info        : "Microsoft Skype for Business 2016 is not installed or remote registry service is disabled.
+
+      NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "http://iasecontent.disa.mil/stigs/zip/U_Microsoft_Skype_for_Business_2016_V1R1_STIG.zip"
+    </report>
+  </else>
+</if>
+
+</group_policy>
+</check_type>

@@ -1,0 +1,398 @@
+#TRUSTED 4bd173dfad965e76ac2ae8a0e887d70bec55fdabc2eff6c99d691e5c57ca27e7959b58ee80be74473acf5406d6bed4f94b4ec2b250b998b0ed50ead68ee4c8fe6eb60f7e1a1ccc8bdc4ca44e236e870f14cf61387e2307640355f8ba8782a122e35b5acece6e1d79addd11af0f05398856dd3ff111111e2f5d7a232a67b69260b258c2a158e2db01c978dc2d6bb43ce792e9472bbaffcac683081f7b73dba1e678133e6ee5e77ec6863a9e0442f1b86c075a3cc21a066c266fdeefc3d2fe5ab69c1433b0616fc9e73971d194012611c8ab4b111c924ab38840221a47f2c11ecd5b02312538e7f5235dd1c50f39e4bf0956ee0921ef58ecfc8c71d21f4bb957166b28e2f6f76d05e11f9b90a179eba15a8c6fff8e9533151963fd64aeeb25833728f81a92937d9abfbc12ea0ebf361aada9f28aa93fbf5f4e45666a1ec94fed44f780757142692a947881fddd236b6b30562a52f6b03fa832377d53329ab6da3a119c864a686c7134c55b779c4cda5e17935e63aee0ef7c2a66f4c1fc5690fa4e4674fe1fbeed7c4f5ba409713d7e80ea427d37da53cd039114c2d47be4ec6c4da4d33176c6d0cf59e3cfec450d1e7ec4a46809fcedddd93afbc5d11c63c4216be98e795b4a3494dad46f2895da84ffdd41a6baae364f1fc027180e1b074f32ad6b5fbca88ba3aac0fe9b65c9130fbf43fce327451ee845d659c336b72cd679e9
+#TRUST-RSA-SHA256 95644da3a19ff89a8c40ba4919bdcdc126436068b54634e767c96e6a6bdca7832fa44df2e01cd24dacda5c6f4faeb30a6f103a60631af1bfbb970839b0a84c517fc7e4c70e3b36dbd5fc96920338f1798c3e6efb8f9c39449a86ba2800d7b06e0620d5a6adbc3c32db81ec67b0ea1ac9d32e87adbe5e1a50b8d3f951b33ff3d0ae1fd1cad09f0e679a73cbe82f7cc282bc802319117cd36da633e4dd99e5862ae6cc2256b584af078e97134140c8b343bf0742640d0157f0c94d5959789c20814c826643cac97f32d67be49b56d6db2ae268233af7d7a50984b9afae4e0058628f4e1bb86bff20bad7a281e6166617740d8e5158bd9461608538bb72df82d00f2b0e0ba159e71d3f080e68c2dc7c0855212c430f43acec40539e6831ca692fe9eb9d8e0de10c5d67e83f15028e65042ea4cf544a7a65b04339b402d0966359837abaa41d71cd84c3c2cc0f3af810a0699bc60c1eade60ca13609dfea8190d18ee0ca05ca3d9b04ec6250bc940ada518eba63cf0368e5780c743c783cca7d47e97fa0ebbdb0da2355b4faaa3a77578b17966e32b0986aa9f8492b4c722083bd5286d2900fa6fec60368881ea81adeb41f6c28b3fcf195bbe45c490d5c4a6a8624fa0d5e6e6b7b31024677f0361dee56ebe6be8c4c9dd4e465d551180b631ea327d4c6689aa298bc6ed936b38ce4cdc6e36b93d96037824787f32bf03c076648c6
+#
+# This script is Copyright (C) 2004-2025 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2025/06/16 $
+#
+# description : This .audit is designed against the CIS Oracle Database 23ai Benchmark v1.0.0
+#
+#<ui_metadata>
+#<display_name>CIS Oracle Database 23ai v1.0.0 L1 RDBMS On Linux Host OS</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Oracle Database 23ai</name>
+#  <profile>L1 RDBMS On Linux Host OS</profile>
+#  <version>1.0.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/16474</link>
+#</spec>
+#<labels>unix,cis,oracle_database_23ai,database</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>ORACLE_HOME</name>
+#    <default>/opt/oracle/product/23ai/dbhomeFree</default>
+#    <description>Oracle Home</description>
+#    <info>The directory where your Oracle installation is located.</info>
+#    <value_type>UNIX_FILE_PATH</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Unix">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : CMD_EXEC
+      description : "Linux found"
+      cmd         : "uname -a"
+      expect      : "Linux"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_Oracle_Database_23ai_v1.0.0_L1_RDBMS_On_Linux_Host_OS.audit from CIS Oracle Database 23ai Benchmark v1.0.0"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      show_output : YES
+    </report>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK_NOT
+      description : "2.1.1 Ensure 'extproc' Is Not Present In 'listener.ora'"
+      info        : "extproc should be removed from the listener.ora to mitigate the risk that OS libraries can be invoked by the Oracle instance.
+
+extproc allows the database to run procedures from OS libraries. These library calls can, in turn, run any OS command."
+      solution    : "To remediate this recommendation, remove extproc from the listener.ora file.
+
+Instead of relying on the EXTPROC feature in Oracle to access external libraries, you can use a database directory to directly access the library files stored within the database server's file system, allowing you to execute code from those libraries within your PL/SQL code without going through a separate external process."
+      reference   : "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-171r3|03.13.01,800-171r3|03.13.06,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|ID.AM-03,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.8.16,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/listener.ora"
+      regex       : "(?i)^[^#]+extproc.*"
+      expect      : "(?i)^[^#]+extproc.*"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK_NOT
+      description : "2.1.2 Ensure 'ACCEPT_MD5_CERTS' Is Configured Correctly"
+      info        : "The setting ACCEPT_MD5_CERTS specifies whether Oracle accepts certificates signed with the MD5 algorithm.
+
+Note: See Additional Information regarding the deprecation of this setting.
+
+Weak algorithms such as MD5 and SHA1 have known vulnerabilities that make them susceptible to attacks. Allowing their use can compromise data integrity and authentication, potentially exposing systems to risks. Transitioning to stronger algorithms, such as SHA-2, is recommended."
+      solution    : "To remediate this recommendation, remove ACCEPT_MD5_CERTS from sqlnet.ora or set ACCEPT_MD5_CERTS to the value FALSE
+
+In addition to listener.ora this parameter must also be set in sqlnet.ora
+
+Impact:
+
+Applications that use MD5-signed certificates must be updated to use certificates signed with a stronger, more secure algorithm such as SHA-2."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/listener.ora"
+      regex       : "(?i)^[^#]*ACCEPT_MD5_CERTS[\\s]*=[\\s]*TRUE[\\s]*$"
+      expect      : "(?i)^[^#]*ACCEPT_MD5_CERTS[\\s]*=[\\s]*TRUE[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK_NOT
+      description : "2.1.3 Ensure 'ACCEPT_SHA1_CERTS' Is Configured Correctly"
+      info        : "The setting ACCEPT_SHA1_CERTS specifies whether Oracle accepts certificates signed with the SHA1 algorithm.
+
+Note: See Additional Information regarding the deprecation of this setting.
+
+Weak algorithms such as MD5 and SHA1 have known vulnerabilities that make them susceptible to attacks. Allowing their use can compromise data integrity and authentication, potentially exposing systems to risks. Transitioning to stronger algorithms, such as SHA-2, is recommended. The SHA1 algorithm has been deprecated by NIST in 2011."
+      solution    : "To remediate this recommendation, remove ACCEPT_SHA1_CERTS from sqlnet.ora or set the ACCEPT_SHA1_CERTS to the value FALSE
+
+In addition to listener.ora this parameter must also be set to FALSE in sqlnet.ora
+
+Impact:
+
+Applications that use SHA-1-signed certificates must be updated to use certificates signed with a stronger, more secure algorithm such as SHA-2."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/listener.ora"
+      regex       : "(?i)^[^#]*ACCEPT_SHA1_CERTS[\\s]*=[\\s]*TRUE[\\s]*$"
+      expect      : "(?i)^[^#]*ACCEPT_SHA1_CERTS[\\s]*=[\\s]*TRUE[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK_NOT
+      description : "2.1.4 Ensure 'ALLOWED_WEAK_CERT_ALGORITHMS' Is NOT Set."
+      info        : "The ALLOWED_WEAK_CERT_ALGORITHMS setting determines whether Oracle accepts certificates signed with the SHA1 or MD5 or both algorithms.
+
+Weak algorithms such as MD5 and SHA1 have known vulnerabilities that make them susceptible to attacks. Allowing their use can compromise data integrity and authentication, potentially exposing systems to risks. Transitioning to stronger algorithms, such as SHA-2, is recommended."
+      solution    : "To remediate this recommendation, remove the ALLOWED_WEAK_CERT_ALGORITHMS parameter.
+
+Impact:
+
+Applications that use MD5 or SHA-1-signed certificates must be updated to use certificates signed with a stronger, more secure algorithm such as SHA-2."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/listener.ora"
+      regex       : "(?i)^[^#]*ALLOWED_WEAK_CERT_ALGORITHMS[\\s]*=[\\s]*TRUE[\\s]*$"
+      expect      : "(?i)^[^#]*ALLOWED_WEAK_CERT_ALGORITHMS[\\s]*=[\\s]*TRUE[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK_NOT
+      description : "2.2.1 Ensure 'ACCEPT_MD5_CERTS' Is NOT SET"
+      info        : "The setting ACCEPT_MD5_CERTS specifies whether Oracle accepts certificates signed with the MD5 algorithm.
+
+Note: See Additional Information regarding the deprecation of this setting.
+
+Weak algorithms such as MD5 and SHA-1 have known vulnerabilities that make them susceptible to attacks. Allowing their use can compromise data integrity and authentication, potentially exposing systems to risks. Transitioning to stronger algorithms, such as SHA-2, is recommended."
+      solution    : "To remediate this recommendation, set the ACCEPT_MD5_CERTS to the value FALSE or remove ACCEPT_MD5_CERTS from sqlnet.ora
+
+In addition to sqlnet.ora this parameter must also be set to FALSE in listener.ora
+
+Impact:
+
+Applications that use MD5-signed certificates must be updated to use certificates signed with a stronger, more secure algorithm such as SHA-2."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[^#]*ACCEPT_MD5_CERTS[\\s]*=[\\s]*TRUE[\\s]*$"
+      expect      : "(?i)^[^#]*ACCEPT_MD5_CERTS[\\s]*=[\\s]*TRUE[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "2.2.10 Ensure 'SQLNET.CRYPTO_CHECKSUM_CLIENT' Is Set To 'REQUIRED'"
+      info        : "The SQLNET.CRYPTO_CHECKSUM_CLIENT parameter specifies the checksum behavior for the client when connecting to a server. This setting enables the client to enforce cryptographic checksums, which verify the integrity of data transmitted during client-server interactions.
+
+Oracle networking already performs checksumming, so additional cryptographic checksumming is usually of limited value. A setting of REQUIRED at the server requires that incoming connections are encrypted with AES256.
+
+Oracle database network encryption configured through TLS/SSL is also an acceptable mechanism and may be implemented in lieu of this setting.
+
+Enabling cryptographic checksums for client connections ensures a higher degree of data integrity."
+      solution    : "To remediate this recommendation, set SQLNET.CRYPTO_CHECKSUM_CLIENT to REQUIRED
+
+SQLNET.CRYPTO_CHECKSUM_CLIENT=REQUIRED
+
+Impact:
+
+If SQLNET.CRYPTO_CHECKSUM_CLIENT is set to REQUIRED the client will be unable to connect to servers that do not require cryptographic checksums, resulting in connection failures. This may cause errors such as ORA-12650: No common encryption or data integrity algorithm if the server does not meet the client's checksum requirements."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[\\s]*SQLNET.CRYPTO_CHECKSUM_CLIENT[\\s]*="
+      expect      : "(?i)^[\\s]*SQLNET.CRYPTO_CHECKSUM_CLIENT[\\s]*=[\\s]*REQUIRED[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "2.2.11 Ensure 'SQLNET.CRYPTO_CHECKSUM_SERVER' Is Set To 'REQUIRED'"
+      info        : "The SQLNET.CRYPTO_CHECKSUM_SERVER parameter specifies the checksum behavior for the server when connecting to a client. This setting enables the server to enforce cryptographic checksums, which verify the integrity of data transmitted during client-server interactions.
+
+Oracle networking already performs checksumming, so additional cryptographic checksumming is usually of limited value. A setting of REQUIRED at the server requires that the outgoing connections are encrypted with AES256.
+
+Oracle database network encryption configured through TLS/SSL is also an acceptable mechanism and may be implemented in lieu of this setting.
+
+Enabling cryptographic checksums for server connections ensures a higher degree of data integrity."
+      solution    : "To remediate this recommendation, set SQLNET.CRYPTO_CHECKSUM_SERVER to REQUIRED
+
+SQLNET.CRYPTO_CHECKSUM_SERVER=REQUIRED
+
+Impact:
+
+If SQLNET.CRYPTO_CHECKSUM_SERVER is set to REQUIRED the client will be unable to connect to servers that do not require cryptographic checksums, resulting in connection failures. This may cause errors such as ORA-12650: No common encryption or data integrity algorithm if the server does not meet the client's checksum requirements."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[\\s]*(SQLNET\.)?CRYPTO_CHECKSUM_SERVER[\\s]*="
+      expect      : "(?i)^[\\s]*(SQLNET\.)?CRYPTO_CHECKSUM_SERVER[\\s]*=[\\s]*REQUIRED[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "2.2.12 Ensure 'SSL_CERT_REVOCATION' Is Set To 'REQUIRED'"
+      info        : "The SSL_CERT_REVOCATION parameter in Oracle's sqlnet.ora file specifies whether the system should check the revocation status of SSL certificates during authentication. This check ensures that invalid, revoked, or compromised certificates cannot be used to establish secure connections.
+
+Enabling SSL certificate revocation checking helps maintain the integrity and security of SSL connections by ensuring that only valid certificates are accepted. Without this validation, compromised certificates could allow unauthorized entities to impersonate legitimate servers or clients, potentially exposing sensitive data to interception or attacks."
+      solution    : "To remediate this recommendation, set SSL_CERT_REVOCATION to required
+
+SQLNET.SSL_CERT_REVOCATION=REQUIRED
+
+Impact:
+
+Enabling this setting without proper certificate infrastructure (e.g., CRL or OCSP) could result in failed connections if the revocation status cannot be determined."
+      reference   : "800-171|3.1.1,800-171r3|03.01.01,800-171r3|03.15.01,800-53|AC-1,800-53|AC-2,800-53|AC-2(1),800-53r5|AC-1,800-53r5|AC-2,800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CN-L3|8.1.4.2(e),CN-L3|8.1.10.6(c),CSCv7|16.7,CSCv8|6.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|GV.OC-03,CSF2.0|GV.OV-01,CSF2.0|GV.PO-01,CSF2.0|GV.PO-02,CSF2.0|GV.SC-03,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.1,ISO-27001-2022|A.5.2,ISO-27001-2022|A.5.4,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.5.31,ISO-27001-2022|A.5.36,ISO-27001-2022|A.5.37,ISO-27001-2022|A.8.2,ISO-27001-2022|5.2,ISO-27001-2022|5.3,ISO-27001-2022|7.5.1,ISO-27001-2022|7.5.2,ISO-27001-2022|7.5.3,ISO/IEC-27001|A.9.1.1,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-1,ITSG-33|AC-2,ITSG-33|AC-2(1),LEVEL|1A,NESA|M1.2.2,NIAv2|AM28,NIAv2|AM29,NIAv2|AM30,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[\\s]*(SQLNET\.)?SSL_CERT_REVOCATION[\\s]*="
+      expect      : "(?i)^[\\s]*(SQLNET\.)?SSL_CERT_REVOCATION[\\s]*=[\\s]*REQUIRED[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK_NOT
+      description : "2.2.2 Ensure 'ACCEPT_SHA1_CERTS' Is NOT Set"
+      info        : "The setting ACCEPT_SHA1_CERTS specifies whether Oracle accepts SHA-1 signed certificates.
+
+Note: See Additional Information regarding the deprecation of this setting.
+
+Weak algorithms such as MD5 and SHA-1 have known vulnerabilities that make them susceptible to attacks. Allowing their use can compromise data integrity and authentication, potentially exposing systems to risks. Transitioning to stronger algorithms, such as SHA-2, is recommended. The SHA1 algorithm has been deprecated by NIST in 2011."
+      solution    : "To remediate this recommendation, set the ACCEPT_SHA1_CERTS to the value FALSE or remove ACCEPT_SHA1_CERTS from sqlnet.ora
+
+In addition to sqlnet.ora this parameter must also be set to FALSE in listener.ora
+
+Impact:
+
+Applications that use SHA-1-signed certificates must be updated to use certificates signed with a stronger, more secure algorithm such as SHA-2."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[^#]*ACCEPT_SHA1_CERTS[\\s]*=[\\s]*TRUE[\\s]*$"
+      expect      : "(?i)^[^#]*ACCEPT_SHA1_CERTS[\\s]*=[\\s]*TRUE[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK_NOT
+      description : "2.2.3 Ensure 'ALLOWED_WEAK_CERT_ALGORITHMS' Is NOT Set"
+      info        : "The setting ALLOWED_WEAK_CERT_ALGORITHMS determines whether Oracle accepts certificates signed with the SHA-1 or MD5 or both algorithms.
+
+Weak algorithms such as MD5 and SHA-1 have known vulnerabilities that make them susceptible to attacks. Allowing their use can compromise data integrity and authentication, potentially exposing systems to risks. Transitioning to stronger algorithms, such as SHA-2, is recommended."
+      solution    : "To remediate this recommendation, remove the ALLOWED_WEAK_CERT_ALGORITHMS parameter.
+
+Impact:
+
+Applications that use MD5 or SHA-1-signed certificates must be updated to use certificates signed with a stronger, more secure algorithm such as SHA-2."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[^#]*ALLOWED_WEAK_CERT_ALGORITHMS[\\s]*=[\\s]*TRUE[\\s]*$"
+      expect      : "(?i)^[^#]*ALLOWED_WEAK_CERT_ALGORITHMS[\\s]*=[\\s]*TRUE[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "2.2.4 Ensure 'SQLNET.ALLOWED_LOGON_VERSION_CLIENT' Is Set To 12a"
+      info        : "This setting SQLNET.ALLOWED_LOGON_VERSION_CLIENT configures the minimum authentication protocols clients can use to connect to database instances. Please note that the term VERSION in the parameter name refers to the version of the authentication protocol, not the version of the Oracle Database release.
+
+Allowing deprecated or weaker authentication protocols can expose the database to security vulnerabilities, increasing the risk of unauthorized access, data loss, or breaches. Ensuring that clients use secure protocols improves the overall security posture of the database environment."
+      solution    : "To remediate this recommendation, set SQLNET.ALLOWED_LOGON_VERSION_CLIENT to 12a
+
+Impact:
+
+Setting this parameter to 12a may prevent some clients from connecting to the database, leading to authentication failures. Specifically, clients may encounter the error ORA-28040: The database does not accept your client's authentication protocol; login denied."
+      reference   : "800-171|3.4.8,800-171|3.14.1,800-171r3|03.04.08,800-171r3|03.14.01,800-53|CM-7(5),800-53|SI-2,800-53r5|CM-7(5),800-53r5|SI-2,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-1,CSF|PR.IP-12,CSF|PR.PT-3,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.6.8,ISO-27001-2022|A.8.8,ISO-27001-2022|A.8.19,ISO-27001-2022|A.8.32,ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|PR9,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|3.2,QCSC-v1|11.2,SWIFT-CSCv1|2.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[\\s]*(SQLNET\.)?ALLOWED_LOGON_VERSION_CLIENT[\\s]*="
+      expect      : "(?i)^[\\s]*(SQLNET\.)?ALLOWED_LOGON_VERSION_CLIENT[\\s]*=[\\s]*12a[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "2.2.5 Ensure 'SQLNET.ALLOWED_LOGON_VERSION_SERVER' Is Set To 12a"
+      info        : "This setting SQLNET.ALLOWED_LOGON_VERSION_SERVER configures the minimum authentication protocols clients can use to connect to database instances. Please note that the term VERSION in the parameter name refers to the version of the authentication protocol, not the version of the Oracle Database release.
+
+Allowing deprecated or weaker authentication protocols can expose the database to security vulnerabilities, increasing the risk of unauthorized access, data loss, or breaches. Ensuring that clients use secure protocols improves the overall security posture of the database environment."
+      solution    : "To remediate this recommendation, set SQLNET.ALLOWED_LOGON_VERSION_SERVER to 12a
+
+Impact:
+
+Setting this parameter to 12a may prevent some clients from connecting to the database, leading to authentication failures. Specifically, clients may encounter the error ORA-28040: The database does not accept your client's authentication protocol; login denied"
+      reference   : "800-171|3.4.8,800-171|3.14.1,800-171r3|03.04.08,800-171r3|03.14.01,800-53|CM-7(5),800-53|SI-2,800-53r5|CM-7(5),800-53r5|SI-2,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-1,CSF|PR.IP-12,CSF|PR.PT-3,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.6.8,ISO-27001-2022|A.8.8,ISO-27001-2022|A.8.19,ISO-27001-2022|A.8.32,ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|PR9,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|3.2,QCSC-v1|11.2,SWIFT-CSCv1|2.2,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[\\s]*(SQLNET\.)?ALLOWED_LOGON_VERSION_SERVER[\\s]*="
+      expect      : "(?i)^[\\s]*(SQLNET\.)?ALLOWED_LOGON_VERSION_SERVER[\\s]*=[\\s]*12a[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "2.2.6 Ensure 'SQLNET.ENCRYPTION_CLIENT Is Set To 'REQUIRED'"
+      info        : "The SQLNET.ENCRYPTION_CLIENT parameter determines whether the client side of a database connection enforces network encryption. When set to REQUIRED this parameter mandates that all data transmitted between the client and the database is encrypted, preventing the client from connecting if encryption cannot be established. This setting ensures that sensitive data remains protected during transmission.
+
+If you are using TLS, this is not a required check. Oracle database network encryption configured through TLS/SSL is also an acceptable mechanism and may be implemented in lieu of this setting.
+
+Network encryption is crucial for safeguarding data transmitted over networks. Without encryption, data, including sensitive information like credentials, financial data, and personal details, is vulnerable to interception and potential compromise. Setting SQLNET.ENCRYPTION_CLIENT to REQUIRED ensures that all client connections to the database use encryption, aligning with best practices for data protection and regulatory compliance requirements."
+      solution    : "To remediate this recommendation, set SQLNET.ENCRYPTION_CLIENT to REQUIRED
+
+Impact:
+
+Clients or applications that do not support encryption will NOT be able to connect to the database, which may necessitate updates to older client configurations."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[\\s]*(SQLNET\.)?ENCRYPTION_CLIENT[\\s]*="
+      expect      : "(?i)^[\\s]*(SQLNET\.)?ENCRYPTION_CLIENT[\\s]*=[\\s]*REQUIRED[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "2.2.7 Ensure 'SQLNET.ENCRYPTION_SERVER' Is Set To 'REQUIRED'"
+      info        : "The SQLNET.ENCRYPTION_SERVER parameter determines whether the server side of a database connection enforces network encryption. When set to REQUIRED this parameter mandates that all data transmitted between the client and the database is encrypted, preventing the server from connecting if encryption cannot be established. This setting ensures that sensitive data remains protected during transmission.
+
+If you are using TLS, this is not a required check. Oracle database network encryption configured through TLS/SSL is also an acceptable mechanism and may be implemented in lieu of this setting.
+
+Caution: Modifying this parameter changes how the database creates and tests password verifiers. Please refer to recommendation 4.4.
+
+Network encryption is crucial for safeguarding data transmitted over networks. Without encryption, data, including sensitive information like credentials, financial data, and personal details, is vulnerable to interception and potential compromise. Setting SQLNET.ENCRYPTION_SERVER to REQUIRED ensures that all client connections to the database use encryption, aligning with best practices for data protection and regulatory compliance requirements."
+      solution    : "To remediate this recommendation, set SQLNET.ENCRYPTION_SERVER to REQUIRED
+
+Impact:
+
+Clients or applications that do not support encryption will NOT be able to connect to the database, which may necessitate updates to older client configurations."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[\\s]*(SQLNET\.)?ENCRYPTION_SERVER[\\s]*="
+      expect      : "(?i)^[\\s]*(SQLNET\.)?ENCRYPTION_SERVER[\\s]*=[\\s]*REQUIRED[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "2.2.8 Ensure 'SQLNET.ENCRYPTION_TYPES_CLIENT' Is Set To 'AES256'"
+      info        : "The SQLNET.ENCRYPTION_TYPES_CLIENT parameter specifies the encryption algorithms that the client can use for database connections. This setting allows you to ensure that all data transmitted between the client and the database is encrypted using strong, secure algorithms.
+
+Limiting the client to use only strong encryption algorithms helps to protect data integrity and confidentiality during transit. Using stronger algorithms reduces the risk of interception or tampering by unauthorized parties."
+      solution    : "To remediate this recommendation, set SQLNET.ENCRYPTION_TYPES_CLIENT to AES256
+
+SQLNET.CRYPTO_CHECKSUM_TYPES_CLIENT=AES256
+
+Impact:
+
+If the AES256 algorithm is not available or installed on either the client or server, connections will be terminated. This may result in the error ORA-12650: No common encryption or data integrity algorithm preventing SQL clients from connecting to the database."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[\\s]*SQLNET.ENCRYPTION_TYPES_CLIENT[\\s]*="
+      expect      : "(?i)^[\\s]*SQLNET.ENCRYPTION_TYPES_CLIENT[\\s]*=[\\s]*\\(AES256\\)[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "2.2.9 Ensure 'SQLNET.ENCRYPTION_TYPES_SERVER' Is Set To AES256"
+      info        : "The SQLNET.ENCRYPTION_TYPES_SERVER parameter specifies the encryption algorithms that the server enforces for database connections. This setting allows you to ensure that all data transmitted between the client and the database is encrypted using strong, secure algorithms.
+
+Limiting the server to use only strong encryption algorithms helps to protect data integrity and confidentiality during transit. Using stronger algorithms reduces the risk of interception or tampering by unauthorized parties."
+      solution    : "To remediate this recommendation, set SQLNET.ENCRYPTION_TYPES_SERVER to AES256
+
+SQLNET.ENCRYPTION_TYPES_SERVER=AES256
+
+Impact:
+
+If the AES256 algorithm is not available or installed on either the client or server, connections will be terminated. This may result in the error ORA-12650: No common encryption or data integrity algorithm preventing SQL clients from connecting to the database."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1M,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      file        : "@ORACLE_HOME@/network/admin/sqlnet.ora"
+      regex       : "(?i)^[\\s]*SQLNET.ENCRYPTION_TYPES_SERVER[\\s]*="
+      expect      : "(?i)^[\\s]*SQLNET.ENCRYPTION_TYPES_SERVER[\\s]*=[\\s]*\\(AES256\\)[\\s]*$"
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_Oracle_Database_23ai_v1.0.0_L1_RDBMS_On_Linux_Host_OS.audit from CIS Oracle Database 23ai Benchmark v1.0.0"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/benchmarks/16474"
+      show_output : YES
+    </report>
+  </else>
+</if>
+
+</check_type>

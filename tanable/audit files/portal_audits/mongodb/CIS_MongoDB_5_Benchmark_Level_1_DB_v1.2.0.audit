@@ -1,0 +1,171 @@
+#TRUSTED 82b1a0dc81919c53e6c01544e981062c9dd81acf4052cde6ded3d15738218257b989194185c9c9731bec9e3ffbcf83201cc5baed411c224fce4d2b4382b9b7ca5327d0a76dc48e8c1a70ca1618ac64fe0e7ebcb41a98fa9bf33bc0e5a2ee7c71e6d1ed7ff04b85ac4b5b5d798f462d377c06f2cf5b8bc0720cc6305a3db29aca5c6e59ac37bc7337942186417ace9440b0c4d3b49fa07a8a91a18a91f24e3d9c3459b9efbc2eb70b980e659465f62a34568129b063ecf23e7b7897d23b4b45261cc55418f05a148eeb4f5099d37e6c19abb09a0e2734521473552f44581a016e5a384c96f0ed43c0c6c031c5c9da80b9b1a980342e1baf645eb27c7e6f13fb03fc2b6b60be0f30404dafb457f31d865f926d5daef8fba22a5f0f3b9b9f8ace76b6c140ceb5e5ce6e483bd636c8de43b1cb431671e82dec79cc56f7f92bb4375780cd9a909e9a32081ea7fa1c60c3733250f3d8acd96ad1de292fb24e2540806d3a50ebec67f5df5dfd48e7acd4ef660990b402cddd8b9ffa24825c38532e6f27fb67763207d1df66388d8fea54c34b29b010d03779051e17b6c45852ba14730826811b99f4796e4ae403e21b665c916f05d68214e14c9f1cf6d4212e234d754290a6b5602fb470c5c6b0bf494546709805786ba75f6667718de50a9153dc06454fa9e43131b968ee556656a6a3c542d55a9936cdde5a8a12c8d35982d81e1d34
+#TRUST-RSA-SHA256 474d04fb7c72139be9d5e21a4be9f424a74625b85aba951e4933616bb884225e218493426fa325d37ac8003fb652d2d7f6dbbe4291fd62b8a8868ced7a619abf594d505d35144fe1eb7e0a8db85ddd89acc7a73175a204ecf342eabdbf64c162d3f632174c4586cb0b3c02d7aed46a65730726aa3624b7fb5e75a0ebb8d6848a5dd05f341ddfde9141520fa2172b02dd1724fdb04460537045e404f32223a16a909bf7836b271c1dece53c367fe52a53c6e1f8cbb9bd04e8e6037df86885f487a0ac443c6066f49a875d372cdad1735762211da8dd6654ad361f5595b278a94989c2f55b6b53919724a9ba401ce510e61fe9595f2a8a79dd1f5c7eb86dd978a23eaa7804b8850b4c13c3712fd29209fda5607b2f20b61a0cf3bfcf939feb7ca3cda9e3c1a671b27db39ae68845ead4a3329355401cb75c6d584ebccbea5eb0d3c802eb81de1f8705754b6e1e4d877ef18ac35e0f995f25f574d66f83a94eb4ded8f97297247fdabe1e81cadec9bf245906570cda321490c1fc069c4bdd4e9dca1eb5ef5edb5741878f39d1188524c3413cae4e79da78b5a26d5533cb554625f078554a93dd0319e6b362b45bc36153803695a265422da0d9e8993e4e8c132c59312217b720d186b6d3ff5489db5ed2d69eb75d4a8eb92787d3a06d1e220a2ecc148a83eac8393885ed6f0cdeb1a14ee0aa2241bc184ae15b727ed53177da61f1
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.1 $
+# $Date: 2024/06/17 $
+#
+# Description : This document implements the security configuration as recommended by the
+#               CIS MongoDB 5 benchmark v1.2.0
+#
+#<ui_metadata>
+#<display_name>CIS MongoDB 5 L1 DB v1.2.0</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>MongoDB 5</name>
+#  <profile>L1 DB</profile>
+#  <version>1.2.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/15136</link>
+#</spec>
+#<labels>mongodb,mongodb_5,cis,update_20230227</labels>
+#<benchmark_refs>CCE,CIS_Recommendation,CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#</ui_metadata>
+
+<check_type:"MongoDB">
+
+<custom_item>
+  description : "1.1 Ensure the appropriate MongoDB software version/patches are installed"
+  info        : "The MongoDB installation version, along with the patch level, should be the most recent that is compatible with the organization's operational needs. In addition, regularly view latest minor security patch updates for security vulnerability fixes (CVE Related) from MongoDB website: https://www.mongodb.com/alerts
+
+Rationale:
+
+Using the most recent MongoDB software version along with all applicable patches, helps limit the possibilities for vulnerabilities in the software. The installation version and/or patches applied should be selected according to the needs of the organization. At a minimum, the software version should be supported.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution    : "Upgrade to the latest version of the MongoDB software:
+
+Backup the data set.
+
+Download the binaries for the latest MongoDB revision from the MongoDB Download Page and store the binaries in a temporary location. The binaries download as compressed files that extract to the directory structure used by the MongoDB installation.
+
+Shutdown the MongoDB instance.
+
+Replace the existing MongoDB binaries with the downloaded binaries.
+
+Restart the MongoDB instance.
+
+Default Value:
+
+Patches are not installed by default."
+  reference   : "800-171|3.4.1,800-171|3.4.7,800-171|3.4.9,800-53|CM-7(2),800-53|CM-8(3),800-53|CM-10,800-53|CM-11,800-53r5|CM-7(2),800-53r5|CM-8(3),800-53r5|CM-10,800-53r5|CM-11,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv7|2.2,CSCv8|2.3,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7(2),ITSG-33|CM-8(3),LEVEL|1M,NESA|T1.2.1,NESA|T1.2.2,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+  regex       : "\"version\""
+  expect      : "Manual Review Required"
+  collection  : 'admin.$cmd'
+  query       : '{"buildInfo":1}'
+  severity    : MEDIUM
+</custom_item>
+
+<custom_item>
+  description : "3.1 Ensure least privilege for database accounts"
+  info        : "MongoDB grants access to data and commands through 'role-based' approach, MongoDB is shipped with built-in roles that provide the different levels of access commonly needed in a database system. In addition, you can create custom-roles.
+
+The following roles provide the ability to assign any user any privilege on any database, which means that users with one of these roles can assign themselves any privilege on any database:
+
+dbOwner role, when scoped to the admin database userAdmin role, when scoped to the admin database userAdminAnyDatabase role
+
+Rationale:
+
+Ensuring highly privileged Roles are granted only for database administrators, and roles are not scoped to 'admin' databases will reduce attack surface and follows the least privilege principle.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution    : "If any accounts were listed with built in-roles:
+
+dbOwner
+userAdmin
+userAdminAnyDatabase
+
+in 'admin' database role then drop them."
+  reference   : "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+  regex       : ".*"
+  expect      : "Manual Review Required"
+  collection  : 'admin.$cmd'
+  query       : '{"usersInfo": 1 }'
+  severity    : MEDIUM
+</custom_item>
+
+<custom_item>
+  description : "3.2 Ensure that role-based access control is enabled and configured appropriately - users"
+  info        : "Role-based access control (RBAC) is a method of regulating access to resources based on the roles of individual users within an enterprise. A user is granted one or more roles that determine the user's access to database resources and operations. Outside of role assignments, the user has no access to the system. MongoDB can use RBAC to govern access to MongoDB systems. MongoDB does not enable authorization by default.
+
+Rationale:
+
+When properly implemented, RBAC enables users to carry out a wide range of authorized tasks by dynamically regulating their actions according to flexible functions. This allows an organization to control employees' access to all database tables through RBAC.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution    : "Establish roles for MongoDB.
+
+Assign the appropriate privileges to each role.
+
+Assign the appropriate users to each role.
+
+Remove any individual privileges assigned to users that are now addressed by the roles.
+
+See the reference below for more Information."
+  reference   : "800-171|3.1.1,800-171|3.1.5,800-171|3.3.8,800-171|3.3.9,800-53|AC-2,800-53|AC-3,800-53|AC-6,800-53|AC-6(1),800-53|AC-6(7),800-53|AU-9(4),800-53r5|AC-2,800-53r5|AC-3,800-53r5|AC-6,800-53r5|AC-6(1),800-53r5|AC-6(7),800-53r5|AU-9(4),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(d),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.3(d),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|6.8,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.5,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.4,ISO/IEC-27001|A.9.4.5,ISO/IEC-27001|A.12.4.2,ITSG-33|AC-2,ITSG-33|AC-3,ITSG-33|AC-6,ITSG-33|AC-6(1),ITSG-33|AU-9(4),ITSG-33|AU-9(4)(a),ITSG-33|AU-9(4)(b),LEVEL|1M,NESA|M1.1.3,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.5.2,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|AM28,NIAv2|AM31,NIAv2|GS3,NIAv2|GS4,NIAv2|GS8c,NIAv2|NS5j,NIAv2|SM5,NIAv2|SM6,NIAv2|SS13c,NIAv2|SS14e,NIAv2|SS15c,NIAv2|SS29,NIAv2|VL3b,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,PCI-DSSv4.0|10.3.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+  regex       : ".*"
+  expect      : "Manual Review Required"
+  collection  : 'admin.$cmd'
+  query       : '{"usersInfo": 1 }'
+  severity    : MEDIUM
+</custom_item>
+
+<custom_item>
+  description : "3.2 Ensure that role-based access control is enabled and configured appropriately - roles"
+  info        : "Role-based access control (RBAC) is a method of regulating access to resources based on the roles of individual users within an enterprise. A user is granted one or more roles that determine the user's access to database resources and operations. Outside of role assignments, the user has no access to the system. MongoDB can use RBAC to govern access to MongoDB systems. MongoDB does not enable authorization by default.
+
+Rationale:
+
+When properly implemented, RBAC enables users to carry out a wide range of authorized tasks by dynamically regulating their actions according to flexible functions. This allows an organization to control employees' access to all database tables through RBAC.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution    : "Establish roles for MongoDB.
+
+Assign the appropriate privileges to each role.
+
+Assign the appropriate users to each role.
+
+Remove any individual privileges assigned to users that are now addressed by the roles.
+
+See the reference below for more Information."
+  reference   : "800-171|3.1.1,800-171|3.1.5,800-171|3.3.8,800-171|3.3.9,800-53|AC-2,800-53|AC-3,800-53|AC-6,800-53|AC-6(1),800-53|AC-6(7),800-53|AU-9(4),800-53r5|AC-2,800-53r5|AC-3,800-53r5|AC-6,800-53r5|AC-6(1),800-53r5|AC-6(7),800-53r5|AU-9(4),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(d),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.3(d),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|6.8,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.5,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.4,ISO/IEC-27001|A.9.4.5,ISO/IEC-27001|A.12.4.2,ITSG-33|AC-2,ITSG-33|AC-3,ITSG-33|AC-6,ITSG-33|AC-6(1),ITSG-33|AU-9(4),ITSG-33|AU-9(4)(a),ITSG-33|AU-9(4)(b),LEVEL|1M,NESA|M1.1.3,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.5.2,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|AM28,NIAv2|AM31,NIAv2|GS3,NIAv2|GS4,NIAv2|GS8c,NIAv2|NS5j,NIAv2|SM5,NIAv2|SM6,NIAv2|SS13c,NIAv2|SS14e,NIAv2|SS15c,NIAv2|SS29,NIAv2|VL3b,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,PCI-DSSv4.0|10.3.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+  regex       : ".*"
+  expect      : "Manual Review Required"
+  collection  : "admin.$cmd"
+  query       : '{"rolesInfo":1,"showPrivileges": true, "showBuiltinRoles": true}'
+  severity    : MEDIUM
+</custom_item>
+
+<custom_item>
+  description : "3.4 Ensure that each role for each MongoDB database is needed and grants only the necessary privileges"
+  info        : "Reviewing all roles periodically and eliminating unneeded roles as well as unneeded privileges from necessary roles helps minimize the privileges that each user has.
+
+Rationale:
+
+Although role-based access control (RBAC) has many advantages for regulating access to resources, over time some roles may no longer be needed, and some roles may grant privileges that are no longer needed.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution    : "To revoke specified privileges from the user-defined role on the database where the command is run. The revokePrivilegesFromRole command has the following syntax:"
+  reference   : "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|14.6,CSCv8|5.4,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+  regex       : ".*"
+  expect      : "Manual Review Required"
+  collection  : "admin.$cmd"
+  query       : '{"rolesInfo":1,"showPrivileges": true, "showBuiltinRoles": true}'
+  severity    : MEDIUM
+</custom_item>
+
+</check_type>

@@ -1,0 +1,117 @@
+#TRUSTED 99d30a01b7043c8c20564204b63f3833ce99b6482a6550a07a639f136d8de316fe70ab238f7e899568941469b65a4dcfa704f47a659c6308bbe23eda520809c210fa11a5cafe6f020a26f2c76665153b6c6a9c9cc3f77fbd913e4219ffa15610fb810d3491f47d861421e5d5bfee08a6a7d29967c8baf2c222ccaedc806b9ed69ddd9b9844bad0efb3b414e62afba8856bb772c1f6316581aea48937bf99610802bd9992d4fbff0bca471268ac47f511767919432af648a4e8e652784abdf1690247db922b150d7152dadf06e03381c8613dfbb67ddd288ea8cd9949b96b687ceeac4c65f3036a310ab7c45debadf81631931ed98e6bd991639e9996296086f2d148c335f4100cd07fb7b3a9e14fb2b755edbf4e4d09341b9f7cc795612bfef243c7781c43fce93d7ec961929d8f608d83fd3abcb477ac562927ee71478be1299e3f30c6f003d7352de761095497805f16dc8e81d097dcc8d8108f29d0e8464cc211d6f21030b86b2ceb75c23eed98996ebbd61c78a7f9e36e18b801274cf3b807ae24919375ddec02de60b55769dbb755b53b866f7073451516e66bc55b6d56e3b1899682646c3bdcc078299f66cc525dc3abdedc280e141f51b05678e6fd67a90b5f78cbda000260936f03d4ac686b5b9cf3e6ca5337609de931c59f0288fc6f0a85450c62b73b7a9057bfb97a70bfe83c3a6de6ec49cd0408f2fd03ccc9b5
+#TRUST-RSA-SHA256 221f160eb289aba70138ccb5f7280cd59d2ee254a8e2c00b007eed37ccd0bca77eb5df73409ea4c683573cbe0a71fcaf66b843e76fce0966e5b60d07aedde15c24bce5d518851ed152700906d7df729d4e7df36d3cb3fdad6e542ea49bccaf4a0be7d66b0709510357579a046399f8f46d581f9efd7fd8096ae5d81ea5020a1cfc852b98bbffc83ebcba296e16a2ef992b78c3265c307021a6773a39ffdd7ee92d95fedc44b76fb6bd22f9c22892383e0408fab886ede01273fccd27a97e72643dec19f379eaffd08fd5462232fa7953158a1e77676439a1b4ab5404b9b7f395b6aaf5692c965b8d9526d5cc60fedfac8cb8e556a6d284bd51b10faa6b9f87de41be90c8b12cd3fcf26a1b483b9e7787be9926cba62ab50b0a28bbe279cc37c2399fb4a68ab4bd2f5841f0388dcb901429b3caa6ff898c19ac8d9d3d40346074f3d808045c6f079cbb03f4c5a9e3cbf2b6bf620a43f2dff9ef3304ad85f16fe3fc7aa84552f09c1dd4aacca9687885878bafffb33a4523a02299ab3da8b3bca3b3d5eab05c37471ca32a4e45f585a92938cf34a25ab0dd7318115acdf708dab172ed52b3fd1ec3a6dece5156c466642328736713f041eacc0908e5907ab3be163ccd9486c010c43350d4fff019672aead10236e8c5ab8e3bb129fed318e4108792220329109ef4eaed2c62b0d72644c5bab9d7d31be99176b4a4f4c30f3cdc77
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2024/11/22 $
+#
+# description : This .audit is designed against the CIS MongoDB 7 Benchmark 1.1.0
+#
+#<ui_metadata>
+#<display_name>CIS MongoDB 7 v1.1.0 L2 MongoDB</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>MongoDB 7</name>
+#  <profile>L2 DB</profile>
+#  <version>1.1.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/15858</link>
+#</spec>
+#<labels>cis,mongodb_7</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#</ui_metadata>
+
+<check_type:"MongoDB">
+
+<if>
+  <condition auto:"WARNING" type:"AND">
+    <custom_item>
+      description : "userAdminAnyDatabase"
+      regex       : ".*"
+      expect      : "^Manual Review Required$"
+      collection  : "admin.$cmd"
+      query       : '{"rolesInfo":"userAdminAnyDatabase"}'
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description : "readWriteAnyDatabase"
+      regex       : ".*"
+      expect      : "^Manual Review Required$"
+      collection  : "admin.$cmd"
+      query       : '{"rolesInfo":"readWriteAnyDatabase"}'
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description : "hostManager"
+      regex       : ".*"
+      expect      : "^Manual Review Required$"
+      collection  : "admin.$cmd"
+      query       : '{"rolesInfo":"hostManager"}'
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description : "dbAdminAnyDatabase"
+      regex       : ".*"
+      expect      : "^Manual Review Required$"
+      collection  : "admin.$cmd"
+      query       : '{"rolesInfo":"dbAdminAnyDatabase"}'
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description : "dbOwner"
+      regex       : ".*"
+      expect      : "^Manual Review Required$"
+      collection  : "admin.$cmd"
+      query       : '{"rolesInfo":"dbOwner"}'
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description : "clusterAdmin"
+      regex       : ".*"
+      expect      : "^Manual Review Required$"
+      collection  : "admin.$cmd"
+      query       : '{"rolesInfo":"clusterAdmin"}'
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description : "userAdmin"
+      regex       : ".*"
+      expect      : "^Manual Review Required$"
+      collection  : "admin.$cmd"
+      query       : '{"rolesInfo":"userAdmin"}'
+      severity    : MEDIUM
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "3.5 Review Superuser/Admin Roles"
+      info        : "Roles provide several advantages that make it easier to manage privileges in a database system. Security administrators can control access to their databases in a way that mirrors the structure of their organizations (they can create roles in the database that map directly to the job functions in their organizations). The assignment of privileges is simplified. Instead of granting the same set of privileges to each individual user in a particular job function, the administrator can grant this set of privileges to a role representing that job function and then grant that role to each user in that job function.
+
+Reviewing the Superuser/Admin roles within a database helps minimize the possibility of privileged unwanted access.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "To remove a user from one or more roles on the current database."
+      reference   : "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv7|16.8,CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|2M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15858"
+      show_output : YES
+    </report>
+  </then>
+</if>
+
+</check_type>

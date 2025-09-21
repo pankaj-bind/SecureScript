@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.10.25.2.2 (L1) Ensure 'Security: Specify the maximum log file size (KB)' is set to 'Enabled: 196,608 or greater'",
+  "info": "This policy setting specifies the maximum size of the log file in kilobytes. The maximum log file size can be configured between 1 megabyte (1,024 kilobytes) and 4 terabytes (4,194,240 kilobytes) in kilobyte increments.\n\nThe recommended state for this setting is: Enabled: 196,608 or greater\n\nIf events are not recorded it may be difficult or impossible to determine the root cause of system problems or the unauthorized activities of malicious users.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: 196,608 or greater :\n\nComputer Configuration\\Policies\\Administrative Templates\\Windows Components\\Event Log Service\\Security\\Specify the maximum log file size (KB)",
+  "Note": "This Group Policy path is provided by the Group Policy template EventLog.admx/adml that is included with all versions of the Microsoft Windows Administrative Templates.\n\nNote #2: In older Microsoft Windows Administrative Templates, this setting was initially named\n\nMaximum Log Size (KB)\n\n, but it was renamed starting with the Windows 8.0 &amp; Server 2012 (non-R2) Administrative Templates.",
+  "Impact": "When event logs fill to capacity, they will stop recording information unless the retention method for each is set so that the computer will overwrite the oldest entries with the most recent ones. To mitigate the risk of loss of recent data, you can configure the retention method so that older events are overwritten as needed.\n\nThe consequence of this configuration is that older events will be removed from the logs. Attackers can take advantage of such a configuration, because they can generate a large number of extraneous events to overwrite any evidence of their attack. These risks can be somewhat reduced if you automate the archival and backup of event log data.\n\nIdeally, all specifically monitored events should be sent to a server that uses Microsoft System Center Operations Manager (SCOM) or some other automated monitoring tool. Such a configuration is particularly important because an attacker who successfully compromises a server could clear the Security log. If all events are sent to a monitoring server, then you will be able to gather forensic information about the attacker's activities.\"",
+  "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|6.4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.8.6,ITSG-33|AU-4,LEVEL|1A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17603",
+  "value_type": "POLICY_DWORD",
+  "value_data": "[196608..MAX]",
+  "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Security",
+  "reg_item": "MaxSize",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

@@ -1,0 +1,16 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.9.5.4 (L1) Ensure 'Turn On Virtualization Based Security: Require UEFI Memory Attributes Table' is set to 'True (checked)'",
+  "info": "\"This option will only enable Virtualization Based Protection of Code Integrity on devices with UEFI firmware support for the Memory Attributes Table. Devices without the UEFI Memory Attributes Table may have firmware that is incompatible with Virtualization Based Protection of Code Integrity which in some cases can lead to crashes or data loss or incompatibility with certain plug-in cards. If not setting this option the targeted devices should be tested to ensure compatibility.\n\nThe recommended state for this setting is: True (checked)",
+  "Note": "This Group Policy path is provided by the Group Policy template DeviceGuard.admx/adml that is included with the Microsoft Windows 10 Release 1703 Administrative Templates (or newer).",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to TRUE :\n\nComputer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Require UEFI Memory Attributes Table",
+  "Impact": "Note: This setting was moved from the Next Generation (NG) profile to the Level 1 (L1) profile for the Windows 11 Operating System only NG profile settings were isolated from the L1 profile due to potential hardware compatibility issues. The Windows 11 Operating System is dependent on the same hardware as the NG settings, so hardware compatibility is no longer an issue.",
+  "Warning": "All drivers on the system must be compatible with this feature or the system may crash. Ensure that this policy setting is only deployed to computers which are known to be compatible.\"",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/21318",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard",
+  "reg_item": "HVCIMATRequired",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.3.17.8 (L1) Ensure 'User Account Control: Virtualize file and registry write failures to per-user locations' is set to 'Enabled'",
+  "info": "This policy setting controls whether application write failures are redirected to defined registry and file system locations. This policy setting mitigates applications that run as administrator and write run-time application data to:\n\n - %ProgramFiles%\n - %windir%\n - %windir%\\System32\n - HKLM\\SOFTWARE\n\nThe recommended state for this setting is: Enabled\n\nThis setting reduces vulnerabilities by ensuring that legacy applications only write data to permitted locations.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\User Account Control: Virtualize file and registry write failures to per-user locations",
+  "Impact": "None - this is the default behavior.\"",
+  "reference": "800-53|SC-29(1),800-53r5|SC-29(1),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-29,ITSG-33|SC-29a.,LEVEL|1A,QCSC-v1|5.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17603",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",
+  "reg_item": "EnableVirtualization",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

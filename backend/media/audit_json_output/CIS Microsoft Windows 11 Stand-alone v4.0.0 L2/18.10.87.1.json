@@ -1,0 +1,16 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.10.87.1 (L2) Ensure 'Turn on PowerShell Script Block Logging' is set to 'Enabled'",
+  "info": "\"This policy setting enables logging of all PowerShell script input to the Applications and Services Logs\\Microsoft\\Windows\\PowerShell\\Operational Event Log channel.\n\nThe recommended state for this setting is: Enabled",
+  "Note": "Configuring this setting to Enabled generates a high volume of event logs which will be overwritten if the log size is not expanded or offloaded to a log collection system.",
+  "solution": "'To establish the recommended configuration via GP, set the following UI path to Enabled :\n\nComputer Configuration\\\\Policies\\\\Administrative Templates\\\\Windows Components\\\\Windows PowerShell\\\\Turn on PowerShell Script Block Logging",
+  "Impact": "PowerShell script input will be logged to the Applications and Services Logs\\\\Microsoft\\\\Windows\\\\PowerShell\\\\Operational Event Log channel, which can contain credentials and sensitive information.",
+  "Warning": "There are potential risks of capturing credentials and sensitive information in the PowerShell logs, which could be exposed to users who have read-access to those logs. Microsoft provides a feature called \\'Protected Event Logging\\' to better secure event log data. For assistance with protecting event logging, visit:\n\nAbout Logging Windows - PowerShell | Microsoft Docs\n\n.'",
+  "reference": "800-171|3.3.1,800-171|3.3.2,800-171r3|03.03.01,800-53|AU-2,800-53r5|AU-2,CN-L3|8.1.4.3(a),CSCv7|8.8,CSCv8|8.8,CSF|PR.PT-1,CSF2.0|PR.PS-04,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.8.15,ITSG-33|AU-2,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/22007",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\Powershell\\ScriptBlockLogging",
+  "reg_item": "EnableScriptBlockLogging",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

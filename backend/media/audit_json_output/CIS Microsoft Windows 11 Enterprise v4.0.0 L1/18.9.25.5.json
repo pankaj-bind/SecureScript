@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.9.25.5 (L1) Ensure 'Password Settings: Password Length' is set to 'Enabled: 15 or more'",
+  "info": "'This policy setting configures the Windows LAPS Password Settings policy for password length.\n\nEach additional character in a password increases its complexity exponentially. For instance, a seven-character, all lower-case alphabetic password would have 26 to the power of 7 (approximately 8 x 10 to the power of 9 or 8 billion) possible combinations. At 1,000,000 attempts per second (a capability of many password-cracking utilities), it would only take 133 minutes to crack. A seven-character alphabetic password with case sensitivity has 52 to the power of 7 combinations. A seven-character case-sensitive alphanumeric password without punctuation has 627 combinations. An eight-character password has 26 to the power of 8 (or 2 x 10 to the power of 11) possible combinations. Although this might seem to be a large number, at 1,000,000 attempts per second it would take only 59 hours to try all possible passwords. Remember, these times will significantly increase for passwords that use ALT characters and other special keyboard characters such as \\'!\\' or \\'@\\'. Proper use of the password settings can help make it difficult to mount a brute force attack.\n\nThe recommended state for this setting is: Enabled: 15 or more",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template LAPS.admx/adml that is included with the Microsoft Windows 11 Release 22H2 Administrative Templates v3.0 (or newer).",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled and configure the Password Length option to 15 or more :\n\nComputer Configuration\\Policies\\Administrative Templates\\System\\LAPS\\Password Settings",
+  "Impact": "Windows LAPS-generated passwords will be required to have a length of 15 characters (or more, if selected).\"",
+  "reference": "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/21318",
+  "value_type": "POLICY_DWORD",
+  "value_data": "@LAPS_PASSWORD_LENGTH@",
+  "reg_key": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\LAPS",
+  "reg_item": "PasswordLength",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

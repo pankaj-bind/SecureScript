@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Hardening Utility</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Left Pane: Sidebar -->
+        <aside class="sidebar">
+            <header class="sidebar-header">
+                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <h1 class="app-title">Hardening Utility</h1>
+            </header>
+            
+            <div class="sidebar-content">
+                <div class="upload-section">
+                    <input type="file" id="folder-upload" webkitdirectory directory multiple class="hidden"/>
+                    <label for="folder-upload" class="upload-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m16 16-4-4-4 4"></path></svg>
+                        <span>Upload Policy Folder</span>
+                    </label>
+                    <input type="text" id="search-box" placeholder="Search policies...">
+                    <div id="policy-counter" class="policy-counter"></div>
+                </div>
+                <div id="policy-list-container" class="policy-list-container">
+                    <ul id="policy-list"></ul>
+                    <p id="no-policies" class="no-policies-msg">Upload a folder to begin.</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Pane: Main Content -->
+        <main id="details-pane" class="main-content">
+            <div id="output-section" class="output-section hidden">
+                <!-- Policy Information Card -->
+                <div class="info-card">
+                    <h2 class="card-title">Policy Information</h2>
+                    <div id="policy-info" class="policy-info-content"></div>
+                </div>
+
+                <!-- Actions Card -->
+                <div class="info-card">
+                    <h2 class="card-title">Direct Actions</h2>
+                    <div id="actions-container" class="actions-container">
+                        <button id="applyBtn" class="action-btn apply">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            <span>Apply Hardening</span>
+                        </button>
+                        <button id="checkBtn" class="action-btn check">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.25 12a9.25 9.25 0 1 1-18.5 0 9.25 9.25 0 0 1 18.5 0Z"></path><path d="M12 12v-2"></path><path d="M12 16h.01"></path></svg>
+                            <span>Check Status</span>
+                        </button>
+                        <button id="revertBtn" class="action-btn revert">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 13v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h8"></path><path d="m21 3-6 6m6 0-6-6"></path></svg>
+                            <span>Revert Hardening</span>
+                        </button>
+                    </div>
+                    <div id="status-message" class="status-message hidden"></div>
+                </div>
+                
+                <!-- Scripts Card -->
+                <div class="info-card">
+                    <h2 class="card-title">PowerShell Scripts</h2>
+                    <div class="scripts-container">
+                        <!-- Hardening Script -->
+                        <div class="script-block">
+                            <div class="script-header">
+                                <h3 class="script-title harden">Harden Script</h3>
+                                <button class="copy-btn" data-target="harden-script">Copy</button>
+                            </div>
+                            <textarea id="harden-script" class="script-textarea" rows="4"></textarea>
+                        </div>
+                        <!-- Check Script -->
+                        <div class="script-block">
+                            <div class="script-header">
+                                <h3 class="script-title check">Check Script</h3>
+                                <button class="copy-btn" data-target="check-script">Copy</button>
+                            </div>
+                            <textarea id="check-script" class="script-textarea" rows="4"></textarea>
+                        </div>
+                        <!-- Revert Script -->
+                        <div class="script-block">
+                            <div class="script-header">
+                                <h3 class="script-title revert">Revert Script</h3>
+                                <button class="copy-btn" data-target="revert-script">Copy</button>
+                            </div>
+                            <textarea id="revert-script" class="script-textarea" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="./renderer.js"></script>
+</body>
+</html>

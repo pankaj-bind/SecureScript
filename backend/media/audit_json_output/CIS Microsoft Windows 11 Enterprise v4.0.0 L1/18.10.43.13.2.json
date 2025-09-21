@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.10.43.13.2 (L1) Ensure 'Scan packed executables' is set to 'Enabled'",
+  "info": "This policy setting manages whether or not Microsoft Defender Antivirus scans packed executables. Packed executables are executable files that contain compressed code.\n\nThe recommended state for this setting is: Enabled\n\nPacking executables is a way to compress and create smaller files and can make it difficult to access and analyze the code associated with the executable. This is a common method to obfuscate malicious executables by bad actors.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Windows Components\\Microsoft Defender Antivirus\\Scan\\Scan packed executables",
+  "Note": "This Group Policy path is provided by the Group Policy template WindowsDefender.admx/adml that is included with the Microsoft Windows 8.1 and Server 2012 R2 Administrative Templates (or newer).",
+  "Impact": "None - This is the default behavior.\"",
+  "reference": "800-171|3.8.7,800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-171r3|03.08.07,800-171r3|03.14.02,800-53|MP-7,800-53|SI-3,800-53r5|MP-7,800-53r5|SI-3,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CN-L3|8.5.4.1(c),CSCv7|8.4,CSCv8|10.4,CSF|DE.CM-4,CSF|DE.DP-3,CSF|PR.PT-2,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.10,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.7,ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|1A,NESA|T1.4.1,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/21318",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Scan",
+  "reg_item": "DisablePackedExeScanning",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

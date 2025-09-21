@@ -1,0 +1,21 @@
+{
+  "ui_metadata": {
+    "display_name": "CIS Microsoft Windows 11 Stand-alone v4.0.0 L2 BL",
+    "spec": {
+      "type": "CIS",
+      "name": "Microsoft Windows 11 Stand-alone",
+      "profile": "L2 BL",
+      "version": "4.0.0",
+      "link": "https://workbench.cisecurity.org/benchmarks/22007"
+    },
+    "variables": [
+      {
+        "name": "PLATFORM_VERSION",
+        "default": "2[26][0-9]{3}",
+        "description": "Windows Version",
+        "info": "Windows Version",
+        "value_type": "STRING"
+      }
+    ]
+  }
+}

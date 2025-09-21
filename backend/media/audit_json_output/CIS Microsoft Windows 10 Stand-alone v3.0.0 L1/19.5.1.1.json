@@ -1,0 +1,16 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "19.5.1.1 (L1) Ensure 'Turn off toast notifications on the lock screen' is set to 'Enabled'",
+  "info": "This policy setting turns off toast notifications on the lock screen.\n\nThe recommended state for this setting is Enabled\n\nWhile this feature can be handy for users, applications that provide toast notifications might display sensitive personal or business data while the device is left unattended.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled :\n\nUser Configuration\\Policies\\Administrative Templates\\Start Menu and Taskbar\\Notifications\\Turn off toast notifications on the lock screen",
+  "Note": "This Group Policy path is provided by the Group Policy template WPN.admx/adml that is included with the Microsoft Windows 8.0 &amp; Server 2012 (non-R2) Administrative Templates (or newer).",
+  "Impact": "Applications will not be able to raise toast notifications on the lock screen.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|16.11,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17129",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKU\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications",
+  "reg_item": "NoToastApplicationNotificationOnLockScreen",
+  "reg_option": "CAN_NOT_BE_NULL",
+  "reg_include_hku_users": "S-1-5-21-*"
+}

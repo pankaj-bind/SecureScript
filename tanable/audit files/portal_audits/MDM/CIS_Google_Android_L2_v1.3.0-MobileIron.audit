@@ -1,0 +1,303 @@
+#TRUSTED 7514b998816849aeae96240330d143624d0cf9a8adbb2d79969f3645e63d09912f7296c86d63384189249cf84d1a95075c18770d928b7c770cf215c66cf4f29402a296f750570611d64844db3cf980aa0dae6edc527a1eb1e333ec99a135a550c6ce8c7cdeb5d6c9f763200a1b9f0bf004f2314c88c0f640067973c75b74e9b38633f352e8a17b693b702fe23e18a376821cf407562692a498eba0adf680b9ebc71be99ba36d794c618d93be45f089beec51dc11e7ccf7ab023fc34a9d898333aa81af2c0ff631d48e355753cfc6b23596001ebb02631491a2912bd11a51c8ffd708cb8a7930473a42bd6f1bab868f4b880c214a0761bc9f9a1939e0c0ff426438bb236a2e04fe79ba3ea43a5bde67538f3e548fc0c768e49c73a0beb6a628e42080d652409b65839d6928238317aab8a9cef186b0af511911c3f98137577b67b6ec1b24ae779b3635041b1412cadeceee3313875ec7fa85f5706e7afbce41e2f04e4dccc62220477618cc3786ee6c60ee3583334c6566d6a5d11083dafd1d81daed3428b986445e3b751640679205828eb7e7add76003a6cd6c199dcd0d7733047bb382cc3b757ec84f62f3e299a6306c089bef7769fca2444865481e5b227ca6009ac5c54177c65159789729fa49480f261b0ed30fdb39108c88fb4c7e34a49c2503040f4556d342f27b5321e4f7c4bb3a8b1b97fd54cebb18e79abd18841a
+#TRUST-RSA-SHA256 175c40d0a3ab02fcc2a281dd29f40f4018b8013df09b58991e3a05bf7a3e51a7c9a93b175e310427c084ae6e3b0abca2c4647ce0dd503cfdd816be1639937661c63c22c62ad54c64b586cf27d75bf3f209efe9c1a57ecbad498a6f917f5adeb2e44db040f3602841b27c5302c7fd30012a5868414268b9ff915e476a846d66d058d5b78b5f68e3a7dab5bc2ee71d5f461bd4ac70ac98513b2ce3e24b55e799435f81686ddef8b96924c771cce0cc8205b61071131604fe38c3f02ae0b8469b870faf53d4747edf403d0720102c2775f08881eca2be8d315a427d08f9fecc79a0300d000293ab70ea0db9955165109a4f90941a25a68b631fd82c613b787da230e3b8b134fa769ee380dd3ad3dd2af909d5b4f19f6d90af5554192f595e331c01c6c732df500b4cfa9498d14475a1cae1d4a045d66933a94eb37e0f74cceb99b763ebcff9d1348eb913377c40eedc22e07d0af37dfc05889ca632392e8f10c0846b5931d63bfc6f52e636ef4653a5f0e4253fab4034b1b0e96ad1522de83c6bb30f46635bc1a14813d155887864d6cee6bf3b4f5f077a93adfb29c192cefb7d6fd76789f1df882d01757cbeafea909d22ca282d31ff18acc1492a3738f55dc3d97d897297ee76b6c5b54231985533325126caa4669464f97925ec5e2bcc1fa305770f0243f34b457b704d631fc1a6d0342701a9fb31a5dd044fe8adfff48e9ebf
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.8 $
+# $Date: 2024/06/17 $
+#
+# description : This document implements the security configuration as recommended by the
+#               CIS Google Android Benchmark v1.3.0
+#
+#<ui_metadata>
+#<display_name>MobileIron - CIS Google Android v1.3.0 L2</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Google Android</name>
+#  <profile>L2 MobileIron</profile>
+#  <version>1.3.0</version>
+#  <link>https://workbench.cisecurity.org/files/2466</link>
+#</spec>
+#<labels>mdm,cis,mobileiron,android,update_20230227</labels>
+#<benchmark_refs>CCE,CIS_Recommendation,CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#</ui_metadata>
+
+<check_type:"MDM" mdm_type:MOBILEIRON>
+
+<report type:"WARNING">
+  description : "1.7 Do not connect to untrusted Wi-Fi networks"
+  info        : "Do not connect to untrusted Wi-Fi networks.
+        The recommended state for this setting is: Only connect to trusted networks.
+
+        Rationale:
+
+        Connecting a device to an open untrusted network through unsecured channels can increase the remote attack surface of the device. Additionally, at present, the cellular data network is a more difficult medium to sniff than Wi-Fi. If you are going to be using public Wi-Fi, using a secure VPN is recommended. In most cases, you should avoid using a public or untrusted or free Wi-Fi.
+
+        NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Follow the below steps to disable Wi-Fi or connect to a trusted network:
+
+        Tap Settings Gear Icon.
+        Tap Network & internet.
+        Toggle Wi-Fi setting to the Off position or connect to a trusted network.
+
+        Impact:
+
+        You might have to use cellular data and would not be able to take advantage of Public Wi-Fi.
+
+        Default Value:
+
+        NA"
+  reference   : "CSCv6|15.4,LEVEL|2M"
+  see_also    : "https://workbench.cisecurity.org/files/2466"
+</report>
+
+<report type:"WARNING">
+  description : "1.8 Ensure 'Show passwords' is set to 'Disabled'"
+  info        : "Disable password visibility during input.
+        The recommended state for this setting is: Disabled.
+
+        Rationale:
+
+        This setting controls whether passwords typed into your Android device should be visible on screen, or hidden by replacing the letters with dots. When this setting is off, the password is obscured by dots, and only the most recent key pressed is visible for a short time after it has been pressed. When this setting is on, the entire password can be viewed in plain text, if desired.
+        Disabling this setting protects you against shoulder surfing attacks.
+
+        NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Follow the below steps to disable Show passwords:
+
+        Tap Settings Gear Icon.
+        Tap Privacy.
+        Toggle Show passwords to OFF position.
+
+        Impact:
+
+        Given the relative difficulty of typing letters accurately on a small on-screen keyboard, it can be helpful to get visual feedback on-screen that you have typed all the letters of your password correctly. Disabling password visibility might impact user experience.
+
+        Default Value:
+
+        By default, passwords are visible."
+  reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|16.5,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+  see_also    : "https://workbench.cisecurity.org/files/2466"
+</report>
+
+<report type:"WARNING">
+  description : "1.12 Ensure 'Smart Lock' is set to 'Disabled'"
+  info        : "Disable Smart Lock.
+        The recommended state for this setting is: Disabled.
+
+        Rationale:
+
+        Smart Lock detects device presence and its circumstances and automatically keeps it unlocked even if the device has a screen password, pin or pattern enabled. Using Smart Lock does not require you to manually unlock the device every time if the pre-defined circumstances are met. As a best practice, do not set the device to get unlocked automatically. For example, if your device gets stolen and if it is taken to a location pre-defined in Smart Lock, it would automatically unlock. Similarly, if someone could replay your voice, the device would automatically unlock.
+
+        NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Follow the below steps to disable Smart Lock:
+
+        Tap the Settings Gear Icon.
+        Tap Security.
+        Tap Advanced.
+        Tap Trust agents..
+        Toggle Smart Lock (Google) to OFF position.
+
+        Impact:
+
+        The device would need to be manually unlocked every time.
+        Default Value:
+        By default, Smart Lock is enabled."
+  reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|16.5,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+  see_also    : "https://workbench.cisecurity.org/files/2466"
+</report>
+
+<report type:"WARNING">
+  description : "1.13 Ensure 'Lock SIM card' is set to 'Enabled'"
+  info        : "Lock SIM card.
+        The recommended state for this setting is: Enabled.
+
+        Rationale:
+
+        If your device uses a SIM card(s), enable SIM card lock. A SIM card PIN locks the SIM and prevents anyone from removing the SIM card from your device and use it on any other device without knowing the PIN. Also, you might choose to store your contacts and messages on the SIM card and thus it is highly recommended that you safeguard this valuable personal data by setting a custom PIN on the SIM card(s).
+        Note: Only phones that are not locked by the service provider can lock the SIM card.
+
+        NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Follow the below steps to enable Lock SIM card:
+
+        Call up your SIM card provider and get the default SIM PIN.
+        Tap the Settings Gear Icon.
+        Tap Security.
+        Tap SIM card lock.
+        Toggle Lock SIM card to the on position.
+        Enter the default PIN provided by your SIM provider.
+        Press OK.
+        The Lock SIM card option will then be enabled.
+        Tap on Change SIM PIN.
+        Again provide the default PIN provided (Old PIN) by your SIM card provider.
+        Type your new custom PIN.
+        Re-type your new custom PIN.
+        Press OK.
+        Your custom SIM PIN is then set.
+        Repeat the process for your 2nd SIM, if applicable.
+
+        Impact:
+
+        You would need to remember your SIM card PIN. If you forget your SIM card PIN, you need your SIM card provider support for unlocking the SIM card.
+
+        Default Value:
+
+By default, Lock SIM card is disabled. Also, the SIM card has a default PIN set by the
+provider which is usually universally known."
+  reference   : "CSCv6|3,LEVEL|2M"
+  see_also    : "https://workbench.cisecurity.org/files/2466"
+</report>
+
+<report type:"WARNING">
+  description : "1.14 Ensure 'Find My Device' is set to 'Enabled'"
+  info        : "Setup Find My Device as a Device Administrator.
+        The recommended state for this setting is: Enabled.
+
+        Rationale:
+
+        If you lose your Android device, you could use Find My Device to find your device and also ring, lock, or erase your device data remotely.
+
+        NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Follow the below steps to enable Find My Device:
+
+        Tap the Settings Gear Icon.
+        Tap Security.
+        Scroll to the SECURITY STATUS section.
+        Tap Find My Device.
+        Toggle slider to the ON position.
+
+        Impact:
+
+        Google may track your device location anytime.
+
+        Default Value:
+
+        By default, Find My Device is not enabled."
+  reference   : "CSCv6|1,LEVEL|2M"
+  see_also    : "https://workbench.cisecurity.org/files/2466"
+</report>
+
+<report type:"WARNING">
+  description : "2.2 Ensure 'Use location' is set to 'Disabled'"
+  info        : "Disable Location when not in use.
+        The recommended state for this setting is: Disabled.
+
+        Rationale:
+
+        Location allows applications such as Maps and Internet websites to gather and use data indicating the user's location. The user's location is determined using available information from cellular network data, local Wi-Fi networks, Bluetooth and GPS. If the user turns off Location Services, the user will be prompted to turn it back on again the next time any application tries to use this feature.
+        Disabling location reduces the capability of an attacker to determine or track the user's location via websites, locally installed applications or other means without user's consent. Thus, it should be disabled when not in use.
+
+        Note: Location is very important for tracking your lost device if the device data is not disabled. Make a judicious call and decide what works best for you or in your environment.
+        NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Follow the below steps to disable Use location:
+
+        Tap Settings Gear Icon.
+        Tap Location.
+        Toggle Use Location switch to the OFF position.
+
+        Impact:
+
+        Each time an application needs location data, the user activity would be interrupted to enable the location.
+        Another impact could be on finding your lost device. If the device is lost and the location is disabled, you cannot use remote locate services such as Android Device Manager.
+
+        Default Value:
+
+        By default, Location is enabled."
+  reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|13,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+  see_also    : "https://workbench.cisecurity.org/files/2466"
+</report>
+
+<report type:"WARNING">
+  description : "2.3 Ensure 'Back up to Google Drive' is 'Disabled'"
+  info        : "Disable Backup to Google Drive.
+        The recommended state for this setting is: Disabled.
+
+        Rationale:
+
+        You can back up content, data, and settings from your device to your Google Account. You can then later restore your backed-up information to another device. Due to privacy concerns, backing up personal data such as text messages, emails, photos and contacts to any third party is not recommended unless you accept the risk of sharing the data with the 3rd party. Moreover, if you are using a personal device for business apps such as emails, that data might be backed up as well in the Google Drive related to your personal account and might be exposed. Hence, disable the automatic backup to Google drive and carefully choose what data backup you need.
+
+        NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Follow the below steps to disable Back up to Google Drive:
+
+        Tap Settings Gear Icon.
+        Tap System.
+        Tap Advanced.
+        Tap Backup.
+        Tap Back up to Google Drive.
+        Toggle it to OFF position.
+        Tap OK on warning popup.
+
+        Impact:
+
+        A backup of the device will not be taken and hence restoration would not be possible. Also, the user would have to carefully choose the data to be backed up and manually back it up periodically.
+
+        Default Value:
+
+        By default, Back up to Google Drive is disabled."
+  reference   : "CSCv6|13,LEVEL|2M"
+  see_also    : "https://workbench.cisecurity.org/files/2466"
+</report>
+
+<report type:"WARNING">
+  description : "3.5 Ensure 'Search and URL suggestions' is set to 'Disabled'"
+  info        : "Google Chrome uses a prediction service to show you related searches, matches from your browsing history, and popular websites as you type in the address bar.
+        The recommended state for this setting is: Disabled.
+
+        Rationale:
+
+        Having search suggestions sent out to be processed is considered a privacy concern.
+
+        NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Follow the below steps to Disable the Search and URL suggestions feature:
+
+        Tap Chrome Icon.
+        Tap Menu Icon.
+        Tap Settings.
+        Scroll to the Advanced section.
+        Tap Privacy.
+        Uncheck the Search and URL suggestions checkbox.
+
+        Default Value:
+
+        Enabled."
+  reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSCv6|13,CSF|PR.IP-1,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2M,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+  see_also    : "https://workbench.cisecurity.org/files/2466"
+</report>
+
+<report type:"WARNING">
+  description : "3.6 Ensure 'Do Not Track' is set to 'Enabled'"
+  info        : "When you browse the web on computers or Android devices, you can send a request to websites not to collect or track your browsing data.
+        Note Chrome doesn't provide details of which websites and web services respect Do Not Track requests and how websites interpret them.
+        The recommended state for this setting is: Enabled.
+
+        Rationale:
+
+        This setting will help in protecting some of the tracking that is done but many websites will still collect and use your browsing data to improve security, provide content, services, ads and recommendations on their websites, and generate reporting statistics.
+
+        NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Follow the below steps to Enabled the Do Not Track feature:
+
+        Tap Chrome Icon.
+        Tap Menu Icon.
+        Tap Settings.
+        Scroll to the Advanced section.
+        Tap Privacy.
+        Tap Do Not Track.
+        Toggle the Do Not Track to the OFF position.
+
+        Default Value:
+
+        Disabled."
+  reference   : "CSCv6|13,LEVEL|2M"
+  see_also    : "https://workbench.cisecurity.org/files/2466"
+</report>
+
+</check_type>

@@ -1,0 +1,17 @@
+{
+  "name": "hardening-app",
+  "version": "1.0.0",
+  "description": "A tool to apply system hardening.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^31.2.1",
+    "electron-reload": "^2.0.0-alpha.1",
+    "regedit": "^5.1.2"
+  }
+}

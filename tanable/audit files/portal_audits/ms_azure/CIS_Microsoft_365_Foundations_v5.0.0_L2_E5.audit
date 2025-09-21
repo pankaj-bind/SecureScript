@@ -1,0 +1,2111 @@
+#TRUSTED 9b6e9b2ad1ea9bf39bbaeff239e01993ffad6391945312fe47f0d933cadd7d3238f8f991b708bbc5cca0a2663d6c6ab283a48577f14f3961a19b2491a4892c15a3855e5897bd6b7392bca7abc9f8d2f9e522d036a3d0b4ebecf953515624433a8b644ff3531861ea43d63875619fcdebff07b91ae71126fa88f56c31051a8eeaa74acf2ffdcf92f2694d437a81b3c20cd106cc6e3756328f8ef0fcb71cdcc797f464387cc84795279d1826d38482ea6ac64c78820164273376488278dd3961d4addc632b07217d15a5482c99810aea82c098da067a029378d65f5723f74cb7acd2e81e9d01aaf0a7f92f90555754b4a53a85feefd53f6733566d38fadb797c03ab1a3963627d2bdb13a2cda2d50943b4beb0fd76a67580d8c221ccccf259dd20876d89c766fba98da59f24f73e95d3e860325b575a3c935c1d0c1b7d16a10334ada64dba2c5232526c2f0f195336fc567262f4bbb1764a9b7c60f8087ed024b752f1cc25aa1c65dccfe1616011d8e965746ae35ef6497859a1a52fa29e326008854a96ec764c884764a5d0248a3a0151ca81ed83d0f9dba7c48ccb0398a3c258807aab93f5399a6fcb5ac9d6e0ce021609e0786158f7a2dbdc38176aa27519f5dfc3abd9187ec9d034c32f72577db6e88ab160663501fd059d2e3c0aaecfad20c8ddc1e6279570f0abe1bb9487340b1d88566a333f685c194149ac8c77176a8c
+#TRUST-RSA-SHA256 1b2dbfe843698cd45d01f7b1938f1899905c089894e872adfe1942d21be3064fcf77814ef7d149b8a8664b589f07bb99369c18319e1ad5cbe66f3f47fe1ea8da506b578ab70ea5e09ab7c329c3369d7f149ad650f5d11c052dc9d912e7b7438d87d2d9fac75b89612b11cc76b98972179cbff57c97f0eeeee98aa9c23188c41e85630c273d763f436e2606bd47d4db5634039af3d21b50a077a12516b104b9588a4c4ec5cbec58a9a8952134b765fb1f571e78be320e439192f093203dcc4463c81bf8d54ea91fc9ab3ac5d9abafb3fadb0e87f74ec31de319d27f38e44b0c4f82c025896ddc1e23e3fa440292bba76a2563cf925dbf700d8c399f2f2e4ebf316670845da3e5763081a162db8efb43e9a0c7aeed768622b2d32bee14ac94d490b92a8162a4cdbcde4c0eb3a82510c9bd3cd83a8cb1000244f5edeb6d59268e0ba77812c169aa9409ff9dbf33d4405886d5977ac5565f878d62cc40ee83a977e3a01535620f253067aa4a72b126d9a6c8c3efbf47cb0932699975ec764f80a273b7e140903a7eac53777417919ddee53390b9f3c62ae9dc960ecfdd077c7f469dc496fa11e05757277418e3d3b1b9032e1f98fc83a328148a9949c993dafa11aec03f6dc21efd8ba11fbc280491e46d111085ff3f9f0c58a6fa2f94c844897bef5b269d64a6b2086c2ef9f3cd00a2a9aefb3c7bb3a5a0ac87eba3affd0b6cb81f
+#
+# This script is Copyright (C) 2004-2025 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2025/07/08 $
+#
+# description : This .audit is designed against the CIS Microsoft 365 Foundations Benchmark 5.0.0
+#
+#<ui_metadata>
+#<display_name>CIS Microsoft 365 Foundations v5.0.0 L2 E5</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Microsoft 365 Foundations</name>
+#  <profile>L2 E5</profile>
+#  <version>5.0.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/20006</link>
+#</spec>
+#<labels>microsoft_azure,cis,microsoft_365_foundations</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>PHISHING_POLICY_NAME</name>
+#    <default>CIS AntiPhish Policy</default>
+#    <description>Anti-Phishing Policy Name</description>
+#    <info>The Name for the Anti-Phishing Policy in use.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>SHARING_ALLOWED_DOMAIN_LIST</name>
+#    <default>"www.example.com"</default>
+#    <description>SharePoint Allowed Domain List</description>
+#    <info>Quoted and comma separated list of SharePoint external sharing allowed domains.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"microsoft_azure">
+
+<custom_item>
+  description    : "1.2.1 (L2) Ensure that only organizationally managed/approved public groups exist"
+  info           : "Microsoft 365 Groups is the foundational membership service that drives all teamwork across Microsoft 365. With Microsoft 365 Groups, you can give a group of people access to a collection of shared resources. While there are several different group types this recommendation concerns Microsoft 365 Groups
+
+In the Administration panel, when a group is created, the default privacy value is \"Public\".
+
+Ensure that only organizationally managed and approved public groups exist. When a group has a \"public\" privacy, users may access data related to this group (e.g. SharePoint), through three methods:
+
+ - By using the Azure portal, and adding themselves into the public group
+ - By requesting access to the group from the Group application of the Access Panel
+ - By accessing the SharePoint URL
+
+Administrators are notified when a user uses the Azure Portal. Requesting access to the group forces users to send a message to the group owner, but they still have immediate access to the group. The SharePoint URL is usually guessable and can be found from the Group application of the Access Panel. If group privacy is not controlled, any user may access sensitive information, according to the group they try to access.
+
+Note: Public in this case means public to the identities within the organization."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft 365 admin center
+
+https://admin.microsoft.com
+
+.
+ - Click to expand Teams & groups select Active teams & groups.
+ - On the Active teams and groups page select the group's name that is public.
+ - On the popup groups name page Select Settings
+ - Under Privacy, select Private
+
+Impact:
+
+If the recommendation is applied, group owners could receive more access requests than usual, especially regarding groups originally meant to be public."
+  reference      : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|13.1,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "listGroups"
+  json_transform : '.[] | "Group: \(.displayName) (\(.mail)) -- Visibility: \(.visibility)"'
+  expect         : "Private"
+  match_all      : YES
+</custom_item>
+
+<if>
+  <condition auto:"FAILED" type:"AND">
+    <custom_item>
+      description    : "activity policy"
+      request        : "listActivityBasedTimeoutPolicies"
+      json_transform : '.[] | .displayName as $displayName | .definition[] | fromjson | .ActivityBasedTimeoutPolicy.ApplicationPolicies[] | "Display Name: \($displayName), Definition: \(.WebSessionIdleTimeout)"'
+      regex          : ".+"
+      expect         : "Display Name: ActivityBasedTimeoutPolicy, Definition: 0[1-3]:00:00"
+    </custom_item>
+
+    <custom_item>
+      description    : "conditional access policy"
+      request        : "listConditionalAccess"
+      json_transform : '.[] | .displayName as $displayName | .state as $state | .sessionControls.applicationEnforcedRestrictions.isEnabled as $isEnabled | .conditions.clientAppTypes[0] as $clientAppTypes | .conditions.users.includeUsers[0] as $includeUsers| .conditions.applications.includeApplications[] | select(. == "Office365") as $includeApplications | "DisplayName: \($displayName), State: \($state), IsEnabled: \($isEnabled), IncludeApplications: \($includeApplications), ClientAppTypes: \($clientAppTypes), IncludeUsers: \($includeUsers)"'
+      regex          : ".+"
+      expect         : "State: enabled, IsEnabled: true, IncludeApplications: Office365, ClientAppTypes: browser, IncludeUsers: All"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "1.3.2 (L2) Ensure 'Idle session timeout'  is set to '3 hours (or less)' for unmanaged devices"
+      info        : "Idle session timeout allows the configuration of a setting which will timeout inactive users after a pre-determined amount of time. When a user reaches the set idle timeout session, they'll get a notification that they're about to be signed out. They must choose to stay signed in or they'll be automatically signed out of all Microsoft 365 web apps. Combined with a Conditional Access rule this will only impact unmanaged devices.
+
+A managed device is considered a device managed by Intune MDM or joined to a domain (Entra ID or Hybrid joined).
+
+The following Microsoft 365 web apps are supported.
+
+ - Outlook Web App
+ - OneDrive
+ - SharePoint
+ - Microsoft Fabric
+ - Microsoft365.com and other start pages
+ - Microsoft 365 web apps (Word, Excel, PowerPoint)
+ - Microsoft 365 Admin Center
+ - M365 Defender Portal
+ - Microsoft Purview Compliance Portal
+
+The recommended setting is 3 hours (or less) for unmanaged devices.
+
+Note: Idle session timeout doesn't affect Microsoft 365 desktop and mobile apps.
+
+Ending idle sessions through an automatic process can help protect sensitive company data and will add another layer of security for end users who work on unmanaged devices that can potentially be accessed by the public. Unauthorized individuals onsite or remotely can take advantage of systems left unattended over time. Automatic timing out of sessions makes this more difficult."
+      solution    : "Step 1 - Configure Idle session timeout:
+
+ - Navigate to the Microsoft 365 admin center
+
+https://admin.microsoft.com/
+
+.
+ - Click to expand Settings Select Org settings
+ - Click Security & Privacy tab.
+ - Select Idle session timeout
+ - Check the box Turn on to set the period of inactivity for users to be signed off of Microsoft 365 web apps
+ - Set a maximum value of 3 hours
+ - Click save.
+
+Step 2 - Ensure the Conditional Access policy is in place:
+
+ - Navigate to Microsoft Entra admin center
+
+https://entra.microsoft.com/
+
+ - Expand Protect > Conditional Access
+ - Click New policy and give the policy a name.
+ - Select Users > All users
+ - Select Cloud apps or actions > Select apps and select Office 365
+ - Select Conditions > Client apps > Yes check only Browser unchecking all other boxes.
+ - Select Sessions and check Use app enforced restrictions
+
+ - Set Enable policy to On and click Create
+
+Note: To ensure that idle timeouts affect only unmanaged devices, both steps 1 and 2 must be completed. Otherwise managed devices will also be impacted by the timeout policy.
+
+Impact:
+
+If step 2 in the Audit/Remediation procedure is left out, then there is no issue with this from a security standpoint. However, it will require users on trusted devices to sign in more frequently which could result in credential prompt fatigue.
+
+Users don't get signed out in these cases:
+
+ - If they get single sign-on (SSO) into the web app from the device joined account.
+ - If they selected Stay signed in at the time of sign-in. For more info on hiding this option for your organization, see Add branding to your organization's sign-in page.
+ - If they're on a managed device, that is compliant or joined to a domain and using a supported browser, like Microsoft Edge, or Google Chrome with the Microsoft Single Sign On extension.
+
+Note: Idle session timeout also affects the Azure Portal idle timeout if this is not explicitly set to a different timeout. The Azure Portal idle timeout applies to all kind of devices, not just unmanaged. See :
+
+change the directory timeout setting admin"
+      reference   : "800-171|3.1.1,800-171|3.1.10,800-171|3.1.11,800-171r3|03.01.01h.,800-171r3|03.01.10,800-171r3|03.01.11,800-53|AC-2(5),800-53|AC-11,800-53|AC-11(1),800-53|AC-12,800-53r5|AC-2(5),800-53r5|AC-11,800-53r5|AC-11(1),800-53r5|AC-12,CN-L3|7.1.2.2(d),CN-L3|7.1.3.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),CSCv8|4.3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(iii),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.7.7,ISO-27001-2022|A.8.1,ISO-27001-2022|A.8.2,ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.11.2.8,ITSG-33|AC-2(5),ITSG-33|AC-11,ITSG-33|AC-11(1),ITSG-33|AC-12,LEVEL|2A,NIAv2|AM23c,NIAv2|AM23d,NIAv2|AM28,NIAv2|NS5j,NIAv2|NS49,NIAv2|SS14e,PCI-DSSv3.2.1|8.1.8,PCI-DSSv4.0|8.2.8,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,TBA-FIISB|36.2.1,TBA-FIISB|37.1.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+      show_output : YES
+    </report>
+  </then>
+</if>
+
+<custom_item>
+  description    : "1.3.3 (L2) Ensure 'External sharing' of calendars is not available"
+  info           : "External calendar sharing allows an administrator to enable the ability for users to share calendars with anyone outside of the organization. Outside users will be sent a URL that can be used to view the calendar.
+
+Attackers often spend time learning about organizations before launching an attack. Publicly available calendars can help attackers understand organizational relationships and determine when specific users may be more vulnerable to an attack, such as when they are traveling."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft 365 admin center
+
+https://admin.microsoft.com
+
+.
+ - Click to expand Settings select Org settings
+ - In the Services section click Calendar
+ - Uncheck Let your users share their calendars with people outside of your organization who have Office 365 or Exchange
+ - Click Save
+
+To remediate using PowerShell:
+
+ - Connect to Exchange Online using Connect-ExchangeOnline
+ - Run the following Exchange Online PowerShell command:
+
+Set-SharingPolicy -Identity \"Default Sharing Policy\" -Enabled $False
+
+Impact:
+
+This functionality is not widely used. As a result, it is unlikely that implementation of this setting will cause an impact to most users. Users that do utilize this functionality are likely to experience a minor inconvenience when scheduling meetings or synchronizing calendars with people outside the tenant."
+  reference      : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|14.6,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getSharingPolicy"
+  json_transform : '.[] | if (.Identity == "Default Sharing Policy") then "Default Sharing Policy Enabled: \(.Enabled)" else null end'
+  regex          : "Default Sharing Policy Enabled: (true|false)"
+  expect         : "Default Sharing Policy Enabled: false"
+</custom_item>
+
+<custom_item>
+  description    : "1.3.6 (L2) Ensure the customer lockbox feature is enabled"
+  info           : "Customer Lockbox is a security feature that provides an additional layer of control and transparency to customer data in Microsoft 365. It offers an approval process for Microsoft support personnel to access organization data and creates an audited trail to meet compliance requirements.
+
+Enabling this feature protects organizational data against data spillage and exfiltration."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft 365 admin center
+
+https://admin.microsoft.com
+
+.
+ - Click to expand Settings then select Org settings
+ - Select Security & privacy tab.
+ - Click Customer lockbox
+ - Check the box Require approval for all data access requests
+ - Click Save
+
+To remediate using PowerShell:
+
+ - Connect to Exchange Online using Connect-ExchangeOnline
+ - Run the following PowerShell command:
+
+Set-OrganizationConfig -CustomerLockBoxEnabled $true
+
+Impact:
+
+Administrators will need to grant Microsoft access to the tenant environment prior to a Microsoft engineer accessing the environment for support or troubleshooting."
+  reference      : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,LEVEL|2A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getOrganizationConfig"
+  json_transform : '.[] |  "CustomerLockboxEnabled: \(.CustomerLockboxEnabled)"'
+  regex          : "CustomerLockboxEnabled:"
+  expect         : "CustomerLockboxEnabled: true"
+</custom_item>
+
+<custom_item>
+  description    : "1.3.7 (L2) Ensure 'third-party storage services' are restricted in 'Microsoft 365 on the web'"
+  info           : "Third-party storage can be enabled for users in Microsoft 365, allowing them to store and share documents using services such as Dropbox, alongside OneDrive and team sites.
+
+Ensure Microsoft 365 on the web third-party storage services are restricted.
+
+By using external storage services an organization may increase the risk of data breaches and unauthorized access to confidential information. Additionally, third-party services may not adhere to the same security standards as the organization, making it difficult to maintain data privacy and security."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft 365 admin center
+
+https://admin.microsoft.com
+
+ - Go to Settings > Org Settings > Services > Microsoft 365 on the web
+ - Uncheck Let users open files stored in third-party storage services in Microsoft 365 on the web
+
+To remediate using PowerShell:
+
+ - Connect to Microsoft Graph using Connect-MgGraph -Scopes \"Application.ReadWrite.All\"
+ - Run the following script:
+
+$SP = Get-MgServicePrincipal -Filter \"appId eq 'c1f33bc0-bdb4-4248-ba9b-096807ddb43e'\"
+# If the service principal doesn't exist then create it first.
+if (-not $SP) {
+    $SP = New-MgServicePrincipal -AppId \"c1f33bc0-bdb4-4248-ba9b-096807ddb43e\"
+}
+
+Update-MgServicePrincipal -ServicePrincipalId $SP.Id -AccountEnabled:$false
+
+Impact:
+
+Impact associated with this change is highly dependent upon current practices in the tenant. If users do not use other storage providers, then minimal impact is likely. However, if users do regularly utilize providers outside of the tenant this will affect their ability to continue to do so."
+  reference      : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|13.1,CSCv7|13.4,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getServicePrincipals"
+  json_transform : '.[] | select(.appId == "c1f33bc0-bdb4-4248-ba9b-096807ddb43e") | .displayName as $displayName | .accountEnabled as $accountEnabled | "Display Name: \($displayName), Account Enabled: \($accountEnabled)"'
+  regex          : ".+"
+  expect         : "Account Enabled: false"
+</custom_item>
+
+<report type:"WARNING">
+  description : "1.3.8 (L2) Ensure that Sways cannot be shared with people outside of your organization"
+  info        : "Sway is a Microsoft 365 app that lets organizations create interactive, web-based presentations using images, text, videos and other media. Its design engine simplifies the process, allowing for quick customization. Presentations can then be shared via a link.
+
+This setting controls user Sway sharing capability, both within and outside of the organization. By default, Sway is enabled for everyone in the organization.
+
+Disable external sharing of Sway documents that can contain sensitive information to prevent accidental or arbitrary data leaks.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To remediate using the UI:
+
+ - Navigate to Microsoft 365 admin center
+
+https://admin.microsoft.com
+
+.
+ - Click to expand Settings then select Org settings
+ - Under Services select Sway
+ - Uncheck: Let people in your organization share their sways with people outside your organization
+
+ - Click Save
+
+Impact:
+
+Interactive reports, presentations, newsletters, and other items created in Sway will not be shared outside the organization by users."
+  reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|13.1,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+<if>
+  <condition auto:"WARNING" type:"AND">
+    <custom_item>
+      description    : "EnableSafeLinksForEmail: true"
+      request        : "getSafeLinksPolicy"
+      json_transform : '.[] | "Identity: \(.Identity), EnableSafeLinksForEmail: \(.EnableSafeLinksForEmail)"'
+      regex          : "EnableSafeLinksForEmail:"
+      expect         : "^Manual Review Required$"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableSafeLinksForTeams: true"
+      request        : "getSafeLinksPolicy"
+      json_transform : '.[] | "Identity: \(.Identity), EnableSafeLinksForTeams: \(.EnableSafeLinksForTeams)"'
+      regex          : "EnableSafeLinksForTeams:"
+      expect         : "^Manual Review Required$"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableSafeLinksForOffice: true"
+      request        : "getSafeLinksPolicy"
+      json_transform : '.[] | "Identity: \(.Identity), EnableSafeLinksForOffice: \(.EnableSafeLinksForOffice)"'
+      regex          : "EnableSafeLinksForOffice:"
+      expect         : "^Manual Review Required$"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "TrackClicks: true"
+      request        : "getSafeLinksPolicy"
+      json_transform : '.[] | "Identity: \(.Identity), TrackClicks: \(.TrackClicks)"'
+      regex          : "TrackClicks:"
+      expect         : "^Manual Review Required$"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "AllowClickThrough: false"
+      request        : "getSafeLinksPolicy"
+      json_transform : '.[] | "Identity: \(.Identity), AllowClickThrough: \(.AllowClickThrough)"'
+      regex          : "AllowClickThrough:"
+      expect         : "^Manual Review Required$"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "ScanUrls: true"
+      request        : "getSafeLinksPolicy"
+      json_transform : '.[] | "Identity: \(.Identity), ScanUrls: \(.ScanUrls)"'
+      regex          : "ScanUrls:"
+      expect         : "^Manual Review Required$"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableForInternalSenders: true"
+      request        : "getSafeLinksPolicy"
+      json_transform : '.[] | "Identity: \(.Identity), EnableForInternalSenders: \(.EnableForInternalSenders)"'
+      regex          : "EnableForInternalSenders:"
+      expect         : "^Manual Review Required$"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "DeliverMessageAfterScan: true"
+      request        : "getSafeLinksPolicy"
+      json_transform : '.[] | "Identity: \(.Identity), DeliverMessageAfterScan: \(.DeliverMessageAfterScan)"'
+      regex          : "DeliverMessageAfterScan:"
+      expect         : "^Manual Review Required$"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "DisableUrlRewrite: false"
+      request        : "getSafeLinksPolicy"
+      json_transform : '.[] | "Identity: \(.Identity), DisableUrlRewrite: \(.DisableUrlRewrite)"'
+      regex          : "DisableUrlRewrite:"
+      expect         : "^Manual Review Required$"
+      severity       : MEDIUM
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "2.1.1 (L2) Ensure Safe Links for Office Applications is Enabled"
+      info        : "Enabling Safe Links policy for Office applications allows URL's that exist inside of Office documents and email applications opened by Office, Office Online and Office mobile to be processed against Defender for Office time-of-click verification and rewritten if required.
+
+Note: E5 Licensing includes a number of Built-in Protection policies. When auditing policies note which policy you are viewing, and keep in mind CIS recommendations often extend the Default or Build-in Policies provided by MS. In order to Pass the highest priority policy must match all settings recommended.
+
+Safe Links for Office applications extends phishing protection to documents and emails that contain hyperlinks, even after they have been delivered to a user.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "To remediate using the UI:
+
+ -
+
+Navigate to Microsoft 365 Defender
+
+https://security.microsoft.com
+
+ -
+
+Under Email & collaboration select Policies & rules
+
+ -
+
+Select Threat policies then Safe Links
+
+ -
+
+Click on +Create
+
+ -
+
+Name the policy then click Next
+
+ -
+
+In Domains select all valid domains for the organization and Next
+
+ -
+
+Ensure the following URL & click protection settings are defined:
+
+Email
+
+ - Checked On: Safe Links checks a list of known, malicious links when users click links in email. URLs are rewritten by default
+ - Checked Apply Safe Links to email messages sent within the organization
+ - Checked Apply real-time URL scanning for suspicious links and links that point to files
+ - Checked Wait for URL scanning to complete before delivering the message
+ - Unchecked Do not rewrite URLs, do checks via Safe Links API only.
+
+Teams
+
+ - Checked On: Safe Links checks a list of known, malicious links when users click links in Microsoft Teams. URLs are not rewritten
+
+Office 365 Apps
+
+ - Checked On: Safe Links checks a list of known, malicious links when users click links in Microsoft Office apps. URLs are not rewritten
+
+Click protection settings
+
+ - Checked Track user clicks
+ - Unchecked Let users click through the original URL
+ - There is no recommendation for organization branding.
+
+ -
+
+Click Next twice and finally Submit
+
+To remediate using PowerShell:
+
+ - Connect using Connect-ExchangeOnline
+ - Run the following PowerShell script to create a policy at highest priority that will apply to all valid domains on the tenant:
+
+# Create the Policy
+$params = @{
+    Name = \"CIS SafeLinks Policy\"
+    EnableSafeLinksForEmail = $true
+    EnableSafeLinksForTeams = $true
+    EnableSafeLinksForOffice = $true
+    TrackClicks = $true
+    AllowClickThrough = $false
+    ScanUrls = $true
+    EnableForInternalSenders = $true
+    DeliverMessageAfterScan = $true
+    DisableUrlRewrite = $false
+
+}
+
+New-SafeLinksPolicy @params
+
+# Create the rule for all users in all valid domains and associate with Policy
+New-SafeLinksRule -Name \"CIS SafeLinks\" -SafeLinksPolicy \"CIS SafeLinks Policy\" -RecipientDomainIs (Get-AcceptedDomain).Name -Priority 0
+
+Impact:
+
+User impact associated with this change is minor - users may experience a very short delay when clicking on URLs in Office documents before being directed to the requested site. Users should be informed of the change as, in the event a link is unsafe and blocked, they will receive a message that it has been blocked."
+      reference   : "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-171r3|03.14.02,800-53|SI-3,800-53r5|SI-3,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSCv7|7.4,CSCv8|10.1,CSF|DE.CM-4,CSF|DE.DP-3,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.7,ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|2A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+      show_output : YES
+    </report>
+  </then>
+</if>
+
+<report type:"WARNING">
+  description : "2.1.11 (L2) Ensure comprehensive attachment filtering is applied"
+  info        : "The Common Attachment Types Filter lets a user block known and custom malicious file types from being attached to emails. The policy provided by Microsoft covers 53 extensions, and an additional custom list of extensions can be defined.
+
+The list of 184 extensions provided in this recommendation is comprehensive but not exhaustive.
+
+Blocking known malicious file types can help prevent malware-infested files from infecting a host or performing other malicious attacks such as phishing and data extraction.
+
+Defining a comprehensive list of attachments can help protect against additional unknown and known threats. Many legacy file formats, binary files and compressed files have been used as delivery mechanisms for malicious software. Organizations can protect themselves from Business E-mail Compromise (BEC) by allow-listing only the file types relevant to their line of business and blocking all others.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To Remediate using PowerShell:
+
+ - Connect to Exchange Online using Connect-ExchangeOnline
+ - Run the following script:
+
+# Create an attachment policy and associated rule. The rule is
+# intentionally disabled allowing the org to enable it when ready
+
+$Policy = @{
+    Name = \"CIS L2 Attachment Policy\"
+    EnableFileFilter = $true
+    ZapEnabled = $true
+    EnableInternalSenderAdminNotifications = $true
+    InternalSenderAdminAddress = 'admin@contoso.com' # Change this.
+}
+
+$L2Extensions = @(
+    \"7z\", \"a3x\", \"ace\", \"ade\", \"adp\", \"ani\", \"app\", \"appinstaller\",
+    \"applescript\", \"application\", \"appref-ms\", \"appx\", \"appxbundle\", \"arj\",
+    \"asd\", \"asx\", \"bas\", \"bat\", \"bgi\", \"bz2\", \"cab\", \"chm\", \"cmd\", \"com\",
+    \"cpl\", \"crt\", \"cs\", \"csh\", \"daa\", \"dbf\", \"dcr\", \"deb\",
+    \"desktopthemepackfile\", \"dex\", \"diagcab\", \"dif\", \"dir\", \"dll\", \"dmg\",
+    \"doc\", \"docm\", \"dot\", \"dotm\", \"elf\", \"eml\", \"exe\", \"fxp\", \"gadget\", \"gz\",
+    \"hlp\", \"hta\", \"htc\", \"htm\", \"html\", \"hwpx\", \"ics\", \"img\",
+    \"inf\", \"ins\", \"iqy\", \"iso\", \"isp\", \"jar\", \"jnlp\", \"js\", \"jse\", \"kext\",
+    \"ksh\", \"lha\", \"lib\", \"library-ms\", \"lnk\", \"lzh\", \"macho\", \"mam\", \"mda\",
+    \"mdb\", \"mde\", \"mdt\", \"mdw\", \"mdz\", \"mht\", \"mhtml\", \"mof\", \"msc\", \"msi\",
+    \"msix\", \"msp\", \"msrcincident\", \"mst\", \"ocx\", \"odt\", \"ops\", \"oxps\", \"pcd\",
+    \"pif\", \"plg\", \"pot\", \"potm\", \"ppa\", \"ppam\", \"ppkg\", \"pps\", \"ppsm\", \"ppt\",
+    \"pptm\", \"prf\", \"prg\", \"ps1\", \"ps11\", \"ps11xml\", \"ps1xml\", \"ps2\",
+    \"ps2xml\", \"psc1\", \"psc2\", \"pub\", \"py\", \"pyc\", \"pyo\", \"pyw\", \"pyz\",
+    \"pyzw\", \"rar\", \"reg\", \"rev\", \"rtf\", \"scf\", \"scpt\", \"scr\", \"sct\",
+    \"searchConnector-ms\", \"service\", \"settingcontent-ms\", \"sh\", \"shb\", \"shs\",
+    \"shtm\", \"shtml\", \"sldm\", \"slk\", \"so\", \"spl\", \"stm\", \"svg\", \"swf\", \"sys\",
+    \"tar\", \"theme\", \"themepack\", \"timer\", \"uif\", \"url\", \"uue\", \"vb\", \"vbe\",
+    \"vbs\", \"vhd\", \"vhdx\", \"vxd\", \"wbk\", \"website\", \"wim\", \"wiz\", \"ws\", \"wsc\",
+    \"wsf\", \"wsh\", \"xla\", \"xlam\", \"xlc\", \"xll\", \"xlm\", \"xls\", \"xlsb\", \"xlsm\",
+    \"xlt\", \"xltm\", \"xlw\", \"xnk\", \"xps\", \"xsl\", \"xz\", \"z\"
+)
+
+# Create the policy
+New-MalwareFilterPolicy @Policy -FileTypes $L2Extensions
+# Create the rule for all accepted domains
+$Rule = @{
+    Name = $Policy.Name
+    Enabled = $false
+    MalwareFilterPolicy = $Policy.Name
+    RecipientDomainIs = (Get-AcceptedDomain).Name
+    Priority = 0
+}
+
+New-MalwareFilterRule @Rule <xhtml:ol start=\"3\"> - When prepared enable the rule either through the UI or PowerShell.
+
+Note: Due to the number of extensions the UI method is not covered. The objects can however be edited in the UI or manually added using the list from the script.
+
+ - Navigate to Microsoft Defender at
+
+https://security.microsoft.com/
+
+ - Browse to Policies & rules > Threat policies > Anti-malware
+
+Impact:
+
+For file types that are business necessary users will need to use other organizationally approved methods to transfer blocked extension types between business partners."
+  reference   : "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-171r3|03.14.02,800-53|SI-3,800-53|SI-8,800-53r5|SI-3,800-53r5|SI-8,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSCv7|7.9,CSCv7|8.1,CSCv8|9.6,CSF|DE.CM-4,CSF|DE.DP-3,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.7,ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,ITSG-33|SI-8,LEVEL|2A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+<custom_item>
+  description    : "2.1.4 (L2) Ensure Safe Attachments policy is enabled"
+  info           : "The Safe Attachments policy helps protect users from malware in email attachments by scanning attachments for viruses, malware, and other malicious content. When an email attachment is received by a user, Safe Attachments will scan the attachment in a secure environment and provide a verdict on whether the attachment is safe or not.
+
+Enabling Safe Attachments policy helps protect against malware threats in email attachments by analyzing suspicious attachments in a secure, cloud-based environment before they are delivered to the user's inbox. This provides an additional layer of security and can prevent new or unseen types of malware from infiltrating the organization's network.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft 365 Defender
+
+https://security.microsoft.com
+
+.
+ - Click to expand E-mail & Collaboration select Policies & rules
+ - On the Policies & rules page select Threat policies
+ - Under Policies select Safe Attachments
+ - Click + Create
+ - Create a Policy Name and Description, and then click Next
+ - Select all valid domains and click Next
+ - Select Block
+ - Quarantine policy is AdminOnlyAccessPolicy
+ - Leave Enable redirect unchecked.
+ - Click Next and finally Submit
+
+To remediate using PowerShell:
+
+ - Connect to Exchange Online using Connect-ExchangeOnline
+ - To change an existing policy modify the example below and run the following PowerShell command:
+
+Set-SafeAttachmentPolicy -Identity 'Example policy' -Action 'Block' -QuarantineTag 'AdminOnlyAccessPolicy' -Enable $true <xhtml:ol start=\"3\"> - Or, edit and run the below example to create a new safe attachments policy.
+
+New-SafeAttachmentPolicy -Name \"CIS 2.1.4\" -Enable $true -Action 'Block' -QuarantineTag 'AdminOnlyAccessPolicy'
+
+New-SafeAttachmentRule -Name \"CIS 2.1.4 Rule\" -SafeAttachmentPolicy \"CIS 2.1.4\" -RecipientDomainIs 'exampledomain[.]com'
+
+Note: Policy targets such as users and domains should include domains, or groups that provide coverage for a majority of users in the organization. Different inclusion and exclusion use cases are not covered in the benchmark.
+
+Impact:
+
+Delivery of email with attachments may be delayed while scanning is occurring."
+  reference      : "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-171r3|03.14.02,800-53|SI-3,800-53|SI-8,800-53|SI-16,800-53r5|SI-3,800-53r5|SI-8,800-53r5|SI-16,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSCv7|7.10,CSCv7|8.1,CSCv8|9.7,CSF|DE.CM-4,CSF|DE.DP-3,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.7,ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,ITSG-33|SI-8,ITSG-33|SI-16,LEVEL|2A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getSafeAttachmentPolicy"
+  json_transform : '.[] | "Identity: \(.Identity), Enable: \(.Enable), Action: \(.Action), QuarantineTag: \(.QuarantineTag)"'
+  regex          : ".+"
+  expect         : "^Manual Review Required$"
+  severity       : MEDIUM
+</custom_item>
+
+<custom_item>
+  description    : "2.1.5 (L2) Ensure Safe Attachments for SharePoint, OneDrive, and Microsoft Teams is Enabled"
+  info           : "Safe Attachments for SharePoint, OneDrive, and Microsoft Teams scans these services for malicious files.
+
+Safe Attachments for SharePoint, OneDrive, and Microsoft Teams protect organizations from inadvertently sharing malicious files. When a malicious file is detected that file is blocked so that no one can open, copy, move, or share it until further actions are taken by the organization's security team."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft 365 Defender
+
+https://security.microsoft.com
+
+ - Under Email & collaboration select Policies & rules
+ - Select Threat policies then Safe Attachments
+ - Click on Global settings
+ - Click to Enable Turn on Defender for Office 365 for SharePoint, OneDrive, and Microsoft Teams
+ - Click to Enable Turn on Safe Documents for Office clients
+ - Click to Disable Allow people to click through Protected View even if Safe Documents identified the file as malicious
+ - Click Save
+
+To remediate using PowerShell:
+
+ - Connect to Exchange Online using Connect-ExchangeOnline
+ - Run the following PowerShell command:
+
+Set-AtpPolicyForO365 -EnableATPForSPOTeamsODB $true -EnableSafeDocs $true -AllowSafeDocsOpen $false
+
+Impact:
+
+Impact associated with Safe Attachments is minimal, and equivalent to impact associated with anti-virus scanners in an environment."
+  reference      : "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-171r3|03.14.02,800-53|SI-3,800-53|SI-8,800-53|SI-16,800-53r5|SI-3,800-53r5|SI-8,800-53r5|SI-16,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSCv7|7.10,CSCv7|8.1,CSCv8|9.7,CSCv8|10.1,CSF|DE.CM-4,CSF|DE.DP-3,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.7,ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,ITSG-33|SI-8,ITSG-33|SI-16,LEVEL|2A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getAtpPolicyForO365"
+  json_transform : '.[] | "Name: \(.Name), EnableATPForSPOTeamsODB: \(.EnableATPForSPOTeamsODB), EnableSafeDocs: \(.EnableSafeDocs), AllowSafeDocsOpen: \(.AllowSafeDocsOpen)"'
+  regex          : ".+"
+  expect         : "EnableATPForSPOTeamsODB: true, EnableSafeDocs: true, AllowSafeDocsOpen: false"
+</custom_item>
+
+<if>
+  <condition auto:"FAILED" type:"AND">
+    <custom_item>
+      description    : "Enabled: true"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), Enabled: \(.Enabled)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "Enabled: true"
+    </custom_item>
+
+    <custom_item>
+      description    : "PhishThresholdLevel: 3"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), PhishThresholdLevel: \(.PhishThresholdLevel)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "PhishThresholdLevel: (3|4)"
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableTargetedUserProtection: true"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), EnableTargetedUserProtection: \(.EnableTargetedUserProtection)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "EnableTargetedUserProtection: true"
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableOrganizationDomainsProtection: true"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), EnableOrganizationDomainsProtection: \(.EnableOrganizationDomainsProtection)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "EnableOrganizationDomainsProtection: true"
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableMailboxIntelligence: true"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), EnableMailboxIntelligence: \(.EnableMailboxIntelligence)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "EnableMailboxIntelligence: true"
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableMailboxIntelligenceProtection: true"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), EnableMailboxIntelligenceProtection: \(.EnableMailboxIntelligenceProtection)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "EnableMailboxIntelligenceProtection: true"
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableSpoofIntelligence: true"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), EnableSpoofIntelligence: \(.EnableSpoofIntelligence)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "EnableSpoofIntelligence: true"
+    </custom_item>
+
+    <custom_item>
+      description    : "TargetedUserProtectionAction: Quarantine"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), TargetedUserProtectionAction: \(.TargetedUserProtectionAction)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "TargetedUserProtectionAction: Quarantine"
+    </custom_item>
+
+    <custom_item>
+      description    : "TargetedDomainProtectionAction: Quarantine"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), TargetedDomainProtectionAction: \(.TargetedDomainProtectionAction)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "TargetedDomainProtectionAction: Quarantine"
+    </custom_item>
+
+    <custom_item>
+      description    : "MailboxIntelligenceProtectionAction: Quarantine"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), MailboxIntelligenceProtectionAction: \(.MailboxIntelligenceProtectionAction)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "MailboxIntelligenceProtectionAction: Quarantine"
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableFirstContactSafetyTips: true"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), EnableFirstContactSafetyTips: \(.EnableFirstContactSafetyTips)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "EnableFirstContactSafetyTips: true"
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableSimilarUsersSafetyTips: true"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), EnableSimilarUsersSafetyTips: \(.EnableSimilarUsersSafetyTips)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "EnableSimilarUsersSafetyTips: true"
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableSimilarDomainsSafetyTips: true"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), EnableSimilarDomainsSafetyTips: \(.EnableSimilarDomainsSafetyTips)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "EnableSimilarDomainsSafetyTips: true"
+    </custom_item>
+
+    <custom_item>
+      description    : "EnableUnusualCharactersSafetyTips: true"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), EnableUnusualCharactersSafetyTips: \(.EnableUnusualCharactersSafetyTips)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "EnableUnusualCharactersSafetyTips: true"
+    </custom_item>
+
+    <custom_item>
+      description    : "TargetedUsersToProtect configured"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), TargetedUsersToProtect: \(.TargetedUsersToProtect)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "TargetedUsersToProtect: \[[^#\s\n\r]+\]"
+    </custom_item>
+
+    <custom_item>
+      description    : "HonorDmarcPolicy: true"
+      request        : "getAntiPhishPolicy"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name), HonorDmarcPolicy: \(.HonorDmarcPolicy)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "HonorDmarcPolicy: true"
+    </custom_item>
+
+    <custom_item>
+      description    : "getAntiPhishRule"
+      request        : "getAntiPhishRule"
+      json_transform : '.[] | if (.Name == "@PHISHING_POLICY_NAME@") then "Name: \(.Name)" else "Policy @PHISHING_POLICY_NAME@ not found" end'
+      regex          : "Name: @PHISHING_POLICY_NAME@"
+      expect         : "Name: @PHISHING_POLICY_NAME@"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "2.1.7 (L2) Ensure that an anti-phishing policy has been created"
+      info        : "By default, Office 365 includes built-in features that help protect users from phishing attacks. Set up anti-phishing polices to increase this protection, for example by refining settings to better detect and prevent impersonation and spoofing attacks. The default policy applies to all users within the organization and is a single view to fine-tune anti-phishing protection. Custom policies can be created and configured for specific users, groups or domains within the organization and will take precedence over the default policy for the scoped users.
+
+Protects users from phishing attacks (like impersonation and spoofing) and uses safety tips to warn users about potentially harmful messages."
+      solution    : "To remediate using the UI:
+
+ - Navigate to Microsoft 365 Defender
+
+https://security.microsoft.com
+
+.
+ - Click to expand Email & collaboration select Policies & rules
+ - Select Threat policies
+ - Under Policies select Anti-phishing and click Create
+ - Name the policy, continuing and clicking Next as needed:
+ - Add Groups and/or Domains that contain a majority of the organization.
+ - Set Phishing email threshold to 3 - More Aggressive
+ - Check Enable users to protect and add up to 350 users.
+ - Check Enable domains to protect and check Include domains I own
+ - Check Enable mailbox intelligence (Recommended)
+ - Check Enable Intelligence for impersonation protection (Recommended)
+ - Check Enable spoof intelligence (Recommended).
+
+ - Under Actions configure the following:
+ - Set If a message is detected as user impersonation to Quarantine the message
+ - Set If a message is detected as domain impersonation to Quarantine the message
+ - Set If Mailbox Intelligence detects an impersonated user to Quarantine the message
+ - Leave Honor DMARC record policy when the message is detected as spoof checked.
+ - Check Show first contact safety tip (Recommended)
+ - Check Show user impersonation safety tip
+ - Check Show domain impersonation safety tip
+ - Check Show user impersonation unusual characters safety tip
+
+ - Finally click Next and Submit the policy.
+
+Note: DefaultFullAccessWithNotificationPolicy is suggested but not required. Users will be notified that impersonation emails are in the Quarantine.
+
+To remediate using PowerShell:
+
+ - Connect to Exchange Online service using Connect-ExchangeOnline
+ - Run the following Exchange Online PowerShell script to create an AntiPhish policy:
+
+# Create the Policy
+$params = @{
+    Name = \"CIS AntiPhish Policy\"
+    PhishThresholdLevel = 3
+    EnableTargetedUserProtection = $true
+    EnableOrganizationDomainsProtection = $true
+    EnableMailboxIntelligence = $true
+    EnableMailboxIntelligenceProtection = $true
+    EnableSpoofIntelligence = $true
+    TargetedUserProtectionAction = 'Quarantine'
+    TargetedDomainProtectionAction = 'Quarantine'
+    MailboxIntelligenceProtectionAction = 'Quarantine'
+    TargetedUserQuarantineTag = 'DefaultFullAccessWithNotificationPolicy'
+    MailboxIntelligenceQuarantineTag = 'DefaultFullAccessWithNotificationPolicy'
+    TargetedDomainQuarantineTag = 'DefaultFullAccessWithNotificationPolicy'
+    EnableFirstContactSafetyTips = $true
+    EnableSimilarUsersSafetyTips = $true
+    EnableSimilarDomainsSafetyTips = $true
+    EnableUnusualCharactersSafetyTips = $true
+    HonorDmarcPolicy = $true
+}
+
+New-AntiPhishPolicy @params
+
+# Create the rule for all users in all valid domains and associate with Policy
+New-AntiPhishRule -Name $params.Name -AntiPhishPolicy $params.Name -RecipientDomainIs (Get-AcceptedDomain).Name -Priority 0 <xhtml:ol start=\"3\"> - The new policy can be edited in the UI or via PowerShell.
+
+Note: Remediation guidance is intended to help create a qualifying AntiPhish policy that meets the recommended criteria while protecting the majority of the organization. It's understood some individual user exceptions may exist or exceptions for the entire policy if another product acts as a similiar control.
+
+Impact:
+
+Mailboxes that are used for support systems such as helpdesk and billing systems send mail to internal users and are often not suitable candidates for impersonation protection. Care should be taken to ensure that these systems are excluded from Impersonation Protection."
+      reference   : "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-171r3|03.14.02,800-53|SI-3,800-53|SI-8,800-53|SI-16,800-53r5|SI-3,800-53r5|SI-8,800-53r5|SI-16,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSCv7|7,CSCv8|9.7,CSF|DE.CM-4,CSF|DE.DP-3,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.7,ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,ITSG-33|SI-8,ITSG-33|SI-16,LEVEL|2A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+      show_output : YES
+    </report>
+  </then>
+</if>
+
+<report type:"WARNING">
+  description : "2.4.3 (L2) Ensure Microsoft Defender for Cloud Apps is enabled and configured"
+  info        : "Microsoft Defender for Cloud Apps is a Cloud Access Security Broker (CASB). It provides visibility into suspicious activity in Microsoft 365, enabling investigation into potential security issues and facilitating the implementation of remediation measures if necessary.
+
+Some risk detection methods provided by Entra Identity Protection also require Microsoft Defender for Cloud Apps:
+
+ - Suspicious manipulation of inbox rules
+ - Suspicious inbox forwarding
+ - New country detection
+ - Impossible travel detection
+ - Activity from anonymous IP addresses
+ - Mass access to sensitive files
+
+Security teams can receive notifications of triggered alerts for atypical or suspicious activities, see how the organization's data in Microsoft 365 is accessed and used, suspend user accounts exhibiting suspicious activity, and require users to log back in to Microsoft 365 apps after an alert has been triggered.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To remediate using the UI:
+
+ - Navigate to Microsoft 365 Defender
+
+https://security.microsoft.com/
+
+ - Click to expand System select Settings > Cloud apps
+ - Scroll to Information Protection and select Files
+ - Check Enable file monitoring
+ - Scroll up to Cloud Discovery and select Microsoft Defender for Endpoint.
+ - Check Enforce app access configure a Notification URL and Save
+
+Note: Defender for Endpoint requires a Defender for Endpoint license.
+
+Configure App Connectors:
+
+ - Scroll to Connected apps and select App connectors
+ - Click on Connect an app and select Microsoft 365
+ - Check all Azure and Office 365 boxes then click Connect Office 365
+ - Repeat for the Microsoft Azure application."
+  reference   : "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-171r3|03.14.02,800-53|SI-3,800-53|SI-16,800-53r5|SI-3,800-53r5|SI-16,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSCv7|6.2,CSCv7|16,CSCv8|10.1,CSCv8|10.5,CSF|DE.CM-4,CSF|DE.DP-3,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.7,ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,ITSG-33|SI-16,LEVEL|2M,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+<custom_item>
+  description    : "4.1 (L2) Ensure devices without a compliance policy are marked 'not compliant'"
+  info           : "Compliance policies are sets of rules and conditions that are used to evaluate the configuration of managed devices. These policies can help secure organizational data and resources from devices that don't meet those configuration requirements. Managed devices must satisfy the conditions you set in your policies to be considered compliant by Intune. When combined with conditional access, this allows more control over how non-compliant devices are treated.
+
+The recommended state is Mark devices with no compliance policy assigned as as Not compliant
+
+Implementing this setting is a first step in adopting compliance policies for devices. When used in together with Conditional Access policies the attack surface can be reduced by forcing an action to be taken for non-compliant devices.
+
+Note: This section does not focus on which compliance policies to use, only that an organization should adopt and enforce them to their needs."
+  solution       : "To remediate using the UI:
+
+ - Navigate to  Microsoft Intune admin center
+
+https://intune.microsoft.com/
+
+ - Select Devices and then under Manage devices click Compliance
+ - Click Compliance settings
+ - Set Mark devices with no compliance policy assigned as to Not compliant
+
+To remediate using PowerShell:
+
+ - Connect to Microsoft Graph using Connect-MgGraph -Scopes \"DeviceManagementConfiguration.ReadWrite.All\"
+ - Run the following commands:
+
+$Uri = 'https://graph.microsoft.com/v1.0/deviceManagement'
+$Body = @{
+    settings = @{
+        secureByDefault = $true
+    }
+} | ConvertTo-Json
+Invoke-MgGraphRequest -Uri $Uri -Method PATCH -Body $Body
+
+Impact:
+
+Any devices without a compliance policy will be marked not compliant. Care should be taken to first deploy any new compliance policies with a Conditional Access (CA) policy that is in the Report-only state. After the environment's device compliance is better understood it is then appropriate to finally align with Mark devices with no compliance policy assigned as and enable any CA policies that enforce actions based on device compliance.
+
+If a mature environment already has an existing device compliance CA policy and a large number of devices without an assigned compliance policy, this could cause disruption as those devices would then be suddenly considered not compliant."
+  reference      : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,LEVEL|2A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getDeviceManagementSettings"
+  json_transform : '"Secure By Default: \(.secureByDefault)"'
+  regex          : ".+"
+  expect         : "Secure By Default: true"
+</custom_item>
+
+<report type:"WARNING">
+  description : "4.2 (L2) Ensure device enrollment for personally owned devices is blocked by default"
+  info        : "Device enrollment restrictions let you restrict devices from enrolling in Intune based on certain device attributes such as device limit, device platform, OS Version, manufacturer or device ownership (Personally owned devices).
+
+The recommended state is to Block personally owned devices from enrollment.
+
+Restricting the enrollment of personally owned devices prevents attackers who have bypassed other controls from registering a new device to gain an additional foothold, further hiding or obscuring their activities.
+
+An attack path could be:
+
+ - Account Compromise via Phishing and AiTM
+ - Conditional Access Bypass
+ - Reconnaissance using e.g. ROADrecon, GraphRunner or AADInternals
+ - Lateral Movement, Privilege Escalation or Persistence through a newly registered device enrolled in Intune
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To remediate using the UI:
+
+ - Navigate to  Microsoft Intune admin center
+
+https://intune.microsoft.com/
+
+ - Select Devices and then under Device onboarding click Enrollment
+ - Under Enrollment options select Device platform restriction
+ - Inspect the policies listed under Device type restrictions
+ - For the Default priority policy, click All Users
+ - Select Properties
+
+ - Click Edit to change Platform settings
+ - In the Personally owned column set each platform to Block
+
+Note: Blocking platforms that are not used in the organization is a more restrictive best practice and will also effectively block enrollment of personally owned devices for the selected platform, ensuring compliance for this recommendation.
+
+Impact:
+
+Per platform personally owned device enrollment impacts are listed below. It is important to test the changes to the defaults prior to moving into production and implementing this control.
+
+Windows Devices
+
+The following enrollment methods are authorized for corporate enrollment for Windows devices, any other enrollment method will be considered \"Personal\" and blocked:
+
+ - The device enrolls through Windows Autopilot.
+ - The device enrolls through GPO, or automatic enrollment from Configuration Manager for co-management.
+ - The device enrolls through a bulk provisioning package.
+ - The enrolling user is using a device enrollment manager account.
+
+MacOS
+
+By default, Intune classifies macOS devices as personally owned. To be classified as corporate-owned, a Mac must fulfill one of the following conditions:
+
+ - Registered with a serial number.
+ - Enrolled via Apple Automated Device Enrollment (ADE).
+
+iOS/IPadOS devices
+
+By default, Intune classifies iOS/iPadOS devices as personally owned. To be classified as corporate-owned, an iOS/iPadOS device must fulfill one of the following conditions:
+
+ - Registered with a serial number or IMEI.
+ - Enrolled by using Automated Device Enrollment (formerly Device Enrollment Program).
+
+Android devices
+
+By default, until you manually make changes in the admin center, your Android Enterprise work profile device settings and Android device administrator device settings are the same.
+
+If you block Android Enterprise work profile enrollment on personal devices, only corporate-owned devices can enroll with personally owned work profiles."
+  reference   : "800-171|3.1.19,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.01.18c.,800-171r3|03.04.02,800-171r3|03.04.06,800-53|AC-19(5),800-53|CM-6,800-53|CM-7,800-53|SC-39,800-53r5|CM-6,800-53r5|CM-7,800-53r5|SC-39,CSCv8|4.8,CSCv8|4.12,CSF|PR.AC-3,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.AA-05,CSF2.0|PR.DS-01,CSF2.0|PR.DS-10,CSF2.0|PR.IR-03,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.7.9,ISO-27001-2022|A.8.1,ISO-27001-2022|A.8.9,ISO/IEC-27001|A.6.2.1,ITSG-33|AC-19,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2M,NIAv2|OS5,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|2.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+<custom_item>
+  description    : "5.1.2.2 (L2) Ensure third party integrated applications are not allowed"
+  info           : "App registration allows users to register custom-developed applications for use within the directory.
+
+Third-party integrated applications connection to services should be disabled unless there is a very clear value and robust security controls are in place. While there are legitimate uses, attackers can grant access from breached accounts to third party applications to exfiltrate data from your tenancy without having to maintain the breached account."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft Entra admin center
+
+https://entra.microsoft.com/
+
+.
+ - Click to expand Identity > Users select Users settings
+ - Set Users can register applications to No
+ - Click Save.
+
+To remediate using PowerShell:
+
+ - Connect to Microsoft Graph using Connect-MgGraph -Scopes \"Policy.ReadWrite.Authorization\"
+ - Run the following commands:
+
+$param = @{ AllowedToCreateApps = \"$false\" }
+Update-MgPolicyAuthorizationPolicy -DefaultUserRolePermissions $param
+
+Impact:
+
+The implementation of this change will impact both end users and administrators. End users will not be able to integrate third-party applications that they may wish to use. Administrators are likely to receive requests from end users to grant them permission to the necessary third-party applications."
+  reference      : "800-171|3.4.8,800-171r3|03.04.08,800-53|CM-7(5),800-53|CM-10,800-53r5|CM-7(5),800-53r5|CM-10,CSCv7|18.4,CSCv8|2.5,CSF|DE.CM-3,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.32,ISO-27001-2022|A.8.19,ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "listAuthorizationPolicy"
+  json_transform : '"Allowed to Create Apps: \(.defaultUserRolePermissions.allowedToCreateApps)"'
+  regex          : "Allowed to Create Apps:"
+  expect         : "Allowed to Create Apps: false"
+</custom_item>
+
+<report type:"WARNING">
+  description : "5.1.2.5 (L2) Ensure the option to remain signed in is hidden"
+  info        : "The option for the user to Stay signed in or the Keep me signed in option, will prompt a user after a successful login. When the user selects this option, a persistent refresh token is created. The refresh token lasts for 90 days by default and does not prompt for sign-in or multifactor.
+
+Allowing users to select this option presents risk, especially if the user signs into their account on a publicly accessible computer/web browser. In this case it would be trivial for an unauthorized person to gain access to any associated cloud data from that account.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To remediate using the UI:
+
+ - Navigate to Microsoft Entra admin center
+
+https://entra.microsoft.com/
+
+.
+ - Click to expand Identity > Users > User settings
+ - Set Show keep user signed in to No
+ - Click Save
+
+Impact:
+
+Once this setting is hidden users will no longer be prompted upon sign-in with the message Stay signed in? This may mean users will be forced to sign in more frequently. Important: some features of SharePoint Online and Office 2010 have a dependency on users remaining signed in. If you hide this option, users may get additional and unexpected sign in prompts."
+  reference   : "800-171|3.1.11,800-171r3|03.01.11,800-53|AC-12,800-53r5|AC-12,CN-L3|7.1.2.2(d),CN-L3|7.1.3.7(b),CN-L3|8.1.4.1(b),CSCv7|16.3,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iii),ITSG-33|AC-12,LEVEL|2M,NIAv2|NS49"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+<report type:"WARNING">
+  description : "5.1.2.6 (L2) Ensure 'LinkedIn account connections' is disabled"
+  info        : "LinkedIn account connections allow users to connect their Microsoft work or school account with LinkedIn. After a user connects their accounts, information and highlights from LinkedIn are available in some Microsoft apps and services.
+
+Disabling LinkedIn integration prevents potential phishing attacks and risk scenarios where an external party could accidentally disclose sensitive information.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To remediate using the UI:
+
+ - Navigate to Microsoft Entra admin center
+
+https://entra.microsoft.com/
+
+.
+ - Click to expand Identity > Users select User settings
+ - Under LinkedIn account connections select No
+ - Click Save
+
+Impact:
+
+Users will not be able to sync contacts or use LinkedIn integration."
+  reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|13.3,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+<custom_item>
+  description    : "5.1.5.1 (L2) Ensure user consent to apps accessing company data on their behalf is not allowed"
+  info           : "Control when end users and group owners are allowed to grant consent to applications, and when they will be required to request administrator review and approval. Allowing users to grant apps access to data helps them acquire useful applications and be productive but can represent a risk in some situations if it's not monitored and controlled carefully.
+
+Attackers commonly use custom applications to trick users into granting them access to company data. Restricting user consent mitigates this risk and helps to reduce the threat-surface."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft Entra admin center
+
+https://entra.microsoft.com/
+
+.
+ - Click to expand Identity > Applications select Enterprise applications
+ - Under Security select Consent and permissions > User consent settings
+ - Under User consent for applications select Do not allow user consent
+ - Click the Save option at the top of the window.
+
+Impact:
+
+If user consent is disabled, previous consent grants will still be honored but all future consent operations must be performed by an administrator. Tenant-wide admin consent can be requested by users through an integrated administrator consent request workflow or through organizational support processes."
+  reference      : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getMgBetaPolicyAuthorizationPolicy"
+  json_transform : '.[] | .permissionGrantPolicyIdsAssignedToDefaultUserRole[] | if (. == "ManagePermissionGrantsForSelf.microsoft-user-default-low") or (. == "ManagePermissionGrantsForSelf.microsoft-user-default-legacy") then "Setting found: \(.)" else null end'
+  not_expect     : "Setting found:"
+</custom_item>
+
+<report type:"WARNING">
+  description : "5.1.6.1 (L2) Ensure that collaboration invitations are sent to allowed domains only"
+  info        : "B2B collaboration is a feature within Microsoft Entra External ID that allows for guest invitations to an organization.
+
+Ensure users can only send invitations to specified domains
+
+Note: This list works independently from OneDrive for Business and SharePoint Online allow/block lists. To restrict individual file sharing in SharePoint Online, set up an allow or blocklist for OneDrive for Business and SharePoint Online. For instance, in SharePoint or OneDrive users can still share with external users from prohibited domains by using Anyone links if they haven't been disabled.
+
+By specifying allowed domains for collaborations, external user's companies are explicitly identified. Also, this prevents internal users from inviting unknown external users such as personal accounts and granting them access to resources.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To remediate using the UI:
+
+ - Navigate to Microsoft Entra admin center
+
+https://entra.microsoft.com/
+
+.
+ - Click to expand Identity > External Identities select External collaboration settings
+ - Under Collaboration restrictions select Allow invitations only to the specified domains (most restrictive) is selected. Then specify the allowed domains under Target domains
+
+Impact:
+
+This could make collaboration more difficult if the setting is not quickly updated when a new domain is identified as \"allowed\"."
+  reference   : "800-171|3.1.1,800-171|3.5.2,800-171|3.5.5,800-171|3.5.6,800-171r3|03.01.01,800-171r3|03.05.05,800-171r3|03.05.12,800-171r3|03.15.01,800-53|AC-1,800-53|AC-2,800-53|IA-4,800-53|IA-5,800-53r5|AC-1,800-53r5|AC-2,800-53r5|AC-2(1),800-53r5|IA-4,800-53r5|IA-5,CN-L3|7.1.2.7(b),CN-L3|7.1.3.2(d),CN-L3|8.1.4.2(e),CN-L3|8.1.10.6(c),CSCv7|13.1,CSCv8|6.1,CSF|DE.CM-1,CSF|DE.CM-3,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|GV.OC-03,CSF2.0|GV.OV-01,CSF2.0|GV.PO-01,CSF2.0|GV.PO-02,CSF2.0|GV.SC-03,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.1,ISO-27001-2022|A.5.2,ISO-27001-2022|A.5.4,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.18,ISO-27001-2022|A.5.31,ISO-27001-2022|A.5.36,ISO-27001-2022|A.5.37,ISO-27001-2022|A.8.2,ISO-27001-2022|5.2,ISO-27001-2022|5.3,ISO-27001-2022|7.5.1,ISO-27001-2022|7.5.2,ISO-27001-2022|7.5.3,ISO/IEC-27001|A.9.1.1,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-1,ITSG-33|AC-2,ITSG-33|IA-4,ITSG-33|IA-5,LEVEL|2M,NESA|M1.2.2,NESA|T5.2.3,NIAv2|AM28,NIAv2|AM29,NIAv2|AM30,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,SWIFT-CSCv1|5"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+<custom_item>
+  description    : "5.1.6.3 (L2) Ensure guest user invitations are limited to the Guest Inviter role"
+  info           : "By default, all users in the organization, including B2B collaboration guest users, can invite external users to B2B collaboration. The ability to send invitations can be limited by turning it on or off for everyone, or by restricting invitations to certain roles.
+
+The recommended state for guest invite restrictions is Only users assigned to specific admin roles can invite guest users
+
+Restricting who can invite guests limits the exposure the organization might face from unauthorized accounts."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft Entra admin center
+
+https://entra.microsoft.com/
+
+.
+ - Click to expand Identity > External Identities select External collaboration settings
+ - Under Guest invite settings set Guest invite restrictions to Only users assigned to specific admin roles can invite guest users
+
+To remediate using PowerShell:
+
+ - Connect to Microsoft Graph using Connect-MgGraph -Scopes \"Policy.ReadWrite.Authorization\"
+ - Run the following command:
+
+Update-MgPolicyAuthorizationPolicy -AllowInvitesFrom 'adminsAndGuestInviters'
+
+Note: The more restrictive position of the value will also pass audit, it is however not required.
+
+Impact:
+
+This introduces an obstacle to collaboration by restricting who can invite guest users to the organization. Designated Guest Inviters must be assigned, and an approval process established and clearly communicated to all users."
+  reference      : "800-171|3.1.1,800-171|3.5.2,800-171|3.5.5,800-171|3.5.6,800-171r3|03.01.01,800-171r3|03.05.05,800-171r3|03.05.12,800-171r3|03.15.01,800-53|AC-1,800-53|AC-2,800-53|IA-4,800-53|IA-5,800-53r5|AC-1,800-53r5|AC-2,800-53r5|AC-2(1),800-53r5|IA-4,800-53r5|IA-5,CN-L3|7.1.2.7(b),CN-L3|7.1.3.2(d),CN-L3|8.1.4.2(e),CN-L3|8.1.10.6(c),CSCv7|13.1,CSCv8|6.1,CSF|DE.CM-1,CSF|DE.CM-3,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|GV.OC-03,CSF2.0|GV.OV-01,CSF2.0|GV.PO-01,CSF2.0|GV.PO-02,CSF2.0|GV.SC-03,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.1,ISO-27001-2022|A.5.2,ISO-27001-2022|A.5.4,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.18,ISO-27001-2022|A.5.31,ISO-27001-2022|A.5.36,ISO-27001-2022|A.5.37,ISO-27001-2022|A.8.2,ISO-27001-2022|5.2,ISO-27001-2022|5.3,ISO-27001-2022|7.5.1,ISO-27001-2022|7.5.2,ISO-27001-2022|7.5.3,ISO/IEC-27001|A.9.1.1,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-1,ITSG-33|AC-2,ITSG-33|IA-4,ITSG-33|IA-5,LEVEL|2A,NESA|M1.2.2,NESA|T5.2.3,NIAv2|AM28,NIAv2|AM29,NIAv2|AM30,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,SWIFT-CSCv1|5"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "listAuthorizationPolicy"
+  json_transform : '"Allow Invites From: \(.allowInvitesFrom)"'
+  regex          : "Allow Invites From:"
+  expect         : "Allow Invites From: (none|adminsAndGuestInviters)"
+</custom_item>
+
+<report type:"WARNING">
+  description : "5.2.2.5 (L2) Ensure 'Phishing-resistant MFA strength' is required for Administrators"
+  info        : "Authentication strength is a Conditional Access control that allows administrators to specify which combination of authentication methods can be used to access a resource. For example, they can make only phishing-resistant authentication methods available to access a sensitive resource. But to access a non-sensitive resource, they can allow less secure multifactor authentication (MFA) combinations, such as password + SMS.
+
+Microsoft has 3 built-in authentication strengths. MFA strength, Passwordless MFA strength, and Phishing-resistant MFA strength. Ensure administrator roles are using a CA policy with Phishing-resistant MFA strength
+
+Administrators can then enroll using one of 3 methods:
+
+ - FIDO2 Security Key
+ - Windows Hello for Business
+ - Certificate-based authentication (Multi-Factor)
+
+Note: Additional steps to configure methods such as FIDO2 keys are not covered here but can be found in related MS articles in the references section. The Conditional Access policy only ensures 1 of the 3 methods is used.
+
+Warning: Administrators should be pre-registered for a strong authentication mechanism before this Conditional Access Policy is enforced. Additionally, as stated elsewhere in the CIS Benchmark a break-glass administrator account should be excluded from this policy to ensure unfettered access in the case of an emergency.
+
+Sophisticated attacks targeting MFA are more prevalent as the use of it becomes more widespread. These 3 methods are considered phishing-resistant as they remove passwords from the login workflow. It also ensures that public/private key exchange can only happen between the devices and a registered provider which prevents login to fake or phishing websites.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To remediate using the UI:
+
+ - Navigate to the Microsoft Entra admin center
+
+https://entra.microsoft.com
+
+.
+ - Click expand Protection > Conditional Access select Policies
+ - Click New policy
+ - Under Users include Select users and groups and check Directory roles
+ - At a minimum, include the directory roles listed below in this section of the document.
+ - Under Target resources include All resources (formerly 'All cloud apps') and do not create any exclusions.
+ - Under Grant select Grant Access and check Require authentication strength and set Phishing-resistant MFA in the dropdown box.
+ - Click Select
+
+ - Under Enable policy set it to Report-only until the organization is ready to enable it.
+ - Click Create
+
+At minimum these directory roles should be included for the policy:
+
+ - Application administrator
+ - Authentication administrator
+ - Billing administrator
+ - Cloud application administrator
+ - Conditional Access administrator
+ - Exchange administrator
+ - Global administrator
+ - Global reader
+ - Helpdesk administrator
+ - Password administrator
+ - Privileged authentication administrator
+ - Privileged role administrator
+ - Security administrator
+ - SharePoint administrator
+ - User administrator
+
+Warning: Ensure administrators are pre-registered with strong authentication before enforcing the policy. After which the policy must be set to On
+
+Impact:
+
+If administrators aren't pre-registered for a strong authentication method prior to a conditional access policy being created, then a condition could occur where a user can't register for strong authentication because they don't meet the conditional access policy requirements and therefore are prevented from signing in.
+
+Additionally, Internet Explorer based credential prompts in PowerShell do not support prompting for a security key. Implementing phishing-resistant MFA with a security key may prevent admins from running their existing sets of PowerShell scripts. Device Authorization Grant Flow can be used as a workaround in some instances."
+  reference   : "800-171|3.5.3,800-171r3|03.05.03,800-53|IA-2(1),800-53r5|IA-2(1),CN-L3|7.1.2.7(b),CSCv8|6.5,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ITSG-33|IA-2(1),LEVEL|2A,NESA|T5.4.2,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+<report type:"WARNING">
+  description : "5.2.2.8 (L2) Ensure 'sign-in risk' is blocked for medium and high risk"
+  info        : "Microsoft Entra ID Protection sign-in risk detects risks in real-time and offline. A risky sign-in is an indicator for a sign-in attempt that might not have been performed by the legitimate owner of a user account.
+
+Note: While Identity Protection also provides two risk policies with limited conditions, Microsoft highly recommends setting up risk-based policies in Conditional Access as opposed to the \"legacy method\" for the following benefits:
+
+ - Enhanced diagnostic data
+ - Report-only mode integration
+ - Graph API support
+ - Use more Conditional Access attributes like sign-in frequency in the policy
+
+Sign-in risk is determined at the time of sign-in and includes criteria across both real-time and offline detections for risk. Blocking sign-in to accounts that have risk can prevent undesired access from potentially compromised devices or unauthorized users.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To remediate using the UI:
+
+ - Navigate to the Microsoft Entra admin center
+
+https://entra.microsoft.com
+
+.
+ - Click expand Protection > Conditional Access select Policies
+ - Create a new policy by selecting New policy
+ - Set the following conditions within the policy.
+ - Under Users include All users
+ - Under Target resources include All resources (formerly 'All cloud apps') and do not set any exclusions.
+ - Under Conditions choose Sign-in risk values of High and Medium and click Done
+ - Under Grant choose Block access and click Select
+
+ - Under Enable policy set it to Report-only until the organization is ready to enable it.
+ - Click Create
+
+Note: Break-glass accounts should be excluded from all Conditional Access policies.
+
+Impact:
+
+Sign-in risk is heavily dependent on detecting risk based on atypical behaviors. Due to this it is important to run this policy in a report-only mode to better understand how the organization's environment and user activity may influence sign-in risk before turning the policy on. Once it's understood what actions may trigger a medium or high sign-in risk event I.T. can then work to create an environment to reduce false positives. For example, employees might be required to notify security personnel when they intend to travel with intent to access work resources.
+
+Note: Break-glass accounts should always be excluded from risk detection."
+  reference   : "800-171|3.14.6,800-171|3.14.7,800-171r3|03.14.06,800-53|SI-4,800-53|SI-4(4),800-53r5|SI-4,800-53r5|SI-4(4),CN-L3|7.1.2.2(c),CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv8|13.3,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|DE.CM-01,CSF2.0|DE.CM-06,CSF2.0|DE.CM-09,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-01,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.8.16,ITSG-33|SI-4,ITSG-33|SI-4(4),LEVEL|2A,NESA|M1.2.2,NIAv2|NS32,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|6.5"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+<report type:"WARNING">
+  description : "5.3.1 (L2) Ensure 'Privileged Identity Management' is used to manage roles"
+  info        : "Microsoft Entra Privileged Identity Management can be used to audit roles, allow just in time activation of roles and allow for periodic role attestation. Organizations should remove permanent members from privileged Office 365 roles and instead make them eligible, through a JIT activation workflow.
+
+Organizations want to minimize the number of people who have access to secure information or resources, because that reduces the chance of a malicious actor getting that access, or an authorized user inadvertently impacting a sensitive resource. However, users still need to carry out privileged operations in Entra ID. Organizations can give users just-in-time (JIT) privileged access to roles. There is a need for oversight for what those users are doing with their administrator privileges. PIM helps to mitigate the risk of excessive, unnecessary, or misused access rights.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To remediate using the UI:
+
+ - Navigate to Microsoft Entra admin center
+
+https://entra.microsoft.com/
+
+.
+ - Click to expand Identity Governance select Privileged Identity Management
+ - Under Manage select Microsoft Entra Roles
+ - Under Manage select Roles
+ - Inspect at a minimum the following sensitive roles. For each of the members that have an ASSIGNMENT TYPE of Permanent click on the.. and choose Make eligible :
+
+ - Application Administrator
+ - Authentication Administrator
+ - Azure Information Protection Administrator
+ - Billing Administrator
+ - Cloud Application Administrator
+ - Cloud Device Administrator
+ - Compliance Administrator
+ - Customer LockBox Access Approver
+ - Exchange Administrator
+ - Fabric Administrator
+ - Global Administrator
+ - HelpDesk Administrator
+ - Intune Administrator
+ - Kaizala Administrator
+ - License Administrator
+ - Microsoft Entra Joined Device Local Administrator
+ - Password Administrator
+ - Privileged Authentication Administrator
+ - Privileged Role Administrator
+ - Security Administrator
+ - SharePoint Administrator
+ - Skype for Business Administrator
+ - Teams Administrator
+ - User Administrator
+
+Impact:
+
+The implementation of Just in Time privileged access is likely to necessitate changes to administrator routine. Administrators will only be granted access to administrative roles when required. When administrators request role activation, they will need to document the reason for requiring role access, anticipated time required to have the access, and to reauthenticate to enable role access."
+  reference   : "800-171|3.1.1,800-171|3.5.2,800-171|3.5.5,800-171|3.5.6,800-171r3|03.01.01,800-171r3|03.05.05,800-171r3|03.05.12,800-171r3|03.15.01,800-53|AC-1,800-53|AC-2,800-53|AC-2(1),800-53|IA-4,800-53|IA-5,800-53r5|AC-1,800-53r5|AC-2,800-53r5|AC-2(1),800-53r5|IA-4,800-53r5|IA-5,CN-L3|7.1.2.7(b),CN-L3|7.1.3.2(d),CN-L3|8.1.4.2(e),CN-L3|8.1.10.6(c),CSCv7|4.1,CSCv8|6.1,CSCv8|6.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|GV.OC-03,CSF2.0|GV.OV-01,CSF2.0|GV.PO-01,CSF2.0|GV.PO-02,CSF2.0|GV.SC-03,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.1,ISO-27001-2022|A.5.2,ISO-27001-2022|A.5.4,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.18,ISO-27001-2022|A.5.31,ISO-27001-2022|A.5.36,ISO-27001-2022|A.5.37,ISO-27001-2022|A.8.2,ISO-27001-2022|5.2,ISO-27001-2022|5.3,ISO-27001-2022|7.5.1,ISO-27001-2022|7.5.2,ISO-27001-2022|7.5.3,ISO/IEC-27001|A.9.1.1,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-1,ITSG-33|AC-2,ITSG-33|AC-2(1),ITSG-33|IA-4,ITSG-33|IA-5,LEVEL|2A,NESA|M1.2.2,NESA|T5.2.3,NIAv2|AM28,NIAv2|AM29,NIAv2|AM30,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,SWIFT-CSCv1|5"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+<custom_item>
+  type        : POLICY
+  description : "6.3.1 (L2) Ensure users installing Outlook add-ins is not allowed"
+  info        : "Specify the administrators and users who can install and manage add-ins for Outlook in Exchange Online
+
+By default, users can install add-ins in their Microsoft Outlook Desktop client, allowing data access within the client application.
+
+Attackers exploit vulnerable or custom add-ins to access user data. Disabling user-installed add-ins in Microsoft Outlook reduces this threat surface."
+  solution    : "To remediate using the UI:
+
+ - Navigate to Exchange admin center
+
+https://admin.exchange.microsoft.com
+
+.
+ - Click to expand Roles select User roles
+ - Select Default Role Assignment Policy
+ - In the properties pane on the right click on Manage permissions
+ - Under
+
+Other roles
+
+uncheck My Custom Apps My Marketplace Apps and My ReadWriteMailboxApps
+ - Click Save changes
+
+To remediate using PowerShell:
+
+ - Connect to Exchange Online using Connect-ExchangeOnline
+ - Run the following command:
+
+$policy = \"Role Assignment Policy - Prevent Add-ins\"
+$roles = \"MyTextMessaging\", \"MyDistributionGroups\", `
+         \"MyMailSubscriptions\", \"MyBaseOptions\", \"MyVoiceMail\", `
+         \"MyProfileInformation\", \"MyContactInformation\", \"MyRetentionPolicies\", `
+         \"MyDistributionGroupMembership\"
+
+New-RoleAssignmentPolicy -Name $policy -Roles $roles
+Set-RoleAssignmentPolicy -id $policy -IsDefault
+
+# Assign new policy to all mailboxes
+Get-EXOMailbox -ResultSize Unlimited | Set-Mailbox -RoleAssignmentPolicy $policy
+
+If you have other Role Assignment Policies modify the last line to filter out your custom policies
+
+Impact:
+
+Implementing this change will impact both end users and administrators. End users will be unable to integrate third-party applications they desire, and administrators may receive requests to grant permission for necessary third-party apps."
+  reference   : "800-171|3.4.9,800-171|3.13.13,800-171r3|03.13.13,800-53|CM-10,800-53|CM-11,800-53|SC-18,800-53r5|CM-10,800-53r5|CM-11,800-53r5|SC-18,CSCv7|5.1,CSCv8|9.4,CSF|DE.CM-3,CSF|DE.CM-5,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.32,ISO-27001-2022|A.8.19,ISO/IEC-27001|A.12.6.2,ITSG-33|SC-18,LEVEL|2A,NIAv2|SU3,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|5.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+  name        : "M365_Role_Assignment_Policies"
+</custom_item>
+
+<custom_item>
+  description    : "6.5.3 (L2) Ensure additional storage providers are restricted in Outlook on the web"
+  info           : "This setting allows users to open certain external files while working in Outlook on the web. If allowed, keep in mind that Microsoft doesn't control the use terms or privacy policies of those third-party services.
+
+Ensure AdditionalStorageProvidersAvailable are restricted.
+
+By default, additional storage providers are allowed in Office on the Web (such as Box, Dropbox, Facebook, Google Drive, OneDrive Personal, etc.). This could lead to information leakage and additional risk of infection from organizational non-trusted storage providers. Restricting this will inherently reduce risk as it will narrow opportunities for infection and data leakage."
+  solution       : "To remediate using PowerShell:
+
+ - Connect to Exchange Online using Connect-ExchangeOnline
+ - Run the following PowerShell command:
+
+Set-OwaMailboxPolicy -Identity OwaMailboxPolicy-Default -AdditionalStorageProvidersAvailable $false
+
+Impact:
+
+The impact associated with this change is highly dependent upon current practices in the tenant. If users do not use other storage providers, then minimal impact is likely. However, if users do regularly utilize providers outside of the tenant this will affect their ability to continue to do so."
+  reference      : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|13.1,CSCv7|13.4,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getOwaMailboxPolicy"
+  json_transform : '.[] |  "AdditionalStorageProvidersAvailable: \(.AdditionalStorageProvidersAvailable)"'
+  regex          : "AdditionalStorageProvidersAvailable:"
+  expect         : "AdditionalStorageProvidersAvailable: false"
+</custom_item>
+
+<custom_item>
+  description    : "7.2.4 (L2) Ensure OneDrive content sharing is restricted"
+  info           : "This setting governs the global permissiveness of OneDrive content sharing in the organization.
+
+OneDrive content sharing can be restricted independent of SharePoint but can never be more permissive than the level established with SharePoint.
+
+The recommended state is Only people in your organization
+
+OneDrive, designed for end-user cloud storage, inherently provides less oversight and control compared to SharePoint, which often involves additional content overseers or site administrators. This autonomy can lead to potential risks such as inadvertent sharing of privileged information by end users. Restricting external OneDrive sharing will require users to transfer content to SharePoint folders first which have those tighter controls."
+  solution       : "To remediate using the UI:
+
+ - Navigate to SharePoint admin center
+
+https://admin.microsoft.com/sharepoint
+
+ - Click to expand Policies > Sharing
+ - Locate the External sharing section
+ - Under OneDrive, set the slider bar to Only people in your organization
+
+To remediate using PowerShell:
+
+ - Connect to SharePoint Online service using Connect-SPOService
+ - Run the following cmdlet:
+
+Set-SPOTenant -OneDriveSharingCapability Disabled
+
+Alternative remediation method using PowerShell:
+
+ - Connect to SharePoint Online.
+ - Run one of the following:
+
+# Replace [tenant] with your tenant id
+Set-SPOSite -Identity https://[tenant]-my.sharepoint.com/ -SharingCapability Disabled
+
+# Or run this to filter to the specific site without supplying the tenant name.
+$OneDriveSite = Get-SPOSite -Filter { Url -like \"*-my.sharepoint.com/\" }
+Set-SPOSite -Identity $OneDriveSite -SharingCapability Disabled
+
+Impact:
+
+Users will be required to take additional steps to share OneDrive content or use other official channels."
+  reference      : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getSPOTenant"
+  json_transform : '.[] | select(.OneDriveLoopSharingCapability? | . != null) | if (.OneDriveLoopSharingCapability == 0) then "OneDrive Sharing Capability: Disabled" else "OneDrive Sharing Capability: Enabled" end'
+  regex          : "OneDrive Sharing Capability:"
+  expect         : "OneDrive Sharing Capability: Disabled"
+</custom_item>
+
+<custom_item>
+  description    : "7.2.5 (L2) Ensure that SharePoint guest users cannot share items they don't own"
+  info           : "SharePoint gives users the ability to share files, folders, and site collections. Internal users can share with external collaborators, and with the right permissions could share to other external parties.
+
+Sharing and collaboration are key; however, file, folder, or site collection owners should have the authority over what external users get shared with to prevent unauthorized disclosures of information."
+  solution       : "To remediate using the UI:
+
+ - Navigate to SharePoint admin center
+
+https://admin.microsoft.com/sharepoint
+
+ - Click to expand Policies then select Sharing
+ - Expand More external sharing settings uncheck Allow guests to share items they don't own
+ - Click Save
+
+To remediate using PowerShell:
+
+ - Connect to SharePoint Online service using Connect-SPOService
+ - Run the following SharePoint Online PowerShell command:
+
+Set-SPOTenant -PreventExternalUsersFromResharing $True
+
+Impact:
+
+The impact associated with this change is highly dependent upon current practices. If users do not regularly share with external parties, then minimal impact is likely. However, if users do regularly share with guests/externally, minimum impacts could occur as those external users will be unable to 're-share' content."
+  reference      : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "listSharePointTenantSettings"
+  json_transform : '"Is Resharing By External Users Enabled: \(.isResharingByExternalUsersEnabled)"'
+  regex          : "Is Resharing By External Users Enabled:"
+  expect         : "Is Resharing By External Users Enabled: false"
+  match_all      : YES
+</custom_item>
+
+<custom_item>
+  description    : "7.2.6 (L2) Ensure SharePoint external sharing is managed through domain whitelist/blacklists"
+  info           : "Control sharing of documents to external domains by either blocking domains or only allowing sharing with specific named domains.
+
+Attackers will often attempt to expose sensitive information to external entities through sharing, and restricting the domains that users can share documents with will reduce that surface area."
+  solution       : "To remediate using the UI:
+
+ - Navigate to SharePoint admin center
+
+https://admin.microsoft.com/sharepoint
+
+.
+ - Expand Policies then click Sharing
+ - Expand More external sharing settings and check Limit external sharing by domain
+ - Select Add domains to add a list of approved domains.
+ - Click Save at the bottom of the page.
+
+To remediate using PowerShell:
+
+ - Connect to SharePoint Online using Connect-SPOService
+ - Run the following PowerShell command:
+
+Set-SPOTenant -SharingDomainRestrictionMode AllowList -SharingAllowedDomainList \"domain1.com domain2.com\"
+
+Impact:
+
+Enabling this feature will prevent users from sharing documents with domains outside of the organization unless allowed."
+  reference      : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|13.4,CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "listSharePointTenantSettings"
+  json_transform : '"Sharing Domain Restriction Mode: \(.sharingDomainRestrictionMode), Sharing Allowed Domain List: \(.sharingAllowedDomainList | sort)"'
+  regex          : "Sharing Domain Restriction Mode:"
+  expect         : "Sharing Domain Restriction Mode: AllowList, Sharing Allowed Domain List: \[@SHARING_ALLOWED_DOMAIN_LIST@\]"
+</custom_item>
+
+<report type:"WARNING">
+  description : "7.2.8 (L2) Ensure external sharing is restricted by security group"
+  info        : "External sharing of content can be restricted to specific security groups. This setting is global, applies to sharing in both SharePoint and OneDrive and cannot be set at the site level in SharePoint.
+
+The recommended state is Enabled or Checked
+
+Note: Users in these security groups must be allowed to invite guests in the guest invite settings in Microsoft Entra. Identity > External Identities > External collaboration settings
+
+Organizations wishing to create tighter security controls for external sharing can set this to enforce role-based access control by using security groups already defined in Microsoft Entra.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To remediate using the UI:
+
+ - Navigate to SharePoint admin center
+
+https://admin.microsoft.com/sharepoint
+
+ - Click to expand Policies > Sharing
+ - Scroll to and expand More external sharing settings
+ - Set the following:
+ - Check Allow only users in specific security groups to share externally
+ - Define Manage security groups in accordance with company procedure.
+
+Impact:
+
+OneDrive will also be governed by this and there is no granular control at the SharePoint site level."
+  reference   : "800-171|3.1.1,800-171|3.1.5,800-171|3.3.8,800-171|3.3.9,800-171r3|03.01.01,800-171r3|03.01.02,800-171r3|03.01.05,800-171r3|03.01.05a.,800-171r3|03.01.05b.,800-171r3|03.03.08b.,800-53|AC-2,800-53|AC-3,800-53|AC-6,800-53|AC-6(1),800-53|AC-6(7),800-53|AU-9(4),800-53r5|AC-2,800-53r5|AC-5,800-53r5|AC-6,800-53r5|AC-6(1),800-53r5|AC-6(7),800-53r5|AU-9(4),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(d),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.3(d),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv8|6.8,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-1,CSF|PR.PT-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.5.33,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.15,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.5,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.4,ISO/IEC-27001|A.9.4.5,ISO/IEC-27001|A.12.4.2,ITSG-33|AC-2,ITSG-33|AC-3,ITSG-33|AC-6,ITSG-33|AC-6(1),ITSG-33|AU-9(4),ITSG-33|AU-9(4)(a),ITSG-33|AU-9(4)(b),LEVEL|2M,NESA|M1.1.3,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.5.2,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|AM28,NIAv2|AM31,NIAv2|GS3,NIAv2|GS4,NIAv2|GS8c,NIAv2|NS5j,NIAv2|SM5,NIAv2|SM6,NIAv2|SS13c,NIAv2|SS14e,NIAv2|SS15c,NIAv2|SS29,NIAv2|VL3b,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,PCI-DSSv4.0|10.3.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+<custom_item>
+  description    : "7.3.1 (L2) Ensure Office 365 SharePoint infected files are disallowed for download"
+  info           : "By default, SharePoint online allows files that Defender for Office 365 has detected as infected to be downloaded.
+
+Defender for Office 365 for SharePoint, OneDrive, and Microsoft Teams protects your organization from inadvertently sharing malicious files. When an infected file is detected that file is blocked so that no one can open, copy, move, or share it until further actions are taken by the organization's security team."
+  solution       : "To remediate using PowerShell:
+
+ - Connect to SharePoint Online using Connect-SPOService -Url https://tenant-admin.sharepoint.com replacing \"tenant\" with the appropriate value.
+ - Run the following PowerShell command to set the recommended value:
+
+Set-SPOTenant -DisallowInfectedFileDownload $true
+
+Note: The Global Reader role cannot access SharePoint using PowerShell according to Microsoft. See the reference section for more information.
+
+Impact:
+
+The only potential impact associated with implementation of this setting is potential inconvenience associated with the small percentage of false positive detections that may occur."
+  reference      : "800-171|3.14.2,800-171|3.14.4,800-171|3.14.5,800-171r3|03.14.02,800-53|SI-3,800-53r5|SI-3,CN-L3|7.1.3.6(b),CN-L3|8.1.4.5,CN-L3|8.1.9.6(a),CN-L3|8.1.9.6(b),CN-L3|8.1.10.5(b),CN-L3|8.1.10.7(a),CN-L3|8.1.10.7(b),CSCv7|7.10,CSCv7|8.1,CSCv8|10.1,CSF|DE.CM-4,CSF|DE.DP-3,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.7,ISO/IEC-27001|A.12.2.1,ITSG-33|SI-3,LEVEL|2A,NIAv2|GS8a,PCI-DSSv3.2.1|5.1,PCI-DSSv3.2.1|5.1.1,PCI-DSSv4.0|5.2.1,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,TBA-FIISB|49.2.1,TBA-FIISB|49.2.2,TBA-FIISB|49.3.1,TBA-FIISB|49.3.2,TBA-FIISB|50.2.1,TBA-FIISB|51.2.4,TBA-FIISB|51.2.7"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getSPOTenant"
+  json_transform : '.[] | select(.DisallowInfectedFileDownload? | . != null) | "DisallowInfectedFileDownload: \(.DisallowInfectedFileDownload)"'
+  regex          : "DisallowInfectedFileDownload:"
+  expect         : "DisallowInfectedFileDownload: true"
+</custom_item>
+
+<custom_item>
+  description    : "7.3.2 (L2) Ensure OneDrive sync is restricted for unmanaged devices"
+  info           : "Microsoft OneDrive allows users to sign in their cloud tenant account and begin syncing select folders or the entire contents of OneDrive to a local computer. By default, this includes any computer with OneDrive already installed, whether it is Entra Joined , Entra Hybrid Joined or Active Directory Domain joined.
+
+The recommended state for this setting is Allow syncing only on computers joined to specific domains Enabled: Specify the AD domain GUID(s)
+
+Unmanaged devices pose a risk, since their security cannot be verified through existing security policies, brokers or endpoint protection. Allowing users to sync data to these devices takes that data out of the control of the organization. This increases the risk of the data either being intentionally or accidentally leaked.
+
+Note: This setting is only applicable to Active Directory domains when operating in a hybrid configuration. It does not apply to Entra domains. If there are devices which are only Entra ID joined, consider using a Conditional Access Policy instead.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution       : "To remediate using the UI:
+
+ - Navigate to SharePoint admin center
+
+https://admin.microsoft.com/sharepoint
+
+ - Click Settings then select OneDrive - Sync
+ - Check the Allow syncing only on computers joined to specific domains
+ - Use the Get-ADDomain PowerShell command on the on-premises server to obtain the GUID for each on-premises domain.
+ - Click Save
+
+To remediate using PowerShell:
+
+ - Connect to SharePoint Online using Connect-SPOService
+ - Run the following PowerShell command and provide the DomainGuids from the Get-AADomain command:
+
+Set-SPOTenantSyncClientRestriction -Enable -DomainGuids \"786548DD-877B-4760-A749-6B1EFBC1190A; 877564FF-877B-4760-A749-6B1EFBC1190A\"
+
+Note: Utilize the -BlockMacSync:$true parameter if you are not using conditional access to ensure Macs cannot sync.
+
+Impact:
+
+Enabling this feature will prevent users from using the OneDrive for Business Sync client on devices that are not joined to the domains that were defined."
+  reference      : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,LEVEL|2A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getSPOTenantSyncClientRestriction"
+  json_transform : '.[] | if (.AllowedDomainListForSyncClient) then .AllowedDomainListForSyncClient[] else null end'
+  regex          : ".+"
+  expect         : "^Manual Review Required"
+  severity       : MEDIUM
+</custom_item>
+
+<if>
+  <condition auto:"WARNING" type:"AND">
+    <custom_item>
+      description    : "AllowDropBox"
+      request        : "getCsTeamsClientConfiguration"
+      json_transform : '.[] | "AllowDropBox: \(.AllowDropBox)"'
+      regex          : "AllowDropBox:"
+      expect         : "AllowDropBox: false"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "AllowBox"
+      request        : "getCsTeamsClientConfiguration"
+      json_transform : '.[] | "AllowBox: \(.AllowBox)"'
+      regex          : "AllowBox:"
+      expect         : "AllowBox: false"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "AllowDropbox"
+      request        : "getCsTeamsClientConfiguration"
+      json_transform : '.[] | "AllowGoogleDrive: \(.AllowGoogleDrive)"'
+      regex          : "AllowGoogleDrive:"
+      expect         : "AllowGoogleDrive: false"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "AllowShareFile"
+      request        : "getCsTeamsClientConfiguration"
+      json_transform : '.[] | "AllowShareFile: \(.AllowShareFile)"'
+      regex          : "AllowShareFile:"
+      expect         : "AllowShareFile: false"
+      severity       : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      description    : "AllowEgnyte"
+      request        : "getCsTeamsClientConfiguration"
+      json_transform : '.[] | "AllowEgnyte: \(.AllowEgnyte)"'
+      regex          : "AllowEgnyte:"
+      expect         : "AllowEgnyte: false"
+      severity       : MEDIUM
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "8.1.1 (L2) Ensure external file sharing in Teams is enabled for only approved cloud storage services"
+      info        : "Microsoft Teams enables collaboration via file sharing. This file sharing is conducted within Teams, using SharePoint Online, by default; however, third-party cloud services are allowed as well.
+
+Note: Skype for business is deprecated as of July 31, 2021 although these settings may still be valid for a period of time. See the link in the references section for more information.
+
+Ensuring that only authorized cloud storage providers are accessible from Teams will help to dissuade the use of non-approved storage providers.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "To remediate using the UI:
+
+ - Navigate to Microsoft Teams admin center
+
+https://admin.teams.microsoft.com
+
+.
+ - Click to expand Teams select Teams settings
+ - Set any unauthorized providers to Off
+
+To remediate using PowerShell:
+
+ - Connect to Teams PowerShell using Connect-MicrosoftTeams
+ - Run the following PowerShell command to disable external providers that are not authorized. (the example disables Citrix Files, DropBox, Box, Google Drive and Egnyte)
+
+$storageParams = @{
+    AllowGoogleDrive = $false
+    AllowShareFile = $false
+    AllowBox = $false
+    AllowDropBox = $false
+    AllowEgnyte = $false
+}
+
+Set-CsTeamsClientConfiguration @storageParams
+
+Impact:
+
+The impact associated with this change is highly dependent upon current practices in the tenant. If users do not use other storage providers, then minimal impact is likely. However, if users do regularly utilize providers outside of the tenant this will affect their ability to continue to do so."
+      reference   : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.7,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+      show_output : YES
+    </report>
+  </then>
+</if>
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      description    : "AllowFederatedUsers"
+      request        : "getCsTenantFederationConfiguration"
+      json_transform : '.[] | select(.Identity == "Global") | "AllowFederatedUsers: \(.AllowFederatedUsers)"'
+      expect         : "AllowFederatedUsers: false"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "8.2.1 (L2) Ensure external domains are restricted in the Teams admin center"
+      info        : "This policy controls whether external domains are allowed, blocked or permitted based on an allowlist or denylist. When external domains are allowed, users in your organization can chat, add users to meetings, and use audio video conferencing with users in external organizations.
+
+The recommended state is Allow only specific external domains or Block all external domains
+
+Allowlisting external domains that an organization is collaborating with allows for stringent controls over who an organization's users are allowed to make contact with.
+
+Some real-world attacks and exploits delivered via Teams over external access channels include:
+
+ - DarkGate malware
+ - Social engineering / Phishing attacks by \"Midnight Blizzard\"
+ - GIFShell
+ - Username enumeration"
+      solution    : "To remediate using the UI:
+
+ - Navigate to Microsoft Teams admin center
+
+https://admin.teams.microsoft.com/
+
+.
+ - Click to expand Users select External access
+ - Select the Policies tab
+ - Click on the Global (Org-wide default) policy.
+ - Set Teams and Skype for Business users in external organizations to Off
+ - Click Save
+
+To remediate using PowerShell:
+
+ - Connect to Teams PowerShell using Connect-MicrosoftTeams
+ - Run the following command to configure the Global (Org-wide default)` policy.
+
+Set-CsExternalAccessPolicy -Identity Global -EnableFederationAccess $false
+
+Note: Configuring the organization settings to block external access or to use a domain allowlist is also ni compliance with this control.
+
+Impact:
+
+The impact in terms of the type of collaboration users are allowed to participate in and the I.T. resources expended to manage an allowlist will increase. If a user attempts to join the inviting organization's meeting they will be prevented from joining unless they were created as a guest in EntraID or their domain was added to the allowed external domains list.
+
+Note Organizations may choose create additional policies for specific groups needing external access."
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.06b.,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+      show_output : YES
+    </report>
+  </then>
+
+  <else>
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          description    : "EnableFederationAccess"
+          request        : "getCSExternalAccessPolicy"
+          json_transform : '.[] | select(.Identity == "Global") | "EnableFederationAccess: \(.EnableFederationAccess)"'
+          expect         : "EnableFederationAccess: false"
+        </custom_item>
+
+        <custom_item>
+          description    : "AllowTeamsConsumer"
+          request        : "getCsTenantFederationConfiguration"
+          json_transform : '.[] | select(.Identity == "Global") | "AllowAllKnownDomains: \(if (.AllowedDomains.AllowedDomain > 0) then false else true end)"'
+          not_expect     : "AllowAllKnownDomains: true"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "8.2.1 (L2) Ensure external domains are restricted in the Teams admin center"
+          info        : "This policy controls whether external domains are allowed, blocked or permitted based on an allowlist or denylist. When external domains are allowed, users in your organization can chat, add users to meetings, and use audio video conferencing with users in external organizations.
+
+The recommended state is Allow only specific external domains or Block all external domains
+
+Allowlisting external domains that an organization is collaborating with allows for stringent controls over who an organization's users are allowed to make contact with.
+
+Some real-world attacks and exploits delivered via Teams over external access channels include:
+
+ - DarkGate malware
+ - Social engineering / Phishing attacks by \"Midnight Blizzard\"
+ - GIFShell
+ - Username enumeration"
+          solution    : "To remediate using the UI:
+
+ - Navigate to Microsoft Teams admin center
+
+https://admin.teams.microsoft.com/
+
+.
+ - Click to expand Users select External access
+ - Select the Policies tab
+ - Click on the Global (Org-wide default) policy.
+ - Set Teams and Skype for Business users in external organizations to Off
+ - Click Save
+
+To remediate using PowerShell:
+
+ - Connect to Teams PowerShell using Connect-MicrosoftTeams
+ - Run the following command to configure the Global (Org-wide default)` policy.
+
+Set-CsExternalAccessPolicy -Identity Global -EnableFederationAccess $false
+
+Note: Configuring the organization settings to block external access or to use a domain allowlist is also ni compliance with this control.
+
+Impact:
+
+The impact in terms of the type of collaboration users are allowed to participate in and the I.T. resources expended to manage an allowlist will increase. If a user attempts to join the inviting organization's meeting they will be prevented from joining unless they were created as a guest in EntraID or their domain was added to the allowed external domains list.
+
+Note Organizations may choose create additional policies for specific groups needing external access."
+          reference   : "800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.06b.,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+  </else>
+</if>
+
+<custom_item>
+  description    : "8.5.1 (L2) Ensure anonymous users can't join a meeting"
+  info           : "Anonymous users are users whose identity can't be verified. They may be logged in to an organization without a mutual trust relationship or they may not have an account (guest or user). Anonymous participants appear with \"(Unverified)\" appended to their name in meetings.
+
+These users could include:
+
+ - Users who aren't logged in to Teams with a work or school account.
+ - Users from non-trusted organizations (as configured in external access) and from organizations that you trust but which don't trust your organization. When defining trusted organizations for external meetings and chat, ensure both organizations allow each other's domains. Meeting organizers and participants should have user policies that allow external access. These settings prevent attendees from being considered anonymous due to external access settings. For details, see IT Admins - Manage external meetings and chat with people and organizations using Microsoft identities
+
+The recommended state is Anonymous users can join a meeting unverified set to Off
+
+For meetings that could contain sensitive information, it is best to allow the meeting organizer to vet anyone not directly sent an invite before admitting them to the meeting. This will also prevent the anonymous user from using the meeting link to have meetings at unscheduled times.
+
+Note: Those companies that don't normally operate at a Level 2 environment, but do deal with sensitive information, may want to consider this policy setting."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft Teams admin center
+
+https://admin.teams.microsoft.com
+
+.
+ - Click to expand Meetings select Meeting policies
+ - Click Global (Org-wide default)
+ - Under meeting join & lobby set Anonymous users can join a meeting unverified to Off
+
+To remediate using PowerShell:
+
+ - Connect to Teams PowerShell using Connect-MicrosoftTeams
+ - Run the following command to set the recommended state:
+
+Set-CsTeamsMeetingPolicy -Identity Global -AllowAnonymousUsersToJoinMeeting $false
+
+Impact:
+
+Individuals who were not sent or forwarded a meeting invite will not be able to join the meeting automatically."
+  reference      : "800-171|3.1.1,800-171r3|03.01.01,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.8.2,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|2A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getCSTeamsMeetingPolicy"
+  json_transform : '.[] | select(.Identity == "Global") | "AllowAnonymousUsersToJoinMeeting: \(.AllowAnonymousUsersToJoinMeeting)"'
+  regex          : "AllowAnonymousUsersToJoinMeeting:"
+  expect         : "AllowAnonymousUsersToJoinMeeting: false"
+</custom_item>
+
+<custom_item>
+  description    : "8.5.5 (L2) Ensure meeting chat does not allow anonymous users"
+  info           : "This policy setting controls who has access to read and write chat messages during a meeting.
+
+Ensuring that only authorized individuals can read and write chat messages during a meeting reduces the risk that a malicious user can inadvertently show content that is not appropriate or view sensitive information."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft Teams admin center
+
+https://admin.teams.microsoft.com
+
+.
+ - Click to expand Meetings select Meeting policies
+ - Click Global (Org-wide default)
+ - Under meeting engagement set Meeting chat to On for everyone but anonymous users
+
+To remediate using PowerShell:
+
+ - Connect to Teams PowerShell using Connect-MicrosoftTeams
+ - Run the following command to set the recommended state:
+
+Set-CsTeamsMeetingPolicy -Identity Global -MeetingChatEnabledType \"EnabledExceptAnonymous\"
+
+Impact:
+
+Only authorized individuals will be able to read and write chat messages during a meeting."
+  reference      : "800-171|3.1.1,800-171r3|03.01.01,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.8.2,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|2A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getCSTeamsMeetingPolicy"
+  json_transform : '.[] | if (.Identity == "Global") then "MeetingChatEnabledType: \(.MeetingChatEnabledType)" else null end'
+  regex          : "MeetingChatEnabledType:"
+  expect         : "MeetingChatEnabledType: EnabledExceptAnonymous"
+</custom_item>
+
+<custom_item>
+  description    : "8.5.6 (L2) Ensure only organizers and co-organizers can present"
+  info           : "This policy setting controls who can present in a Teams meeting.
+
+Note: Organizers and co-organizers can change this setting when the meeting is set up.
+
+Ensuring that only authorized individuals are able to present reduces the risk that a malicious user can inadvertently show content that is not appropriate."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft Teams admin center
+
+https://admin.teams.microsoft.com
+
+.
+ - Click to expand Meetings select Meeting policies
+ - Click Global (Org-wide default)
+ - Under content sharing set Who can present to Only organizers and co-organizers
+
+To remediate using PowerShell:
+
+ - Connect to Teams PowerShell using Connect-MicrosoftTeams
+ - Run the following command to set the recommended state:
+
+Set-CsTeamsMeetingPolicy -Identity Global -DesignatedPresenterRoleMode \"OrganizerOnlyUserOverride\"
+
+Impact:
+
+Only organizers and co-organizers will be able to present without being granted permission."
+  reference      : "800-171|3.1.5,800-171r3|03.01.05a.,800-53|AC-6,800-53r5|AC-6,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSF|PR.AC-4,CSF|PR.DS-5,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.15,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.18,ITSG-33|AC-6,LEVEL|2A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getCSTeamsMeetingPolicy"
+  json_transform : '.[] | if (.Identity == "Global") then "DesignatedPresenterRoleMode: \(.DesignatedPresenterRoleMode)" else null end'
+  regex          : "DesignatedPresenterRoleMode:"
+  expect         : "DesignatedPresenterRoleMode: OrganizerOnlyUserOverride"
+</custom_item>
+
+<custom_item>
+  description    : "8.5.8 (L2) Ensure external meeting chat is off"
+  info           : "This meeting policy setting controls whether users can read or write messages in external meeting chats with untrusted organizations. If an external organization is on the list of trusted organizations this setting will be ignored.
+
+Restricting access to chat in meetings hosted by external organizations limits the opportunity for an exploit like GIFShell or DarkGate malware from being delivered to users."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft Teams admin center
+
+https://admin.teams.microsoft.com
+
+.
+ - Click to expand Meetings select Meeting policies
+ - Click Global (Org-wide default)
+ - Under meeting engagement set External meeting chat to Off
+
+To remediate using PowerShell:
+
+ - Connect to Teams PowerShell using Connect-MicrosoftTeams
+ - Run the following command to set the recommended state:
+
+Set-CsTeamsMeetingPolicy -Identity Global -AllowExternalNonTrustedMeetingChat $false
+
+Impact:
+
+When joining external meetings users will be unable to read or write chat messages in Teams meetings with organizations that they don't have a trust relationship with. This will completely remove the chat functionality in meetings. From an I.T. perspective both the upkeep of adding new organizations to the trusted list and the decision-making process behind whether to trust or not trust an external partner will increase time expenditure."
+  reference      : "800-171|3.13.1,800-171|3.13.2,800-171r3|03.16.01,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,CSF2.0|ID.AM-03,CSF2.0|ID.AM-08,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|PR.DS-10,CSF2.0|PR.IR-03,CSF2.0|PR.PS-06,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.8,ISO-27001-2022|A.8.27,ISO-27001-2022|A.8.28,ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2A,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getCSTeamsMeetingPolicy"
+  json_transform : '.[] | if (.Identity == "Global") then "AllowExternalNonTrustedMeetingChat: \(.AllowExternalNonTrustedMeetingChat)" else null end'
+  regex          : "AllowExternalNonTrustedMeetingChat:"
+  expect         : "AllowExternalNonTrustedMeetingChat: false"
+</custom_item>
+
+<custom_item>
+  description    : "8.5.9 (L2) Ensure meeting recording is off by default"
+  info           : "This setting controls the ability for a user to initiate a recording of a meeting in progress.
+
+The recommended state is Off for the Global (Org-wide default) meeting policy.
+
+Disabling meeting recordings in the Global meeting policy ensures that only authorized users, such as organizers, co-organizers, and leads, can initiate a recording. This measure helps safeguard sensitive information by preventing unauthorized individuals from capturing and potentially sharing meeting content. Restricting recording capabilities to specific roles allows organizations to exercise greater control over what is recorded, aligning it with the meeting's confidentiality requirements.
+
+Note: Creating a separate policy for users or groups who are allowed to record is expected and in compliance. This control is only for the default meeting policy."
+  solution       : "To remediate using the UI:
+
+ - Navigate to Microsoft Teams admin center
+
+https://admin.teams.microsoft.com
+
+.
+ - Click to expand Meetings select Meeting policies
+ - Click Global (Org-wide default)
+ - Under Recording & transcription set Meeting recording to Off
+
+To remediate using PowerShell:
+
+ - Connect to Teams PowerShell using Connect-MicrosoftTeams
+ - Run the following command to set the recommended state:
+
+Set-CsTeamsMeetingPolicy -Identity Global -AllowCloudRecording $false
+
+Impact:
+
+If there are no additional policies allowing anyone to record, then recording will effectively be disabled."
+  reference      : "800-171|3.13.1,800-171|3.13.2,800-171r3|03.16.01,800-53|PL-8,800-53|SA-8,800-53r5|PL-8,800-53r5|SA-8,CSCv8|16.10,CSF|ID.AM-3,CSF|PR.IP-2,CSF2.0|ID.AM-03,CSF2.0|ID.AM-08,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|PR.DS-10,CSF2.0|PR.IR-03,CSF2.0|PR.PS-06,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.8,ISO-27001-2022|A.8.27,ISO-27001-2022|A.8.28,ITSG-33|SA-8,ITSG-33|SA-8a.,LEVEL|2A,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.6.5,NIAv2|SS3,NIAv2|VL2,QCSC-v1|4.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20006"
+  request        : "getCSTeamsMeetingPolicy"
+  json_transform : '.[] | if (.Identity == "Global") then "AllowCloudRecording: \(.AllowCloudRecording)" else null end'
+  regex          : "AllowCloudRecording:"
+  expect         : "AllowCloudRecording: false"
+</custom_item>
+
+<report type:"WARNING">
+  description : "9.1.5 (L2) Ensure 'Interact with and share R and Python' visuals is 'Disabled'"
+  info        : "Power BI allows the integration of R and Python scripts directly into visuals. This feature allows data visualizations by incorporating custom calculations, statistical analyses, machine learning models, and more using R or Python scripts. Custom visuals can be created by embedding them directly into Power BI reports. Users can then interact with these visuals and see the results of the custom code within the Power BI interface.
+
+Disabling this feature can reduce the attack surface by preventing potential malicious code execution leading to data breaches, or unauthorized access. The potential for sensitive or confidential data being leaked to unintended users is also increased with the use of scripts.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "To remediate using the UI:
+
+ - Navigate to Microsoft Fabric
+
+https://app.powerbi.com/admin-portal
+
+ - Select Tenant settings
+ - Scroll to R and Python visuals settings
+ - Set Interact with and share R and Python visuals to Disabled
+
+Impact:
+
+Use of R and Python scripting will require exceptions for developers, along with more stringent code review."
+  reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20006"
+</report>
+
+</check_type>

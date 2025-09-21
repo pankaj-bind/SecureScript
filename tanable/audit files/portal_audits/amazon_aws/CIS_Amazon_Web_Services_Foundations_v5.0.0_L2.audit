@@ -1,0 +1,1307 @@
+#TRUSTED 0f74e8af728e2b5b55438dfd574b79344fe7e5754bcd9ec5bfc670ffcd9dde7ff8cadfc9286bded242a332a428c89aa80758d894e639c06515227ff1af1b9f4ef219a3bf7d18eefd58e3c55a0d7cb63ed47caba2cd5b7a3b1972039f7de498f9a8dc1c467c0c805b11a347a9f636a93988da815f32842ad30b8c860a78ede70a4d532d492fe21b8983cc5cd0d359e0ff855afaafcc2dc93dfc15710f9b8999766e3e07acc1efbdb4a52c2d5749f581bc6ce055ddd163b0e8036a2456ba7095831cb878a3a19d924073ada7f3f2a12722fca040ba60f9a6fa28fabf6e75417dd5198976b8e337f7f530f0c14465e547619e36b94ffa41abd666cec1e92b8ef4807424939754d1d0cfbd905c9503734ed5341cac556add5d31b46a40d8fe65345aa8b9acac7380704009dd425b262b45b714dad62e1cc9ca9b5c6d0912f4a14f1a75f4d4f50709a18b3c4da47bdb9b1c896d2c7506a481f2fe5e74c31dc11b04a9dc0ad40f71392f6a3c20e8b954d549f131de53c63c266b1052a639893e0251f39ee80c87d4e29f91f4767f84b309623c77bf870acaa8a793e4a49ddc7b1f626dc9b7abebf36eee286503fb964b7380575405721bc4c7dd83f6d5afbf44949f5ba84f7ba3847771e84df0fb548c232dace01c76a913dab52b19564257c66823fc374a9e05fc1367f8e9b4410dab3661ff61736bfc568c749f093d4dcd0242e808
+#TRUST-RSA-SHA256 9695bf79171adbe202f8184f3d3411e8e3e53351ac1eafc5edf9c4daa6a736ef0d882255b3b077fc1073677d83689a9ba6ebd9e17cdaf34dfb9f40367772544977cbe450914e0c595c3a7a17264f15cfd39f20c9079d89b5ac234e2b2a15e48921ee9c78638edbac4bf3bfe31baf9cce2dc4605777c4742c7608740c58829936ceaf5538431c33275dd12f5c75ae8913dc500af27c114e263077e9c1d8d99b2c071ec4a9fc2f534db08bede2e19cc0cb6bc9afccc67bdce5ddc6cfd6d27c0a087614029096b905a7e036c9e4b1c417b6297ca95be91b2132a108278738f81a4d5ed779201159e4670b0d6601ea1abca4238dbcbce9a0836ece8cba4a2f7d3898781d49b3b4c9830fdf1394a4c2c0b9f0ba727ecc88da21ce23150b614a0873f73e34f131684dffbaa0c3f1166a6be9a0a30fdf5e3dd2b34214702fc6a1417bc13f30e3189504e5461bf51e1ebe2d3f3c67244b9ec6ccdfecfc8e2d80767b1e3975e233478e8fe6704f30697e9290b3279a1113479268e8cf8c45dfd61aad47d0472fd013683e48913ab8d6508d03ae0bf0d4d7b3471ee4ccda71b5cdf876570d501809293977256e407612edcc54727dd651281cf9f292e29128561d3b611b3def023066366fb6045240ec15d0289007d31faf2f68c1be8d1f5dbb1f407442688e3d3f8444a4731615674422014a5cb1d21a255743872a1be228c3e6ff8028c5
+#
+# This script is Copyright (C) 2004-2025 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2025/04/29 $
+#
+# description : This .audit is designed against the CIS Amazon Web Services Foundations Benchmark 5.0.0
+#
+#<ui_metadata>
+#<display_name>CIS Amazon Web Services Foundations v5.0.0 L2</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Amazon Web Services Foundations</name>
+#  <profile>L2</profile>
+#  <version>5.0.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/20495</link>
+#</spec>
+#<labels>amazon_aws,cis,amazon_web_services_foundations</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>S3_BUCKET_TLS_VERSION</name>
+#    <default>1.2</default>
+#    <description>Minimum TLS Version allowed for S3 Bucket</description>
+#    <info>Minimum TLS Version allowed for S3 Bucket</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"amazon_aws">
+
+<custom_item>
+  type        : EC2
+  description : "1.17 Ensure IAM instance roles are used for AWS resource access from instances"
+  info        : "AWS access from within AWS instances can be done by either encoding AWS keys into AWS API calls or by assigning the instance to a role which has an appropriate permissions policy for the required access. \"AWS Access\" means accessing the APIs of AWS in order to access AWS resources or manage AWS account resources.
+
+AWS IAM roles reduce the risks associated with sharing and rotating credentials that can be used outside of AWS itself. Compromised credentials can be used from outside the AWS account to which they provide access. In contrast, to leverage role permissions, an attacker would need to gain and maintain access to a specific instance to use the privileges associated with it.
+
+Additionally, if credentials are encoded into compiled applications or other hard-to-change mechanisms, they are even less likely to be properly rotated due to the risks of service disruption. As time passes, credentials that cannot be rotated are more likely to be known by an increasing number of individuals who no longer work for the organization that owns the credentials.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution    : "From Console:
+
+ - Sign in to the AWS Management Console and navigate to the EC2 dashboard at https://console.aws.amazon.com/ec2/
+ - In the left navigation panel, choose Instances
+ - Select the EC2 instance you want to modify.
+ - Click Actions
+ - Click Security
+ - Click Modify IAM role
+ - Click Create new IAM role if a new IAM role is required.
+ - Select the IAM role you want to attach to your instance in the IAM role dropdown.
+ - Click Update IAM role
+ - Repeat steps 3 to 9 for each EC2 instance in your AWS account that requires an IAM role to be attached.
+
+From Command Line:
+
+ - Run the describe-instances command to list all EC2 instance IDs in the selected AWS region:
+
+aws ec2 describe-instances --region <region-name> --query 'Reservations[*].Instances[*].InstanceId' <xhtml:ol start=\"2\"> - Run the associate-iam-instance-profile command to attach an instance profile (which is attached to an IAM role) to the EC2 instance:
+
+aws ec2 associate-iam-instance-profile --region <region-name> --instance-id <Instance-ID> --iam-instance-profile Name=\"Instance-Profile-Name\" <xhtml:ol start=\"3\"> - Run the describe-instances command again for the recently modified EC2 instance. The command output should return the instance profile ARN and ID:
+
+aws ec2 describe-instances --region <region-name> --instance-id <Instance-ID> --query 'Reservations[*].Instances[*].IamInstanceProfile' <xhtml:ol start=\"4\"> - Repeat steps 2 and 3 for each EC2 instance in your AWS account that requires an IAM role to be attached."
+  reference   : "800-171|3.1.1,800-171|3.1.5,800-171|3.3.8,800-171|3.3.9,800-171r3|03.01.01,800-171r3|03.01.02,800-171r3|03.01.05,800-171r3|03.01.05a.,800-171r3|03.01.05b.,800-171r3|03.03.08b.,800-53|AC-2,800-53|AC-3,800-53|AC-6,800-53|AC-6(1),800-53|AC-6(7),800-53|AU-9(4),800-53r5|AC-2,800-53r5|AC-5,800-53r5|AC-6,800-53r5|AC-6(1),800-53r5|AC-6(7),800-53r5|AU-9(4),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(d),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.3(d),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.1,CSCv8|6.8,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-1,CSF|PR.PT-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.5.33,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.15,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.9.2.1,ISO/IEC-27001|A.9.2.5,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.4,ISO/IEC-27001|A.9.4.5,ISO/IEC-27001|A.12.4.2,ITSG-33|AC-2,ITSG-33|AC-3,ITSG-33|AC-6,ITSG-33|AC-6(1),ITSG-33|AU-9(4),ITSG-33|AU-9(4)(a),ITSG-33|AU-9(4)(b),LEVEL|2A,NESA|M1.1.3,NESA|M1.2.2,NESA|M5.2.3,NESA|M5.5.2,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|AM28,NIAv2|AM31,NIAv2|GS3,NIAv2|GS4,NIAv2|GS8c,NIAv2|NS5j,NIAv2|SM5,NIAv2|SM6,NIAv2|SS13c,NIAv2|SS14e,NIAv2|SS15c,NIAv2|SS29,NIAv2|VL3b,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,PCI-DSSv4.0|10.3.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+  aws_action  : "DescribeInstances"
+  xsl_stmt    : "<xsl:template match=\"/\">
+  <xsl:for-each select=\"//ec2:DescribeInstancesResponse\">
+    <xsl:for-each select=\"ec2:reservationSet\">
+      <xsl:for-each select=\"ec2:item/ec2:instancesSet/ec2:item\">
+        <xsl:choose>
+          <xsl:when test=\"ec2:iamInstanceProfile/ec2:arn\">
+            <xsl:text>IAM role </xsl:text><xsl:value-of select=\"ec2:iamInstanceProfile/ec2:arn\"/><xsl:text> found for EC2 instance </xsl:text><xsl:value-of select=\"ec2:instanceId\" /><xsl:text> (instance is </xsl:text><xsl:value-of select=\"ec2:instanceState/ec2:name\" /><xsl:text>)</xsl:text><xsl:text>&#10;</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>IAM role not found for EC2 instance </xsl:text><xsl:value-of select=\"ec2:instanceId\" /><xsl:text> (instance is </xsl:text><xsl:value-of select=\"ec2:instanceState/ec2:name\" /><xsl:text>)</xsl:text><xsl:text>&#10;</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:for-each>
+    </xsl:for-each>
+  </xsl:for-each>
+</xsl:template>"
+  regex       : "IAM role .*$"
+  not_expect  : "IAM role not found .*$"
+  severity    : MEDIUM
+</custom_item>
+
+<report type:"WARNING">
+  description : "1.20 Ensure IAM users are managed centrally via identity federation or AWS Organizations for multi-account environments"
+  info        : "In multi-account environments, IAM user centralization facilitates greater user control. User access beyond the initial account is then provided via role assumption. Centralization of users can be accomplished through federation with an external identity provider or through the use of AWS Organizations.
+
+Centralizing IAM user management to a single identity store reduces complexity and thus the likelihood of access management errors.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "The remediation procedure will vary based on each individual organization's implementation of identity federation and/or AWS Organizations, with the acceptance criteria that no non-service IAM users and non-root accounts are present outside the account providing centralized IAM user management."
+  reference   : "800-171|3.1.1,800-171r3|03.01.01,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSCv7|16.2,CSCv8|5.6,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.8.2,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|2M,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<report type:"WARNING">
+  description : "1.5 Ensure hardware MFA is enabled for the 'root' user account"
+  info        : "The 'root' user account is the most privileged user in an AWS account. MFA adds an extra layer of protection on top of a user name and password. With MFA enabled, when a user signs in to an AWS website, they will be prompted for their user name and password as well as for an authentication code from their AWS MFA device. For Level 2, it is recommended that the 'root' user account be protected with a hardware MFA.
+
+Where an AWS Organization is using centralized root access, root credentials can be removed from member accounts. In that case it is neither possible nor necessary to configure root MFA in the member account.
+
+A hardware MFA has a smaller attack surface than a virtual MFA. For example, a hardware MFA does not suffer the attack surface introduced by the mobile smartphone on which a virtual MFA resides.
+
+Note : Using hardware MFA for numerous AWS accounts may create a logistical device management issue. If this is the case, consider implementing this Level 2 recommendation selectively for the highest security AWS accounts, while applying the Level 1 recommendation to the remaining accounts.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Note: To manage MFA devices for the AWS 'root' user account, you must use your 'root' account credentials to sign in to AWS. You cannot manage MFA devices for the 'root' account using other credentials.
+
+Perform the following to establish a hardware MFA for the 'root' user account:
+
+ - Sign in to the AWS Management Console and open the IAM console at
+
+https://console.aws.amazon.com/iam/
+
+.
+ - Choose Dashboard and under Security Status expand Activate MFA on your root account.
+ - Choose Activate MFA
+ - In the wizard, choose A hardware MFA device and then choose Next Step
+ - In the Serial Number box, enter the serial number that is found on the back of the MFA device.
+ - In the Authentication Code 1 box, enter the six-digit number displayed by the MFA device. You might need to press the button on the front of the device to display the number.
+ - Wait 30 seconds while the device refreshes the code, and then enter the next six-digit number into the Authentication Code 2 box. You might need to press the button on the front of the device again to display the second number.
+ - Choose Next Step The MFA device is now associated with the AWS account. The next time you use your AWS account credentials to sign in, you must type a code from the hardware MFA device.
+
+Remediation for this recommendation is not available through AWS CLI."
+  reference   : "800-171|3.5.3,800-171r3|03.05.03,800-53|IA-2(1),800-53r5|IA-2(1),CN-L3|7.1.2.7(b),CSCv7|4.5,CSCv8|6.5,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ITSG-33|IA-2(1),LEVEL|2M,NESA|T5.4.2,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<custom_item>
+  type           : S3
+  description    : "2.1.1 Ensure S3 Bucket Policy is set to deny HTTP requests"
+  info           : "At the Amazon S3 bucket level, you can configure permissions through a bucket policy, making the objects accessible only through HTTPS.
+
+By default, Amazon S3 allows both HTTP and HTTPS requests. To ensure that access to Amazon S3 objects is only permitted through HTTPS, you must explicitly deny HTTP requests. Bucket policies that allow HTTPS requests without explicitly denying HTTP requests will not comply with this recommendation."
+  solution       : "From Console:
+
+ - Login to the AWS Management Console and open the Amazon S3 console using
+
+https://console.aws.amazon.com/s3/
+
+.
+ - Select the check box next to the Bucket.
+ - Click on 'Permissions'.
+ - Click 'Bucket Policy'.
+ - Add either of the following to the existing policy, filling in the required information:
+
+{
+    \"Sid\": <optional>,
+    \"Effect\": \"Deny\",
+    \"Principal\": \"*\",
+    \"Action\": \"s3:*\",
+    \"Resource\": \"arn:aws:s3:::<bucket_name>/*\",
+    \"Condition\": {
+        \"Bool\": {
+            \"aws:SecureTransport\": \"false\"
+        }
+    }
+}
+
+or
+
+{
+    \"Sid\": \"<optional>\",
+    \"Effect\": \"Deny\",
+    \"Principal\": \"*\",
+    \"Action\": \"s3:*\",
+    \"Resource\": [
+        \"arn:aws:s3:::<bucket_name>\",
+        \"arn:aws:s3:::<bucket_name>/*\"
+    ],
+    \"Condition\": {
+        \"NumericLessThan\": {
+            \"s3:TlsVersion\": \"1.2\"
+        }
+    }
+} <xhtml:ol start=\"6\"> - Save
+ - Repeat for all the buckets in your AWS account that contain sensitive data.
+
+From Console
+
+Using AWS Policy Generator:
+
+ - Repeat steps 1-4 above.
+ - Click on Policy Generator at the bottom of the Bucket Policy Editor.
+ - Select Policy Type S3 Bucket Policy
+ - Add Statements:
+
+ - Effect = Deny
+ - Principal = *
+ - AWS Service = Amazon S3
+ - Actions = *
+ - Amazon Resource Name = <ARN of the S3 Bucket>
+
+<xhtml:ol start=\"5\"> - Generate Policy.
+ - Copy the text and add it to the Bucket Policy.
+
+From Command Line:
+
+ - Export the bucket policy to a json file:
+
+aws s3api get-bucket-policy --bucket <bucket_name> --query Policy --output text > policy.json <xhtml:ol start=\"2\"> - Modify the policy.json file by adding either of the following:
+
+{
+    \"Sid\": <optional>,
+    \"Effect\": \"Deny\",
+    \"Principal\": \"*\",
+    \"Action\": \"s3:*\",
+    \"Resource\": \"arn:aws:s3:::<bucket_name>/*\",
+    \"Condition\": {
+        \"Bool\": {
+            \"aws:SecureTransport\": \"false\"
+        }
+    }
+}
+
+or
+
+{
+    \"Sid\": \"<optional>\",
+    \"Effect\": \"Deny\",
+    \"Principal\": \"*\",
+    \"Action\": \"s3:*\",
+    \"Resource\": [
+        \"arn:aws:s3:::<bucket_name>\",
+        \"arn:aws:s3:::<bucket_name>/*\"
+    ],
+    \"Condition\": {
+        \"NumericLessThan\": {
+            \"s3:TlsVersion\": \"1.2\"
+        }
+    }
+} <xhtml:ol start=\"3\"> - Apply this modified policy back to the S3 bucket:
+
+aws s3api put-bucket-policy --bucket <bucket_name> --policy file://policy.json"
+  reference      : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-171r3|03.05.07,800-171r3|03.05.12,800-171r3|03.13.08,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20495"
+  aws_action     : "GetAllBucketPolicy_Complete"
+  json_transform : 'if (.[] == []) then "No bucket found" else (.[] | .BucketName as $bucket | [.Statement[] | select(((.Condition.Bool."aws:SecureTransport" == "false") or (.Condition.NumericLessThan."s3:TlsVersion" == "@S3_BUCKET_TLS_VERSION@")) and (.Effect == "Deny") and (.Principal == "*") and (.Action == "s3:*"))] as $denied | if ($denied | length == 0) then "HTTP requests allowed for: \($bucket)" else "HTTP requests denied for: \($bucket)" end) end'
+  regex          : "(HTTP requests|No bucket found)"
+  not_expect     : "HTTP requests allowed for:"
+</custom_item>
+
+<report type:"WARNING">
+  description : "2.1.2 Ensure MFA Delete is enabled on S3 buckets"
+  info        : "Once MFA Delete is enabled on your sensitive and classified S3 bucket, it requires the user to provide two forms of authentication.
+
+Adding MFA delete to an S3 bucket requires additional authentication when you change the version state of your bucket or delete an object version, adding another layer of security in the event your security credentials are compromised or unauthorized access is granted.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Perform the steps below to enable MFA delete on an S3 bucket:
+
+Note:
+
+ -
+
+You cannot enable MFA Delete using the AWS Management Console; you must use the AWS CLI or API.
+
+ -
+
+You must use your 'root' account to enable MFA Delete on S3 buckets.
+
+From Command line:
+
+ - Run the s3api put-bucket-versioning command:
+
+aws s3api put-bucket-versioning --profile my-root-profile --bucket Bucket_Name --versioning-configuration Status=Enabled,MFADelete=Enabled --mfa \"arn:aws:iam::aws_account_id:mfa/root-account-mfa-device passcode\"
+
+Impact:
+
+Enabling MFA delete on an S3 bucket could require additional administrator oversight. Enabling MFA delete may impact other services that automate the creation and/or deletion of S3 buckets."
+  reference   : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.5.3,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.05.03,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|IA-2(1),800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|IA-2(1),800-53r5|MP-2,CN-L3|7.1.2.7(b),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSCv8|6.5,CSF|PR.AC-1,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|IA-2(1),ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2M,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.2,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|AM36,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,NIAv2|VL3c,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,TBA-FIISB|35.1,TBA-FIISB|36.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<report type:"WARNING">
+  description : "2.1.3 Ensure all data in Amazon S3 has been discovered, classified, and secured when necessary"
+  info        : "Amazon S3 buckets can contain sensitive data that, for security purposes, should be discovered, monitored, classified, and protected. Macie, along with other third-party tools, can automatically provide an inventory of Amazon S3 buckets.
+
+Using a cloud service or third-party software to continuously monitor and automate the process of data discovery and classification for S3 buckets through machine learning and pattern matching is a strong defense in protecting that information.
+
+Amazon Macie is a fully managed data security and privacy service that uses machine learning and pattern matching to discover and protect your sensitive data in AWS.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Perform the steps below to enable and configure Amazon Macie:
+
+From Console:
+
+ -
+
+Log on to the Macie console at https://console.aws.amazon.com/macie/
+
+ -
+
+Click Get started
+
+ -
+
+Click Enable Macie
+
+Set up a repository for sensitive data discovery results:
+
+ -
+
+In the left pane, under Settings, click Discovery results
+
+ -
+
+Make sure Create bucket is selected.
+
+ -
+
+Create a bucket and enter a name for it. The name must be unique across all S3 buckets, and it must start with a lowercase letter or a number.
+
+ -
+
+Click Advanced
+
+ -
+
+For block all public access, make sure Yes is selected.
+
+ -
+
+For KMS encryption, specify the AWS KMS key that you want to use to encrypt the results. The key must be a symmetric customer master key (CMK) that is in the same region as the S3 bucket.
+
+ -
+
+Click Save
+
+Create a job to discover sensitive data:
+
+ -
+
+In the left pane, click S3 buckets Macie displays a list of all the S3 buckets for your account.
+
+ -
+
+Check the box for each bucket that you want Macie to analyze as part of the job.
+
+ -
+
+Click Create job
+
+ -
+
+Click Quick create
+
+ -
+
+For the Name and Description step, enter a name and, optionally, a description of the job.
+
+ -
+
+Click Next
+
+ -
+
+For the Review and create step, click Submit
+
+Review your findings:
+
+ -
+
+In the left pane, click Findings
+
+ -
+
+To view the details of a specific finding, choose any field other than the check box for the finding.
+
+If you are using a third-party tool to manage and protect your S3 data, follow the vendor documentation for implementing and configuring that tool.
+
+Impact:
+
+There is a cost associated with using Amazon Macie, and there is typically a cost associated with third-party tools that perform similar processes and provide protection."
+  reference   : "800-171r3|03.03.03b.,800-171r3|03.14.08,800-53|AU-11,800-53|SI-12,800-53r5|AU-11,800-53r5|CM-12,800-53r5|SI-12,CSCv7|5.1,CSCv8|3.1,CSF|PR.PT-1,CSF2.0|ID.AM-07,CSF2.0|ID.AM-08,CSF2.0|PR.PS-04,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.28,ISO-27001-2022|A.8.15,ITSG-33|AU-11,ITSG-33|SI-12,ITSG-33|SI-12a.,LEVEL|2M,NESA|M5.2.3,NESA|M5.2.4,NESA|M5.3.1,NESA|T3.6.2,NIAv2|DR1,NIAv2|DR1a,NIAv2|DR1b,NIAv2|DR1c,NIAv2|DR2,NIAv2|DR3,NIAv2|DR4,NIAv2|DR5,NIAv2|DR6,NIAv2|SM7,PCI-DSSv3.2.1|3.1,PCI-DSSv3.2.1|10.7,PCI-DSSv4.0|3.2.1,PCI-DSSv4.0|10.5.1,QCSC-v1|8.2.1,QCSC-v1|13.2"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<custom_item>
+  type           : CLOUDTRAIL
+  description    : "3.2 Ensure CloudTrail log file validation is enabled"
+  info           : "CloudTrail log file validation creates a digitally signed digest file containing a hash of each log that CloudTrail writes to S3. These digest files can be used to determine whether a log file was changed, deleted, or remained unchanged after CloudTrail delivered the log. It is recommended that file validation be enabled for all CloudTrails.
+
+Enabling log file validation will provide additional integrity checks for CloudTrail logs."
+  solution       : "Perform the following to enable log file validation on a given trail:
+
+From Console:
+
+ - Sign in to the AWS Management Console and open the IAM console at
+
+https://console.aws.amazon.com/cloudtrail
+
+.
+ - Click on Trails in the left navigation pane.
+ - Click on the target trail.
+ - Within the General details section, click edit
+ - Under Advanced settings check the enable box under Log file validation
+ - Click Save changes
+
+From Command Line:
+
+Enable log file validation on a trail:
+
+aws cloudtrail update-trail --name <trail_name> --enable-log-file-validation
+
+Note that periodic validation of logs using these digests can be carried out by running the following command:
+
+aws cloudtrail validate-logs --trail-arn <trail_arn> --start-time <start_time> --end-time <end_time>"
+  reference      : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171r3|03.03.05,800-171r3|03.03.06a.,800-53|AU-6,800-53|AU-6(1),800-53|AU-7(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7(1),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(d),CSCv7|6.1,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.25,ISO-27001-2022|A.6.8,ISO-27001-2022|A.8.15,ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7(1),LEVEL|2A,NESA|M5.2.5,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20495"
+  aws_action     : "DescribeTrails"
+  json_transform : 'if .[0].trailList == [] then "No Trails defined" else (.[0].trailList[] |
+                "\(.Name) - LogFileValidationEnabled = \(.LogFileValidationEnabled)") end'
+  regex          : "LogFileValidationEnabled = "
+  not_expect     : "LogFileValidationEnabled = false"
+</custom_item>
+
+<if>
+  <condition auto:"FAILED" type:"AND">
+    <custom_item>
+      type           : CONFIG
+      description    : "'Review defined SNS Topic'"
+      aws_action     : "DescribeDeliveryChannels"
+      json_transform : '.[] | .DeliveryChannels[] |
+                "\(.name) - SNS Topic ARN = \(.snsTopicARN // "No SNS Topic Defined")"'
+      regex          : "SNS Topic ARN ="
+      expect         : "SNS Topic ARN = arn:"
+    </custom_item>
+
+    <custom_item>
+      type           : CONFIG
+      description    : "'Review defined S3 Bucket'"
+      aws_action     : "DescribeDeliveryChannels"
+      json_transform : '.[] | .DeliveryChannels[] |
+                "\(.name) - S3 Bucket = \(.s3BucketName // "No S3 Bucket Defined")"'
+      regex          : "S3 bucket ="
+      expect         : "S3 bucket = [^\s]+"
+    </custom_item>
+
+    <custom_item>
+      type           : CONFIG
+      description    : "'Recording Status'"
+      aws_action     : "DescribeConfigurationRecorderStatus"
+      json_transform : '.[] | .ConfigurationRecordersStatus[] |
+                "\(.name) - Recording = \(.recording // "No Recording setting found")"'
+      regex          : "Recording ="
+      expect         : "Recording = true"
+    </custom_item>
+
+    <custom_item>
+      type           : CONFIG
+      description    : "'Record all resources supported in this region'"
+      aws_action     : "DescribeConfigurationRecorders"
+      json_transform : '.[] | .ConfigurationRecorders[] |
+                "Name: " + .name + " - Record all resources supported in this region = " + (.recordingGroup.allSupported | tostring)'
+      regex          : "Record all resources supported in this region ="
+      expect         : "Record all resources supported in this region = true"
+    </custom_item>
+
+    <custom_item>
+      type           : CONFIG
+      description    : "'Include global resources'"
+      aws_action     : "DescribeConfigurationRecorders"
+      json_transform : '.[] | .ConfigurationRecorders[] |
+                "Name: " + .name + " - Include global resources = " + (.recordingGroup.includeGlobalResourceTypes | tostring)'
+      regex          : "Include global resources ="
+      expect         : "Include global resources = true"
+      any_region     : "YES"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "3.3 Ensure AWS Config is enabled in all regions"
+      info        : "AWS Config is a web service that performs configuration management of supported AWS resources within your account and delivers log files to you. The recorded information includes the configuration items (AWS resources), relationships between configuration items (AWS resources), and any configuration changes between resources. It is recommended that AWS Config be enabled in all regions.
+
+The AWS configuration item history captured by AWS Config enables security analysis, resource change tracking, and compliance auditing."
+      solution    : "To implement AWS Config configuration:
+
+From Console:
+
+ - Select the region you want to focus on in the top right of the console.
+ - Click Services
+ - Click Config
+ - If a Config Recorder is enabled in this region, navigate to the Settings page from the navigation menu on the left-hand side. If a Config Recorder is not yet enabled in this region, select \"Get Started\".
+ - Select \"Record all resources supported in this region\".
+ - Choose to include global resources (IAM resources).
+ - Specify an S3 bucket in the same account or in another managed AWS account.
+ - Create an SNS Topic from the same AWS account or another managed AWS account.
+
+From Command Line:
+
+ - Ensure there is an appropriate S3 bucket, SNS topic, and IAM role per the
+
+AWS Config Service prerequisites
+
+.
+ - Run this command to create a new configuration recorder:
+
+aws configservice put-configuration-recorder --configuration-recorder name=<config-recorder-name>,roleARN=arn:aws:iam::<account-id>:role/<iam-role> --recording-group allSupported=true,includeGlobalResourceTypes=true <xhtml:ol start=\"3\"> - Create a delivery channel configuration file locally which specifies the channel attributes, populated from the prerequisites set up previously:
+
+{
+  \"name\": \"<delivery-channel-name>\",
+  \"s3BucketName\": \"<bucket-name>\",
+  \"snsTopicARN\": \"arn:aws:sns:<region>:<account-id>:<sns-topic>\",
+  \"configSnapshotDeliveryProperties\": {
+    \"deliveryFrequency\": \"Twelve_Hours\"
+  }
+} <xhtml:ol start=\"4\"> - Run this command to create a new delivery channel, referencing the json configuration file made in the previous step:
+
+aws configservice put-delivery-channel --delivery-channel file://<delivery-channel-file>.json <xhtml:ol start=\"5\"> - Start the configuration recorder by running the following command:
+
+aws configservice start-configuration-recorder --configuration-recorder-name <config-recorder-name>
+
+Impact:
+
+Enabling AWS Config in all regions provides comprehensive visibility into resource configurations, enhancing security and compliance monitoring. However, this may incur additional costs and require proper configuration management."
+      reference   : "800-171|3.4.1,800-171r3|03.04.10,800-171r3|03.04.10c.,800-53|CM-8,800-53|CM-8(1),800-53|PM-5,800-53r5|CM-8,800-53r5|CM-8(1),800-53r5|PM-5,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv7|1.4,CSCv8|1.1,CSF|DE.CM-7,CSF|ID.AM-1,CSF|ID.AM-2,CSF|PR.DS-3,CSF2.0|ID.AM-01,CSF2.0|ID.AM-02,CSF2.0|PR.PS-01,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.9,ISO-27001-2022|A.8.9,ITSG-33|CM-8,ITSG-33|CM-8(1),LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+      show_output : YES
+    </report>
+  </then>
+</if>
+
+<custom_item>
+  type           : CLOUDTRAIL
+  description    : "3.5 Ensure CloudTrail logs are encrypted at rest using KMS CMKs"
+  info           : "AWS CloudTrail is a web service that records AWS API calls for an account and makes those logs available to users and resources in accordance with IAM policies. AWS Key Management Service (KMS) is a managed service that helps create and control the encryption keys used to encrypt account data, and uses Hardware Security Modules (HSMs) to protect the security of encryption keys. CloudTrail logs can be configured to leverage server side encryption (SSE) and KMS customer-created master keys (CMK) to further protect CloudTrail logs. It is recommended that CloudTrail be configured to use SSE-KMS.
+
+Configuring CloudTrail to use SSE-KMS provides additional confidentiality controls on log data, as a given user must have S3 read permission on the corresponding log bucket and must be granted decrypt permission by the CMK policy."
+  solution       : "Perform the following to configure CloudTrail to use SSE-KMS:
+
+From Console:
+
+ - Sign in to the AWS Management Console and open the CloudTrail console at
+
+https://console.aws.amazon.com/cloudtrail
+
+.
+ - In the left navigation pane, choose Trails
+ - Click on a trail.
+ - Under the S3 section, click the edit button (pencil icon).
+ - Click Advanced
+ - Select an existing CMK from the KMS key Id drop-down menu.
+
+ - Note: Ensure the CMK is located in the same region as the S3 bucket.
+ - Note: You will need to apply a KMS key policy on the selected CMK in order for CloudTrail, as a service, to encrypt and decrypt log files using the CMK provided. View the AWS documentation for
+
+editing the selected CMK Key policy
+
+.
+
+<xhtml:ol start=\"7\"> - Click Save
+ - You will see a notification message stating that you need to have decryption permissions on the specified KMS key to decrypt log files.
+ - Click Yes
+
+From Command Line:
+
+Run the following command to specify a KMS key ID to use with a trail:
+
+aws cloudtrail update-trail --name <trail-name> --kms-id <cloudtrail-kms-key>
+
+Run the following command to attach a key policy to a specified KMS key:
+
+aws kms put-key-policy --key-id <cloudtrail-kms-key> --policy <cloudtrail-kms-key-policy>
+
+Impact:
+
+Customer-created keys incur an additional cost. See
+
+https://aws.amazon.com/kms/pricing/
+
+for more information."
+  reference      : "800-171|3.3.1,800-171|3.3.2,800-171|3.5.2,800-171|3.13.16,800-171r3|03.03.01,800-171r3|03.05.07,800-171r3|03.13.08,800-171r3|03.15.01,800-53|AU-1,800-53|AU-2,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|AU-1,800-53r5|AU-2,800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.3(a),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|14.8,CSCv8|3.11,CSCv8|8.1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.AC-1,CSF|PR.DS-1,CSF|PR.PT-1,CSF2.0|GV.OC-03,CSF2.0|GV.OV-01,CSF2.0|GV.PO-01,CSF2.0|GV.PO-02,CSF2.0|GV.SC-03,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.DS-01,CSF2.0|PR.PS-04,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(b),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.1,ISO-27001-2022|A.5.2,ISO-27001-2022|A.5.4,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.31,ISO-27001-2022|A.5.33,ISO-27001-2022|A.5.36,ISO-27001-2022|A.5.37,ISO-27001-2022|A.8.15,ISO-27001-2022|5.2,ISO-27001-2022|5.3,ISO-27001-2022|7.5.1,ISO-27001-2022|7.5.2,ISO-27001-2022|7.5.3,ITSG-33|AU-1,ITSG-33|AU-2,ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NESA|T5.2.3,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|3.4,PCI-DSSv3.2.1|10.8,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|4.1,SWIFT-CSCv1|6.4,TBA-FIISB|28.1"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20495"
+  aws_action     : "DescribeTrails"
+  json_transform : 'if .[0].trailList == [] then "No Trails defined" else .[0].trailList[] end |
+                "\(.Name) - KmsKeyId = \(.KmsKeyId // "No Key Defined")"'
+  regex          : "KmsKeyId = "
+  not_expect     : "KmsKeyId = No Key Defined"
+</custom_item>
+
+<custom_item>
+  type           : KMS
+  description    : "3.6 Ensure rotation for customer-created symmetric CMKs is enabled"
+  info           : "AWS Key Management Service (KMS) allows customers to rotate the backing key, which is key material stored within the KMS that is tied to the key ID of the customer-created customer master key (CMK). The backing key is used to perform cryptographic operations such as encryption and decryption. Automated key rotation currently retains all prior backing keys so that decryption of encrypted data can occur transparently. It is recommended that CMK key rotation be enabled for symmetric keys. Key rotation cannot be enabled for any asymmetric CMK.
+
+Rotating encryption keys helps reduce the potential impact of a compromised key, as data encrypted with a new key cannot be accessed with a previous key that may have been exposed. Keys should be rotated every year or upon an event that could result in the compromise of that key."
+  solution       : "From Console:
+
+ - Sign in to the AWS Management Console and open the KMS console at:
+
+https://console.aws.amazon.com/kms
+
+.
+ - In the left navigation pane, click Customer-managed keys
+ - Select a key with Key spec = SYMMETRIC_DEFAULT that does not have automatic rotation enabled.
+ - Select the Key rotation tab.
+ - Check the Automatically rotate this KMS key every year box.
+ - Click Save
+ - Repeat steps 3-6 for all customer-managed CMKs that do not have automatic rotation enabled.
+
+From Command Line:
+
+ - Run the following command to enable key rotation:
+
+aws kms enable-key-rotation --key-id <kms-key-id>
+
+Impact:
+
+Creation, management, and storage of CMKs may require additional time from an administrator."
+  reference      : "800-171|3.5.2,800-171|3.13.16,800-171r3|03.05.07,800-171r3|03.13.08,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|14.8,CSCv8|3.11,CSF|PR.AC-1,CSF|PR.DS-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ISO-27001-2022|A.5.33,ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|2A,NESA|T5.2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|28.1"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20495"
+  aws_action     : "GetKeyRotationStatus"
+  json_transform : '.[] | (.KeyRotationEnabled| tostring) as $Enabled |
+                "Key ID: " + .KeyId + " - KeyRotationEnabled = " + $Enabled'
+  regex          : "KeyRotationEnabled ="
+  not_expect     : "KeyRotationEnabled = false"
+</custom_item>
+
+<custom_item>
+  type        : EC2
+  description : "3.7 Ensure VPC flow logging is enabled in all VPCs"
+  info        : "VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. After you've created a flow log, you can view and retrieve its data in Amazon CloudWatch Logs. It is recommended that VPC Flow Logs be enabled for packet \"Rejects\" for VPCs.
+
+VPC Flow Logs provide visibility into network traffic that traverses the VPC and can be used to detect anomalous traffic or gain insights during security workflows."
+  solution    : "Perform the following to enable VPC Flow Logs:
+
+From Console:
+
+ - Sign into the management console.
+ - Select Services then select VPC
+ - In the left navigation pane, select Your VPCs
+ - Select a VPC.
+ - In the right pane, select the Flow Logs tab.
+ - If no Flow Log exists, click Create Flow Log
+ - For Filter, select Reject
+ - Enter a Role and Destination Log Group
+ - Click Create Log Flow
+ - Click on CloudWatch Logs Group
+
+Note: Setting the filter to \"Reject\" will dramatically reduce the accumulation of logging data for this recommendation and provide sufficient information for the purposes of breach detection, research, and remediation. However, during periods of least privilege security group engineering, setting the filter to \"All\" can be very helpful in discovering existing traffic flows required for the proper operation of an already running environment.
+
+From Command Line:
+
+ - Create a policy document, name it role_policy_document.json and paste the following content:
+
+{
+    \"Version\": \"2012-10-17\",
+    \"Statement\": [
+        {
+            \"Sid\": \"test\",
+            \"Effect\": \"Allow\",
+            \"Principal\": {
+                \"Service\": \"ec2.amazonaws.com\"
+            },
+            \"Action\": \"sts:AssumeRole\"
+        }
+    ]
+} <xhtml:ol start=\"2\"> - Create another policy document, name it iam_policy.json and paste the following content:
+
+{
+    \"Version\": \"2012-10-17\",
+    \"Statement\": [
+        {
+            \"Effect\": \"Allow\",
+            \"Action\":[
+                \"logs:CreateLogGroup\",
+                \"logs:CreateLogStream\",
+                \"logs:DescribeLogGroups\",
+                \"logs:DescribeLogStreams\",
+                \"logs:PutLogEvents\",
+                \"logs:GetLogEvents\",
+                \"logs:FilterLogEvents\"
+            ],
+            \"Resource\": \"*\"
+        }
+    ]
+} <xhtml:ol start=\"3\"> - Run the following command to create an IAM role:
+
+aws iam create-role --role-name <aws-support-iam-role> --assume-role-policy-document file://<file-path>role_policy_document.json <xhtml:ol start=\"4\"> - Run the following command to create an IAM policy:
+
+aws iam create-policy --policy-name <iam-policy-name> --policy-document file://<file-path>iam-policy.json <xhtml:ol start=\"5\"> - Run the attach-group-policy command, using the IAM policy ARN returned from the previous step to attach the policy to the IAM role:
+
+aws iam attach-group-policy --policy-arn arn:aws:iam::<aws-account-id>:policy/<iam-policy-name> --group-name <group-name>
+ - If the command succeeds, no output is returned.
+
+<xhtml:ol start=\"6\"> - Run the describe-vpcs command to get a list of VPCs in the selected region:
+
+aws ec2 describe-vpcs --region <region>
+ - The command output should return a list of VPCs in the selected region.
+
+<xhtml:ol start=\"7\"> - Run the create-flow-logs command to create a flow log for a VPC:
+
+aws ec2 create-flow-logs --resource-type VPC --resource-ids <vpc-id> --traffic-type REJECT --log-group-name <log-group-name> --deliver-logs-permission-arn <iam-role-arn> <xhtml:ol start=\"8\"> - Repeat step 7 for other VPCs in the selected region.
+ - Change the region by updating --region, and repeat the remediation procedure for each region.
+
+Impact:
+
+By default, CloudWatch Logs will store logs indefinitely unless a specific retention period is defined for the log group. When choosing the number of days to retain, keep in mind that the average time it takes for an organization to realize they have been breached is 210 days (at the time of this writing). Since additional time is required to research a breach, a minimum retention policy of 365 days allows for detection and investigation. You may also wish to archive the logs to a cheaper storage service rather than simply deleting them. See the following AWS resource to manage CloudWatch Logs retention periods:
+
+ -
+
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/SettingLogRetention.html"
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171|3.14.6,800-171|3.14.7,800-171r3|03.03.01,800-171r3|03.03.03,800-171r3|03.03.06a.,800-171r3|03.14.06,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53|SI-4,800-53|SI-4(4),800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,800-53r5|SI-4,800-53r5|SI-4(4),CN-L3|7.1.2.2(c),CN-L3|7.1.2.3(c),CN-L3|7.1.3.5(a),CN-L3|8.1.4.3(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|6.2,CSCv7|12.5,CSCv8|8.2,CSCv8|13.6,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-3,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-06,CSF2.0|DE.CM-09,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-01,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.8.15,ISO-27001-2022|A.8.16,ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,ITSG-33|SI-4,ITSG-33|SI-4(4),LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|NS32,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,SWIFT-CSCv1|6.5"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+  aws_action  : "DescribeFlowLogsByVpc"
+  xsl_stmt    : "<xsl:template match=\"/\">
+  <xsl:choose>
+    <xsl:when test=\"//ec2:flowLogSet/ec2:item\">
+      <xsl:for-each select=\"//ec2:flowLogSet/ec2:item\">
+        <xsl:text>VPC: </xsl:text>
+        <xsl:value-of select=\"ec2:resourceId\" />
+        <xsl:text> Flow Logs = </xsl:text>
+        <xsl:choose>
+          <xsl:when test=\"ec2:flowLogId\">
+            <xsl:value-of select=\"ec2:flowLogId\" />
+            </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>no flow log found</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+        <xsl:text>&#10;</xsl:text>
+      </xsl:for-each>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>No VPC found</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>"
+  regex       : "(Flow Logs =|No VPC found)"
+  not_expect  : "Flow Logs = no flow log found"
+</custom_item>
+
+<report type:"WARNING">
+  description : "3.8 Ensure that object-level logging for write events is enabled for S3 buckets"
+  info        : "S3 object-level API operations, such as GetObject, DeleteObject, and PutObject, are referred to as data events. By default, CloudTrail trails do not log data events, so it is recommended to enable object-level logging for S3 buckets.
+
+Enabling object-level logging will help you meet data compliance requirements within your organization, perform comprehensive security analyses, monitor specific patterns of user behavior in your AWS account, or take immediate actions on any object-level API activity within your S3 buckets using Amazon CloudWatch Events.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "From Console:
+
+ - Login to the AWS Management Console and navigate to the S3 dashboard at https://console.aws.amazon.com/s3/
+ - In the left navigation panel, click buckets and then click the name of the S3 bucket you want to examine.
+ - Click the Properties tab to see the bucket configuration in detail.
+ - In the AWS CloudTrail data events section, select the trail name for recording activity. You can choose an existing trail or create a new one by clicking the Configure in CloudTrail button or navigating to the
+
+CloudTrail console
+
+.
+ - Once the trail is selected, select the Data Events check box.
+ - Select S3 from the Data event type drop-down.
+ - Select Log all events from the Log selector template drop-down.
+ - Repeat steps 2-7 to enable object-level logging of write events for other S3 buckets.
+
+From Command Line:
+
+ - To enable object-level data events logging for S3 buckets within your AWS account, run the put-event-selectors command using the name of the trail that you want to reconfigure as identifier:
+
+aws cloudtrail put-event-selectors --region <region-name> --trail-name <trail-name> --event-selectors '[{ \"ReadWriteType\": \"WriteOnly\", \"IncludeManagementEvents\":true, \"DataResources\": [{ \"Type\": \"AWS::S3::Object\", \"Values\": [\"arn:aws:s3:::<s3-bucket-name>/\"] }] }]' <xhtml:ol start=\"2\"> - The command output will be object-level event trail configuration.
+ - If you want to enable it for all buckets at once, change the Values parameter to [\"arn:aws:s3\"] in the previous command.
+ - Repeat step 1 for each s3 bucket to update object-level logging of write events.
+ - Change the AWS region by updating the --region command parameter, and perform the process for the other regions.
+
+Impact:
+
+Enabling logging for these object-level events may significantly increase the number of events logged and may incur additional costs."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171r3|03.03.02a.,800-171r3|03.03.02b.,800-171r3|03.03.03,800-171r3|03.03.06a.,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.28,ISO-27001-2022|A.8.15,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<report type:"WARNING">
+  description : "3.9 Ensure that object-level logging for read events is enabled for S3 buckets"
+  info        : "S3 object-level API operations, such as GetObject, DeleteObject, and PutObject, are referred to as data events. By default, CloudTrail trails do not log data events, so it is recommended to enable object-level logging for S3 buckets.
+
+Enabling object-level logging will help you meet data compliance requirements within your organization, perform comprehensive security analyses, monitor specific patterns of user behavior in your AWS account, or take immediate actions on any object-level API activity within your S3 buckets using Amazon CloudWatch Events.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "From Console:
+
+ - Login to the AWS Management Console and navigate to S3 dashboard at https://console.aws.amazon.com/s3/
+ - In the left navigation panel, click buckets and then click the name of the S3 bucket that you want to examine.
+ - Click the Properties tab to see the bucket configuration in detail.
+ - In the AWS Cloud Trail data events section, select the trail name for recording activity. You can choose an existing trail or create a new one by clicking the Configure in CloudTrail button or navigating to the
+
+CloudTrail console
+
+.
+ - Once the trail is selected, select the Data Events check box.
+ - Select S3 from the Data event type drop-down.
+ - Select Log all events from the Log selector template drop-down.
+ - Repeat steps 2-7 to enable object-level logging of read events for other S3 buckets.
+
+From Command Line:
+
+ - To enable object-level data events logging for S3 buckets within your AWS account, run the put-event-selectors command using the name of the trail that you want to reconfigure as identifier:
+
+aws cloudtrail put-event-selectors --region <region-name> --trail-name <trail-name> --event-selectors '[{ \"ReadWriteType\": \"ReadOnly\", \"IncludeManagementEvents\":true, \"DataResources\": [{ \"Type\": \"AWS::S3::Object\", \"Values\": [\"arn:aws:s3:::<s3-bucket-name>/\"] }] }]' <xhtml:ol start=\"2\"> - The command output will be object-level event trail configuration.
+ - If you want to enable it for all buckets at once, change the Values parameter to [\"arn:aws:s3\"] in the previous command.
+ - Repeat step 1 for each s3 bucket to update object-level logging of read events.
+ - Change the AWS region by updating the --region command parameter, and perform the process for the other regions.
+
+Impact:
+
+Enabling logging for these object-level events may significantly increase the number of events logged and may incur additional costs."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171r3|03.03.02a.,800-171r3|03.03.02b.,800-171r3|03.03.03,800-171r3|03.03.06a.,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.28,ISO-27001-2022|A.8.15,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<report type:"WARNING">
+  description : "4.1 Ensure unauthorized API calls are monitored"
+  info        : "Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs or an external Security Information and Event Management (SIEM) environment, and establishing corresponding metric filters and alarms.
+
+It is recommended that a metric filter and alarm be established for unauthorized API calls.
+
+CloudWatch is an AWS native service that allows you to observe and monitor resources and applications. CloudTrail logs can also be sent to an external Security Information and Event Management (SIEM) environment for monitoring and alerting.
+
+Monitoring unauthorized API calls will help reduce the time it takes to detect malicious activity and can alert you to potential security incidents.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "If you are using CloudTrail trails and CloudWatch, perform the following steps to set up the metric filter, alarm, SNS topic, and subscription:
+
+ -
+
+Create a metric filter based on the provided filter pattern that checks for unauthorized API calls and uses the <trail-log-group-name> taken from audit step 1:
+
+aws logs put-metric-filter --log-group-name <trail-log-group-name> --filter-name <unauthorized-api-calls-metric> --metric-transformations metricName=unauthorized_api_calls_metric,metricNamespace=CISBenchmark,metricValue=1 --filter-pattern \"{ ($.errorCode =\"*UnauthorizedOperation\") || ($.errorCode =\"AccessDenied*\") && ($.sourceIPAddress!=\"delivery.logs.amazonaws.com\") && ($.eventName!=\"HeadBucket\") }\"
+
+Note : You can choose your own metricName and metricNamespace strings. Using the same metricNamespace for all Foundations Benchmark metrics will group them together.
+
+ -
+
+Create an SNS topic that the alarm will notify:
+
+aws sns create-topic --name <sns-topic-name>
+
+Note : You can execute this command once and then reuse the same topic for all monitoring alarms.
+
+Note : Capture the TopicArn that is displayed when creating the SNS topic in step 2.
+
+ -
+
+Create an SNS subscription for the topic created in step 2:
+
+aws sns subscribe --topic-arn <sns-topic-arn> --protocol <sns-protocol> --notification-endpoint <sns-subscription-endpoints>
+
+Note : You can execute this command once and then reuse the same subscription for all monitoring alarms.
+
+ -
+
+Create an alarm that is associated with the CloudWatch Logs metric filter created in step 1 and the SNS topic created in step 2:
+
+aws cloudwatch put-metric-alarm --alarm-name \"unauthorized_api_calls_alarm\" --metric-name \"unauthorized_api_calls_metric\" --statistic Sum --period 300 --threshold 1 --comparison-operator GreaterThanOrEqualToThreshold --evaluation-periods 1 --namespace \"CISBenchmark\" --alarm-actions <sns-topic-arn>
+
+Impact:
+
+This alert may be triggered by normal read-only console activities that attempt to opportunistically gather optional information but gracefully fail if they lack the necessary permissions.
+
+If an excessive number of alerts are generated, then an organization may wish to consider adding read access to the limited IAM user permissions solely to reduce the number of alerts.
+
+In some cases, doing this may allow users to actually view some areas of the system; any additional access granted should be reviewed for alignment with the original limited IAM user intent."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171r3|03.03.02a.,800-171r3|03.03.02b.,800-171r3|03.03.03,800-171r3|03.03.05,800-171r3|03.03.06a.,800-53|AU-3,800-53|AU-3(1),800-53|AU-6,800-53|AU-6(1),800-53|AU-7,800-53|AU-7(1),800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7,800-53r5|AU-7(1),800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(d),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv7|6.5,CSCv7|6.7,CSCv8|8.5,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.25,ISO-27001-2022|A.5.28,ISO-27001-2022|A.6.8,ISO-27001-2022|A.8.15,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7,ITSG-33|AU-7(1),ITSG-33|AU-12,LEVEL|2M,NESA|M5.2.5,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<report type:"WARNING">
+  description : "4.10 Ensure security group changes are monitored"
+  info        : "Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs or an external Security Information and Event Management (SIEM) environment, and establishing corresponding metric filters and alarms.
+
+Security groups are stateful packet filters that control ingress and egress traffic within a VPC.
+
+It is recommended that a metric filter and alarm be established to detect changes to security groups.
+
+CloudWatch is an AWS native service that allows you to observe and monitor resources and applications. CloudTrail logs can also be sent to an external Security Information and Event Management (SIEM) environment for monitoring and alerting.
+
+Monitoring changes to security groups will help ensure that resources and services are not unintentionally exposed.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "If you are using CloudTrail trails and CloudWatch, perform the following steps to set up the metric filter, alarm, SNS topic, and subscription:
+
+ -
+
+Create a metric filter based on the provided filter pattern that checks for security groups changes and uses the <trail-log-group-name> taken from audit step 1:
+
+aws logs put-metric-filter --log-group-name <trail-log-group-name> --filter-name <security-group-changes-metric> --metric-transformations metricName=<security-group-changes-metric>,metricNamespace=\"CISBenchmark\",metricValue=1 --filter-pattern \"{ ($.eventName = AuthorizeSecurityGroupIngress) || ($.eventName = AuthorizeSecurityGroupEgress) || ($.eventName = RevokeSecurityGroupIngress) || ($.eventName = RevokeSecurityGroupEgress) || ($.eventName = CreateSecurityGroup) || ($.eventName = DeleteSecurityGroup) || ($.eventName = ModifySecurityGroupRules) }\"
+
+Note : You can choose your own metricName and metricNamespace strings. Using the same metricNamespace for all Foundations Benchmark metrics will group them together.
+
+ -
+
+Create an SNS topic that the alarm will notify:
+
+aws sns create-topic --name <sns-topic-name>
+
+Note : You can execute this command once and then reuse the same topic for all monitoring alarms.
+
+Note : Capture the TopicArn that is displayed when creating the SNS topic in step 2.
+
+ -
+
+Create an SNS subscription for the topic created in step 2:
+
+aws sns subscribe --topic-arn <sns-topic-arn> --protocol <sns-protocol> --notification-endpoint <sns-subscription-endpoints>
+
+Note : You can execute this command once and then reuse the same subscription for all monitoring alarms.
+
+ -
+
+Create an alarm that is associated with the CloudWatch Logs metric filter created in step 1 and the SNS topic created in step 2:
+
+aws cloudwatch put-metric-alarm --alarm-name <security-group-changes-alarm> --metric-name <security-group-changes-metric> --statistic Sum --period 300 --threshold 1 --comparison-operator GreaterThanOrEqualToThreshold --evaluation-periods 1 --namespace \"CISBenchmark\" --alarm-actions <sns-topic-arn>
+
+Impact:
+
+This may require additional 'tuning' to eliminate false positives and filter out expected activity so that anomalies are easier to detect."
+  reference   : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.03.02a.,800-171r3|03.03.02b.,800-171r3|03.03.03,800-171r3|03.03.05,800-171r3|03.03.06a.,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|AU-3,800-53|AU-3(1),800-53|AU-6,800-53|AU-6(1),800-53|AU-7,800-53|AU-7(1),800-53|AU-12,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7,800-53r5|AU-7(1),800-53r5|AU-12,800-53r5|MP-2,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(d),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.3(b),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|6.2,CSCv7|6.3,CSCv7|14.6,CSCv8|3.3,CSCv8|8.5,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|DE.DP-4,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-1,CSF|PR.PT-2,CSF|PR.PT-3,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.25,ISO-27001-2022|A.5.28,ISO-27001-2022|A.5.33,ISO-27001-2022|A.6.8,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.15,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7,ITSG-33|AU-7(1),ITSG-33|AU-12,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2M,NESA|M5.2.5,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T3.6.2,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,SWIFT-CSCv1|6.4,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<report type:"WARNING">
+  description : "4.11 Ensure Network Access Control List (NACL) changes are monitored"
+  info        : "Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs or an external Security Information and Event Management (SIEM) environment, and establishing corresponding metric filters and alarms.
+
+NACLs are used as a stateless packet filter to control ingress and egress traffic for subnets within a VPC. It is recommended that a metric filter and alarm be established for any changes made to NACLs.
+
+CloudWatch is an AWS native service that allows you to observe and monitor resources and applications. CloudTrail logs can also be sent to an external Security Information and Event Management (SIEM) environment for monitoring and alerting.
+
+Monitoring changes to NACLs will help ensure that AWS resources and services are not unintentionally exposed.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "If you are using CloudTrail trails and CloudWatch, perform the following steps to set up the metric filter, alarm, SNS topic, and subscription:
+
+ -
+
+Create a metric filter based on the provided filter pattern that checks for NACL changes and uses the <trail-log-group-name> taken from audit step 1:
+
+aws logs put-metric-filter --log-group-name <trail-log-group-name> --filter-name <nacl-changes-metric> --metric-transformations metricName=<nacl-changes-metric>,metricNamespace='CISBenchmark',metricValue=1 --filter-pattern '{ ($.eventName = CreateNetworkAcl) || ($.eventName = CreateNetworkAclEntry) || ($.eventName = DeleteNetworkAcl) || ($.eventName = DeleteNetworkAclEntry) || ($.eventName = ReplaceNetworkAclEntry) || ($.eventName = ReplaceNetworkAclAssociation) }'
+
+Note : You can choose your own metricName and metricNamespace strings. Using the same metricNamespace for all Foundations Benchmark metrics will group them together.
+
+ -
+
+Create an SNS topic that the alarm will notify:
+
+aws sns create-topic --name <sns-topic-name>
+
+Note : You can execute this command once and then reuse the same topic for all monitoring alarms.
+
+Note : Capture the TopicArn that is displayed when creating the SNS topic in step 2.
+
+ -
+
+Create an SNS subscription for the topic created in step 2:
+
+aws sns subscribe --topic-arn <sns-topic-arn> --protocol <sns-protocol> --notification-endpoint <sns-subscription-endpoints>
+
+Note : You can execute this command once and then reuse the same subscription for all monitoring alarms.
+
+ -
+
+Create an alarm that is associated with the CloudWatch Logs metric filter created in step 1 and the SNS topic created in step 2:
+
+aws cloudwatch put-metric-alarm --alarm-name <nacl-changes-alarm> --metric-name <nacl-changes-metric> --statistic Sum --period 300 --threshold 1 --comparison-operator GreaterThanOrEqualToThreshold --evaluation-periods 1 --namespace 'CISBenchmark' --alarm-actions <sns-topic-arn>"
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171r3|03.03.02a.,800-171r3|03.03.02b.,800-171r3|03.03.03,800-171r3|03.03.05,800-171r3|03.03.06a.,800-53|AU-3,800-53|AU-3(1),800-53|AU-6,800-53|AU-6(1),800-53|AU-7,800-53|AU-7(1),800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7,800-53r5|AU-7(1),800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(d),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv7|11.3,CSCv8|8.5,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.25,ISO-27001-2022|A.5.28,ISO-27001-2022|A.6.8,ISO-27001-2022|A.8.15,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7,ITSG-33|AU-7(1),ITSG-33|AU-12,LEVEL|2M,NESA|M5.2.5,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<custom_item>
+  type           : SECURITYHUB
+  description    : "4.16 Ensure AWS Security Hub is enabled"
+  info           : "Security Hub collects security data from various AWS accounts, services, and supported third-party partner products, helping you analyze your security trends and identify the highest-priority security issues. When you enable Security Hub, it begins to consume, aggregate, organize, and prioritize findings from the AWS services that you have enabled, such as Amazon GuardDuty, Amazon Inspector, and Amazon Macie. You can also enable integrations with AWS partner security products.
+
+AWS Security Hub provides you with a comprehensive view of your security state in AWS and helps you check your environment against security industry standards and best practices, enabling you to quickly assess the security posture across your AWS accounts."
+  solution       : "To grant the permissions required to enable Security Hub, attach the Security Hub managed policy AWSSecurityHubFullAccess to an IAM user, group, or role.
+
+Enabling Security Hub:
+
+From Console:
+
+ - Use the credentials of the IAM identity to sign in to the Security Hub console.
+ - When you open the Security Hub console for the first time, choose Go to Security Hub
+ - The Security standards section on the welcome page lists supported security standards. Check the box for a standard to enable it.
+ - Choose Enable Security Hub
+
+From Command Line:
+
+ - Run the enable-security-hub command, including --enable-default-standards to enable the default standards:
+
+aws securityhub enable-security-hub --enable-default-standards <xhtml:ol start=\"2\"> - To enable Security Hub without the default standards, include --no-enable-default-standards :
+
+aws securityhub enable-security-hub --no-enable-default-standards
+
+Impact:
+
+It is recommended that AWS Security Hub be enabled in all regions. AWS Security Hub requires that AWS Config be enabled."
+  reference      : "800-171|3.11.2,800-171|3.11.3,800-171r3|03.11.02,800-53|RA-5,800-53r5|RA-5,CSCv7|11.3,CSCv8|7.1,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,CSF2.0|GV.SC-10,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-01,CSF2.0|ID.RA-08,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.8,ISO/IEC-27001|A.12.6.1,ITSG-33|RA-5,LEVEL|2A,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.7.1,PCI-DSSv3.2.1|6.1,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.7"
+  see_also       : "https://workbench.cisecurity.org/benchmarks/20495"
+  aws_action     : "DescribeHub"
+  json_transform : "if (.SubscribedAt) then \"SecurityHub is enabled as of: \" + .SubscribedAt else \"no subscriptions found\" end"
+  regex          : ".+"
+  expect         : "SecurityHub is enabled as of:"
+</custom_item>
+
+<report type:"WARNING">
+  description : "4.6 Ensure AWS Management Console authentication failures are monitored"
+  info        : "Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs or an external Security Information and Event Management (SIEM) environment, and establishing corresponding metric filters and alarms.
+
+It is recommended that a metric filter and alarm be established for failed console authentication attempts.
+
+CloudWatch is an AWS native service that allows you to observe and monitor resources and applications. CloudTrail logs can also be sent to an external Security Information and Event Management (SIEM) environment for monitoring and alerting.
+
+Monitoring failed console logins may decrease the lead time to detect an attempt to brute-force a credential, which may provide an indicator, such as the source IP address, that can be used in other event correlations.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "If you are using CloudTrail trails and CloudWatch, perform the following steps to set up the metric filter, alarm, SNS topic, and subscription:
+
+ -
+
+Create a metric filter based on the provided filter pattern that checks for AWS management Console login failures and uses the <trail-log-group-name> taken from audit step 1:
+
+aws logs put-metric-filter --log-group-name <trail-log-group-name> --filter-name <console-signin-failure-metric> --metric-transformations metricName=<console-signin-failure-metric>,metricNamespace='CISBenchmark',metricValue=1 --filter-pattern '{ ($.eventName = ConsoleLogin) && ($.errorMessage = \"Failed authentication\") }'
+
+Note : You can choose your own metricName and metricNamespace strings. Using the same metricNamespace for all Foundations Benchmark metrics will group them together.
+
+ -
+
+Create an SNS topic that the alarm will notify:
+
+aws sns create-topic --name <sns-topic-name>
+
+Note : You can execute this command once and then reuse the same topic for all monitoring alarms.
+
+Note : Capture the TopicArn that is displayed when creating the SNS topic in step 2.
+
+ -
+
+Create an SNS subscription for the topic created in step 2:
+
+aws sns subscribe --topic-arn <sns-topic-arn> --protocol <sns-protocol> --notification-endpoint <sns-subscription-endpoints>
+
+Note : You can execute this command once and then reuse the same subscription for all monitoring alarms.
+
+ -
+
+Create an alarm that is associated with the CloudWatch Logs metric filter created in step 1 and the SNS topic created in step 2:
+
+aws cloudwatch put-metric-alarm --alarm-name <console-signin-failure-alarm> --metric-name <console-signin-failure-metric> --statistic Sum --period 300 --threshold 1 --comparison-operator GreaterThanOrEqualToThreshold --evaluation-periods 1 --namespace 'CISBenchmark' --alarm-actions <sns-topic-arn>
+
+Impact:
+
+Monitoring for these failures may generate a large number of alerts, especially in larger environments."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171r3|03.03.02a.,800-171r3|03.03.02b.,800-171r3|03.03.03,800-171r3|03.03.05,800-171r3|03.03.06a.,800-53|AU-3,800-53|AU-3(1),800-53|AU-6,800-53|AU-6(1),800-53|AU-7,800-53|AU-7(1),800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7,800-53r5|AU-7(1),800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(d),CN-L3|8.1.4.3(b),CSCv7|4.9,CSCv7|6.3,CSCv8|8.5,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.25,ISO-27001-2022|A.5.28,ISO-27001-2022|A.6.8,ISO-27001-2022|A.8.15,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7,ITSG-33|AU-7(1),ITSG-33|AU-12,LEVEL|2M,NESA|M5.2.5,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<report type:"WARNING">
+  description : "4.7 Ensure disabling or scheduled deletion of customer created CMKs is monitored"
+  info        : "Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs or an external Security Information and Event Management (SIEM) environment, and establishing corresponding metric filters and alarms.
+
+It is recommended that a metric filter and alarm be established for customer-created CMKs that have changed state to disabled or are scheduled for deletion.
+
+CloudWatch is an AWS native service that allows you to observe and monitor resources and applications. CloudTrail logs can also be sent to an external Security Information and Event Management (SIEM) environment for monitoring and alerting.
+
+Data encrypted with disabled or deleted keys will no longer be accessible. Changes in the state of a CMK should be monitored to ensure that the change is intentional.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "If you are using CloudTrail trails and CloudWatch, perform the following steps to set up the metric filter, alarm, SNS topic, and subscription:
+
+ -
+
+Create a metric filter based on the provided filter pattern that checks for CMKs that have been disabled or scheduled for deletion and uses the <trail-log-group-name> taken from audit step 1:
+
+aws logs put-metric-filter --log-group-name <trail-log-group-name> --filter-name <disable-or-delete-cmk-changes-metric> --metric-transformations metricName=<disable-or-delete-cmk-changes-metric>,metricNamespace='CISBenchmark',metricValue=1 --filter-pattern '{($.eventSource = kms.amazonaws.com) && (($.eventName=DisableKey)||($.eventName=ScheduleKeyDeletion)) }'
+
+Note : You can choose your own metricName and metricNamespace strings. Using the same metricNamespace for all Foundations Benchmark metrics will group them together.
+
+ -
+
+Create an SNS topic that the alarm will notify:
+
+aws sns create-topic --name <sns-topic-name>
+
+Note : You can execute this command once and then reuse the same topic for all monitoring alarms.
+
+Note : Capture the TopicArn that is displayed when creating the SNS topic in step 2.
+
+ -
+
+Create an SNS subscription for the topic created in step 2:
+
+aws sns subscribe --topic-arn <sns-topic-arn> --protocol <sns-protocol> --notification-endpoint <sns-subscription-endpoints>
+
+Note : You can execute this command once and then reuse the same subscription for all monitoring alarms.
+
+ -
+
+Create an alarm that is associated with the CloudWatch Logs metric filter created in step 1 and the SNS topic created in step 2:
+
+aws cloudwatch put-metric-alarm --alarm-name <disable-or-delete-cmk-changes-alarm> --metric-name <disable-or-delete-cmk-changes-metric> --statistic Sum --period 300 --threshold 1 --comparison-operator GreaterThanOrEqualToThreshold --evaluation-periods 1 --namespace 'CISBenchmark' --alarm-actions <sns-topic-arn>
+
+Impact:
+
+Creation, storage, and management of CMK may require additional labor compared to the use of AWS-managed keys."
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171r3|03.03.02a.,800-171r3|03.03.02b.,800-171r3|03.03.03,800-171r3|03.03.05,800-171r3|03.03.06a.,800-53|AU-3,800-53|AU-3(1),800-53|AU-6,800-53|AU-6(1),800-53|AU-7,800-53|AU-7(1),800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7,800-53r5|AU-7(1),800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(d),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv8|8.5,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.25,ISO-27001-2022|A.5.28,ISO-27001-2022|A.6.8,ISO-27001-2022|A.8.15,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7,ITSG-33|AU-7(1),ITSG-33|AU-12,LEVEL|2M,NESA|M5.2.5,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<report type:"WARNING">
+  description : "4.9 Ensure AWS Config configuration changes are monitored"
+  info        : "Real-time monitoring of API calls can be achieved by directing CloudTrail Logs to CloudWatch Logs or an external Security Information and Event Management (SIEM) environment, and establishing corresponding metric filters and alarms.
+
+It is recommended that a metric filter and alarm be established for detecting changes to AWS Config's configurations.
+
+CloudWatch is an AWS native service that allows you to observe and monitor resources and applications. CloudTrail logs can also be sent to an external Security Information and Event Management (SIEM) environment for monitoring and alerting.
+
+Monitoring changes to the AWS Config configuration will help ensure sustained visibility of the configuration items within the AWS account.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "If you are using CloudTrail trails and CloudWatch, perform the following steps to set up the metric filter, alarm, SNS topic, and subscription:
+
+ -
+
+Create a metric filter based on the provided filter pattern that checks for AWS Configuration changes and uses the <trail-log-group-name> taken from audit step 1:
+
+aws logs put-metric-filter --log-group-name <trail-log-group-name> --filter-name <aws-config-changes-metric> --metric-transformations metricName=<aws-config-changes-metric>,metricNamespace='CISBenchmark',metricValue=1 --filter-pattern '{ ($.eventSource = config.amazonaws.com) && (($.eventName=StopConfigurationRecorder)||($.eventName=DeleteDeliveryChannel)||($.eventName=PutDeliveryChannel)||($.eventName=PutConfigurationRecorder)) }'
+
+Note : You can choose your own metricName and metricNamespace strings. Using the same metricNamespace for all Foundations Benchmark metrics will group them together.
+
+ -
+
+Create an SNS topic that the alarm will notify:
+
+aws sns create-topic --name <sns-topic-name>
+
+Note : You can execute this command once and then reuse the same topic for all monitoring alarms.
+
+Note : Capture the TopicArn that is displayed when creating the SNS topic in step 2.
+
+ -
+
+Create an SNS subscription for the topic created in step 2:
+
+aws sns subscribe --topic-arn <sns-topic-arn> --protocol <sns-protocol> --notification-endpoint <sns-subscription-endpoints>
+
+Note : You can execute this command once and then reuse the same subscription for all monitoring alarms.
+
+ -
+
+Create an alarm that is associated with the CloudWatch Logs metric filter created in step 1 and the SNS topic created in step 2:
+
+aws cloudwatch put-metric-alarm --alarm-name <aws-config-changes-alarm> --metric-name <aws-config-changes-metric> --statistic Sum --period 300 --threshold 1 --comparison-operator GreaterThanOrEqualToThreshold --evaluation-periods 1 --namespace 'CISBenchmark' --alarm-actions <sns-topic-arn>"
+  reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171r3|03.03.02a.,800-171r3|03.03.02b.,800-171r3|03.03.03,800-171r3|03.03.05,800-171r3|03.03.06a.,800-53|AU-3,800-53|AU-3(1),800-53|AU-6,800-53|AU-6(1),800-53|AU-7,800-53|AU-7(1),800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-6,800-53r5|AU-6(1),800-53r5|AU-7,800-53r5|AU-7(1),800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|7.1.3.3(d),CN-L3|8.1.4.3(b),CSCv7|1.4,CSCv7|6.3,CSCv7|11.2,CSCv7|16.1,CSCv8|8.5,CSCv8|8.11,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|DE.DP-4,CSF|PR.PT-1,CSF|RS.AN-1,CSF|RS.AN-3,CSF|RS.CO-2,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.25,ISO-27001-2022|A.5.28,ISO-27001-2022|A.6.8,ISO-27001-2022|A.8.15,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-6,ITSG-33|AU-6(1),ITSG-33|AU-7,ITSG-33|AU-7(1),ITSG-33|AU-12,LEVEL|2M,NESA|M5.2.5,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+<if>
+  <condition auto:"FAILED" type:"AND">
+    <custom_item>
+      type        : EC2
+      description : "'No Outbound Rules exist"
+      aws_action  : "DescribeSecurityGroups"
+      xsl_stmt    : "<xsl:template match=\"/\">
+  <xsl:choose>
+    <xsl:when test=\"//ec2:securityGroupInfo/ec2:item[ec2:groupName = 'default']\">
+      <xsl:choose>
+        <xsl:when test=\"//ec2:securityGroupInfo/ec2:item[ec2:groupName = 'default']/ec2:ipPermissionsEgress/ec2:item\">
+          <xsl:for-each select=\"//ec2:securityGroupInfo/ec2:item[ec2:groupName = 'default']/ec2:ipPermissionsEgress/ec2:item\">
+            <xsl:text>FAIL - Default Security Group with VPCID </xsl:text><xsl:value-of select=\"../../ec2:vpcId\"/><xsl:text> contains outbound rules.</xsl:text><xsl:text>&#10;</xsl:text>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>PASS - No Default Security Groups in this region contain any outbound rules.</xsl:text><xsl:text>&#10;</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>PASS - No VPCs in this region.</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>"
+      regex       : ".+"
+      expect      : "PASS \-.+"
+    </custom_item>
+
+    <custom_item>
+      type        : EC2
+      description : "'No Inbound Rules exist"
+      aws_action  : "DescribeSecurityGroups"
+      xsl_stmt    : "<xsl:template match=\"/\">
+  <xsl:choose>
+    <xsl:when test=\"//ec2:securityGroupInfo/ec2:item[ec2:groupName = 'default']\">
+      <xsl:choose>
+        <xsl:when test=\"//ec2:securityGroupInfo/ec2:item[ec2:groupName = 'default']/ec2:ipPermissions/ec2:item\">
+          <xsl:for-each select=\"//ec2:securityGroupInfo/ec2:item[ec2:groupName = 'default']/ec2:ipPermissions/ec2:item\">
+          <xsl:text>FAIL - Default Security Group with VPCID </xsl:text><xsl:value-of select=\"../../ec2:vpcId\"/><xsl:text> contains inbound rules.</xsl:text><xsl:text>&#10;</xsl:text>
+          </xsl:for-each>
+        </xsl:when>
+        <xsl:otherwise>
+        <xsl:text>PASS - No Default Security Groups in this region contain any inbound rules.</xsl:text><xsl:text>&#10;</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
+    <xsl:text>PASS - No VPCs in this region.</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+  </xsl:template>"
+      regex       : ".+"
+      expect      : "PASS \-.+"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "5.5 Ensure the default security group of every VPC restricts all traffic"
+      info        : "A VPC comes with a default security group whose initial settings deny all inbound traffic, allow all outbound traffic, and allow all traffic between instances assigned to the security group. If a security group is not specified when an instance is launched, it is automatically assigned to this default security group. Security groups provide stateful filtering of ingress/egress network traffic to AWS resources. It is recommended that the default security group restrict all traffic, both inbound and outbound.
+
+The default VPC in every region should have its default security group updated to comply with the following:
+
+ - No inbound rules.
+ - No outbound rules.
+
+Any newly created VPCs will automatically contain a default security group that will need remediation to comply with this recommendation.
+
+Note: When implementing this recommendation, VPC flow logging is invaluable in determining the least privilege port access required by systems to work properly, as it can log all packet acceptances and rejections occurring under the current security groups. This dramatically reduces the primary barrier to least privilege engineering by discovering the minimum ports required by systems in the environment. Even if the VPC flow logging recommendation in this benchmark is not adopted as a permanent security measure, it should be used during any period of discovery and engineering for least privileged security groups.
+
+Configuring all VPC default security groups to restrict all traffic will encourage the development of least privilege security groups and promote the mindful placement of AWS resources into security groups, which will, in turn, reduce the exposure of those resources."
+      solution    : "Perform the following to implement the prescribed state:
+
+Security Group Members
+
+ - Identify AWS resources that exist within the default security group.
+ - Create a set of least-privilege security groups for those resources.
+ - Place the resources in those security groups, removing the resources noted in step 1 from the default security group.
+
+Security Group State
+
+ - Login to the AWS VPC Console at
+
+https://console.aws.amazon.com/vpc/home
+
+.
+ - Repeat the following steps for all VPCs, including the default VPC in each AWS region:
+ - In the left pane, click Security Groups
+ - For each default security group, perform the following:
+ - Select the default security group.
+ - Click the Inbound Rules tab.
+ - Remove any inbound rules.
+ - Click the Outbound Rules tab.
+ - Remove any Outbound rules.
+
+Recommended
+
+IAM groups allow you to edit the \"name\" field. After remediating default group rules for all VPCs in all regions, edit this field to add text similar to \"DO NOT USE. DO NOT ADD RULES.\"
+
+Impact:
+
+Implementing this recommendation in an existing VPC that contains operating resources requires extremely careful migration planning, as the default security groups are likely enabling many ports that are unknown. Enabling VPC flow logging (for accepted connections) in an existing environment that is known to be breach-free will reveal the current pattern of ports being used for each instance to communicate successfully. The migration process should include:
+
+ - Analyzing VPC flow logs to understand current traffic patterns.
+ - Creating least privilege security groups based on the analyzed data.
+ - Testing the new security group rules in a staging environment before applying them to production."
+      reference   : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.08.02,800-171r3|03.13.01,800-171r3|03.13.06,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53|SC-7,800-53|SC-7(5),800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.1.10.6(j),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|9.4,CSCv7|14.6,CSCv8|3.3,CSCv8|4.5,CSF|DE.CM-1,CSF|PR.AC-4,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.14,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.16,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ISO/IEC-27001|A.13.1.3,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T4.5.4,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3,TBA-FIISB|43.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+      show_output : YES
+    </report>
+  </then>
+</if>
+
+<report type:"WARNING">
+  description : "5.6 Ensure routing tables for VPC peering are \"least access\""
+  info        : "Once a VPC peering connection is established, routing tables must be updated to enable any connections between the peered VPCs. These routes can be as specific as desired, even allowing for the peering of a VPC to only a single host on the other side of the connection.
+
+Being highly selective in peering routing tables is a very effective way to minimize the impact of a breach, as resources outside of these routes are inaccessible to the peered VPC.
+
+NOTE: Nessus has not performed this check. Please review the benchmark to ensure target compliance."
+  solution    : "Remove and add route table entries to ensure that the least number of subnets or hosts required to accomplish the purpose of peering are routable.
+
+From Command Line:
+
+ - For each <route-table-id> that contains routes that are non-compliant with your routing policy (granting more access than desired), delete the non-compliant route:
+
+aws ec2 delete-route --route-table-id <route-table-id> --destination-cidr-block <non-compliant-destination-cidr> <xhtml:ol start=\"2\"> - Create a new compliant route:
+
+aws ec2 create-route --route-table-id <route-table-id> --destination-cidr-block <compliant-destination-cidr> --vpc-peering-connection-id <peering-connection-id>"
+  reference   : "800-171|3.13.1,800-171|3.13.5,800-171r3|03.13.01,800-53|CA-9,800-53|SC-7,800-53r5|CA-9,800-53r5|SC-7,CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|13.4,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|ID.AM-03,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.8.16,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,LEVEL|2M,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1"
+  see_also    : "https://workbench.cisecurity.org/benchmarks/20495"
+</report>
+
+</check_type>

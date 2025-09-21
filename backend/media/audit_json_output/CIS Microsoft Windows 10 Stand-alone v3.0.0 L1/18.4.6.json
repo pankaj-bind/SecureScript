@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.4.6 (L1) Ensure 'LSA Protection' is set to 'Enabled'",
+  "info": "\"This policy setting controls whether the Local Security Authority Server Service (LSASS) process runs protected. The Local Security Authority (LSA), which includes the Local Security Authority Server Service (LSASS) process, validates users for local and remote sign-ins and enforces local security policies.\n\nThe recommended state for this setting is: Enabled",
+  "Note": "This Group Policy path does not exist by default. An additional Group Policy template ( SecGuide.admx/adml ) is required - it is available from Microsoft at\n\nthis link\n\n.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\MS Security Guide\\LSA Protection",
+  "Impact": "If additional LSA protection is enabled, Administrators will not be able to debug a custom LSA plugin. A debugger cannot be attached to LSASS when it's a protected process. In general, there's no supported way to debug a running protected process.\"",
+  "reference": "800-53|CP-10,800-53r5|CP-10,CSCv7|10.5,CSF|RC.RP-1,CSF|RS.RP-1,CSF2.0|RC.RP,CSF2.0|RC.RP-01,CSF2.0|RC.RP-02,CSF2.0|RC.RP-05,GDPR|32.1.b,GDPR|32.1.c,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(ii),ITSG-33|CP-10,ITSG-33|CP-10a.,LEVEL|1A,NESA|T2.2.4,QCSC-v1|5.2.3,QCSC-v1|10.2.1,QCSC-v1|11.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17129",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\System\\CurrentControlSet\\Control\\Lsa",
+  "reg_item": "RunAsPPL",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

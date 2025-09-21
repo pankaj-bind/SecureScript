@@ -1,0 +1,42 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "REGISTRY_SETTING",
+        "description": "NETLOGON",
+        "value_type": "POLICY_TEXT",
+        "value_data": "[Rr]equire([Mm]utual[Aa]uthentication|[Ii]ntegrity|[Pp]rivacy)=1.*[Rr]equire([Mm]utual[Aa]uthentication|[Ii]ntegrity|[Pp]rivacy)=1.*[Rr]equire([Mm]utual[Aa]uthentication|[Ii]ntegrity|[Pp]rivacy)=1",
+        "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths",
+        "reg_item": "\\\\*\\NETLOGON",
+        "reg_option": "CAN_NOT_BE_NULL",
+        "check_type": "CHECK_REGEX"
+      },
+      {
+        "type": "REGISTRY_SETTING",
+        "description": "SYSVOL",
+        "value_type": "POLICY_TEXT",
+        "value_data": "[Rr]equire([Mm]utual[Aa]uthentication|[Ii]ntegrity|[Pp]rivacy)=1.*[Rr]equire([Mm]utual[Aa]uthentication|[Ii]ntegrity|[Pp]rivacy)=1.*[Rr]equire([Mm]utual[Aa]uthentication|[Ii]ntegrity|[Pp]rivacy)=1",
+        "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths",
+        "reg_item": "\\\\*\\SYSVOL",
+        "reg_option": "CAN_NOT_BE_NULL",
+        "check_type": "CHECK_REGEX"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "18.6.14.1 (L1) Ensure 'Hardened UNC Paths' is set to 'Enabled, with 'Require Mutual Authentication', 'Require Integrity', and 'Require Privacy' set for all NETLOGON and SYSVOL shares'",
+      "info": "\"This policy setting configures secure access to UNC paths.\n\nThe recommended state for this setting is: Enabled, with 'Require Mutual Authentication', 'Require Integrity', and 'Require Privacy' set for all NETLOGON and SYSVOL shares\n\nIn February 2015, Microsoft released a new control mechanism to mitigate a security risk in Group Policy as part of the\n\nMS15-011\n\n/\n\nMSKB 3000483\n\nsecurity update. This mechanism requires both the installation of the new security update and also the deployment of specific group policy settings to all computers on the domain from Windows Vista / Server 2008 (non-R2) or newer (the associated security patch to enable this feature was not released for Server 2003). A new group policy template ( NetworkProvider.admx/adml ) was also provided with the security update.\n\nOnce the new GPO template is in place, the following are the minimum requirements to remediate the Group Policy security risk:\n\n\\\\*\\NETLOGON RequireMutualAuthentication=1, RequireIntegrity=1, RequirePrivacy=1\n\n\\\\*\\SYSVOL RequireMutualAuthentication=1, RequireIntegrity=1, RequirePrivacy=1",
+      "Note": "This Group Policy path does not exist by default. An additional Group Policy template ( NetworkProvider.admx/adml ) is required - it is included with the\n\nMS15-011\n\n/\n\nMSKB 3000483\n\nsecurity update or with the Microsoft Windows 10 RTM (Release 1507) Administrative Templates (or newer).",
+      "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled with the following paths configured, at a minimum:\n\n\\\\*\\NETLOGON RequireMutualAuthentication=1, RequireIntegrity=1, RequirePrivacy=1 \\\\*\\SYSVOL RequireMutualAuthentication=1, RequireIntegrity=1, RequirePrivacy=1\n\nComputer Configuration\\Policies\\Administrative Templates\\Network\\Network Provider\\Hardened UNC Paths",
+      "Impact": "Windows only allows access to the specified UNC paths after fulfilling additional security requirements.\"",
+      "reference": "800-53|IA-3(1),800-53r5|IA-3(1),CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3(1),LEVEL|1A,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/17129",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

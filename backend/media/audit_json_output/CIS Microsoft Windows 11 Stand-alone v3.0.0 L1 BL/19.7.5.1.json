@@ -1,0 +1,16 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "19.7.5.1 (L1) Ensure 'Do not preserve zone information in file attachments' is set to 'Disabled'",
+  "info": "\"This policy setting allows you to manage whether Windows marks file attachments with information about their zone of origin (such as restricted, Internet, intranet, local). This requires NTFS in order to function correctly, and will fail without notice on FAT32. By not preserving the zone information, Windows cannot make proper risk assessments.\n\nThe recommended state for this setting is: Disabled",
+  "Note": "This Group Policy path is provided by the Group Policy template AttachmentManager.admx/adml that is included with all versions of the Microsoft Windows Administrative Templates.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Disabled :\n\nUser Configuration\\Policies\\Administrative Templates\\Windows Components\\Attachment Manager\\Do not preserve zone information in file attachments",
+  "Impact": "None - this is the default behavior.\"",
+  "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17603",
+  "value_type": "POLICY_DWORD",
+  "value_data": "2",
+  "reg_key": "HKU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments",
+  "reg_item": "SaveZoneInformation",
+  "reg_option": "CAN_NOT_BE_NULL",
+  "reg_include_hku_users": "S-1-5-21-*"
+}

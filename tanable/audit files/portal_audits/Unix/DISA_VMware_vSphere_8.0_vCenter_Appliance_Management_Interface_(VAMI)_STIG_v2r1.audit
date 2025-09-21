@@ -1,0 +1,962 @@
+#TRUSTED aae12ad44fcdc883ba345effefffada260a814fce071ad9971dc1586b7e44aae42bce83dbff7d9409e11c15897d1b20f1f42ccb85f87d0ed963be4d9476b734ceff3476feead30287f3b828ff867e4361f0a83d41c036484ae733c2d84968438a39fa17be9e423eb53ab667172d8eadc8796c210692862d277e782f9ef2750b01f00d21cae1a39527fdd268514d3844e3f5975ad2cd9abd9b7493253b03505351648958053e3819c655435a12d493ec074c9b8c825800ea58d7fb1b8cf61ea2235f97129b2a82d2f13b0dc54dd2a172aa79c723bce7aca8ee267027bf0463875f2a12574dd2298a66df09bcb1c502e8d2e0dcb16d62459ee3dfeb5156090e111a8c8f77a213820ad74c61fcf9f7a9018276c2ffae42d259777c0608fc969a8c7369f6382d6c3eda0d6a3f140244937e03425331a06ca71fa9fd4cec5337cb386f7e2a3981cdb3316603178f2f1a173bd96e4213776fc6aeec36da9b1c9c72ae8e9e62fd40183ae8d21edbe9ce7d1ef5f481d0715067351f58bf2c85a1270293b7cd578b65c664b2eaeb4702a7f0a9c5c70034ebe5b555e27fc90949449552e4fe2757eac50f3420c7bca168f0091fc63273d692c4ae564b06d12495f6a28e8f0d605c17ecfc1e2d4c2a18cb30d826558c3d08cfdd1eaf5d9fec89b2d81fd42cdf23be1a8bbe75d31f78b7467a8072d1151882e6d8290df3f7476cd7edd716029
+#TRUST-RSA-SHA256 7debcd5b3494f40fd66a9e433b00bb70ca79cbdfddc36270bbcbc5df3b77cfc910aef1dda710e3ccc1357e68dde3ef3b6f4cd8a310adaca4d4efe9bf75235012d29097f7c5f5ff60b065a91309c8ea6bd0c12dfeee9b561ac897d3bf6c2c1b8195a3ce2b622e71f4cd1a64368e6510ecb4b51650044de2f595bb4327b424e80a8038f0fbe35be285a5eb99695f8425a598a8ab44b49c409eef5bfe04b217e58e97702aee0ff1c65f4dcb475b24db68d8c66b85f6068405a003bd5ecb9b75d1c6a72761aab4b11391c6b4da3686057ea04615d102be7a7e98ccb6b931d0ba503d3230146c900252a473a59840f998a85cadb13ab3db2d7af49b632922d9e7e7c5c4f79047139a724ffbf1f4687185530a6fa31c03415f7e029c3f83007e2ced472956d34b4f7ac9c5e000bbbe6903697d945250c40f5e08c75c9d7e43d6ccac44fd7aacc6382767b7bae73bfca001286460bdecfcbb7e34895ff56190790a7be0613464f5390ae5a9aa812e4a7395e5bad7771aa8fe7371567c3fbf1e041b43f4079285ed2f6f5b2407f9d1108a4df497e0736e5d373c233fd388d68763e8c681d563ea0c839f83571b64a130c236d859f9b87ac4c5b1082c19c0821b9ad53353d6e615057e331848b32ab64434e9218166654208eaf729dc8956e6b4e27debdd85670791c215fd847c6fcb9cb202465fde96c7a3da53e7d2381c0b983c367c60
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2024/10/22 $
+#
+# description : This .audit is designed against the DISA VMware vSphere 8.0 vCenter Appliance Management Interface (VAMI) STIG v2r1
+#
+#<ui_metadata>
+#<display_name>DISA VMware vSphere 8.0 vCenter Appliance Management Interface (VAMI) STIG v2r1</display_name>
+#<spec>
+#  <type>DISA STIG</type>
+#  <name>VMware vSphere 8.0</name>
+#  <profile>vCenter Appliance Management Interface</profile>
+#  <version>2.1.0</version>
+#  <link>https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip</link>
+#</spec>
+#<labels>unix,disa,vmware_vami_lighttpd,agent</labels>
+#<benchmark_refs>CAT,CCE,CCI,DISA_Benchmark,Group-ID,Rule-ID,STIG-ID,STIG-Legacy,Vuln-ID</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>FIND_TIMEOUT</name>
+#    <default>7200</default>
+#    <description>Timeout for checks that search for files</description>
+#    <info>Timeout, in seconds, for checks that search for files. Range of 1-7200.</info>
+#    <value_type>INTEGER</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Unix">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : FILE_CHECK
+      description : "VAMI-lighttpd is installed"
+      file        : "/opt/vmware/etc/lighttpd/lighttpd.conf"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "DISA_VMware_vSphere_8.0_vCenter_Appliance_Management_Interface_(VAMI)_STIG_v2r1.audit from DISA VMware vSphere 8.0 vCenter Appliance Management Interface (VAMI) STIG v2r1"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+    </report>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000001 The vCenter VAMI service must limit the number of allowed simultaneous session requests."
+      info        : "Denial of service (DoS) is one threat against web servers. Many DoS attacks attempt to consume web server resources in such a way that no more resources are available to satisfy legitimate requests. Mitigation against these threats is to take steps to limit the number of resources that can be consumed in certain ways.
+
+VAMI provides the \"maxConnections\" attribute of the <Connector Elements> to limit the number of concurrent Transmission Control Protocol (TCP) connections. This comes preconfigured with a tested, supported value that must be verified and maintained."
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf
+
+Add or reconfigure the following value:
+
+server.max-connections = 1024
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-53|AC-10,800-53r5|AC-10,CAT|II,CCI|CCI-000054,CSF2.0|PR.AA-05,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-259137r1003685_rule,STIG-ID|VCLD-80-000001,Vuln-ID|V-259137"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/grep 'server.max-connections'"
+      expect      : "^[\\s]*server.max-connections[\\s]*=[\\s]*([1-9]|[1-9][0-9]{1,2}|10[01][0-9]|102[0-4])[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000004 The vCenter VAMI service must use cryptography to protect the integrity of remote sessions."
+      info        : "Data exchanged between the user and the web server can range from static display data to credentials used to log in the hosted application. Even when data appears to be static, the nondisplayed logic in a web page may expose business logic or trusted system relationships. The integrity of all the data being exchanged between the user and web server must always be trusted. To protect the integrity and trust, encryption methods should be used to protect the complete communication session.
+
+To protect the integrity and confidentiality of the remote sessions, VAMI uses Secure Sockets Layer (SSL)/Transport Layer Security (TLS).
+
+Satisfies: SRG-APP-000015-WSR-000014, SRG-APP-000315-WSR-000003"
+      solution    : "Navigate to and open:
+
+/opt/vmware/etc/lighttpd/applmgmt-lighttpd.conf
+
+Add or reconfigure the following value:
+
+ssl.engine = \"enable\"
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.1.12,800-171|3.1.13,800-53|AC-17(1),800-53|AC-17(2),800-53r5|AC-17(1),800-53r5|AC-17(2),CAT|II,CCI|CCI-001453,CCI|CCI-002314,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,CSF2.0|PR.AA-05,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),ITSG-33|AC-17(2),NESA|T5.4.2,NESA|T5.4.4,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-259138r1003688_rule,STIG-ID|VCLD-80-000004,SWIFT-CSCv1|2.6,Vuln-ID|V-259138"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/grep 'ssl.engine'"
+      expect      : "^[\\s]*ssl.engine[\\s]*=[\\s]*\"enable\"[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000005 The vCenter VAMI service must generate information to monitor remote access."
+      info        : "Remote access can be exploited by an attacker to compromise the server. By recording all remote access activities, it will be possible to determine the attacker's location, intent, and degree of success.
+
+VAMI uses the \"mod_accesslog\" module to log information relating to remote requests. These logs can then be piped to external monitoring systems."
+      solution    : "Navigate to and open:
+
+/opt/vmware/etc/lighttpd/applmgmt-lighttpd.conf
+
+Add the following value in the \"server.modules\" section:
+
+mod_accesslog
+
+The result should be similar to the following:
+
+server.modules += (\"mod_accesslog\", \"mod_cgi\", \"mod_magnet\", \"mod_rewrite\")
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.1.12,800-53|AC-17(1),800-53r5|AC-17(1),CAT|II,CCI|CCI-000067,CN-L3|8.1.4.4(c),CN-L3|8.1.10.6(i),CSF|PR.AC-3,CSF|PR.PT-4,CSF2.0|PR.AA-05,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(1),NESA|T5.4.4,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-259139r1003691_rule,STIG-ID|VCLD-80-000005,SWIFT-CSCv1|2.6,Vuln-ID|V-259139"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/awk '/server\.modules/,/\)/'| /bin/grep mod_accesslog"
+      expect      : "^[\\s]*\"mod_accesslog\",?[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000010 The vCenter VAMI service must produce log records containing sufficient information to establish what type of events occurred."
+      info        : "Web server logging capability is critical for accurate forensic analysis. Without sufficient and accurate information, a correct replay of the events cannot be determined.
+
+Ascertaining the correct type of event that occurred is important during forensic analysis. The correct determination of the event and when it occurred is important in relation to other events that happened at that same time.
+
+Without sufficient information establishing what type of log event occurred, investigation into the cause of event is severely hindered. Log record content that may be necessary to satisfy the requirement of this control includes, but is not limited to, time stamps, source and destination IP addresses, user/process identifiers, event descriptions, application-specific events, success/fail indications, file names involved, access control, or flow control rules invoked.
+
+Satisfies: SRG-APP-000095-WSR-000056, SRG-APP-000096-WSR-000057, SRG-APP-000097-WSR-000058, SRG-APP-000098-WSR-000059, SRG-APP-000099-WSR-000061, SRG-APP-000100-WSR-000064, SRG-APP-000374-WSR-000172, SRG-APP-000375-WSR-000171"
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf
+
+Comment any existing accesslog.format lines by adding a \"#\" at the beginning of the line.
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.7,800-53|AU-3,800-53|AU-8b.,800-53r5|AU-3a.,800-53r5|AU-3b.,800-53r5|AU-3c.,800-53r5|AU-3d.,800-53r5|AU-3e.,800-53r5|AU-3f.,800-53r5|AU-8b.,CAT|II,CCI|CCI-000130,CCI|CCI-000131,CCI|CCI-000132,CCI|CCI-000133,CCI|CCI-000134,CCI|CCI-001487,CCI|CCI-001889,CCI|CCI-001890,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSF|PR.PT-1,CSF2.0|PR.PS-04,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-8,NESA|T3.6.2,NESA|T3.6.7,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-259140r1003694_rule,STIG-ID|VCLD-80-000010,SWIFT-CSCv1|6.4,TBA-FIISB|37.4,Vuln-ID|V-259140"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/grep 'accesslog.format' | /bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'"
+      expect      : "(?i)^[\\s]*\\**[\\s]*pass:?[\\s]*\\**$"
+    </custom_item>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for log permissions"
+          cmd         : "/bin/find /var/log/vmware/applmgmt/ /var/log/vmware/applmgmt-audit/ -xdev -type f -a '(' -perm -o+w -o -not -user root -o -not -group root ')' -exec ls -ld {} \\; | /bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'"
+          expect      : "(?i)^[\\s]*\\**[\\s]*pass:?[\\s]*\\**$"
+          timeout     : "@FIND_TIMEOUT@"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for app permissions"
+          cmd         : "/bin/find /opt/vmware/var/log/lighttpd/ -xdev -type f -a '(' -perm -o+w -o -not -user lighttpd -o -not -group lighttpd ')' -exec ls -ld {} \\; | /bin/awk '{print} END {if (NR == 0) print \"pass\"; else print \"fail\"}'"
+          expect      : "(?i)^[\\s]*\\**[\\s]*pass:?[\\s]*\\**$"
+          timeout     : "@FIND_TIMEOUT@"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "VCLD-80-000019 The vCenter VAMI service log files must only be accessible by privileged users."
+          info        : "Log data is essential in the investigation of events. If log data were to become compromised, then competent forensic analysis and discovery of the true source of potentially malicious system activity would be difficult, if not impossible, to achieve. In addition, access to log records provides information an attacker could potentially use to their advantage since each event record might contain communication ports, protocols, services, trust relationships, user names, etc.
+
+The web server must protect the log data from unauthorized read, write, copy, etc. This can be done by the web server if the web server is also doing the logging function. The web server may also use an external log system. In either case, the logs must be protected from access by nonprivileged users.
+
+Satisfies: SRG-APP-000118-WSR-000068, SRG-APP-000119-WSR-000069, SRG-APP-000120-WSR-000070"
+          solution    : "At the command prompt, run the following commands for log files under /opt/vmware/var/log/lighttpd/:
+
+# chmod o-w <file>
+# chown lighttpd:lighttpd <file>
+
+At the command prompt, run the following commands for all other log files:
+
+# chmod o-w <file>
+# chown root:root <file>
+
+Note: Substitute <file> with the listed file."
+          reference   : "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9a.,CAT|II,CCI|CCI-000162,CCI|CCI-000163,CCI|CCI-000164,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,CSF2.0|PR.DS-10,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-259141r960930_rule,STIG-ID|VCLD-80-000019,Vuln-ID|V-259141"
+          see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for applmgmt.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/applmgmt.log\"[\\s]+Tag=\"applmgmt\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for applmgmt-audit.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt-audit/applmgmt-audit.log\"[\\s]+Tag=\"applmgmt-audit\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for applmgmt-backup-restore-audit.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt-audit/applmgmt-br-audit.log\"[\\s]+Tag=\"applmgmt-br-audit\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for vami-access.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/opt/vmware/var/log/lighttpd/access.log\"[\\s]+Tag=\"vami-access\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for vami-error.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/opt/vmware/var/log/lighttpd/error.log\"[\\s]+Tag=\"vami-error\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for dcui.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/dcui.log\"[\\s]+Tag=\"dcui\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for detwist.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/detwist.log\"[\\s]+Tag=\"detwist\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for firewall-reload.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/firewall-reload.log\"[\\s]+Tag=\"firewall-reload\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for applmgmt_vmonsvc.std*"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/applmgmt_vmonsvc.std\\*\"[\\s]+Tag=\"applmgmt_vmonsvc\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for backupSchedulerCron"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/backupSchedulerCron.log\"[\\s]+Tag=\"backupSchedulerCron\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for progress.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/progress.log\"[\\s]+Tag=\"progress\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for statsmoitor-alarms"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/statsmon/statsmoitor-alarms.log\"[\\s]+Tag=\"statsmoitor-alarms\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for StatsMonitor"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/statsmon/StatsMonitor.log\"[\\s]+Tag=\"StatsMonitor\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for StatsMonitorStartup.log.std*"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/statsmon/StatsMonitorStartup.log.std\\*\"[\\s]+Tag=\"StatsMonitor-Startup\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for PatchRunner"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/PatchRunner.log\"[\\s]+Tag=\"PatchRunner\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for update_microservice"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/update_microservice.log\"[\\s]+Tag=\"update_microservice\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for vami"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/vami.log\"[\\s]+Tag=\"vami\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for vcdb_pre_patch"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/vcdb_pre_patch.\\*\"[\\s]+Tag=\"vcdb_pre_patch\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for dnsmasq.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/dnsmasq.log\"[\\s]+Tag=\"dnsmasq\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for procstate"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/procstate\"[\\s]+Tag=\"procstate\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for backup.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/backup.log\"[\\s]+Tag=\"applmgmt-backup\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for size.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/size.log\"[\\s]+Tag=\"applmgmt-size\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for restore.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/restore.log\"[\\s]+Tag=\"applmgmt-restore\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for reconciliation.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/reconciliation.log\"[\\s]+Tag=\"applmgmt-reconciliation\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "check for pnid_change.log"
+          cmd         : "/bin/echo $(/bin/cat /etc/vmware-syslog/vmware-services-applmgmt.conf)"
+          expect      : "[\\s]*input\\(type=\"imfile\"[\\s]+File=\"/var/log/vmware/applmgmt/pnid_change.log\"[\\s]+Tag=\"applmgmt-pnid-change\"[\\s]+Severity=\"info\"[\\s]+Facility=\"local0\"\\)[\\s]*"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "VCLD-80-000022 The vCenter VAMI service must off-load log records onto a different system or media from the system being logged."
+          info        : "Protection of log data includes assuring log data is not accidentally lost or deleted. Backing up log records to an unrelated system or onto separate media than the system the web server is actually running on helps to assure that, in the event of a catastrophic system failure, the log records will be retained.
+
+Satisfies: SRG-APP-000125-WSR-000071, SRG-APP-000358-WSR-000063, SRG-APP-000358-WSR-000163"
+          solution    : "Navigate to and open:
+
+/etc/vmware-syslog/vmware-services-applmgmt.conf
+
+Create the file if it does not exist.
+
+Set the contents of the file as follows:
+
+#applmgmt.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/applmgmt.log\"
+      Tag=\"applmgmt\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#applmgmt-audit.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt-audit/applmgmt-audit.log\"
+      Tag=\"applmgmt-audit\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#applmgmt-backup-restore-audit.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt-audit/applmgmt-br-audit.log\"
+      Tag=\"applmgmt-br-audit\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#vami-access.log
+input(type=\"imfile\"
+      File=\"/opt/vmware/var/log/lighttpd/access.log\"
+      Tag=\"vami-access\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#vami-error.log
+input(type=\"imfile\"
+      File=\"/opt/vmware/var/log/lighttpd/error.log\"
+      Tag=\"vami-error\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#dcui.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/dcui.log\"
+      Tag=\"dcui\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#detwist.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/detwist.log\"
+      Tag=\"detwist\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#firewall-reload.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/firewall-reload.log\"
+      Tag=\"firewall-reload\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#applmgmt_vmonsvc.std*
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/applmgmt_vmonsvc.std*\"
+      Tag=\"applmgmt_vmonsvc\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#backupSchedulerCron
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/backupSchedulerCron.log\"
+      Tag=\"backupSchedulerCron\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#progress.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/progress.log\"
+      Tag=\"progress\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#statsmoitor-alarms
+input(type=\"imfile\"
+      File=\"/var/log/vmware/statsmon/statsmoitor-alarms.log\"
+      Tag=\"statsmoitor-alarms\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#StatsMonitor
+input(type=\"imfile\"
+      File=\"/var/log/vmware/statsmon/StatsMonitor.log\"
+      Tag=\"StatsMonitor\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#StatsMonitorStartup.log.std*
+input(type=\"imfile\"
+      File=\"/var/log/vmware/statsmon/StatsMonitorStartup.log.std*\"
+      Tag=\"StatsMonitor-Startup\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#PatchRunner
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/PatchRunner.log\"
+      Tag=\"PatchRunner\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#update_microservice
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/update_microservice.log\"
+      Tag=\"update_microservice\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#vami
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/vami.log\"
+      Tag=\"vami\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#vcdb_pre_patch
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/vcdb_pre_patch.*\"
+      Tag=\"vcdb_pre_patch\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#dnsmasq.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/dnsmasq.log\"
+      Tag=\"dnsmasq\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#procstate
+input(type=\"imfile\"
+      File=\"/var/log/vmware/procstate\"
+      Tag=\"procstate\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#backup.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/backup.log\"
+      Tag=\"applmgmt-backup\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#size.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/size.log\"
+      Tag=\"applmgmt-size\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#restore.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/restore.log\"
+      Tag=\"applmgmt-restore\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#reconciliation.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/reconciliation.log\"
+      Tag=\"applmgmt-reconciliation\"
+      Severity=\"info\"
+      Facility=\"local0\")
+#pnid_change.log
+input(type=\"imfile\"
+      File=\"/var/log/vmware/applmgmt/pnid_change.log\"
+      Tag=\"applmgmt-pnid-change\"
+      Severity=\"info\"
+      Facility=\"local0\")"
+          reference   : "800-171|3.3.8,800-53|AU-4(1),800-53|AU-9(2),800-53r5|AU-4(1),800-53r5|AU-9(2),CAT|II,CCI|CCI-001348,CCI|CCI-001851,CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.DS-4,CSF|PR.PT-1,CSF2.0|PR.DS-10,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-4,ITSG-33|AU-9(2),NESA|M5.2.3,NESA|M5.5.2,NESA|T3.3.1,NESA|T3.6.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-259142r960948_rule,STIG-ID|VCLD-80-000022,Vuln-ID|V-259142"
+          see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000031 The vCenter VAMI service must explicitly disable Multipurpose Internet Mail Extensions (MIME) mime mappings based on \"Content-Type\"."
+      info        : "Controlling what a user of a hosted application can access is part of the security posture of the web server. Any time a user can access more functionality than is needed for the operation of the hosted application poses a security issue. A user with too much access can view information that is not needed for the user's job role, or the user could use the function in an unintentional manner.
+
+A MIME tells the web server what type of program various file types and extensions are and what external utilities or programs are needed to execute the file type. A limited number of MIME types must be configured manually, and automatic mapping must be disabled."
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf
+
+Add or reconfigure the following value:
+
+mimetype.use-xattr = \"disable\"
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-259143r1003697_rule,STIG-ID|VCLD-80-000031,SWIFT-CSCv1|2.3,Vuln-ID|V-259143"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/grep 'mimetype.use-xattr'"
+      expect      : "^[\\s]*mimetype.use-xattr[\\s]*=[\\s]*\"disable\"[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "VCLD-80-000033 The vCenter VAMI service must have resource mappings set to disable the serving of certain file types."
+      info        : "Resource mapping is the process of tying a particular file type to a process in the web server that can serve that type of file to a requesting client and to identify which file types are not to be delivered to a client.
+
+By not specifying which files can and which files cannot be served to a user, VAMI could deliver sensitive files."
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf
+
+Add or reconfigure the following value:
+
+url.access-deny = ( \"~\", \".inc\" )
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-259144r1003700_rule,STIG-ID|VCLD-80-000033,SWIFT-CSCv1|2.3,Vuln-ID|V-259144"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      file        : "/var/lib/vmware/cap-lighttpd/lighttpd.conf"
+      regex       : "^[\\s]*url.access-deny[\\s]*=[\\s]*"
+      expect      : "^[\\s]*url.access-deny[\\s]*=[\\s]*\\([\\s]*\\\"\\~\\\",[\\s]*\\\".inc\\\"[\\s]*\\)[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000034 The vCenter VAMI service must have Web Distributed Authoring (WebDAV) disabled."
+      info        : "A web server can be installed with functionality that, by its nature, is not secure. WebDAV is an extension to the HTTP protocol that, when developed, was meant to allow users to create, change, and move documents on a server, typically a web server or web share. Allowing this functionality, development, and deployment is much easier for web authors.
+
+WebDAV is not widely used and has serious security concerns because it may allow clients to modify unauthorized files on the web server."
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf
+
+Delete or comment out the \"mod_webdav\" line.
+
+Note: The line may be in an included config and not in the parent config itself.
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-259145r1003703_rule,STIG-ID|VCLD-80-000034,SWIFT-CSCv1|2.3,Vuln-ID|V-259145"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/awk '/server\.modules/,/\)/'| /bin/grep mod_webdav | /bin/awk '{print} END {if (NR == 0) print \"pass\" ; else print \"fail\"}'"
+      expect      : "(?i)^[\\s]*\\**[\\s]*pass:?[\\s]*\\**$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000035 The vCenter VAMI service must protect system resources and privileged operations from hosted applications."
+      info        : "Most of the attention to denial-of-service (DoS) attacks focuses on ensuring that systems and applications are not victims of these attacks. However, these systems and applications must also be secured against use to launch such an attack against others.
+
+A variety of technologies exist to limit or, in some cases, eliminate the effects of DoS attacks. Limiting system resources that are allocated to any user to a bare minimum may also reduce the ability of users to launch some DoS attacks.
+
+One DoS mitigation is to prevent VAMI from keeping idle connections open for too long."
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf file.
+
+Add or reconfigure the following value:
+
+server.max-keep-alive-idle = 30
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7a.,800-53r5|CM-7a.,CAT|II,CCI|CCI-000381,CN-L3|7.1.3.5(c),CN-L3|8.1.4.4(a),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.1,PCI-DSSv4.0|2.2.3,QCSC-v1|3.2,Rule-ID|SV-259146r1003706_rule,STIG-ID|VCLD-80-000035,SWIFT-CSCv1|2.3,Vuln-ID|V-259146"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : " /opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/grep 'server.max-keep-alive-idle'"
+      expect      : "^[\\s]*server.max-keep-alive-idle[\\s]*=[\\s]*30[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CHECK
+      description : "VCLD-80-000040 The vCenter VAMI service must restrict access to the web server's private key."
+      info        : "The web server's private key is used to prove the identity of the server to clients and securely exchange the shared secret key used to encrypt communications between the web server and clients. By gaining access to the private key, an attacker can pretend to be an authorized server and decrypt the Secure Sockets Layer (SSL) traffic between a client and the web server."
+      solution    : "At the command prompt, run the following commands:
+
+# chown root:root /etc/applmgmt/appliance/server.pem
+# chmod 600 /etc/applmgmt/appliance/server.pem"
+      reference   : "800-171|3.5.2,800-53|IA-5(2)(b),800-53r5|IA-5(2)(a)(1),CAT|II,CCI|CCI-000186,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(2)(b),NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-259147r961041_rule,STIG-ID|VCLD-80-000040,Vuln-ID|V-259147"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      file        : "/etc/applmgmt/appliance/server.pem"
+      owner       : "root"
+      mask        : "177"
+      group       : "root"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000060 The vCenter VAMI service must restrict the ability of users to launch denial-of-service (DoS) attacks against other information systems or networks."
+      info        : "In UNIX and related computer operating systems, a file descriptor is an indicator used to access a file or other input/output resource, such as a pipe or network connection. File descriptors index into a per-process file descriptor table maintained by the kernel, which in turn indexes into a systemwide table of files opened by all processes, called the file table.
+
+As a single-threaded server, Lighttpd must be limited in the number of file descriptors that can be allocated. This will prevent Lighttpd from being used in a form of DoS attack against the operating system."
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf
+
+Add or reconfigure the following value:
+
+server.max-fds = 2048
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-53|SC-5(1),800-53r5|SC-5(1),CAT|II,CCI|CCI-001094,CSF|DE.CM-1,CSF|PR.DS-4,CSF2.0|DE.CM-01,CSF2.0|PR.IR-01,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-5(1),NESA|T3.3.1,NIAv2|GS8e,NIAv2|GS10c,QCSC-v1|8.2.1,Rule-ID|SV-259149r1003709_rule,STIG-ID|VCLD-80-000060,Vuln-ID|V-259149"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/grep 'server.max-fds'"
+      expect      : "^[\\s]*server.max-fds[\\s]*=[\\s]*([0-9]|[1-9][0-9]{1,2}|1[0-9]{3}|20[0-3][0-9]|204[0-8])[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000061 The vCenter VAMI service must set the encoding for all text mime types to UTF-8."
+      info        : "Invalid user input occurs when a user inserts data or characters into a hosted application's data entry field and the hosted application is unprepared to process that data. This results in unanticipated application behavior, potentially leading to an application compromise. Invalid user input is one of the primary methods employed when attempting to compromise an application.
+
+An attacker can also enter Unicode into hosted applications in an effort to break out of the document home or root home directory or to bypass security checks."
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf
+
+Navigate to the \"mimetype.assign\" block.
+
+Replace all the mappings whose assigned type is \"text/*\" with mappings for UTF-8 encoding. For example:
+
+  \".log\" => \"text/plain; charset=utf-8\",
+  \".conf\" => \"text/plain; charset=utf-8\",
+  \".text\" => \"text/plain; charset=utf-8\",
+  \".txt\" => \"text/plain; charset=utf-8\",
+  \".spec\" => \"text/plain; charset=utf-8\",
+  \".dtd\" => \"text/xml; charset=utf-8\",
+  \".xml\" => \"text/xml; charset=utf-8\",
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-53|SI-10,800-53r5|SI-10,CAT|II,CCI|CCI-001310,CN-L3|8.1.4.4(d),CSF2.0|PR.DS-10,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-10,ITSG-33|SI-10a.,NESA|T7.3.1,NESA|T7.3.2,NIAv2|SS6e,Rule-ID|SV-259150r1003712_rule,STIG-ID|VCLD-80-000061,Vuln-ID|V-259150"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : " /opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/awk '/mimetype\.assign/,/\)/' | /bin/grep 'text/' | /bin/grep -v 'charset=utf-8' | /bin/awk '{print} END {if (NR == 0) print \"pass\" ; else print \"fail\"}'"
+      expect      : "(?i)^[\\s]*\\**[\\s]*pass:?[\\s]*\\**$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000062 The vCenter VAMI service must disable directory listing."
+      info        : "The goal is to completely control the web user's experience in navigating any portion of the web document root directories. Ensuring all web content directories have at least the equivalent of an \"index.html\" file is a significant factor to accomplish this end.
+
+Enumeration techniques, such as Uniform Resource Locator (URL) parameter manipulation, rely on being able to obtain information about the web server's directory structure by locating directories without default pages. In this scenario, the web server will display to the user a listing of the files in the directory being accessed. By having a default hosted application web page, the anonymous web user will not obtain directory browsing information or an error message that reveals the server type and version."
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf
+
+Add or reconfigure the following value:
+
+dir-listing.activate = \"disable\"
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-259151r1003715_rule,STIG-ID|VCLD-80-000062,Vuln-ID|V-259151"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/grep 'dir-listing.activate'"
+      expect      : "^[\\s]*dir-listing.activate[\\s]*=[\\s]*\"disable\"[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000063 The vCenter VAMI service must not be configured to use the \"mod_status\" module."
+      info        : "Any application providing too much information in error logs and in administrative messages to the screen risks compromising the data and security of the application and system.
+
+VAMI must only generate error messages that provide information necessary for corrective actions without revealing sensitive or potentially harmful information in error logs and administrative messages. The \"mod_status\" module generates the status overview of the webserver.
+
+The information covers the following:
+
+- Uptime.
+- Average throughput.
+- Current throughput.
+- Active connections and their state.
+
+While this information is useful on a development system, production systems must not have \"mod_status\" enabled."
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf.
+
+Remove the line containing \"mod_status\".
+
+Note: The line may be in an included config and not in the parent config.
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-259152r1003718_rule,STIG-ID|VCLD-80-000063,Vuln-ID|V-259152"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/awk '/server\.modules/,/\)/' | /bin/grep mod_status | /bin/awk '{print} END {if (NR == 0) print \"pass\" ; else print \"fail\"}'"
+      expect      : "(?i)^[\\s]*\\**[\\s]*pass:?[\\s]*\\**$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000064 The vCenter VAMI service must have debug logging disabled."
+      info        : "Information needed by an attacker to begin looking for possible vulnerabilities in a web server includes any information about the web server and plug-ins or modules being used. When debugging or trace information is enabled in a production web server, information about the web server, such as web server type, version, patches installed, plug-ins and modules installed, type of code being used by the hosted application, and any backends being used for data storage may be displayed.
+
+Because this information may be placed in logs and general messages during normal operation of the web server, an attacker does not need to cause an error condition to gain this information."
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf
+
+Add or reconfigure the following value:
+
+debug.log-request-handling = \"disable\"
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-53|SI-11a.,800-53r5|SI-11a.,CAT|II,CCI|CCI-001312,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-11b.,Rule-ID|SV-259153r1003721_rule,STIG-ID|VCLD-80-000064,Vuln-ID|V-259153"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/grep 'debug.log-request-handling'"
+      expect      : "^[\\s]*debug.log-request-handling[\\s]*=[\\s]*\"disable\"[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000097 The vCenter VAMI service must disable client initiated TLS renegotiation."
+      info        : "All versions of the Secure Sockets Layer (SSL) and TLS protocols (up to and including TLS 1.2) are vulnerable to a man-in-the-middle attack (CVE-2009-3555) during a renegotiation. This vulnerability allows an attacker to \"prefix\" a chosen plaintext to the HTTP request as seen by the web server. The protocols have since been amended by RFC 5746, but the fix must be supported by both client and server to be effective.
+
+While Lighttpd and the underlying OpenSSL libraries are no longer vulnerable, steps must be taken to account for older clients that do not support RFC 5746. To this end, Lighttpd disables client-initiated renegotiation entirely by default. This configuration must be validated and maintained."
+      solution    : "Navigate to and open:
+
+/var/lib/vmware/cap-lighttpd/lighttpd.conf
+
+Remove any setting for \"ssl.disable-client-renegotiation\".
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-259155r1003724_rule,STIG-ID|VCLD-80-000097,SWIFT-CSCv1|2.3,Vuln-ID|V-259155"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/grep 'ssl\.disable-client-renegotiation' | /bin/awk '{print} END {if (NR == 0) print \"pass\"; else if ($1 ~ \"ssl.disable-client-renegotiation\" && $3 ~ \"enabled\") print \"pass\"; else print \"fail\"}'"
+      expect      : "(?i)^[\\s]*\\**[\\s]*pass:?[\\s]*\\**$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000098 The vCenter VAMI service must be configured to hide the server type and version in client responses."
+      info        : "Web servers will often display error messages to client users, displaying enough information to aid in the debugging of the error. The information given back in error messages may display the web server type, version, patches installed, plug-ins and modules installed, type of code being used by the hosted application, and any backends being used for data storage.
+
+This information could be used by an attacker to blueprint what type of attacks might be successful. Therefore, VAMI must be configured to hide the server version at all times."
+      solution    : "Navigate to and open:
+
+/opt/vmware/etc/lighttpd/applmgmt-lighttpd.conf
+
+Add or reconfigure the following value:
+
+server.tag = \"vami\"
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-259156r1003727_rule,STIG-ID|VCLD-80-000098,SWIFT-CSCv1|2.3,Vuln-ID|V-259156"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/grep 'server.tag'"
+      expect      : "^[\\s]*server.tag[\\s]*=[\\s]*\"vami\"[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000099 The vCenter VAMI service must implement HTTP Strict Transport Security (HSTS)."
+      info        : "HSTS instructs web browsers to only use secure connections for all future requests when communicating with a website. Doing so helps prevent SSL protocol attacks, SSL stripping, cookie hijacking, and other attempts to circumvent SSL protection."
+      solution    : "Navigate to and open:
+
+/opt/vmware/etc/lighttpd/applmgmt-lighttpd.conf
+
+If header \"Strict-Transport-Security\" is not present, add the following line to the end of the file:
+
+setenv.add-response-header += (\"Strict-Transport-Security\" => \"max-age=31536000; includeSubDomains; preload\")
+
+If header \"Strict-Transport-Security\" is present and not set to \"Deny\", update the value as shown below:
+
+\"Strict-Transport-Security\" => \"max-age=31536000; includeSubDomains; preload\",
+
+Note: The last line in the parameter does not need a trailing comma if part of a multi-line configuration.
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-259157r1003730_rule,STIG-ID|VCLD-80-000099,SWIFT-CSCv1|2.3,Vuln-ID|V-259157"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/awk '/setenv\.add-response-header/,/\)/' | /bin/sed -e 's/^[ ]*//' | /bin/grep 'Strict-Transport-Security' | /bin/awk '/max-age=31536000/ &&/includeSubDomains/ &&/preload/' | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'"
+      expect      : "(?i)^[\\s]*\\**[\\s]*pass:?[\\s]*\\**$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000100 The vCenter VAMI service must implement prevent rendering inside a frame or iframe on another site."
+      info        : "Clickjacking, also known as a \"UI redress attack\", is when an attacker uses multiple transparent or opaque layers to trick a user into clicking on a button or link on another page when they were intending to click on the top level page. Thus, the attacker is \"hijacking\" clicks meant for their page and routing them to another page, most likely owned by another application, domain, or both.
+
+Using a similar technique, keystrokes can also be hijacked. With a carefully crafted combination of stylesheets, iframes, and text boxes, a user can be led to believe they are typing in the password to their email or bank account but are instead typing into an invisible frame controlled by the attacker."
+      solution    : "Navigate to and open:
+
+/opt/vmware/etc/lighttpd/applmgmt-lighttpd.conf
+
+If header \"X-Frame-Options\" is not present, add the following line to the end of the file:
+
+setenv.add-response-header += (\"X-Frame-Options\" => \"Deny\")
+
+If header \"X-Frame-Options\" is present and not set to \"Deny\", update the value as shown below:
+
+\"X-Frame-Options\" => \"Deny\",
+
+Note: The last line in the parameter does not need a trailing comma if part of a multi-line configuration.
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-259158r1003733_rule,STIG-ID|VCLD-80-000100,SWIFT-CSCv1|2.3,Vuln-ID|V-259158"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/awk '/setenv\.add-response-header/,/\)/' | /bin/sed -e 's/^[ ]*//' | /bin/grep 'X-Frame-Options'"
+      expect      : "^[\\s]*\"X-Frame-Options\"[\\s]*=>[\\s]*\"Deny\",?[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000101 The vCenter VAMI service must protect against MIME sniffing."
+      info        : "MIME sniffing was, and still is, a technique used by some web browsers to examine the content of a particular asset. This is done for the purpose of determining an asset's file format. This technique is useful in the event that there is not enough metadata information present for a particular asset, thus leaving the possibility that the browser interprets the asset incorrectly.
+
+Although MIME sniffing can be useful to determine an asset's correct file format, it can also cause a security vulnerability. This vulnerability can be quite dangerous both for site owners as well as site visitors. This is because an attacker can leverage MIME sniffing to send an XSS (Cross Site Scripting) attack."
+      solution    : "Navigate to and open:
+
+/opt/vmware/etc/lighttpd/applmgmt-lighttpd.conf
+
+If header \"X-Content-Type-Options\" is not present, add the following line to the end of the file:
+
+setenv.add-response-header += (\"X-Content-Type-Options\" => \"nosniff\")
+
+If header \"X-Content-Type-Options\" is present and not set to \"nosniff\", update the value as shown below:
+
+\"X-Content-Type-Options\" => \"nosniff\",
+
+Note: The last line in the parameter does not need a trailing comma if part of a multi-line configuration.
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-259159r1003736_rule,STIG-ID|VCLD-80-000101,SWIFT-CSCv1|2.3,Vuln-ID|V-259159"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/awk '/setenv\.add-response-header/,/\)/' | /bin/sed -e 's/^[ ]*//' | /bin/grep 'X-Content-Type-Options'"
+      expect      : "^[\\s]*\"X-Content-Type-Options\"[\\s]*=>[\\s]*\"nosniff\",?[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VCLD-80-000102 The vCenter VAMI service must enable Content Security Policy."
+      info        : "A Content Security Policy (CSP) requires careful tuning and precise definition of the policy. If enabled, CSP has significant impact on the way browsers render pages (e.g., inline JavaScript is disabled by default and must be explicitly allowed in the policy). CSP prevents a wide range of attacks, including cross-site scripting and other cross-site injections."
+      solution    : "Navigate to and open:
+
+/opt/vmware/etc/lighttpd/applmgmt-lighttpd.conf
+
+If header \"Content-Security-Policy\" is not present, add the following line to the end of the file:
+
+setenv.add-response-header += (\"Content-Security-Policy\" => \"default-src 'self'; img-src 'self' data: https://vcsa.vmware.com; font-src 'self' data:; object-src 'none'; style-src 'self' 'unsafe-inline'\")
+
+If header \"Content-Security-Policy\" is present and not set to \"default-src 'self'; img-src 'self' data: https://vcsa.vmware.com; font-src 'self' data:; object-src 'none'; style-src 'self' 'unsafe-inline'\", update the value as shown below:
+
+\"Content-Security-Policy\" => \"default-src 'self'; img-src 'self' data: https://vcsa.vmware.com; font-src 'self' data:; object-src 'none'; style-src 'self' 'unsafe-inline'\",
+
+Note: The last line in the parameter does not need a trailing comma if part of a multi-line configuration.
+
+Restart the service with the following command:
+
+# systemctl restart cap-lighttpd"
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_8-0_VCSA_VAMI_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-259160r1003739_rule,STIG-ID|VCLD-80-000102,SWIFT-CSCv1|2.3,Vuln-ID|V-259160"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+      cmd         : "/opt/vmware/cap_lighttpd/sbin/lighttpd -p -f /var/lib/vmware/cap-lighttpd/lighttpd.conf 2>/dev/null | /bin/awk '/setenv.add-response-header/,/)/' | /bin/sed -e 's/^[ ]*//' | /bin/grep 'Content-Security-Policy' | /bin/awk \"/default-src 'self'/ &&/img-src 'self' data: https:\\/\\/vcsa.vmware.com/ &&/font-src 'self' data:/ &&/object-src 'none'/ &&/style-src 'self' 'unsafe-inline'/\" | /bin/awk '{print} END {if (NR != 0) print \"pass\" ; else print \"fail\"}'"
+      expect      : "(?i)^[\\s]*\\**[\\s]*pass:?[\\s]*\\**$"
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "DISA_VMware_vSphere_8.0_vCenter_Appliance_Management_Interface_(VAMI)_STIG_v2r1.audit from DISA VMware vSphere 8.0 vCenter Appliance Management Interface (VAMI) STIG v2r1"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_8-0_Y24M08_STIG.zip"
+    </report>
+  </else>
+</if>
+
+</check_type>

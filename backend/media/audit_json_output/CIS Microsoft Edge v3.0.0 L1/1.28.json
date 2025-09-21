@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.28 (L1) Ensure 'Allow download restrictions' is set to 'Enabled:  Block malicious downloads'",
+  "info": "\"This policy setting controls whether Microsoft Edge blocks certain types of downloads, and prevents users from bypassing security warnings, depending on the classification of Safe Browsing.\n\nThe recommended state for this setting is: Enabled: Block malicious downloads",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Block malicious downloads :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Allow download restrictions",
+  "Impact": "Users will be prevented from downloading certain types of files and will not be able to bypass security warnings.\"",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "4",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "DownloadRestrictions",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

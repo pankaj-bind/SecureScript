@@ -1,0 +1,265 @@
+
+<check_type:"Windows" version:"2">
+<group_policy:"CIS Microsoft Windows 11 Stand-alone">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "Windows 11 is installed"
+      value_type  : POLICY_TEXT
+      value_data  : "@PLATFORM_VERSION@"
+      reg_key     : "HKLM\Software\Microsoft\Windows Nt\Currentversion"
+      reg_item    : "CurrentBuild"
+      check_type  : CHECK_REGEX
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "Windows 11 installation type"
+      value_type  : POLICY_TEXT
+      value_data  : "Client"
+      reg_key     : "HKLM\Software\Microsoft\Windows Nt\Currentversion"
+      reg_item    : "InstallationType"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_Microsoft_Windows_11_Stand-alone_v4.0.0_L1.audit from CIS Microsoft Windows 11 Stand-alone Benchmark v4.0.0"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/22007"
+      show_output : YES
+    </report>
+
+    <custom_item>
+      type            : PASSWORD_POLICY
+      description     : "1.1.1 (L1) Ensure 'Enforce password history' is set to '24 or more password(s)'"
+      info            : "This policy setting determines the number of renewed, unique passwords that have to be associated with a user account before you can reuse an old password. The value for this policy setting must be between 0 and 24 passwords. The default value for stand-alone systems is 0 passwords, but the default setting when joined to a domain is 24 passwords. To maintain the effectiveness of this policy setting, use the Minimum password age setting to prevent users from repeatedly changing their password.
+
+The recommended state for this setting is: 24 or more password(s)
+
+Note: Password Policy settings (section 1.1) and Account Lockout Policy settings (section 1.2) must be applied via the Default Domain Policy GPO in order to be globally in effect on domain user accounts as their default behavior. If these settings are configured in another GPO, they will only affect local user accounts on the computers that receive the GPO. However, custom exceptions to the default password policy and account lockout policy rules for specific domain users and/or groups can be defined using Password Settings Objects (PSOs), which are completely separate from Group Policy and most easily configured using Active Directory Administrative Center.
+
+Note #2: As of the publication of this benchmark, Microsoft currently has a maximum limit of 24 saved passwords. For more information, please visit
+
+Enforce password history (Windows 10) - Windows security | Microsoft Docs
+
+.
+
+The longer a user uses the same password, the greater the chance that an attacker can determine the password through brute force attacks. Also, any accounts that may have been compromised will remain exploitable for as long as the password is left unchanged. If password changes are required but password reuse is not prevented, or if users continually reuse a small number of passwords, the effectiveness of a good password policy is greatly reduced.
+
+If you specify a low number for this policy setting, users will be able to use the same small number of passwords repeatedly. If you do not also configure the Minimum password age setting, users might repeatedly change their passwords until they can reuse their original password."
+      solution        : "To establish the recommended configuration via GP, set the following UI path to 24 or more password(s) :
+
+Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy\Enforce password history
+
+Impact:
+
+The major impact of this configuration is that users must create a new password every time they are required to change their old one. If users are required to change their passwords to new unique values, there is an increased risk of users who write their passwords somewhere so that they do not forget them. Another risk is that users may create passwords that change incrementally (for example, password01, password02, and so on) to facilitate memorization but make them easier to guess. Also, an excessively low value for the Minimum password age setting will likely increase administrative overhead, because users who forget their passwords might ask the help desk to reset them frequently."
+      reference       : "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|16.2,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1"
+      see_also        : "https://workbench.cisecurity.org/benchmarks/22007"
+      value_type      : POLICY_DWORD
+      value_data      : @PASSWORD_HISTORY@
+      password_policy : ENFORCE_PASSWORD_HISTORY
+    </custom_item>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "3b576869-a4ec-4529-8536-b80a7769e899"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "3b576869-a4ec-4529-8536-b80a7769e899"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "56a863a9-875e-4185-98a7-b882c64b5ce5"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "56a863a9-875e-4185-98a7-b882c64b5ce5"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "d4f940ab-401b-4efc-aadc-ad5f3c50688a"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "d4f940ab-401b-4efc-aadc-ad5f3c50688a"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "e6db77e5-3df2-4cf1-b95a-636979351e5b"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "e6db77e5-3df2-4cf1-b95a-636979351e5b"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "d3e037e1-3eb8-44c8-a917-57927947596d"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "d3e037e1-3eb8-44c8-a917-57927947596d"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "5beb7efe-fd9a-4556-801d-275e5ffc04cc"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "5beb7efe-fd9a-4556-801d-275e5ffc04cc"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "26190899-1602-49e8-8b27-eb1d0a1ce869"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "26190899-1602-49e8-8b27-eb1d0a1ce869"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "be9ba2d9-53ea-4cdc-84e5-9b1eeee46550"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+
+        <custom_item>
+          type        : REGISTRY_SETTING
+          description : "75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84"
+          value_type  : POLICY_TEXT
+          value_data  : "1"
+          reg_key     : "HKLM\Software\Policies\Microsoft\Windows Defender\Windows Defender Exploit Guard\ASR\Rules"
+          reg_item    : "75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84"
+          reg_option  : CAN_NOT_BE_NULL
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "18.10.43.6.1.2 (L1) Ensure 'Configure Attack Surface Reduction rules: Set the state for each ASR rule' is configured"
+          info        : "This policy setting sets the Attack Surface Reduction rules.
+
+The recommended state for this setting is:
+
+26190899-1602-49e8-8b27-eb1d0a1ce869 - 1 (Block Office communication application from creating child processes)
+
+3b576869-a4ec-4529-8536-b80a7769e899 - 1 (Block Office applications from creating executable content)
+
+56a863a9-875e-4185-98a7-b882c64b5ce5 - 1 (Block abuse of exploited vulnerable signed drivers)
+
+5beb7efe-fd9a-4556-801d-275e5ffc04cc - 1 (Block execution of potentially obfuscated scripts)
+
+75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84 - 1 (Block Office applications from injecting code into other processes)
+
+7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c - 1 (Block Adobe Reader from creating child processes)
+
+92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b - 1 (Block Win32 API calls from Office macro)
+
+9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2 - 1 (Block credential stealing from the Windows local security authority subsystem (lsass.exe))
+
+b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4 - 1 (Block untrusted and unsigned processes that run from USB)
+
+be9ba2d9-53ea-4cdc-84e5-9b1eeee46550 - 1 (Block executable content from email client and webmail)
+
+d3e037e1-3eb8-44c8-a917-57927947596d - 1 (Block JavaScript or VBScript from launching downloaded executable content)
+
+d4f940ab-401b-4efc-aadc-ad5f3c50688a - 1 (Block Office applications from creating child processes)
+
+e6db77e5-3df2-4cf1-b95a-636979351e5b - 1 (Block persistence through WMI event subscription)
+
+Note: More information on ASR rules can be found at the following link:
+
+Use Attack surface reduction rules to prevent malware infection | Microsoft Docs
+
+Attack surface reduction helps prevent actions and apps that are typically used by exploit-seeking malware to infect machines."
+          solution    : "To establish the recommended configuration via GP, set the following UI path so that 26190899-1602-49e8-8b27-eb1d0a1ce869 3b576869-a4ec-4529-8536-b80a7769e899 56a863a9-875e-4185-98a7-b882c64b5ce5 5beb7efe-fd9a-4556-801d-275e5ffc04cc 75668c1f-73b5-4cf0-bb93-3ecf5cb7cc84 7674ba52-37eb-4a4f-a9a1-f0f9a1619a2c 92e97fa1-2edf-4476-bdd6-9dd0b4dddc7b 9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2 b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4 be9ba2d9-53ea-4cdc-84e5-9b1eeee46550 d3e037e1-3eb8-44c8-a917-57927947596d d4f940ab-401b-4efc-aadc-ad5f3c50688a and e6db77e5-3df2-4cf1-b95a-636979351e5b are each set to a value of 1 :
+
+Computer Configuration\Policies\Administrative Templates\Windows Components\Microsoft Defender Antivirus\Microsoft Defender Exploit Guard\Attack Surface Reduction\Configure Attack Surface Reduction rules: Set the state for each ASR rule
+
+Note: This Group Policy path is provided by the Group Policy template WindowsDefender.admx/adml that is included with the Microsoft Windows 10 Release 1709 Administrative Templates (or newer).
+
+Impact:
+
+When a rule is triggered, a notification will be displayed from the Action Center."
+          reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/22007"
+          show_output : YES
+        </report>
+      </then>
+    </if>    
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_Microsoft_Windows_11_Stand-alone_v4.0.0_L1.audit from CIS Microsoft Windows 11 Stand-alone Benchmark v4.0.0"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/benchmarks/22007"
+      show_output : YES
+    </report>
+  </else>
+</if>
+
+</group_policy>
+</check_type>

@@ -1,0 +1,239 @@
+#TRUSTED 0e8a42086f94fbddd49580758960a1ed705a3319d0288c640c7ca1b57d15365e915fd0de84527a797fffe5ebaf8efd82dcd2f7bd33c1250e4bcc85be245ca923e1634a3ef14e091640bc626a02308ef1e03588cbd21a1988de631a1681ffd6b2a895d4e321cc37746ceaae80a3caca8564419e9b5bef575310c1d0d73f3ae94f6d589bb9a4072c3fab48c79a22e9abd0340f43e1a3c82789b1f724b5850a763a2ea91c5e8d79074a93cc99ad58218483af4e64877854694eb6ec26a43e42c2356ad3bf6bf8ce14126bd12a40c56efdb94fb6a2af80d21c243247f800d1657c25c4bc17030767472ae051025a39a5502384963ffb6dd6d3d914b1040a44866b089373de419f1db857f688f429980725b579fc3d860e08b27edea76b071a173e3af3ac4e45da8dcf420f916eb86ae2fd573d6da8de2401fe21c737865cca7a1a2d36419b180e6ed50b695282a0eec7c8f7ad2225dc422c1b03a59d1b58440579fa45ea5d886d1213e8a959086469000a06ba8347137ef2bba18cf24507ac6dc22b699186742716a93f2292fea96bbde4419bb49db65d5331480ac679883b0af3aabfe57ccae11a7c7ba2f418f83ace984f7dd93197d6700da157a50715505c8c1eaa29cb26f62c50e18c0ae331c0b4594de1071ab1b13a57d6f22dd1021eee19041975e1aa01dc0d1f3e15317c4549667f18e6134ef73e1f6407c78f6bbb3c8173
+#TRUST-RSA-SHA256 2515aad570c31766b0c099dbd723a9b7bc6f8215e99fb114c48221d7af1d8f15f72c05ed1f1752215cd05343fa66f4454cd374390faf57241ccf6b2c1fe297a716137b8fab7fca48aa0599b5b2da63fd0e84db0469ccbfb3f571af5476abf6f9facae2096f35aa7b923783b49ecbd91159c8d0d1f12aafd82a54dd7f7f4b2cc4e082eec0654c9d2580a53d039bbe35e8447f64984f40bdec04d3bdf969d9b32796a0afe5662a5865094aaaef1cab22df890adeecc5765ea04e1b8df4b0e84fdd65090141989edfabdf6c917b06450a33059ce9bc0e4d1184baf92f47b7990ddc02a75f0bcce0c86d1918ff77c87bd57d971d23b6c3cd2b784139fc0f5f96ac904840cd02f7f7ccdf40ec62b9d06c590527daab6529fe47ad7398b6b17166576f20e03721d522e05f0570d13749a10333777485508418ab13b8669fd3873503238081796becefb899d258bb8e4498acda893a8d05769ec18a8253ee7a1fafd0c5807f9d607f9b481c40829a608816f7f0c7b2bebabd1fffe734432e4d22b73014572051b9ce8f1bb38bcfc25f46667d16cb49e63e99e59c64d011ee8db70eb207c372255a8b7ad64256e932642770d7f2d05cd958158e7993c31079c54158d1ad7dfc96a37205d8ff368c33052b30ba9801b62d2730f533adece8c88632de71b924b13051e1a623a00caf78b1bb0ee6d9a743ddaadace14495aade99e7c729f44
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.9 $
+# $Date: 2024/06/18 $
+#
+# Description	: This .audit is designed against the CIS Security Configuration Benchmark For
+# 			Microsoft SQL Server 2014 Version 1.5.0
+#
+#<ui_metadata>
+#<display_name>CIS SQL Server 2014 Database L1 OS v1.5.0</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>SQL Server 2014 Database</name>
+#  <profile>L1 OS Windows</profile>
+#  <version>1.5.0</version>
+#  <link>https://workbench.cisecurity.org/files/2945</link>
+#</spec>
+#<labels>database,cis,ms_sql_server_2014,update_20230227</labels>
+#<benchmark_refs>CCE,CIS_Recommendation,CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#</ui_metadata>
+
+<check_type:"Windows" version:"2">
+<group_policy:"CIS MS SQL Server 2014 Database OS Level 1 Audit">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : REG_CHECK
+      description : "Windows is installed"
+      value_type  : POLICY_TEXT
+      value_data  : "HKLM\SOFTWARE\Microsoft\Windows NT"
+      reg_option  : MUST_EXIST
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_Microsoft_SQL_Server_2014_Database_v1_5_0_Level_1_OS.audit from Microsoft SQL Server 2014 Version 1.5.0"
+      info        : "Nessus has identified that Windows is installed."
+      see_also    : "https://workbench.cisecurity.org/files/2945"
+    </report>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "2.10 Ensure Unnecessary SQL Server Protocols are set to 'Disabled' - 'Shared Memory protocol is disabled'"
+      info            : "SQL Server supports Shared Memory, Named Pipes, TCP/IP and VIA protocols. However, SQL Server should be configured to use the bare minimum required based on the organization's needs.
+
+Rationale:
+
+Using fewer protocols minimizes the attack surface of SQL Server and, in some cases, can protect it from remote attacks."
+      solution        : "Open SQL Server Configuration Manager; go to the SQL Server Network Configuration. Ensure that only required protocols are enabled. Disable protocols not necessary.
+
+Impact:
+
+The Database Engine must be stopped and restarted for the change to take effect.
+
+Default Value:
+
+By default, TCP/IP and Shared Memory protocols are enabled on all commercial editions."
+      reference       : "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv6|9.1,CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|1M,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2"
+      see_also        : "https://workbench.cisecurity.org/files/2945"
+      value_type      : POLICY_TEXT
+      value_data      : "Pass"
+      powershell_args : "$result='Pass';Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL12*\MSSQLServer\SuperSocketNetLib\Sm' -name 'Enabled' | ForEach-Object -Process {If($_.Enabled -ne 0){$result='FAIL';$_.PSPath;'Enabled : ' + $_.Enabled}};$result;"
+    </custom_item>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "2.10 Ensure Unnecessary SQL Server Protocols are set to 'Disabled' - 'Named Pipes protocol is disabled'"
+      info            : "SQL Server supports Shared Memory, Named Pipes, TCP/IP and VIA protocols. However, SQL Server should be configured to use the bare minimum required based on the organization's needs.
+
+Rationale:
+
+Using fewer protocols minimizes the attack surface of SQL Server and, in some cases, can protect it from remote attacks."
+      solution        : "Open SQL Server Configuration Manager; go to the SQL Server Network Configuration. Ensure that only required protocols are enabled. Disable protocols not necessary.
+
+Impact:
+
+The Database Engine must be stopped and restarted for the change to take effect.
+
+Default Value:
+
+By default, TCP/IP and Shared Memory protocols are enabled on all commercial editions."
+      reference       : "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv6|9.1,CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|1M,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2"
+      see_also        : "https://workbench.cisecurity.org/files/2945"
+      value_type      : POLICY_TEXT
+      value_data      : "Pass"
+      powershell_args : "$result='Pass';Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL12*\MSSQLServer\SuperSocketNetLib\Np' -name 'Enabled' | ForEach-Object -Process {If($_.Enabled -ne 0){$result='FAIL';$_.PSPath;'Enabled : ' + $_.Enabled}};$result;"
+    </custom_item>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "2.10 Ensure Unnecessary SQL Server Protocols are set to 'Disabled' - 'TCP/IP protocol is disabled'"
+      info            : "SQL Server supports Shared Memory, Named Pipes, TCP/IP and VIA protocols. However, SQL Server should be configured to use the bare minimum required based on the organization's needs.
+
+Rationale:
+
+Using fewer protocols minimizes the attack surface of SQL Server and, in some cases, can protect it from remote attacks."
+      solution        : "Open SQL Server Configuration Manager; go to the SQL Server Network Configuration. Ensure that only required protocols are enabled. Disable protocols not necessary.
+
+Impact:
+
+The Database Engine must be stopped and restarted for the change to take effect.
+
+Default Value:
+
+By default, TCP/IP and Shared Memory protocols are enabled on all commercial editions."
+      reference       : "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv6|9.1,CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|1M,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2"
+      see_also        : "https://workbench.cisecurity.org/files/2945"
+      value_type      : POLICY_TEXT
+      value_data      : "Pass"
+      powershell_args : "$result='Pass';Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL12*\MSSQLServer\SuperSocketNetLib\Tcp' -name 'Enabled' | ForEach-Object -Process {If($_.Enabled -ne 0){$result='FAIL';$_.PSPath;'Enabled : ' + $_.Enabled}};$result;"
+    </custom_item>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "2.10 Ensure Unnecessary SQL Server Protocols are set to 'Disabled' - 'VIA protocol is disabled'"
+      info            : "SQL Server supports Shared Memory, Named Pipes, TCP/IP and VIA protocols. However, SQL Server should be configured to use the bare minimum required based on the organization's needs.
+
+Rationale:
+
+Using fewer protocols minimizes the attack surface of SQL Server and, in some cases, can protect it from remote attacks."
+      solution        : "Open SQL Server Configuration Manager; go to the SQL Server Network Configuration. Ensure that only required protocols are enabled. Disable protocols not necessary.
+
+Impact:
+
+The Database Engine must be stopped and restarted for the change to take effect.
+
+Default Value:
+
+By default, TCP/IP and Shared Memory protocols are enabled on all commercial editions."
+      reference       : "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv6|9.1,CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|1M,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2"
+      see_also        : "https://workbench.cisecurity.org/files/2945"
+      value_type      : POLICY_TEXT
+      value_data      : "Pass"
+      powershell_args : "$result='Pass';Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL12*\MSSQLServer\SuperSocketNetLib\Via' -name 'Enabled' | ForEach-Object -Process {If($_.Enabled -ne 0){$result='FAIL';$_.PSPath;'Enabled : ' + $_.Enabled}};$result;"
+    </custom_item>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "3.5 Ensure the SQL Server's MSSQL Service Account is Not an Administrator"
+      info            : "The service account and/or service SID used by the MSSQLSERVER service for a default instance or MSSQL$<InstanceName> service for a named instance should not be a member of the Windows Administrator group either directly or indirectly (via a group). This also means that the account known as LocalSystem (AKA NT AUTHORITY\SYSTEM) should not be used for the MSSQL service as this account has higher privileges than the SQL Server service requires.
+
+Rationale:
+
+Following the principle of least privilege, the service account should have no more privileges than required to do its job. For SQL Server services, the SQL Server Setup will assign the required permissions directly to the service SID. No additional permissions or privileges should be necessary."
+      solution        : "In the case where LocalSystem is used, use SQL Server Configuration Manager to change to a less privileged account. Otherwise, remove the account or service SID from the Administrators group. You may need to run the SQL Server Configuration Manager if underlying permissions had been changed or if SQL Server Configuration Manager was not originally used to set the service account.
+
+Impact:
+
+The SQL Server Configuration Manager tool should always be used to change the SQL Server's service account. This will ensure that the account has the necessary privileges. If the service needs access to resources other than the standard Microsoft defined directories and registry, then additional permissions may need to be granted separately to those resources.
+
+Default Value:
+
+By default, the Service Account (or Service SID) is not a member of the Administrators group."
+      reference       : "800-171|3.1.1,800-53|AC-2(9),800-53r5|AC-2(9),CN-L3|8.1.4.2(c),CSCv6|5.1,CSCv7|4.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1M,NIAv2|AM16,PCI-DSSv3.2.1|8.5,PCI-DSSv4.0|8.2.2,PCI-DSSv4.0|8.2.3,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+      see_also        : "https://workbench.cisecurity.org/files/2945"
+      value_type      : POLICY_TEXT
+      value_data      : " IS a member "
+      powershell_args : "$name = 'MSSQL(SERVER|\$[A-Z]+)'; $account = 'None'; $result = 'is not'; Get-WmiObject Win32_Service | Where-Object { $_.name -match $name } | ForEach-Object { $account = $_.StartName }; net localgroup administrators | Where-Object { $_ -eq $account } | ForEach-Object { $result = 'IS' }; Write-Host Account $account $result a member of local Administrators"
+      check_type      : CHECK_NOT_REGEX
+    </custom_item>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "3.6 Ensure the SQL Server's SQLAgent Service Account is Not an Administrator"
+      info            : "The service account and/or service SID used by the SQLSERVERAGENT service for a default instance or SQLAGENT$<InstanceName> service for a named instance should not be a member of the Windows Administrator group either directly or indirectly (via a group). This also means that the account known as LocalSystem (AKA NT AUTHORITY\SYSTEM) should not be used for the SQLAGENT service as this account has higher privileges than the SQL Server service requires.
+
+Rationale:
+
+Following the principle of least privilege, the service account should have no more privileges than required to do its job. For SQL Server services, the SQL Server Setup will assign the required permissions directly to the service SID. No additional permissions or privileges should be necessary."
+      solution        : "In the case where LocalSystem is used, use SQL Server Configuration Manager to change to a less privileged account. Otherwise, remove the account or service SID from the Administrators group. You may need to run the SQL Server Configuration Manager if underlying permissions had been changed or if SQL Server Configuration Manager was not originally used to set the service account.
+
+Impact:
+
+The SQL Server Configuration Manager tool should always be used to change the SQL Server's service account. This will ensure that the account has the necessary privileges. If the service needs access to resources other than the standard Microsoft-defined directories and registry, then additional permissions may need to be granted separately to those resources.
+
+If using the auto restart feature, then the SQLAGENT service must be an Administrator.
+
+Default Value:
+
+By default, the Service Account (or Service SID) is not a member of the Administrators group."
+      reference       : "800-171|3.1.1,800-53|AC-2(9),800-53r5|AC-2(9),CN-L3|8.1.4.2(c),CSCv6|5.1,CSCv7|4.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1M,NIAv2|AM16,PCI-DSSv3.2.1|8.5,PCI-DSSv4.0|8.2.2,PCI-DSSv4.0|8.2.3,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+      see_also        : "https://workbench.cisecurity.org/files/2945"
+      value_type      : POLICY_TEXT
+      value_data      : " IS a member "
+      powershell_args : "$name = 'SQL(SERVERAGENT|AGENT\$[A-Z]+)'; $account = 'None'; $result = 'is not'; Get-WmiObject Win32_Service | Where-Object { $_.name -match $name } | ForEach-Object { $account = $_.StartName }; net localgroup administrators | Where-Object { $_ -eq $account } | ForEach-Object { $result = 'IS' }; Write-Host Account $account $result a member of local Administrators"
+      check_type      : CHECK_NOT_REGEX
+    </custom_item>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "3.7 Ensure the SQL Server's Full-Text Service Account is Not an Administrator"
+      info            : "The service account and/or service SID used by the MSSQLFDLauncher service for a default instance or MSSQLFDLauncher$<InstanceName> service for a named instance should not be a member of the Windows Administrator group either directly or indirectly (via a group). This also means that the account known as LocalSystem (AKA NT AUTHORITY\SYSTEM) should not be used for the Full-Text service as this account has higher privileges than the SQL Server service requires.
+
+Rationale:
+
+Following the principle of least privilege, the service account should have no more privileges than required to do its job. For SQL Server services, the SQL Server Setup will assign the required permissions directly to the service SID. No additional permissions or privileges should be necessary."
+      solution        : "In the case where LocalSystem is used, use SQL Server Configuration Manager to change to a less privileged account. Otherwise, remove the account or service SID from the Administrators group. You may need to run the SQL Server Configuration Manager if underlying permissions had been changed or if SQL Server Configuration Manager was not originally used to set the service account.
+
+Impact:
+
+The SQL Server Configuration Manager tool should always be used to change the SQL Server's service account. This will ensure that the account has the necessary privileges. If the service needs access to resources other than the standard Microsoft-defined directories and registry, then additional permissions may need to be granted separately to those resources.
+
+Default Value:
+
+By default, the Service Account (or Service SID) is not a member of the Administrators group."
+      reference       : "800-171|3.1.1,800-53|AC-2(9),800-53r5|AC-2(9),CN-L3|8.1.4.2(c),CSCv6|5.1,CSCv7|4.3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1M,NIAv2|AM16,PCI-DSSv3.2.1|8.5,PCI-DSSv4.0|8.2.2,PCI-DSSv4.0|8.2.3,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+      see_also        : "https://workbench.cisecurity.org/files/2945"
+      value_type      : POLICY_TEXT
+      value_data      : " IS a member "
+      powershell_args : "$name = 'MSSQLFDLauncher(\$[A-Z]+)?'; $account = 'None'; $result = 'is not'; Get-WmiObject Win32_Service | Where-Object { $_.name -match $name } | ForEach-Object { $account = $_.StartName }; net localgroup administrators | Where-Object { $_ -eq $account } | ForEach-Object { $result = 'IS' }; Write-Host Account $account $result a member of local Administrators"
+      check_type      : CHECK_NOT_REGEX
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_Microsoft_SQL_Server_2014_Database_v1_5_0_Level_1_OS.audit from Microsoft SQL Server 2014 Version 1.5.0"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device. Check Windows version and verify that Remote Registry service is enabled on the target."
+      see_also    : "https://workbench.cisecurity.org/files/2945"
+    </report>
+  </else>
+</if>
+
+</group_policy>
+</check_type>

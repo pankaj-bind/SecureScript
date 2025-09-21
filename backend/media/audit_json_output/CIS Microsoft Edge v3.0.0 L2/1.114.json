@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.114 (L2) Ensure 'Let users snip a Math problem and get the solution with a step-by-step explanation in Microsoft Edge' is set to 'Disabled'",
+  "info": "This policy setting manages whether users can use the Math Solver tool in Microsoft Edge. Math Solver tool allows users to take a picture of a math problem - be it handwritten or printed - and then provides an instant solution with step-by-step instructions.\n\nThe recommended state for this setting is: Disabled\n\nMath Solver shares a user's browsing and search history to provide additional learning resources, which could inadvertently expose and share sensitive data with a third-party.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Let users snip a Math problem and get the solution with a step-by-step explanation in Microsoft Edge",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "Impact": "Users will be unable to solve math problems in Microsoft Edge browsers.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "MathSolverEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

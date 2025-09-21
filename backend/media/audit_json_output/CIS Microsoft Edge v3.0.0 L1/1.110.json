@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.110 (L1) Ensure 'Enhance the security state in Microsoft Edge' is set to 'Enabled: Balanced mode' or higher",
+  "info": "This policy setting configures 'enhance the security state' in Microsoft Edge. Enhanced security in Microsoft Edge helps safeguard against memory-related vulnerabilities by disabling just-in-time (JIT) JavaScript compilation and enabling additional operating system protections for the browser. These protections include Hardware-enforced Stack Protection and Arbitrary Code Guard (ACG).\n\nEnhanced security provides two levels of browsing security: Balanced and Strict. Balanced mode is an adaptive mode that builds on a user's behavior on a particular device. Strict mode applies added security protections for all the sites a user visits. Users may report some challenges accomplishing their usual tasks when in strict mode.\n\nThe recommended state for this setting is: Enabled: Balanced mode Configuring this setting to Enabled: Strict mode also conforms to the benchmark.\n\nBalance mode will help reduce the risk of an attack by automatically applying stricter security settings on unfamiliar sites while adapting to browsing habits over time.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Balanced mode or Enabled: Strict mode :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Enhance the security state in Microsoft Edge",
+  "Note": "Most sites will work as expected.\"",
+  "Impact": "Users will no longer be able to bypass protection for previously visited unfamiliar sites.\n\nEdge will apply added security protections to sites that are not visited often or are unknown. Websites that are browsed frequently will be left out.",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1\" || \"3",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "EnhanceSecurityMode",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

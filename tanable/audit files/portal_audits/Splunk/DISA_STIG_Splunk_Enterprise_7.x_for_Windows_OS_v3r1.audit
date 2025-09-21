@@ -1,0 +1,128 @@
+#TRUSTED 7a39755639571d56179e7069ff4971d53a514ad5b248fa868feebfed144f6fe6b8ddc5eb9be7103863433c1cfd14c8055154bc5234ddc55d808e9163380fd4d194a3bcea9325377ffafaddc2f1a3eea1e24e2d0f595f5580c2c58c1d3a46b5614ffc4f4a86ceef39ec83ca1a26af995404a3bc3bbb3fa9ce5976d065d495551e7f3ab73102d233c745bded3ef6fd16b11e98e3589700d53e60bcad362dcee1528e01c22cedc934e7aac1160c6a2307e611460a90fbab952a156d2292f19b626ed714bc32825725272d9ac8f21fbfc30ae8c0d1f8d8dd19c0517e6cac9269532522c80beb36c99ddd5420b734c25a87a61671596d3152f7d7c8891e540f8bd07a3feb44b61a4031f93942fedb3360ad0dbf3c8ae99a0cf5647f4104174dd60a5b5ba7927837a86d1e26f97f9770d4ca1389a3599bfb230976c5843d80c0f17f2ce5e3c5ae2302d9842700cbd979368bbebde20a353e5e254a901ff6f000e9889d982a6229f95de9126e0c2cac36a6eb558897848928830e21ee8999e895f1f763cae1b089be14118ce353927b75499145622fd4682f046ef1d925312c2f50f381dfde7d63b8cbf25afac4f644e737836c5c447af6a51c497a917b1142681ad086ad14958bcbbadc4245d4fee1b0475d798d1619e5b39f58fbbe96f889f2177d3737f84eda2a94e177664a9b17360d7b556ae39b779b5af5353129a632fb7b55a2
+#TRUST-RSA-SHA256 9cee3ea45e6fcf57ba01d28b2fc23574ca5a54a7579b798ba995c5497daeda4c73cdc874651e7c66efcf77bc40f40be1417cbc44a61a464a91f2801e04d3c91229747912cc7a76d73fe0b846bee06ae52019e8871d65dbb97135930217f56cd6a7aa7a45d1af38056af76f04df5e3a7fde5af9cf243abcbbc0d2a7e70e6fba5c84c6e936e726bac6578c3d6c2f0de79a99670ec05ce40af903562de46752ea4af0c6ef97339510373632c4d270054691dad748006b937d5c53e0449a296de2da7889bdf00a7667f302f8256147b63c8dd4c3097b518f2c6d408bb00eede4fd74005d0635b4f1381abd97b437fbbafada9d330d183755bd431d7383d01a87e32889b9d3f71f0f2da30eda0e7f74cfe5cd65730a6de37ce131ae78b5be301c72833a55dd8801e7f393da491515bbd60a07c4f15592e6287d855b3bdb207148c603202e995f11b489f0eb230a26e4aef00cc9291dc49fa06552b77952462cd27aaf7370226a636fa8258bda390b28a2311ad0d1b70b1a05f9b2de365f6f4cf66b4f66bf24589d0e59f88e8431cd9cb91fdc9e673162eb7cf2a5c653bc9f5332b1f5f063aa9ba17a58f975d9bedd705f739947ae6b7110d729059ba4fcfb1b7c66e5cb04a34293dc79d2d5f70e7e1fd3313fdec61a6cc66ef1cc18236344a60c6d906606ce8e47620c8b1f19000d86a1727cbde6dc30669c60fa1f963536a78a8246
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2024/08/28 $
+#
+# Description : This document implements the security configuration as recommended by the
+#               DISA Splunk Enterprise 7.x for Windows v3r1 STIG.
+#
+#<ui_metadata>
+#<display_name>DISA STIG Splunk Enterprise 7.x for Windows v3r1 OS</display_name>
+#<spec>
+#  <type>DISA STIG</type>
+#  <name>Splunk Enterprise 7.x for Windows</name>
+#  <profile>OS Windows</profile>
+#  <version>3.1.0</version>
+#  <link>https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V3R1_STIG.zip</link>
+#</spec>
+#<labels>windows_splunk_7,disa</labels>
+#<benchmark_refs>CAT,CCE,CCI,DISA_Benchmark,Group-ID,Rule-ID,STIG-ID,STIG-Legacy,Vuln-ID</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>SPLUNK_HOME</name>
+#    <default>C:\Program Files\Splunk</default>
+#    <description>Splunk home path</description>
+#    <info>The full path to the domain home with no trailing slash.</info>
+#    <value_type>WIN_FILE_PATH</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Windows" version:"2">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : FILE_CHECK
+      description : "Splunk is installed"
+      value_type  : POLICY_TEXT
+      value_data  : "@SPLUNK_HOME@"
+      file_option : MUST_EXIST
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "DISA_STIG_Splunk_Enterprise_7.x_for_Windows_OS_v3r1.audit from DISA Splunk Enterprise 7.x for Windows v3r1 STIG"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V3R1_STIG.zip"
+    </report>
+
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "SPLK-CL-000100 - Splunk Enterprise installation directories must be secured."
+      info            : "If audit data were to become compromised, competent forensic analysis and discovery of the true source of potentially malicious system activity would be difficult if not impossible to achieve. In addition, access to audit records provides information an attacker could potentially use to his or her advantage.
+
+To ensure the veracity of audit data, the information system and/or the application must protect audit information from any and all unauthorized access. This includes read, write, and copy access.
+
+This requirement can be achieved through multiple methods, which will depend on system architecture and design. Commonly employed methods for protecting audit information include least privilege permissions as well as restricting the location and number of log file repositories.
+
+Additionally, applications with user interfaces to audit records should not allow for the unfettered manipulation of or access to those records via the application. If the application provides access to the audit data, the application becomes accountable for ensuring audit information is protected from unauthorized access.
+
+Audit information includes all information (e.g., audit records, audit settings, and audit reports) needed to successfully audit information system activity.
+
+Satisfies: SRG-APP-000118-AU-000100, SRG-APP-000119-AU-000110, SRG-APP-000120-AU-000120, SRG-APP-000121-AU-000130, SRG-APP-000122-AU-000140, SRG-APP-000123-AU-000150"
+      solution        : "This fix must be done as a server administrator.
+
+From an Explorer window, right-click on the Splunk target installation folder and select Properties.
+
+Select the Security tab >> Advanced >> Disable inheritance >> Convert inherited permissions into explicit permissions on this object.
+
+Remove all permission entries except Administrators and SYSTEM, and select OK."
+      reference       : "800-171|3.3.8,800-53|AU-9,800-53r5|AU-9,800-53r5|AU-9a.,CAT|II,CCI|CCI-000162,CCI|CCI-000163,CCI|CCI-000164,CCI|CCI-001493,CCI|CCI-001494,CCI|CCI-001495,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CSF|PR.PT-1,CSF2.0|PR.DS-10,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-221935r960930_rule,STIG-ID|SPLK-CL-000100,STIG-Legacy|SV-111383,STIG-Legacy|V-102437,Vuln-ID|V-221935"
+      see_also        : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V3R1_STIG.zip"
+      value_type      : POLICY_TEXT
+      value_data      : "STATUS: PASSED"
+      powershell_args : "$file = '@SPLUNK_HOME@'; $status = 'PASSED'; $acls = (icacls $file); foreach ($acl in $acls) { if (!$acl) { continue } elseif ($acl -like '*BUILTIN\Administrators:*') { $acl; continue } elseif ($acl -like '*NT AUTHORITY\SYSTEM:*') { $acl; continue } elseif ($acl -like 'Successfully processed *') { continue } else { $acl + '- WARNING - extra permissions'; $status = 'FAILED' } } ''; 'STATUS: '+$status;"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "SPLK-CL-000175 - Splunk Enterprise forwarders must be configured with Indexer Acknowledgement enabled."
+      info        : "To prevent the loss of data during transmission, a handshake acknowledgement between the sender and the recipient may need configured."
+      solution    : "If the server is not a forwarder, this check is N/A.
+
+In the Splunk installation folder, edit the following file in the $SPLUNK_HOME/etc/system/local folder:
+
+outputs.conf
+
+Locate the section similar to:
+
+[tcpout:group1]
+
+Note that group1 may be named differently depending on how tcpout was configured.
+
+Add the following line under the group stanza above:
+
+useACK=true"
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|Splunk_Enterprise_7-x_for_Windows_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-221936r961863_rule,STIG-ID|SPLK-CL-000175,STIG-Legacy|SV-111327,STIG-Legacy|V-102377,SWIFT-CSCv1|2.3,Vuln-ID|V-221936"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V3R1_STIG.zip"
+      value_type  : POLICY_TEXT
+      value_data  : "@SPLUNK_HOME@\etc\system\local\outputs.conf"
+      regex       : "^[\\s]*useACK[\\s]*="
+      expect      : "^[\\s]*useACK[\\s]*=[\\s]*(1|[Tt][Rr][Uu][Ee])[\\s]*$"
+      file_option : CAN_NOT_BE_NULL
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "DISA_STIG_Splunk_Enterprise_7.x_for_Windows_OS_v3r1.audit from DISA Splunk Enterprise 7.x for Windows v3r1 STIG"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_Splunk_Enterprise_7-x_for_Windows_V3R1_STIG.zip"
+    </report>
+  </else>
+</if>
+
+</check_type>

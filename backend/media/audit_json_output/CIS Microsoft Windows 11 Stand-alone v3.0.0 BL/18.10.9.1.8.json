@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.10.9.1.8 (BL) Ensure 'Choose how BitLocker-protected fixed drives can be recovered: Configure storage of BitLocker recovery information to AD DS' is set to 'Enabled: Backup recovery passwords and key packages'",
+  "info": "This policy setting allows you to control how BitLocker-protected fixed data drives are recovered in the absence of the required credentials. This policy setting is applied when you turn on BitLocker.\n\nIn 'Save BitLocker recovery information to Active Directory Domain Services' choose which BitLocker recovery information to store in AD DS for fixed data drives. If you select 'Backup recovery password and key package', both the BitLocker recovery password and key package are stored in AD DS. Storing the key package supports recovering data from a drive that has been physically corrupted. If you select 'Backup recovery password only', only the recovery password is stored in AD DS.\n\nThe recommended state for this setting is: Enabled: Backup recovery passwords and key packages\n\nAdministrators should always have a safe, secure way to access encrypted data in the event users cannot access their data.\n\nAdditionally, as with any authentication method, a drive can be compromised by guessing or finding the authentication information used to access the drive.\n\nTo use BitLocker, a Data Recovery Agent will need to be configured for fixed drives. To recover a drive will require highly-controlled access to the Data Recovery Agent private key.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Backup recovery passwords and key packages :\n\nComputer Configuration\\Policies\\Administrative Templates\\Windows Components\\BitLocker Drive Encryption\\Fixed Data Drives\\Choose how BitLocker-protected fixed drives can be recovered: Configure storage of BitLocker recovery information to AD DS:",
+  "Note": "This Group Policy path is provided by the Group Policy template VolumeEncryption.admx/adml that is included with the Microsoft Windows 7 &amp; Server 2008 R2 Administrative Templates (or newer).",
+  "Impact": "None - this value is ignored when the checkbox above it (\n\nSave BitLocker recovery information to AD DS for fixed data drives\n\n) is False (unchecked), as is required in Rule 18.9.11.1.7. If that checkbox is set to True (checked), both recovery passwords and key packages for fixed drives will be saved to AD DS.\"",
+  "reference": "800-171|3.13.16,800-53|SC-28,800-53r5|SC-28,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|13.6,CSCv8|3.6,CSF|PR.DS-1,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.33,ITSG-33|SC-28,ITSG-33|SC-28a.,LEVEL|BLA,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17603",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Microsoft\\FVE",
+  "reg_item": "FDVActiveDirectoryInfoToStore",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

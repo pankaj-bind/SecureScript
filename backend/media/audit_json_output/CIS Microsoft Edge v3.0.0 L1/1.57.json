@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.57 (L1) Ensure 'Block tracking of users' web-browsing activity' is set to 'Enabled: Balanced (Blocks harmful trackers and trackers from sites user has not visited; content and ads will be less personalized)' or higher",
+  "info": "This policy setting controls whether websites may track user's web-browsing activity.\n\nThe recommended state for this setting is: Enabled: Balanced (Blocks harmful trackers and trackers from sites user has not visited; content and ads will be less personalized)\n\nConfiguring this setting to Enabled: Strict (blocks harmful trackers and majority of trackers from all sites; content and ads will have minimal personalization. Some parts of sites might not work) also conforms to the benchmark.\n\nAllowing websites to track user web-browsing activity allows for sites to gather information which could be potentially harmful and used to target users and businesses.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Balanced (Blocks harmful trackers and trackers from sites user has not visited; content and ads will be less personalized) :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Block tracking of users' web-browsing activity",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "Impact": "Content and ads will have minimal personalization and the website may not function properly.\"",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "2\" || \"3",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "TrackingPrevention",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

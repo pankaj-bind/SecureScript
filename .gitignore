@@ -1,0 +1,90 @@
+# === PYTHON ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.env
+.venv
+env/
+venv/
+pip-wheel-metadata/
+*.log
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# PyInstaller
+*.spec
+
+# Django stuff
+*.sqlite3
+
+# VS Code settings (optional)
+.vscode/
+
+# === NODE / REACT / ELECTRON ===
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# build outputs
+build/
+dist/
+out/
+coverage/
+*.tgz
+
+# Next.js
+.next/
+out/
+
+# Svelte
+.svelte-kit/
+
+# Vite
+.vite/
+
+# Webpack
+webpack-stats.json
+
+# Electron specific
+.electron/
+release/
+app-release/
+*.asar
+
+# ESLint cache
+.eslintcache
+
+# Storybook
+.storybook-out/
+
+# IDEs
+.idea/
+*.iml
+
+# macOS & Linux
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Misc
+*.log
+
+backend.txt
+frontend.txt
+
+test.json
+test2.json

@@ -1,0 +1,110 @@
+#TRUSTED 8fb26b8e9419591e8774a6ffdce2fa7cab849c2c53601d596a5eb853b63ee798dd1b0ebd9304f91790e18af5620e72eb00776ae79e150027711d926e4712db935acf98cbb55e033e4c2c4269c18af444b7499dd8a7d735f74af3fbcaef429d41ad2d8916dcc4d8cc6cbdc3a3e9223da3f0fe1e330f013194e7d7ef89e90037ec2d6058a6f0fa9e1348f3edeec4439c7440af7373c7f2cd20677b403141306cc5cb0d363f50a99fa37daa66c42f2385feacb09f51df985fdbbd6118351619a2cb2165562c10119f4d6aeb50a97f93d32a7b097e6129a10898e0e288e31571893246d55749ac9c36be886c934a582471ffc63f3639d6f7f40b8132b9b0a5c57bb73ac9fe1e404c00f44cfea353a42c7cef25233f27d3d66dedcb4394c860acf79bcddd661020cd0fe57a0bbc7c7e3e7818b299b51cd08ad191f1f4b403b941a12647959f7a4e3acd01155250e2aeb158e6658451c3350fb0ca43499035e775797909e91e0658e6bf2acdd3faaaf1c51c52d6a7b32a029d82cc0e3e78233fd83fca30356898cbd12584ad73455bd96036bbfb0195f422621ec21480e93d9a8703b5971c536b2664b9155a577cbeb2d0c97407d6cc7451e3e96fbf7f1596721a8bb474b5c17437fcd441a145382536cbded2ad848ff895af78856a706ce7b218ca4d9e2764ed07ee2517c51362fe7a3b13bd1adc8ce508dd2fe01046dce6fb2039b6
+#TRUST-RSA-SHA256 10ba7028e3b0d8bf682915268a28bb93adec12ac1c6f4f36f1e0bc322367c0b09c5c1a94bc223dd4796368f2a28d4b65974b17f1594ef17cd0a63930499d9f31abf9ab7a8096e5098ff819aa4829b79592801b15ac8794e07a4c02d592d18f3367fc31725445022a27c00b9f0b8669e6c120a102f4703d546a7c479551d3449da1f74a3a8a5c26a9addee8858abf5d5ddb4ccf32b7c6022794d867f0d8e0691a5416e33660c47fe812951b4835000174db1a901f9d895be90f1104ec5761f19e083d1cb33b83133401ddefd16c1623db773fb272a5655e5791bcde2cc7d8d6ec5aecfab03d0a1956171c42b3816a92a25741908d0ae426bdcc7b4357d9830ea08e36c031b06dc0cd13d2e766ecf6bbef7237d4830c6e93a9c820f8ee90e1d3ec74a33fba8186cb73476d3dfe375c54156294d34ae3f3e55bac1719b2cea0c8c08529fa1c515dc92a4a53a68b87c61b47d036c9e31f949a23e35bef39c22782edac2fe0d4fd4adb89399167d35c570398faec73a2c91ecd0379973daf7b090392972e4278bc51e4e4e67bfa09bc31fef07e3ef738d0a527464095a350e270f5d74c0dc0a60ec62adbe4a47659cc7f0615221f0a43fe7b8753f0e0dc27e15fdd3d08d2d8a7e3a52a570f0f54205fd6d2e1cbbc71d41c0929e9f5cc772984d6cb75625203f5c5aec5768d1d79c84f8ae7c688f6f83936771cb14e08f41f581d4cc2
+#
+# This script is Copyright (C) 2004-2025 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.1 $
+# $Date: 2025/06/23 $
+#
+# description : This .audit is designed against the CIS Microsoft Windows 11 Stand-alone Benchmark 4.0.0
+#
+#<ui_metadata>
+#<display_name>CIS Microsoft Windows 11 Stand-alone v4.0.0 L1</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Microsoft Windows 11 Stand-alone</name>
+#  <profile>L1</profile>
+#  <version>4.0.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/22007</link>
+#</spec>
+#<labels>windows,cis,microsoft_windows_11_stand-alone,agent,windows_11</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>PLATFORM_VERSION</name>
+#    <default>2[26][0-9]{3}</default>
+#    <description>Windows Version</description>
+#    <info>Windows Version</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>PASSWORD_HISTORY</name>
+#    <default>[24..MAX]</default>
+#    <description>Password history value</description>
+#    <info>Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy\Enforce password history</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>MAXIMUM_PASSWORD_AGE</name>
+#    <default>[1..365]</default>
+#    <description>Maximum password age value</description>
+#    <info>Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy\Maximum password age</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>MINIMUM_PASSWORD_AGE</name>
+#    <default>[1..MAX]</default>
+#    <description>Minimum password age value</description>
+#    <info>Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy\Minimum password age</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>MINIMUM_PASSWORD_LENGTH</name>
+#    <default>[14..MAX]</default>
+#    <description>Minimum password length value</description>
+#    <info>Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Password Policy\Minimum password length</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>LOCKOUT_DURATION</name>
+#    <default>[15..MAX]</default>
+#    <description>Account lockout duration</description>
+#    <info>Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Account Lockout Policy\Account lockout duration</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>LOCKOUT_THRESHOLD</name>
+#    <default>[1..5]</default>
+#    <description>Account lockout threshold</description>
+#    <info>Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Account Lockout Policy\Account lockout threshold</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>LOCKOUT_RESET</name>
+#    <default>[15..MAX]</default>
+#    <description>Reset account lockout</description>
+#    <info>Computer Configuration\Policies\Windows Settings\Security Settings\Account Policies\Account Lockout Policy\Reset account lockout counter after</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>LEGAL_NOTICE_TEXT</name>
+#    <default>All activities performed on this system will be monitored.</default>
+#    <description>Logon Window Text</description>
+#    <info>This is the window text for the login warning a user receives when logging onto the system.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>LEGAL_CAPTION_TEXT</name>
+#    <default>Notice and Consent Banner</default>
+#    <description>Logon Window Caption</description>
+#    <info>This is the window caption text for the login warning a user receives when logging onto the system.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>PASSWORD_AGE_PROMPT</name>
+#    <default>[5..14]</default>
+#    <description>Number of days to prompt user for password change before expiration</description>
+#    <info>Value (in days) for "Interactive logon: Prompt user to change password before expiration"</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>

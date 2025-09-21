@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardening Policy Browser</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .script-block {
+            position: relative;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+        #policy-list li.active {
+            background-color: #3b82f6; /* bg-blue-600 */
+            color: white;
+        }
+        #policy-list li.active .text-gray-500 {
+            color: #d1d5db; /* text-gray-300 */
+        }
+        /* Custom scrollbar for a better look */
+        #policy-list-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #policy-list-container::-webkit-scrollbar-track {
+            background: #f1f5f9; /* bg-slate-100 */
+        }
+        #policy-list-container::-webkit-scrollbar-thumb {
+            background-color: #94a3b8; /* bg-slate-400 */
+            border-radius: 10px;
+            border: 3px solid #f1f5f9; /* bg-slate-100 */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 h-screen flex flex-col">
+
+    <header class="text-center p-4 border-b bg-white shadow-sm">
+        <h1 class="text-2xl font-bold text-gray-900">Hardening Policy Browser</h1>
+    </header>
+
+    <div class="flex-grow flex flex-col md:flex-row overflow-hidden">
+        <!-- Left Pane: File List -->
+        <aside class="w-full md:w-1/3 lg:w-1/4 bg-slate-50 border-r flex flex-col">
+            <div class="p-4 border-b">
+                <input type="file" id="folder-upload" webkitdirectory directory multiple class="hidden"/>
+                <label for="folder-upload" class="w-full text-center bg-blue-500 text-white font-bold py-2 px-4 rounded-lg cursor-pointer hover:bg-blue-600 transition-colors block">
+                    Upload Policy Folder
+                </label>
+                <input type="text" id="search-box" placeholder="Search policies..." class="mt-4 w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                <div id="policy-counter" class="text-sm text-gray-600 mt-2 text-center"></div>
+            </div>
+            <div id="policy-list-container" class="flex-grow overflow-y-auto">
+                <ul id="policy-list">
+                    <!-- Policy items will be injected here -->
+                </ul>
+                <p id="no-policies" class="text-center text-gray-500 p-4">Upload a folder to see policies.</p>
+            </div>
+        </aside>
+
+        <!-- Right Pane: Details View -->
+        <main id="details-pane" class="flex-grow p-4 md:p-6 lg:p-8 overflow-y-auto">
+            <div id="welcome-message" class="text-center text-gray-500 h-full flex flex-col justify-center items-center">
+                 <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <h2 class="text-2xl font-semibold">Select a policy to view details</h2>
+                <p>Begin by uploading a folder containing your JSON policy files.</p>
+            </div>
+            <div id="output-section" class="max-w-4xl mx-auto hidden">
+                <!-- Policy Information -->
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6 border border-gray-200">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-800">Policy Information</h2>
+                    <div id="policy-info" class="space-y-3 text-gray-700"></div>
+                </div>
+
+                <!-- Scripts -->
+                <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Hardening Script -->
+                    <div class="bg-gray-900 rounded-xl shadow-lg p-6 script-block">
+                        <h3 class="text-xl font-semibold text-green-400 mb-3">Hardening Script</h3>
+                        <div id="harden-input-container" class="mb-3 hidden">
+                            <label for="harden-value" class="text-sm font-medium text-gray-300">Enter value:</label>
+                            <input type="number" id="harden-value" class="mt-1 block w-full bg-gray-700 text-white rounded-md border-gray-600 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 focus:ring-opacity-50 p-2" value="240">
+                        </div>
+                        <button onclick="copyToClipboard('harden-script', this)" class="copy-btn bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button>
+                        <pre id="harden-script" class="text-gray-200 bg-gray-800 p-4 rounded-md text-sm whitespace-pre-wrap break-words"></pre>
+                    </div>
+
+                    <!-- Check Script -->
+                    <div class="bg-gray-900 rounded-xl shadow-lg p-6 script-block">
+                        <h3 class="text-xl font-semibold text-yellow-400 mb-3">Check Script</h3>
+                        <button onclick="copyToClipboard('check-script', this)" class="copy-btn bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button>
+                        <pre id="check-script" class="text-gray-200 bg-gray-800 p-4 rounded-md text-sm whitespace-pre-wrap break-words"></pre>
+                    </div>
+
+                    <!-- Revert Script -->
+                    <div class="bg-gray-900 rounded-xl shadow-lg p-6 script-block">
+                        <h3 class="text-xl font-semibold text-red-400 mb-3">Revert Script</h3>
+                        <button onclick="copyToClipboard('revert-script', this)" class="copy-btn bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button>
+                        <pre id="revert-script" class="text-gray-200 bg-gray-800 p-4 rounded-md text-sm whitespace-pre-wrap break-words"></pre>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- DOM Element References ---
+        const folderUpload = document.getElementById('folder-upload');
+        const policyList = document.getElementById('policy-list');
+        const searchBox = document.getElementById('search-box');
+        const noPoliciesMsg = document.getElementById('no-policies');
+        const policyCounter = document.getElementById('policy-counter');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const outputSection = document.getElementById('output-section');
+        const policyInfoDiv = document.getElementById('policy-info');
+        const hardenScriptPre = document.getElementById('harden-script');
+        const checkScriptPre = document.getElementById('check-script');
+        const revertScriptPre = document.getElementById('revert-script');
+        const hardenInputContainer = document.getElementById('harden-input-container');
+        const hardenValueInput = document.getElementById('harden-value');
+
+        // --- Data Store ---
+        let policyDataStore = [];
+        let currentPolicyIndex = null;
+
+        // --- Event Listeners ---
+        folderUpload.addEventListener('change', handleFolderSelect);
+        policyList.addEventListener('click', handlePolicySelect);
+        searchBox.addEventListener('input', handleSearch);
+        hardenValueInput.addEventListener('input', () => {
+             if (currentPolicyIndex !== null) {
+                generateScripts(policyDataStore[currentPolicyIndex]);
+             }
+        });
+        
+        /**
+         * A natural sort comparator for version-like strings (e.g., "19.7.2" vs "2.3.1").
+         */
+        function naturalSort(a, b) {
+            const regex = /^(\d+(\.\d+)*)/;
+            const aMatch = a.description.match(regex);
+            const bMatch = b.description.match(regex);
+
+            if (!aMatch || !bMatch) {
+                return a.description.localeCompare(b.description);
+            }
+
+            const aParts = aMatch[0].split('.').map(Number);
+            const bParts = bMatch[0].split('.').map(Number);
+            const maxLength = Math.max(aParts.length, bParts.length);
+
+            for (let i = 0; i < maxLength; i++) {
+                const aVal = aParts[i] || 0;
+                const bVal = bParts[i] || 0;
+                if (aVal < bVal) return -1;
+                if (aVal > bVal) return 1;
+            }
+
+            return aParts.length - bParts.length;
+        }
+
+
+        /**
+         * Handles folder selection, reads, sorts, and parses all JSON files.
+         */
+        async function handleFolderSelect(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+
+            policyDataStore = [];
+            policyList.innerHTML = '';
+            noPoliciesMsg.textContent = 'Processing files...';
+            policyCounter.textContent = ''; // Clear counter during processing
+
+            const filePromises = Array.from(files)
+                .filter(file => file.name.endsWith('.json'))
+                .map(file => readFile(file));
+
+            let results = await Promise.all(filePromises);
+            policyDataStore = results.filter(Boolean); 
+
+            policyDataStore.sort(naturalSort);
+
+            renderPolicyList();
+            event.target.value = '';
+        }
+
+        /**
+         * Reads a single file and returns a parsed JSON object or null.
+         * It now handles REGISTRY_SETTING, REG_CHECK, and CONDITIONAL types.
+         */
+        function readFile(file) {
+            return new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    try {
+                        const json = JSON.parse(reader.result);
+                        
+                        // Case 1 & 2: Standard policy types
+                        if ((json.type === 'REGISTRY_SETTING' || json.type === 'REG_CHECK') && json.description) {
+                            resolve(json);
+                            return;
+                        }
+
+                        // Case 3: Conditional policy type
+                        if (json.check_type === 'CONDITIONAL' && json.then && json.then.report && json.then.report.description) {
+                            const report = json.then.report;
+                            const normalizedPolicy = {
+                                type: 'COMPLEX_CONDITIONAL', // Use a new type to handle it in display/script generation
+                                description: report.description,
+                                info: report.info,
+                                solution: report.solution,
+                                Impact: report.Impact,
+                                reference: report.reference,
+                                see_also: report.see_also,
+                                rules: json.condition.rules || []
+                            };
+                            resolve(normalizedPolicy);
+                            return;
+                        }
+
+                        // If it's none of the known types, skip it.
+                        resolve(null);
+
+                    } catch (e) {
+                        console.error(`Could not parse ${file.name}:`, e);
+                        resolve(null);
+                    }
+                };
+                reader.onerror = () => {
+                    console.error(`Could not read ${file.name}`);
+                    resolve(null);
+                };
+                reader.readAsText(file);
+            });
+        }
+
+        /**
+         * Renders the list of policies in the left pane.
+         */
+        function renderPolicyList() {
+            policyList.innerHTML = '';
+            if (policyDataStore.length === 0) {
+                noPoliciesMsg.textContent = 'No valid policy files found in the folder.';
+                noPoliciesMsg.classList.remove('hidden');
+            } else {
+                 noPoliciesMsg.classList.add('hidden');
+                policyDataStore.forEach((policy, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.dataset.index = index;
+                    listItem.className = 'p-4 cursor-pointer hover:bg-slate-200 border-b border-slate-200';
+                    
+                    const fullDescription = policy.description || 'No description available';
+
+                    listItem.innerHTML = `
+                        <p class="font-semibold text-sm text-gray-800 text-balance">${fullDescription}</p>
+                    `;
+                    policyList.appendChild(listItem);
+                });
+            }
+            updatePolicyCount();
+        }
+        
+        /**
+         * Updates the policy counter based on total and visible items.
+         */
+        function updatePolicyCount() {
+            const totalItems = policyDataStore.length;
+            if (totalItems === 0) {
+                policyCounter.textContent = '';
+                return;
+            }
+
+            const listItems = policyList.getElementsByTagName('li');
+            const visibleItems = Array.from(listItems).filter(item => item.style.display !== 'none').length;
+            
+            if (visibleItems === totalItems) {
+                policyCounter.textContent = `Showing ${totalItems} policies.`;
+            } else {
+                policyCounter.textContent = `Showing ${visibleItems} of ${totalItems} policies.`;
+            }
+        }
+
+
+        /**
+         * Handles clicks on the policy list to display details.
+         */
+        function handlePolicySelect(event) {
+            const listItem = event.target.closest('li');
+            if (!listItem) return;
+
+            const currentlyActive = policyList.querySelector('.active');
+            if (currentlyActive) {
+                currentlyActive.classList.remove('active');
+            }
+            listItem.classList.add('active');
+
+            currentPolicyIndex = parseInt(listItem.dataset.index, 10);
+            const policy = policyDataStore[currentPolicyIndex];
+            displayPolicyDetails(policy);
+        }
+
+        /**
+         * Filters the policy list based on search input.
+         */
+        function handleSearch(event) {
+            const searchTerm = event.target.value.toLowerCase();
+            const listItems = policyList.getElementsByTagName('li');
+            Array.from(listItems).forEach(item => {
+                const itemText = item.textContent.toLowerCase();
+                item.style.display = itemText.includes(searchTerm) ? '' : 'none';
+            });
+            updatePolicyCount();
+        }
+
+        /**
+         * Displays the details of a selected policy in the right pane.
+         */
+        function displayPolicyDetails(data) {
+            welcomeMessage.classList.add('hidden');
+            outputSection.classList.remove('hidden');
+
+            if (data.type === 'COMPLEX_CONDITIONAL') {
+                policyInfoDiv.innerHTML = `
+                    <p><strong>Description:</strong> ${data.description || 'N/A'}</p>
+                    <p><strong>Details:</strong> ${data.info ? data.info.replace(/\\n/g, '<br>') : 'N/A'}</p>
+                    <p><strong>Impact:</strong> ${data.Impact || 'N/A'}</p>
+                    <p><strong>Check Type:</strong> <code class="bg-gray-200 p-1 rounded">Complex Conditional Policy</code></p>
+                    <p class="text-sm mt-2 text-blue-600"><strong>Note:</strong> This is a complex policy that may involve setting multiple registry values. Manual application using the Group Policy Editor as described in the 'Solution' section is recommended.</p>
+                    <p><strong>Solution:</strong> ${data.solution ? data.solution.replace(/\\n/g, '<br>') : 'N/A'}</p>
+                `;
+            } else if (data.type === 'REG_CHECK' && data.reg_option === 'MUST_NOT_EXIST') {
+                policyInfoDiv.innerHTML = `
+                    <p><strong>Description:</strong> ${data.description || 'N/A'}</p>
+                    <p><strong>Details:</strong> ${data.info ? data.info.replace(/\\n/g, '<br>') : 'N/A'}</p>
+                    <p><strong>Impact:</strong> ${data.Impact || 'N/A'}</p>
+                    <p><strong>Check Type:</strong> <code class="bg-gray-200 p-1 rounded">Registry Key Must Not Exist</code></p>
+                    <p><strong>Registry Key to Remove:</strong> <code class="bg-gray-200 p-1 rounded font-bold">${data.value_data}</code></p>
+                `;
+            } else {
+                const { description, info, Impact, reg_key, reg_item, value_data, check_type } = data;
+                
+                let valueToSetForDisplay = value_data;
+                let checkMethod = 'Direct Value Match';
+                let checkNote = '';
+
+                if (check_type === 'CHECK_REGEX') {
+                    checkMethod = 'Regex Match';
+                    const match = description.match(/is set to '(?:Enabled: )?([^']*)'/);
+                    if (match && match[1]) {
+                        valueToSetForDisplay = match[1];
+                    } else {
+                        valueToSetForDisplay = "See description for value";
+                    }
+                    checkNote = `<p class="text-sm mt-2 text-blue-600"><strong>Note:</strong> The 'Check Script' only verifies the registry key exists. A manual check is needed to validate the value against the regex pattern: <code class="text-xs">${value_data}</code></p>`;
+                }
+
+                policyInfoDiv.innerHTML = `
+                    <p><strong>Description:</strong> ${description || 'N/A'}</p>
+                    <p><strong>Details:</strong> ${info ? info.replace(/\\n/g, '<br>') : 'N/A'}</p>
+                    <p><strong>Impact:</strong> ${Impact || 'N/A'}</p>
+                    <p><strong>Registry Key:</strong> <code class="bg-gray-200 p-1 rounded">${reg_key}</code></p>
+                    <p><strong>Registry Item:</strong> <code class="bg-gray-200 p-1 rounded">${reg_item}</code></p>
+                    <p><strong>Value to Set:</strong> <code class="bg-gray-200 p-1 rounded font-bold">${valueToSetForDisplay}</code></p>
+                    <p><strong>Check Method:</strong> <code class="bg-gray-200 p-1 rounded">${checkMethod}</code></p>
+                    ${checkNote}
+                `;
+            }
+            generateScripts(data);
+        }
+
+        /**
+         * Generates and displays the three script types.
+         */
+        function generateScripts(data) {
+            hardenInputContainer.classList.add('hidden'); // Hide by default
+
+            if (data.type === 'COMPLEX_CONDITIONAL') {
+                const firstRule = data.rules && data.rules.length > 0 ? data.rules[0] : null;
+                const exampleScript = firstRule ? `\n\nREM Example from one of the rules (apply for all rules):\nREM reg add "${firstRule.reg_key}" /v "${firstRule.reg_item}" /t REG_SZ /d "extension" /f` : "";
+                
+                hardenScriptPre.textContent = `REM This is a complex policy. The hardening action may involve setting multiple registry values.\nREM Please apply this setting using the Group Policy Editor (gpedit.msc) as described in the policy's solution details.${exampleScript}`;
+                checkScriptPre.textContent = `REM This policy requires checking multiple registry values.\nREM Please verify using the Group Policy Editor or by querying each key mentioned in the policy rules.`;
+                revertScriptPre.textContent = `REM Reverting this policy requires deleting multiple registry values or the parent key.\nREM Please use the Group Policy Editor for safe removal.`;
+                return;
+            }
+
+            if (data.type === 'REG_CHECK' && data.reg_option === 'MUST_NOT_EXIST') {
+                const regKeyToDelete = data.value_data;
+                hardenScriptPre.textContent = `reg delete "${regKeyToDelete}" /f`;
+                checkScriptPre.textContent = `reg query "${regKeyToDelete}"\n\nREM This check PASSES if it returns an error (key not found).`;
+                revertScriptPre.textContent = `REM There is no automatic revert script for this policy.\nREM This policy requires a registry key to be absent.`;
+                return;
+            }
+
+            const { reg_key, reg_item, value_type, value_data, check_type, description } = data;
+
+            let regType;
+            switch (value_type) {
+                case 'POLICY_DWORD':
+                    regType = 'REG_DWORD';
+                    break;
+                case 'POLICY_TEXT':
+                    regType = 'REG_SZ';
+                    break;
+                default:
+                    regType = 'REG_SZ';
+            }
+
+            let hardenValue;
+            if (check_type === 'CHECK_REGEX') {
+                const match = description.match(/is set to '(?:Enabled: )?([^']*)'/);
+                hardenValue = (match && match[1]) ? match[1] : value_data;
+            } else if (value_data.includes('[') || value_data.includes('..') || value_data.includes('except')) {
+                hardenInputContainer.classList.remove('hidden');
+                hardenValue = hardenValueInput.value;
+                hardenValueInput.placeholder = `e.g., a value for ${value_data}`;
+            } else {
+                hardenValue = value_data;
+            }
+
+            hardenScriptPre.textContent = `reg add "${reg_key}" /v "${reg_item}" /t ${regType} /d "${hardenValue}" /f`;
+            checkScriptPre.textContent = `reg query "${reg_key}" /v "${reg_item}"`;
+            revertScriptPre.textContent = `reg delete "${reg_key}" /v "${reg_item}" /f`;
+        }
+
+        /**
+         * Copies text from a given element ID to the clipboard.
+         */
+        function copyToClipboard(elementId, button) {
+            const textToCopy = document.getElementById(elementId).textContent;
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(() => showCopySuccess(button));
+            } else {
+                fallbackCopyText(textToCopy, button);
+            }
+        }
+        
+        /**
+         * Fallback method for copying text.
+         */
+        function fallbackCopyText(text, button) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopySuccess(button);
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        /**
+         * Provides visual feedback on copy success.
+         */
+        function showCopySuccess(button) {
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            button.classList.add('bg-blue-600');
+            button.disabled = true;
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('bg-blue-600');
+                button.disabled = false;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

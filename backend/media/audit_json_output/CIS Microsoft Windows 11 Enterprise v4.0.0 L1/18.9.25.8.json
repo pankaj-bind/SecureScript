@@ -1,0 +1,16 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.9.25.8 (L1) Ensure 'Post-authentication actions: Actions' is set to 'Enabled: Reset the password and logoff the managed account' or higher",
+  "info": "\"This policy settings configures post-authentication actions which will be executed after detecting an authentication by the LAPS managed account. The Action refers to actions to take upon expiry of the grace period before executing the specified post-authentication actions.\n\nPost-authentication actions:\n\n - Reset password : upon expiry of the grace period, the managed account password will be reset.\n - Reset the password and logoff the managed account : upon expiry of the grace period, the managed account password will be reset and any interactive logon sessions using the managed account will terminated.\n - Reset the password and reboot the device : upon expiry of the grace period, the managed account password will be reset and the managed device will be immediately rebooted.",
+  "Warning": "After an interactive logon session is terminated, other authenticated sessions using the Windows LAPS managed account may still be active. The only way to ensure that the previous password is no longer in use is to reboot the OS.\n\nThe recommended state for this setting is: Enabled: Reset the password and logoff the managed account or higher.",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template LAPS.admx/adml that is included with the Microsoft Windows 11 Release 22H2 Administrative Templates v3.0 (or newer).",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Reset the password and logoff the managed account or higher:\n\nComputer Configuration\\Policies\\Administrative Templates\\System\\LAPS\\Post-authentication actions: Actions",
+  "Impact": "After the grace period expires, the Windows LAPS managed account password will be reset and logged off the system or the OS will be restarted.\"",
+  "reference": "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/21318",
+  "value_type": "POLICY_DWORD",
+  "value_data": "3\" || \"5",
+  "reg_key": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\LAPS",
+  "reg_item": "PostAuthenticationActions",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

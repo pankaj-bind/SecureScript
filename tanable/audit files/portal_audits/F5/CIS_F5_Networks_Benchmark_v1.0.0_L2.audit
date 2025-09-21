@@ -1,0 +1,151 @@
+#TRUSTED 697f9123a7e0e6ebbe0f9a77430845fe127f87e31e51f414d5de4179f825fc343d28e7c092af0f6fb16ec93c230967d29d8714d931554b421f13e1931e3d21b1155a6dfa495d6f29aaac42be3a25df322ebd1eef9058a7410be497d8bb6b7fae39f37260f879c95c0ea2bd664f4aa27752c0a0b172a159e4f3d8c8ac273469bccab7b2851466c57f961c496405ebdfcc4229b425fb2782eeef79f0026a5a4f20790a1f194333a6423c1ed077747533b191845610594ec11a2a2b0420676032f944ae3cfe3d223e39482b1974d3e646c349b9e83e0ee871163bc4544bb97f0438718453f497070947cd14a48d4deaa763e98dfb6f59c9e02eda8994d677e35ce4c15ba102977170a56835a34c88fd8ffacfcb7ef0f30d11d86933350c6013301d201660e7b8b4fcd9fce1e5f45ef56f67f37c28f33567f8664db6a9aab5787017634a0400f3663678d4b72b4446c5c0666d0095f58d18c8a93511966ae2c1be901671308e981d9eef69efa0af8bf3ce404cee93b6b6148182505e1485e11f0327a9bef4b12fdc75b0afc1ff73bea403657abe4f17fbee742aee059814906ff9964e5bc0f50c1456f00eec108138f84e3f5e7622cedd7daf76e63abf45a2a175210c91e29fd59e1dbeb8a0ce0ba332c559ca85bfbca49c47da5264f53c4cf9a0b5ebefb442daf1e67e8584d6f213fb0636ab778638f71463ff36cab6c0b302e945
+#TRUST-RSA-SHA256 6c4c82166f21c9c3c7e442d3aaa1239e39fcbd0f015d7558756544b320c2aa97056451fd2e8906418f15bce055c64d67a45ce045c772d94cdde3d19264843e6fc66b3bf79a2fb7c40f3e8eba5cd9e66e960eedb5403df272e00f4f45f088a255166c704e7cf3ed837d5241f323a84d82c12305875a5b90879c54fd7e8444cbd728ce960910b7682a2cf26b8560e4d0e6b0d5eaf6ef581b4d8b307b346a66759bb6246aad83b18c91cc8af7361b33515fa26329f9da264c9ea443680d161ba604b432d1e509f12c2d3e966ee821b49db28785275456cc4d0f3a8b6e910afd9d454f3e26f37807e50a6e49cf77abd15452fcf23f3d6917953d5fded9cf00ce7b6112b202e269fb1a530d9e45080f233935dfeba4b6928be8f55649ba571e52c280679fb6d3cfc015dc8b28b220241f34283a4b7424d6fab22446eb8c8fa52d3a77b33b01a2f78e0a25a98f12a0758cffeb5b5034c2ac33dfef4075dc10120d59e5e9d44ce08d499629663f751a3f7c36fc502187a535d72dc4d807d53c8459c4681687942e0a7a6f1d53677efcd4246c4a62f8c435e944cca2b19c8c95ec90d1483b7521d7cc233772b89b87316e227136e01df59b76d373c31b56ef1df5ea42cf455222369200f51a2ab631fc9a5346ff483d53be38c4930669bd06779f4e16e744b3c771930ecfa8f89e38cbbee3fad65b5b93cc50070db4a955d15054a1652f
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.4 $
+# $Date: 2024/06/17 $
+#
+# Description : This document implements the security configuration as recommended by the
+#               CIS F5 Networks Benchmark v1.0.0
+#
+#<ui_metadata>
+#<display_name>CIS F5 Networks v1.0.0 L2</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>F5 Networks</name>
+#  <profile>L2</profile>
+#  <version>1.0.0</version>
+#  <link>https://workbench.cisecurity.org/files/3587</link>
+#</spec>
+#<labels>cis,f5,f5_big-ip,update_20230227</labels>
+#<benchmark_refs>CCE,CIS_Recommendation,CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#</ui_metadata>
+
+<check_type:"F5">
+
+<custom_item>
+  description    : "2.1 Ensure that Remote Radius is used for Authentication Only"
+  info           : "To specify the authentication mechanism that F5 systems use for external (remote) users
+
+Rationale:
+
+Uncontrolled and illegitimate authentication could provide access to unauthorized users
+
+Impact:
+
+Uncontrolled and illegitimate authentication mechanism provides access to illegitimates remote users on the systems. It is important to make sure of the right Authentication mechanism used. Radius is configured as Authentication Only. Radius in turns query LDAP for remote users authentication and authorization."
+  solution       : "1-Log in to the Configuration utility using the administrator account.
+
+2-Navigate to System > Users > Authentication.
+
+3-In the Authentication section, click Change.
+
+4-Select Remote - RADIUS from the User Directory drop-down menu.
+
+5-Define the RADIUS server configuration settings, including the port and shared secret settings:
+
+6- For 'Service Type': select 'Authentication Only'
+
+7-Click Finished."
+  reference      : "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CIS_Recommendation|2.1,CN-L3|7.1.3.2(d),CSCv7|5.1,CSCv8|5.6,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|2A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+  see_also       : "https://workbench.cisecurity.org/files/3587"
+  f5_command     : "/tm/auth/radius"
+  json_transform : ".items[] | \"Service Type: \(.serviceType) \""
+  expect         : "^[\s]*Service Type:[\s]*authenticate-only[\s]*$"
+</custom_item>
+
+<custom_item>
+  description    : "2.2 Ensure redundant remote authentication servers are configured"
+  info           : "Having multiple points of authentication is important in the event that the primary remote authentication source goes down.
+
+Rationale:
+
+To make sure the redundant Radius servers are configured
+
+Impact:
+
+Having a single Authentication server reduce the availability for systems operators and admins to perform their tasks and support when the Radius server is down
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+  solution       : "1-Log in to the Configuration utility using the administrator account.
+
+2-Navigate to System > Users > Authentication.
+
+3-In the Authentication section, click Change.
+
+4-Select Remote - RADIUS from the User Directory drop-down menu.
+
+5-Define the RADIUS server configuration settings, including the port and shared secret settings:
+
+6-For 'Service Type': select 'Authentication Only'
+
+7-This should be completed for Primary RADIUS server as well as for Secondary RADIUS server.
+
+8-Click Finished."
+  reference      : "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CIS_Recommendation|2.2,CN-L3|7.1.3.2(d),CSCv7|5.1,CSCv8|5.6,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|2M,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+  see_also       : "https://workbench.cisecurity.org/files/3587"
+  f5_command     : "/tm/auth/radius-server"
+  json_transform : ".items[] | \"Radius Servers: \(.server) \""
+  expect         : "MANUAL_REVIEW"
+  severity       : MEDIUM
+</custom_item>
+
+<custom_item>
+  description    : "2.3 Ensure that 'Fallback to local' option is disabled for Remote Authentication Settings"
+  info           : "To prevent the system from checking local DB for remote users authentication
+
+Rationale:
+
+Impact:
+
+Though the impact might be low, it is a good practice to segregate remote users from local and to limit local users' usage."
+  solution       : "1. Log in to the Configuration utility.
+
+2. Go to System > Users > Authentication.
+
+3. Select Change.
+
+4. Select the Fallback to Local check box.
+
+5. Select Finished."
+  reference      : "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CIS_Recommendation|2.3,CSCv7|4.6,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2M,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3"
+  see_also       : "https://workbench.cisecurity.org/files/3587"
+  f5_command     : "/tm/auth/source"
+  json_transform : ".fallback"
+  expect         : "false"
+</custom_item>
+
+<custom_item>
+  description    : "2.4 Ensure External Users' role is set to 'No Access'"
+  info           : "To set a default role for remote users Authentication and authorization for remote users are handled by third party system
+
+Rationale:
+
+Impact:
+
+Providing remote users with a preconfigured role might allow unauthorized access to these users."
+  solution       : "1. Log in to the Configuration utility.
+
+2. Go to System > Users > Authentication.
+
+3. Under External Users , click 'Change'.
+
+4. Set Role to 'No Access'."
+  reference      : "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CIS_Recommendation|2.4,CSCv7|4.6,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2A,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3"
+  see_also       : "https://workbench.cisecurity.org/files/3587"
+  f5_command     : "/tm/auth/remote-user"
+  json_transform : ".defaultRole"
+  expect         : "no-access"
+</custom_item>
+
+</check_type>

@@ -1,0 +1,93 @@
+{
+    "ui_metadata": {
+        "display_name": "CIS Microsoft Windows 11 Stand-alone v4.0.0 L1",
+        "spec": {
+            "type": "CIS",
+            "name": "Microsoft Windows 11 Stand-alone",
+            "profile": "L1",
+            "version": "4.0.0",
+            "link": "https://workbench.cisecurity.org/benchmarks/22007"
+        },
+        "labels": "windows,cis,microsoft_windows_11_stand-alone,agent,windows_11",
+        "benchmark_refs": "CSCv6,CSCv7,CSCv8,LEVEL",
+        "variables": [
+            {
+                "name": "PLATFORM_VERSION",
+                "default": "2[26][0-9]{3}",
+                "description": "Windows Version",
+                "info": "Windows Version",
+                "value_type": "STRING"
+            },
+            {
+                "name": "PASSWORD_HISTORY",
+                "default": "[24..MAX]",
+                "description": "Password history value",
+                "info": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Enforce password history",
+                "value_type": "STRING"
+            },
+            {
+                "name": "MAXIMUM_PASSWORD_AGE",
+                "default": "[1..365]",
+                "description": "Maximum password age value",
+                "info": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Maximum password age",
+                "value_type": "STRING"
+            },
+            {
+                "name": "MINIMUM_PASSWORD_AGE",
+                "default": "[1..MAX]",
+                "description": "Minimum password age value",
+                "info": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Minimum password age",
+                "value_type": "STRING"
+            },
+            {
+                "name": "MINIMUM_PASSWORD_LENGTH",
+                "default": "[14..MAX]",
+                "description": "Minimum password length value",
+                "info": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Minimum password length",
+                "value_type": "STRING"
+            },
+            {
+                "name": "LOCKOUT_DURATION",
+                "default": "[15..MAX]",
+                "description": "Account lockout duration",
+                "info": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Account Lockout Policy\\Account lockout duration",
+                "value_type": "STRING"
+            },
+            {
+                "name": "LOCKOUT_THRESHOLD",
+                "default": "[1..5]",
+                "description": "Account lockout threshold",
+                "info": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Account Lockout Policy\\Account lockout threshold",
+                "value_type": "STRING"
+            },
+            {
+                "name": "LOCKOUT_RESET",
+                "default": "[15..MAX]",
+                "description": "Reset account lockout",
+                "info": "Computer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Account Lockout Policy\\Reset account lockout counter after",
+                "value_type": "STRING"
+            },
+            {
+                "name": "LEGAL_NOTICE_TEXT",
+                "default": "All activities performed on this system will be monitored.",
+                "description": "Logon Window Text",
+                "info": "This is the window text for the login warning a user receives when logging onto the system.",
+                "value_type": "STRING"
+            },
+            {
+                "name": "LEGAL_CAPTION_TEXT",
+                "default": "Notice and Consent Banner",
+                "description": "Logon Window Caption",
+                "info": "This is the window caption text for the login warning a user receives when logging onto the system.",
+                "value_type": "STRING"
+            },
+            {
+                "name": "PASSWORD_AGE_PROMPT",
+                "default": "[5..14]",
+                "description": "Number of days to prompt user for password change before expiration",
+                "info": "Value (in days) for \"Interactive logon: Prompt user to change password before expiration\"",
+                "value_type": "STRING"
+            }
+        ]
+    }
+}

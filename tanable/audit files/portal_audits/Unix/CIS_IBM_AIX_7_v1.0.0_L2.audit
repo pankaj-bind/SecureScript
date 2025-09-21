@@ -1,0 +1,1290 @@
+#TRUSTED ae4e4151b7b49b8a07c3623532c0a7e0c2a79cea37b4a3b2566070615a03f6c10f29e178a947a2e4376154f3c38146f1b47a3794fbab20b3f212bc9b3c01d6d6bf4f919417bcf35befafdfd36787bea9b8fdc072bcf6a07b75902e41c8330e9cd8cdb29c04e25e93d1a40a1a802f928a51b3c1804a8ae504df1947b96cd4146d0d6ac317d3f508f22692eb29c76355532d4bf07293c7f7167783241ee9cf25422379425f524e4b9311a7daed5a2edcdcf68f7443465c3ada2e1d18fe25e2954a3998e33e30c8d225f60760820f1714ce4b4233dd5cd2dcd6c70a3ec5945d0fdb5cd3df8643ca48dce0bce0f9bb4fd86e250c3f7e26fd59f6d1c0aa02360c9f138a460f03ccacf8d546142bd3608b5a31c8a13bee5b2ed0b64b90aab45772bd9ef82fcc52ad3d24965325599f604338cd974a0c339e22beb10653c3de772aeb355a739b287f25cf3d116cb3c90a060258c1fbefa7676fdededec03a0c0902ea38924ed3da488c29a80d38bc2296303b1c51c985bed581afba9c833fa94fdbd21ca1f0e8b637c9175c82917dad8a88d638c3ca5096dfef02ca091d8b272993a92e60846c9962f365f35659ffdaafdb1730cd6010d142ebdb6d508b1abaa2e90a8a2689e7df417107b4461df395e6192c1158c9aeb2c2d6e6972dc41e6979d83c05cc40ebdab338be7ecc6327f1b88b2174197405ee74f4f31997224460243f4894
+#TRUST-RSA-SHA256 83b57db9c7bfec0df6864f8ff3a8985668300d659bc63ba41c7ebf0bb7114ad692ec7f0337c8b4c3cd0ccdd037bb7fd0e52f86077fc09157e828520294a3fe4cb52b5bbf23d0e7ccb3cb5b20bbc2bef53f884941133f163fd833e03946a06014f11b939078ad2f056c1bde5df8b0f7b294d668ecdea89d7a0e0a94c957fac4664e516d4c6925d78f9ce30b80ce946da4a454f0d4a80702a77b82386d1f328aa9184a5475425e777de5aecae2f2731d11fd5aa658a368d4531cc777738c50005a5df469f07fc647adeb1689314c06e210e740470479d074837aedfc64349ac4ddda2f81c5c85d9071c19780a8e450b98d4ef42f7b59504be1c69f5d7cb95f5e35ce8571b63b337c29f8aa601086d89f30cd21474bf9704fa953809a2ed6faf3d527cb770c4d7b32c8676ef9a687a4e82a08e1eb335f501ca1154bd482b71d8ebcf093a0953ba5661256de1d9a975f3593cca65c0a1cc428b03dcaca15cd627c31e1513ae93f9165ad9d9ee3b5c705413cca3756915d4ab8172776c696b418cad8c0588756973cefe0e0e97024e576f54df4c0285b3f79034f667240434d6d7e1f41bce8e97fc033c1fc3198a251945092da71a6b6e440dee5e2e8cb738b79e2be9987dadb7972e1703e47f7997d762a258f34a8710dae5f6022652cd31d5a95db2e900d8d554ac8ee0764e24ddea34c335567c3a2fd67e062d35f729a7cd9bf26
+#
+# This script is Copyright (C) 2004-2025 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.1 $
+# $Date: 2025/01/06 $
+#
+# description : This .audit is designed against the CIS IBM AIX 7 Benchmark 1.0.0
+#
+#<ui_metadata>
+#<display_name>CIS IBM AIX 7 v1.0.0 L2</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>IBM AIX 7</name>
+#  <profile>L2</profile>
+#  <version>1.0.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/10385</link>
+#</spec>
+#<labels>cis,aix_unix_7</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>TEP_PATH</name>
+#    <default>/path/1:/path/2</default>
+#    <description>Trusted Execution Path (TEP)</description>
+#    <info>2.1.1: To configure TE to enforce a Trusted Execution Path (TEP) you need to know the intended secure path.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>PASSWORD_MIN_AGE</name>
+#    <default>1</default>
+#    <description>Password Minimum Age</description>
+#    <info>The minimum password age determines the number of weeks that you must use a password before you can change it.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>SUDO_LOG</name>
+#    <default>/var/log/sudo.log</default>
+#    <description>Path to custom sudo log</description>
+#    <info>Path to the custom sudo log that simplifies auditing the use of sudo commands.</info>
+#    <value_type>UNIX_FILE_PATH</value_type>
+#  </variable>
+#  <variable>
+#    <name>SYSLOG_SERVER_IP_ADDRESS</name>
+#    <default>192.168.1.1</default>
+#    <description>Primary syslog server IP address</description>
+#    <info>For improved checks, the syslog check is compared against a specific syslog server in the environment.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>PLATFORM_VERSION</name>
+#    <default>7\.[0-9]+</default>
+#    <description>AIX Version</description>
+#    <info>AIX Version</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Unix">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : CMD_EXEC
+      description : "AIX Version 7 found"
+      cmd         : "/usr/bin/oslevel"
+      expect      : "^[\\s]*@PLATFORM_VERSION@"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_IBM_AIX_7_v1.0.0_L2.audit from CIS IBM AIX 7 Benchmark v1.0.0"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+    </report>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : CMD_EXEC
+          description : "TE"
+          cmd         : "/usr/sbin/trustchk -p TE 2>&1"
+          expect      : "^[\\s]*TE[\\s]*=[\\s]*ON[\\s]*$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "TEP"
+          cmd         : "/usr/sbin/trustchk -p TEP 2>&1"
+          expect      : "^[\\s]*TEP[\\s]*=[\\s]*ON[\\s]*$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "TEP path"
+          cmd         : "/usr/sbin/trustchk -p TEP 2>&1"
+          expect      : "^TEP=@TEP_PATH@$"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "2.1.1 Ensure Trusted Execution Path is enabled"
+          info        : "The recommendation is to activate TE to enhance system integrity by specifying authorized locations for applications to hamper attacks from unauthorized locations using
+
+Trojan horse
+
+style tactics.
+
+TE provides a robust system integrity checking process.
+
+Hackers utilize any opening they can find to infiltrate a system. One common attack pattern includes getting an unauthorized program (aka Trojan horse) installed anywhere on the target system. One of the integrity checks TE provides is an
+
+authorized
+
+aka
+
+allowed
+
+aka Trusted Executition Path ( TEP ).
+
+Enforcing a TEP is a low invasive mechanism of TEP and provides a high level continuous system integrity.This ensures that programs are only executed from well-defined (
+
+allowed
+
+) locations. Best practice installation and maintaince (e.g., system updates) are needed to ensure only trusted programs are installed in these locations and not malicious code masquerading as a true program."
+          solution    : "NOTE : Your configuration of TE is dependent on the unique requirements of your environment.
+
+To configure TE to enforce a
+
+Trusted Execution Path
+
+( TEP ) you need to know the intended secure path.e.g., SecurePath=\"/usr/bin:/usr/sbin\"
+
+Perform the following:
+
+# First disable both TE and TEP
+trustchk -p TE=OFF TEP=OFF
+# Set the secure TEP variable
+trustchk -p TEP=${SecurePath}
+# Enable TE and TEP
+trustchk -p TE=ON TEP=ON
+
+Further details regarding planning and implementation of TE can be found within the IBM AIX 7 Infocentre:
+
+https://www.ibm.com/docs/en/aix/7.3?topic=configuration-trusted-execution
+
+Impact:
+
+Testing is recommended. An additional directory may be needed, e.g., for trusted applications not installed in the BOS default locations.
+
+Additional QA testing should verify that only directories actually needed are included in the TEP - otherwise an unnecessary, perhaps un-watched, directory leaves a potential for an attack."
+          reference   : "800-171|3.1.1,800-171|3.14.2,ITSG-33|SI-7,800-171|3.14.4,QCSC-v1|5.2.3,800-171|3.14.5,ITSG-33|SI-7a.,800-53|AC-3(4),800-53|SI-3,TBA-FIISB|49.3.1,800-53|SI-7(6),NESA|T3.4.1,800-53r5|AC-3(4),800-53r5|SI-3,QCSC-v1|8.2.1,800-53r5|SI-7(6),NESA|T4.2.1,CN-L3|7.1.3.6(b),NESA|T5.4.4,CN-L3|8.1.4.2(f),CN-L3|8.1.4.5,NESA|T5.4.5,CN-L3|8.1.4.11(b),CN-L3|8.1.9.6(a),NESA|T5.5.4,CN-L3|8.1.9.6(b),NESA|T5.6.1,CN-L3|8.1.10.2(c),CN-L3|8.1.10.5(b),NESA|T7.3.2,CN-L3|8.1.10.7(a),TBA-FIISB|51.2.7,CN-L3|8.1.10.7(b),NESA|T7.3.3,CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|DE.CM-4,QCSC-v1|13.2,CSF|DE.DP-3,NESA|T7.5.2,CSF|PR.AC-4,CSF|PR.DS-6,NESA|T7.5.3,CSF|PR.PT-3,CSF2.0|DE.CM-09,NIAv2|AM3,CSF2.0|ID.RA-09,NIAv2|GS8a,CSF2.0|PR.AA-05,CSF2.0|PR.DS-01,SWIFT-CSCv1|6.2,CSF2.0|PR.DS-02,NIAv2|SS29,CSF2.0|PR.DS-10,PCI-DSSv3.2.1|5.1,TBA-FIISB|49.3.2,CSF2.0|PR.IR-01,CSF2.0|PR.PS-02,PCI-DSSv3.2.1|5.1.1,GDPR|32.1.b,TBA-FIISB|31.1,PCI-DSSv3.2.1|10.5.5,HIPAA|164.306(a)(1),TBA-FIISB|49.2.1,PCI-DSSv4.0|5.2.1,HIPAA|164.312(a)(1),HIPAA|164.312(c)(1),TBA-FIISB|51.2.4,HIPAA|164.312(c)(2),QCSC-v1|3.2,HIPAA|164.312(e)(2)(i),TBA-FIISB|49.2.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ISO/IEC-27001|A.12.2.1,TBA-FIISB|50.2.1,ITSG-33|AC-3(4),ITSG-33|SI-3,QCSC-v1|5.2.2"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : CMD_EXEC
+          description : "stop_untrusted"
+          cmd         : "/usr/sbin/trustchk -p STOP_UNTRUSTD 2>&1"
+          expect      : "^[\\s]*STOP_UNTRUSTD[\\s]*=[\\s]*(?i)(ON|TROJAN)[\\s]*"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "stop_on_chkfail"
+          cmd         : "/usr/sbin/trustchk -p STOP_ON_CHKFAIL 2>&1"
+          expect      : "^[\\s]*STOP_ON_CHKFAIL[\\s]*=[\\s]*[Oo][Nn][\\s]*$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "te"
+          cmd         : "/usr/sbin/trustchk -p TE"
+          expect      : "^[\\s]*TE[\\s]*=[\\s]*[Oo][Nn][\\s]*$"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "2.1.3 Ensure Allowlist violations are enabled"
+          info        : "This takes allowlist aka whitelisting to the next level - where all software, libraries and scripts that are not in the trusted signature database (TSD) in /etc/security/tsd/tsd.dat are blocked.
+
+Trusted Execution (TE) provides an additional layer of access controls to processes on top of the base Discretionary Access Controls. Monitoring how processes access system resources can improve awareness of system integrity."
+          solution    : "- Execute one of the following commands:
+
+trustchk -p stop_untrustd=on stop_on_chkfail=on te=on
+
+or
+
+trustchk -p stop_untrustd=trojan stop_on_chkfail=on te=on
+
+Impact:
+
+The step is reversible. By returning the TE policies STOP_UNTRUSTD and STOP_ON_CHKFAIL back to OFF the system will be returned to the Level 1 Profile.
+
+An intermediate Level would be to set STOP_UNTRUSTD to TROJAN rather than ON (Level 2) or OFF (Level 1).
+
+TROJAN Stops the loading of files that do not belong to the TSD and have one of the following security settings:
+        * Have suid/sgid bit set
+        * Linked to a file in the TSD
+        * Have entry in the privcmds Database
+        * Be linked to a file in the privcmds database"
+          reference   : "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7,800-53|CM-7(1),800-53|CM-7(5),800-53|CM-10,800-53|SI-7,800-53|SI-7(1),800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-7(5),800-53r5|CM-10,800-53r5|SI-7,800-53r5|SI-7(1),CN-L3|7.1.3.5(b),CSCv7|2.7,CSCv7|2.8,CSCv7|2.9,CSCv8|2.5,CSCv8|2.6,CSCv8|2.7,CSF|DE.CM-3,CSF|PR.DS-6,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|ID.RA-09,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(c)(1),HIPAA|164.312(c)(2),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|SI-7,ITSG-33|SI-7a.,ITSG-33|SI-7(1),LEVEL|2A,NESA|T3.4.1,NESA|T7.3.2,NESA|T7.3.3,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,PCI-DSSv3.2.1|10.5.5,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|6.2,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "2.1.4 Ensure Trusted Execution (TE) policies are locked"
+      info        : "Set trusted execution policy LOCK_KERN_POLICIES to enabled. All of the other policies will then be locked and cannot be changed without disabling the LOCK_KERN_POLICIES policy and then restarting the system.
+
+When policies are locked, unauthorized users cannot make changes to the policies to allow them to execute unapproved tools and then revert the settings afterwards. An unplanned system reboot is likely to be noticed and investigated"
+      solution    : "Execute the following command
+
+trustchk -p LOCK_KERN_POLICIES=ON
+
+Impact:
+
+To revert this setting and/or to be able to make modifications this policy must first be switched off using trustchk -p LOCK_KERN_POLICIES=OFF followed by a reboot"
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      cmd         : "/usr/sbin/trustchk -p LOCK_KERN_POLICIES"
+      expect      : "^[\\s]*LOCK_KERN_POLICIES[\\s]*=[\\s]*[Oo][Nn][\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "2.3 Ensure regular scans for unauthorized applications"
+      info        : "This recommendation is find and report (audit) software on the system that has not been included in the TE (trusted execution) TSD (trusted signature database).
+
+These entries establish a so-called AllowList Software not included on this AllowList should be generating a syslog and/or audit record whenever it is executed.
+
+Trusted Execution (TE) is an AIX security component that can be used to monitor
+
+unauthorized
+
+software in real time.
+
+Unauthorized
+
+seems a clear definition, but how TE determines
+
+unauthorized
+
+may not be as clear.Simply put, the goal is that all software is on the AllowList If not, the software is
+
+unauthorized
+
+.AIX uses the term TROJAN (see below) to determine that an application is
+
+unauthorized
+
+.Software that does not require any special kernel privileges to run is also authorized
+
+What is a Trojan?
+
+For this benchmark we add the AIX concept of TROJAN as a definition of
+
+unauthorised
+
+. AIX defines Trojan anyexecutable not in the TSD with one or more of the following characteristics:
+
+ - uses either SUID or SGID
+ - is linked to a command in the TSD ( AllowList )
+ - is in the privcmds (aka RBAC definition, ie, may have kernel privileges).
+ - is linked to a command in the privcmds database.
+
+Summary :On AIX the construct AllowList is implemented by the TSD. The clear advantage of an AllowList monitored by a system security component is that the system can enforce and/or report violations of AllowList in real-time.
+
+This recommendation focuses on reporting violations of the AllowList A later recommendation (update or new version of benchmark) will have a Level 2 recommendation including
+
+enforcing violations
+
+."
+      solution    : "This will be a manual process. The remediation is to find and remove the offending file (currently the reported file might be the artifact of another error - most common is a symbolic link that points at a non-existent object).
+
+The starting point is running the same command from the AUDIT section:
+
+trustchk -i -n tree / 2>&1 >/dev/null | grep untrusted
+
+Line by line, verify the root cause and act (one of):
+
+ - remove the offending object
+ - remove SUID/SGID settings
+ - remove privcmds setting
+ - add to TSD aka AllowList"
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-171|3.4.8,800-53|CM-7,800-53|CM-7(1),800-53|CM-7(5),800-53|CM-10,800-53|SI-7,800-53|SI-7(1),800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-7(5),800-53r5|CM-10,800-53r5|SI-7,800-53r5|SI-7(1),CN-L3|7.1.3.5(b),CSCv7|2.1,CSCv7|2.3,CSCv7|2.6,CSCv7|2.7,CSCv8|2.5,CSCv8|2.6,CSCv8|2.7,CSF|DE.CM-3,CSF|PR.DS-6,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|ID.RA-09,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(c)(1),HIPAA|164.312(c)(2),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|SI-7,ITSG-33|SI-7a.,ITSG-33|SI-7(1),LEVEL|2M,NESA|T3.4.1,NESA|T7.3.2,NESA|T7.3.3,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,PCI-DSSv3.2.1|10.5.5,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|6.2,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      cmd         : "/usr/sbin/trustchk -i -n tree / 2>&1 >/dev/null | /usr/bin/grep untrusted | /usr/bin/awk '{print} END {if (NR==0) print \"none\"}'"
+      expect      : "^none$"
+    </custom_item>
+
+    <custom_item>
+      type        : FIND_CMD
+      description : "3.4 Ensure there are no system 'default group' writable files (objects)"
+      info        : "The system is audited for
+
+group
+
+writable files that belong to one of the default AIX groups.
+
+An audit should be performed on the system to search for the presence of group writable files and devices. (Directories are covered in a seperate recommendation).
+
+The preference is no world writable files (objects) - using a group defined by system installation."
+      solution    : "- Review the currently mounted local filesystems using the following to find all world writable files on local JFS/JFS2 filesystems only:
+
+find / \( -fstype jfs -o -fstype jfs2 \) -type f -perm -g+w -ls
+ - Remedy any files in the list, e.g., chmod g-w {filename}
+ - Document any files, and motivate why they are group writeable, and also add documentation re: when/why this exception ceases."
+      reference   : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2M,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      not_expect  : ".+"
+      exec        : "ls -ld '{}' \\;"
+      find_type   : "f"
+      perm        : "-g+w"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK_NOT
+      description : "4.2.5 Ensure all entries in /etc/hosts.equiv are removed"
+      info        : "This process removes all entries from the /etc/hosts.equiv file.
+
+The /etc/hosts.equiv file can be used to circumvent normal login or change control procedures. The existence of this file, with the relevant entries, can allow remote user access to a system bypassing local user and password authentication. Unless required all entries will be removed from this file."
+      solution    : "Remove all entries from the /etc/hosts.equiv file:
+
+sed '/^\s*$/d; s/^\(\s*[^#].*\)/#\1/' /etc/hosts.equiv > /etc/hosts.equiv.work
+mv hosts.equiv.work hosts.equiv
+chown root:system /etc/hosts.equiv
+chmod 644 /etc/hosts.equiv
+
+Note: the above command removes blank lines and comments out any non commented entries."
+      reference   : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      file        : "/etc/hosts.equiv"
+      regex       : "^[\\s]*[^#].*"
+      expect      : "^[\\s]*[^#].*"
+    </custom_item>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : FILE_CHECK_NOT
+          description : "rhosts"
+          file        : "~/.rhosts"
+        </custom_item>
+
+        <custom_item>
+          type        : FILE_CHECK_NOT
+          description : "netrc"
+          file        : "~/.netrc"
+        </custom_item>
+
+        <custom_item>
+          type        : FILE_CHECK_NOT
+          description : "shosts"
+          file        : "~/.shosts"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "4.2.6 Ensure that host based authentication files are not present"
+          info        : "This recommendation removes all instances ofrhostsshosts andnetrc files from the system.
+
+Therhostsshosts andnetrc files can be used to circumvent normal login or change control procedures. The existence of such files, with the relevant entries, can allow remote user access to a system bypassing local user and password authentication. Unless required these files will be removed from all user home directories."
+          solution    : "Remove therhosts andnetrc files from all user home directories:
+
+find / -name \".netrc\" -exec rm {} \;
+find / -name \".rhosts\" -exec rm {} \;
+find / -name \".shosts\" -exec rm {} \;"
+          reference   : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : CMD_EXEC
+          description : "lssrc mrouted"
+          cmd         : "/usr/bin/lssrc -s mrouted | /usr/bin/awk '{ print } END { if (NR==0) print \"pass\" }'"
+          expect      : "[\\s]+inoperative$"
+        </custom_item>
+
+        <custom_item>
+          type        : FILE_CONTENT_CHECK_NOT
+          description : "on disk /usr/sbin/mrouted"
+          file        : "/etc/rc.tcpip"
+          regex       : "^[\\s]*start[\\s]+/usr/sbin/mrouted"
+          expect      : "^[\\s]*start[\\s]+/usr/sbin/mrouted"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "4.3.2.9 Ensure mrouted is not in use"
+          info        : "This entry starts the mrouted daemon on system startup. This daemon is an implementation of the multicast routing protocol.
+
+The mrouted daemon is an implementation of the multicast routing protocol. The recommendation is to only permit this service when there is a documented need for the service.
+
+The assumption of this recommendation is that the service is not needed - and the audit and remediation are written to disable the service (it's default setting)."
+          solution    : "In /etc/rc.tcpip comment out the mrouted entry and stop a running service:
+
+chrctcp -d mrouted
+stopsrc -s mrouted
+
+Impact:
+
+When this service's need is documented (include with assessment report) the audit and remediation for this service may be skipped.
+
+The CIS controls are to disable unneeded software. When
+
+needed
+
+it's usage must be allowed."
+          reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "4.4.1.5 Ensure NFS exports use allow lists"
+      info        : "Only allow explicitly defined host access to NFS exported filesystems and directories.
+
+The NFS server should be configured to only allow explicitly defined hosts to mount filesystems from the server. If an unauthorized host is denied the permission to mount a filesystem, then the unauthorized users on that host will not be able to access the server's files.
+
+The default value of access allows any machine to mount any exported filesystems/directories."
+      solution    : "Ensure that all exports defined in /etc/exports have explicit client access options which clearly define the host or hosts allowed access: Review the content of /etc/exports and that all exports have explicit access lists:
+
+showmount -e | grep \"(everyone)\"
+
+Ensure that each NFS export has an explicit access line, for example, modify:
+
+/export/repo (everyone)
+
+to:
+
+/export/repo x071
+ - The option -c is used to specify clients permitted access:
+
+chnfsexp -d /export/repo -c x071"
+      reference   : "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|2A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      cmd         : "/usr/bin/showmount -e 2>&1 | /usr/bin/grep \"(everyone)\" | /usr/bin/wc -l"
+      expect      : "^0$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "4.4.1.7 Ensure secure RPC authentication is enabled"
+      info        : "To enhance server-client authentication ensure that the secure option is selected for every export.
+
+RPC is a protocol used by NFS to communicate requests between hosts. Secure NFS uses encryption (DES or Kerberos) to secure host authentication in RPC transactions. Secure NFS mitigates attempts by an attacker to spoof RPC requests by encrypting the time stamp in the RPC requests.
+
+While the data is not encrypted each package is verified by a successful decryption the timestamp in every incoming RPC request. This confirmation mitigates receiving requests from untrusted or unknown hosts."
+      solution    : "Use chnfsexp to change/validate this value for all NFS exported filesystems:
+
+chnfsexp -d <fs> -S <sec>
+
+The available security method options are:
+
+ - sys - UNIX authentication
+ - dh - DES authentication
+ - none - Use the anonymous ID if it has a value other than -1
+ - krb5 - Kerberos. Authentication only
+ - krb5i - Kerberos. Authentication and integrity
+ - krb5p - Authentication, integrity, and privacy `
+
+Once all exported filesystems have been successfully validated or changed, re-export the filesystems and directories to activate the new options:
+
+exportfs -a"
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|2A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      cmd         : "/usr/sbin/lsnfsexp -l | /usr/bin/awk '{ print } BEGIN { f=0; } /^.*/ {if ($0 !~ \"sec=(sys|dh|krb5|krb5i|krb5p)\") f++;} END {if (NR == 0) print \"Pass - /etc/exports empty\"; else if (f > 0) print \"Fail\"; else print \"Pass\"}'"
+      expect      : "^Pass"
+    </custom_item>
+
+    <if>
+      <condition type:"AND">
+        <custom_item>
+          type        : CMD_EXEC
+          description : "clickext"
+          cmd         : "/usr/bin/genkex | /usr/bin/grep crypto/clickext | /usr/bin/awk '{ print } END { if (NR == 0) print \"none\" }'"
+          expect      : "[\\s]/usr/lib/drivers/crypto/clickext[\\s]*$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "lslpp clic"
+          cmd         : "/usr/bin/lslpp -L | /usr/bin/grep clic"
+          expect      : "^[\\s]+clic\\.rte\\."
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "4.4.2.1 Ensure File System Level encryption is enabled"
+          info        : "When there is a requirement for file based encryption for unauthorized users for both live systems and encryption at rest the preferred mechanism is EFS - encrypted file systems.
+
+A security enhancement introduced with AIX 6.1 is Encrypted Filesystems (EFS). This technology enables an individual user to encrypt their own data within a jfs2 filesystem.
+
+After enabling a filesystem to use EFS individual files can be encrypted or encryption can be set at the directory (all files within the directory, recursively) or by system administration at filesystem level. Encryption is performed by the kernel. Access to the kernel secret key is managed via keystore files. The standard AIX data and user management commands have been modified to work with encryption.
+
+Data is only accessible in 'cleartext' when the active process has access to the secret key. Without this access the file system acts as if the file does not exist."
+          solution    : "There are two pre-requisite requirements for EFS, it requires RBAC and the installation of the CLiC cryptographic fileset. The fileset is located on the expansion pack, shipped with the AIX media.
+
+Place the CLiC software into a convenient location, such as /tmp and install via:
+
+/usr/lib/instl/sm_inst installp_cmd -a -Q -d /tmp -f clic.rte -c -N -g -X -G -Y
+
+NOTE: If the software is not located in /tmp reflect the actual location in the command above.
+
+Load the CLiC kernel extension:
+
+/usr/lib/methods/loadkclic
+
+As the EFS administrator, create the initial keystore. This is typically the root user:
+
+efsenable -a
+
+An EFS enabled filesystem can be created with the following command:
+
+chfs -v jfs2 -g <vg_name> -m <filesystem> -a size=<size> -a efs=yes
+
+To enable EFS for an existing filesystem:
+
+chfs -a efs=yes <filesystem>
+
+To encrypt a file, load your keystore via:
+
+efskeymgr -o ksh
+
+Then encrypt via:
+
+efsmgr -c AES_192_ECB -e <filename>
+
+To decrypt:
+
+efsmgr -d <filename>
+
+Further details regarding planning and implementation of EFS can be found within the IBM AIX 7.1 Infocentre:
+
+https://www.ibm.com/docs/en/aix/7.1?topic=system-efs-encrypted-file
+
+NOTE: The configuration of EFS is completely dependent on the unique requirements of a given environment.
+
+Impact:
+
+The use of EFS enhances the file and directory security within AIX. If there are sensitive or confidential files, encryption provides that extra level of security in the event of an accidental chmod which may allow read or write access to other users.
+
+The encryption operates at the filesystem level and each file is encrypted with a separate key. From a user perspective the encryption is transparent as the key can be automatically loaded during login."
+          reference   : "800-171|3.5.2,800-171|3.13.16,800-53|IA-5(1),800-53|SC-28,800-53|SC-28(1),800-53r5|IA-5(1),800-53r5|SC-28,800-53r5|SC-28(1),CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSCv7|14.8,CSCv8|3.11,CSF|PR.AC-1,CSF|PR.DS-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.DS-01,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(d),HIPAA|164.312(e)(2)(ii),ITSG-33|IA-5(1),ITSG-33|SC-28,ITSG-33|SC-28a.,ITSG-33|SC-28(1),LEVEL|2A,NESA|T5.2.3,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1,TBA-FIISB|28.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "4.7.3.15 Ensure sshd PermitRootLogin is disabled"
+      info        : "The PermitRootLogin parameter specifies if the root user can log in using SSH. The current default is prohibit-password
+
+Disallowing root logins over SSH requires system admins to authenticate using their own individual account, then escalating to root This limits opportunity for non-repudiation and provides a clear audit trail in the event of a security incident."
+      solution    : "#!/usr/bin/ksh
+PREFERRED_SETTING=\"no\"
+umask 077
+set $(/usr/bin/egrep \"^PermitRootLogin\" /etc/ssh/sshd_config)
+echo $?
+if [[ ! -z $1 ]]; then
+  # Look for a setting and change to no if anything else
+  if [[ $2 != ${PREFERRED_SETTING} ]]; then
+    sed \"s/^PermitRootLogin \{1\}[^ ]\{1,\}/PermitRootLogin ${PREFERRED_SETTING}/\" /etc/ssh/sshd_config >/tmp/sshd_config.$$
+  fi
+else
+  # Look for a comment and append
+  sed \"/^# \{0,\}PermitRootLogin/ a\^JPermitRootLogin ${PREFERRED_SETTING}/\" /etc/ssh/sshd_config >/tmp/sshd_config.$$
+fi
+
+if [[ -e /tmp/sshd_config.$$ ]]; then
+  diff -u /tmp/sshd_config.$$ /etc/ssh/sshd_config
+  rm /tmp/sshd_config.$$
+elif
+  # Verify setting is specified
+  /usr/bin/egrep \"^PermitRootLogin\" /etc/ssh/sshd_config >>/dev/null
+  if [[ $? -ne 0 ]]; then
+    print \"PermitRootLogin ${PREFERRED_SETTING}\" >> /etc/ssh/sshd_config
+  fi
+fi
+
+Re-cycle the sshd daemon to pick up the configuration changes:
+
+stopsrc -s sshd
+sleep 5
+startsrc -s sshd
+
+Impact:
+
+The level 1 recommendation does not
+
+require
+
+a setting of no - setting the attribute to no requires either sharing a root password (to use su ), the installation of sudo or a configuration using extended RBAC for actions that require enhanced privileges.
+
+Level 2 recommendation is to align with other Benchmarks that set PermitRootLogin to no"
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-171|3.7.5,800-53|CM-7,800-53|MA-4,800-53r5|CM-7,800-53r5|MA-4,CSCv7|9.2,CSCv8|4.6,CSF|PR.IP-1,CSF|PR.MA-2,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7,ITSG-33|MA-4,LEVEL|2A,NESA|T2.3.4,NESA|T5.4.4,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3,TBA-FIISB|45.2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      file        : "/etc/ssh/sshd_config"
+      regex       : "^[\\s]*PermitRootLogin[\\s]+"
+      expect      : "^[\\s]*PermitRootLogin[\\s]+no[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "5.2.2 Ensure minimum password age is configured"
+      info        : "The minimum password age determines the number of weeks that you must use a password before you can change it.
+
+Users may have favorite passwords that they like to use because they are easy to remember and they believe that their password choice is secure from compromise.Unfortunately, passwords are compromised and if an attacker is targeting a specific individual user account, with foreknowledge of data about that user, reuse of old, potentially compromised passwords, may cause a security breach.By restricting the frequency of password changes, an administrator can prevent users from repeatedly changing their password in an attempt to circumvent password reuse controls"
+      solution    : "In /etc/security/user set the default user stanza minage attribute to 1 :
+
+chsec -f /etc/security/user -s default -a minage=1
+
+This means that a user can only change their password after one week.
+
+Impact:
+
+By enforcing a minimum password age, a user will be unable to change their password if they observe a potential compromise of their password, e.g. \"shoulder surfing\", during the time defined by minimum password age. In this event the user should follow local site policy to report a compromised password.
+
+If a users password is set by other personnel as a procedure in dealing with a lost or expired password, the user should be forced to update this \"set\" password with their own password. e.g. use the ADMINCHG flag on the account.
+
+If it is not possible to have a user set their own password immediately, and this recommendation or local site procedure may cause a user to continue using a third party generated password, minage for the affected user should be temporally changed to 0, to allow a user to change their password immediately.
+
+For applications where the user is not using the password at console, the ability to \"change at next logon\" may be limited. This may cause a user to continue to use a password created by other personnel.
+
+The AIX community prefers to rely on the AIX attribute histexpire rather than a historical minage value as this better satisfies the need to prevent cycling through passwords. The CIS Password Policy still recommends the use of a minimum age, hence the retention of this recommendation at level 2."
+      reference   : "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|2A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      cmd         : "/usr/bin/lssec -f /etc/security/user -s default -a minage"
+      expect      : "^[\\s]*default[\\s]+minage[\\s]*=[\\s]*@PASSWORD_MIN_AGE@[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "6.1.1 Ensure sudo is installed"
+      info        : "The recommendation is to install and configure sudo to reflect the privileged command access requirements of all users of the system.
+
+Privileged command access should be limited to and defined by a user's individual needs. Access to a root command prompt should limited, wherever possible, to minimize the risk of inadvertent or deliberate misuse of the account.
+
+The choice between sudo and enhanced RBAC revolves around whether or not the environment is heterogeneous in nature, running different flavors of UNIX, or perhaps different versions of AIX. It may be that sudo is the standard tool of choice for managing privileged command access across an entire UNIX estate. However, if the environment is AIX 6.1+ only, it is recommended that enhanced RBAC is used as the tool of choice. Some implementations however may benefit from a combined approach, utilizing both sudo and enhanced RBAC."
+      solution    : "Install the latest available version for the sudo distribution installed on your system. This version should be 1.9.5p2 or later."
+      reference   : "800-171|3.1.5,800-171|3.1.6,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|2M,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      cmd         : "/usr/bin/sudo --version | head -1"
+      expect      : "^(?i)sudo[\\s]*version[\\s]"
+    </custom_item>
+
+    <if>
+      <condition auto:"FAILED" type:"OR">
+        <custom_item>
+          type            : FILE_CONTENT_CHECK
+          description     : "sudoers logfile"
+          file            : "/etc/sudoers /etc/sudoers.d/*"
+          regex           : "^[\\s]*Defaults[\\s]+logfile"
+          expect          : "^[\\s]*Defaults[\\s]+logfile[\\s]*=[\\s]*\"?@SUDO_LOG@\"[\\s]*$"
+          file_required   : NO
+          min_occurrences : "1"
+          string_required : NO
+        </custom_item>
+
+        <custom_item>
+          type        : FILE_CONTENT_CHECK_NOT
+          description : "sudoers syslog"
+          file        : "/etc/sudoers /etc/sudoers.d/*"
+          regex       : "(?i)^[\\s]*Defaults[\\s]+syslog_"
+          expect      : "(?i)^[\\s]*Defaults[\\s]+syslog_(badpri|goodpri)[\\s]*=[\\s]*none"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "6.1.2 Ensure sudo logging is active"
+          info        : "All commands executed via sudo should be logged to either syslog (default) or a dedicated log file
+
+Note: visudo edits the sudoers file in a safe fashion, analogous to vipw(8). visudo locks the sudoers file against multiple simultaneous edits, provides basic sanity checks, and checks or parse errors. If the sudoers file is currently being edited you will receive a message to try again later.
+
+Logging of commands executed via sudo enables auditing of those commands"
+          solution    : "Edit the file /etc/sudoers or a file in /etc/sudoers.d/ with visudo -f <PATH TO FILE>
+
+Remove the any lines which are found containing
+
+syslog_badpri=none
+
+or
+
+syslog_goodpri=none
+
+-OR-
+
+If you do not want to log sudo commands to syslog, to use as sudo specific log file add the following line:
+
+Defaults logfile=\"<PATH TO CUSTOM LOG FILE>\"
+
+Example:
+
+Defaults logfile=\"/var/log/sudo.log\""
+          reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <custom_item>
+      type            : FILE_CONTENT_CHECK
+      description     : "6.1.3 Ensure sudo commands use pty"
+      info            : "sudo can be configured to run only from a pseudo-pty
+
+Note: visudo edits the sudoers file in a safe fashion, analogous to vipw(8). visudo locks the sudoers file against multiple simultaneous edits, provides basic sanity checks, and checks or parse errors. If the sudoers file is currently being edited you will receive a message to try again later.
+
+Attackers can run a malicious program using sudo, which would again fork a background process that remains even when the main program has finished executing."
+      solution        : "Edit the file /etc/sudoers or a file in /etc/sudoers.d/ with visudo -f <PATH TO FILE> and add the following line:
+
+Defaults use_pty"
+      reference       : "800-53|SI-16,800-53r5|SI-16,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|2A"
+      see_also        : "https://workbench.cisecurity.org/benchmarks/10385"
+      file            : "/etc/sudoers /etc/sudoers.d/*"
+      regex           : "^\\s*Defaults\\s+([^#]+,\\s*)?use_pty(,\\s+\\S+\\s*)*(\\s+#.*)?$"
+      expect          : "^\\s*Defaults\\s+([^#]+,\\s*)?use_pty(,\\s+\\S+\\s*)*(\\s+#.*)?$"
+      file_required   : NO
+      min_occurrences : "1"
+      string_required : NO
+    </custom_item>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : FILE_CONTENT_CHECK
+          description : "at.allow"
+          file        : "/var/adm/cron/at.allow"
+          regex       : "^root$"
+          expect      : "^root$"
+        </custom_item>
+
+        <custom_item>
+          type        : FILE_CHECK_NOT
+          description : "at.deny"
+          file        : "/var/adm/cron/at.deny"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "6.2.1 Ensure at is restricted to authorized users"
+          info        : "This change creates an at.allow file with a root user entry and removes the at.deny file, if it exists.
+
+This ensures that only the root user has the ability to schedule jobs through the at command. A hacker may exploit use of at to execute programs or processes automatically. Limiting access to the root account only reduces this risk."
+          solution    : "Create the /var/adm/cron/at.allow file and remove /var/adm/cron/at.deny (if it exists):
+
+echo \"root\" > /var/adm/cron/at.allow
+rm /var/adm/cron/at.deny"
+          reference   : "800-53|SI-16,800-53r5|SI-16,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|2A"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : FILE_CHECK_NOT
+          description : "cron.deny"
+          file        : "/var/adm/cron/cron.deny"
+        </custom_item>
+
+        <custom_item>
+          type        : FILE_CONTENT_CHECK
+          description : "cron.allow admin"
+          file        : "/var/adm/cron/cron.allow"
+          regex       : "^adm$"
+          expect      : "^adm$"
+        </custom_item>
+
+        <custom_item>
+          type        : FILE_CONTENT_CHECK
+          description : "cron.allow root"
+          file        : "/var/adm/cron/cron.allow"
+          regex       : "^root$"
+          expect      : "^root$"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "6.2.3 Ensure crontab is restricted authorized users"
+          info        : "This change creates a cron.allow file with a root user entry and removes the cron.deny file, if it exists.
+
+This ensures that only the root user has the ability to create a crontab. A hacker may exploit use of the crontab to execute programs or processes automatically. Limiting access to the root account only reduces this risk."
+          solution    : "Create the /var/adm/cron/cron.allow file and remove /var/adm/cron/cron.deny (if it exists):
+
+print \"root\nadm\" > /var/adm/cron/cron.allow
+
+rm /var/adm/cron/cron.deny"
+          reference   : "800-53|SI-16,800-53r5|SI-16,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|2A"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : CMD_EXEC
+          description : "crontab"
+          cmd         : "/usr/bin/crontab -l | /usr/bin/grep \"cronaudit\" | awk '{ print } END { if (NR == 0) print \"none\" }'"
+          expect      : "^[\\s]*[0-9\\s\\*]+[\\s]+/etc/security/aixpert/bin/cronaudit[\\s]*$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "lsitab audit"
+          cmd         : "/usr/sbin/lsitab audit | awk '{ print } END { if (NR == 0) print \"none\" }'"
+          expect      : "^[\\s]*audit:2:boot:audit[\\s]+start[\\s]+>[\\s]+/dev/console[\\s]+2>&1"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "lssec auditclasses"
+          cmd         : "/usr/bin/lssec -f /usr/lib/security/mkuser.default -s user -a auditclasses"
+          expect      : "^user[\\s]+auditclasses[\\s]*=[\\s]*general,SRC,cron,tcpip[\\s]*$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "/etc/security/audit/config"
+          cmd         : "/usr/bin/awk 'BEGIN {x=0;a[\"start:-binmode\"] = \"^on$\"; a[\"start:-streammode\"] = \"^off$\"; a[\"bin:-trail\"] = \"^/audit/trail$\"; a[\"bin:-bin1\"] = \"^/audit/bin1$\"; a[\"bin:-bin2\"] = \"^/audit/bin2$\"; a[\"bin:-binsize\"] = \"^10240$\"; a[\"bin:-cmds\"] = \"^/etc/security/audit/bincmds$\"; a[\"users:-root\"] = \"^general\"} /^[^ ]+:$/ { sec=$1 } { if ($3 ~ a[sec\"-\"$1]) delete a[sec\"-\"$1] } END { for (i in a) x++; if (x > 0) { print \"failed\" } else { print \"pass\" } }' /etc/security/audit/config"
+          expect      : "^pass$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "audit mount"
+          cmd         : "/usr/sbin/lsfs /audit || print \"Audit Filesystem is missing\""
+          expect      : "[\\s]+/audit[\\s]+jfs2[\\s]+"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "7.1.1 Ensure /audit filesystem has been created and configured"
+          info        : "This recommendation provides guidance for preparing an AIX system to operate with AUDIT active.
+
+AIX Audit has been available as part of the kernel since 1995. The historical setup has all of it's files in the
+
+root
+
+partition. This presents a risk that / (/dev/hd4) may be (nearly) full and impact system availability. Further, while there is a separate user group defined ( audit ) the default configuration requires that an
+
+audit admin
+
+must be in two groups: audit and security Better is to remove the requirement of the group
+
+security
+
+."
+          solution    : "Configure AIX auditing in-line with the High Level AIX Security Expert policy.
+
+Create a /audit filesystem, at least 100 MB in size:
+
+mklv -y <LV name> -t jfs2 -u 1 -c 1 rootvg 1 hdisk0
+crfs -v jfs2 -d auditlv -m /audit -A yes -t no
+mount /audit
+
+Reflect the following configuration in the /etc/security/audit/config file:
+
+vi /etc/security/audit/config
+
+Add in:
+
+start:
+            binmode = on
+            streammode = off
+bin:
+           trail = /audit/trail
+            bin1 = /audit/bin1
+            bin2 = /audit/bin2
+            binsize = 10240
+            cmds = /etc/security/audit/bincmds
+
+Add the auditing entries for root and all other users below the pre-defined audit classes:
+
+users:
+        root = general,SRC,mail,cron,tcpip,ipsec,lvm
+        <user 1> = general,SRC,cron,tcpip
+        <user 2> = general,SRC,cron,tcpip
+        etc.
+
+Update the /usr/lib/security/mkuser.default auditclasses entry to ensure that auditing is set up for any newly created users:
+
+chsec -f /usr/lib/security/mkuser.default -s user -a
+auditclasses=general,SRC,cron,tcpip
+
+A cron job is implemented to monitor the free space in /audit running hourly, to ensure that /audit does not fill up. If /audit is greater than 90% used, /audit/trail is moved to /audit/trailOneLevelBack :
+
+crontab -e
+
+Add in:
+
+0 * * * * /etc/security/aixpert/bin/cronaudit
+
+NOTE: The implementation of a script to suit internal security policy is recommended to further enhance the log rotation process.
+
+Add the audit startup command into /etc/inittab :
+
+mkitab \"audit:2:boot:audit start > /dev/console 2>&1 # Start audit\"
+
+Impact:
+
+This recommendation creates an additional logical volume ( hd12audit ) and filesystem ( /audit ) if the filesystem /audit does not already exist.
+
+The recommended minimum size of /audit is 10G byte, but this is not scored. This is just a starting point for new systems. Usage will determine whether additional space is needed.
+
+While an additional volume group could be created specifically for AUDIT this recommendation uses the default volume group rootvg to ensure that the volume group is always available when the system is operational.
+
+Further, this recommendation moves the
+
+audit
+
+configuration to be parallel to /etc/security rather than a subdirectory. A symbolic link points to the new location so that the AIX audit utilities (used as root) find the files via the expected pathname."
+          reference   : "800-171|3.3.1,CSF|PR.PT-1,NESA|T3.6.6,800-171|3.3.2,QCSC-v1|3.2,QCSC-v1|8.2.1,800-53|AU-11,800-53|AU-12c.,CSF2.0|DE.CM-01,ISO/IEC-27001|A.12.4.1,800-53r5|AU-11,800-53r5|AU-12c.,NIAv2|SM7,CSF2.0|DE.CM-03,CN-L3|7.1.3.3(a),NIAv2|SM8,ITSG-33|AU-11,CN-L3|7.1.3.3(b),CSF2.0|DE.CM-09,ITSG-33|AU-12c.,CN-L3|7.1.3.3(c),QCSC-v1|13.2,CSF2.0|PR.PS-04,CN-L3|8.1.3.5(a),QCSC-v1|6.2,NESA|M5.2.3,CN-L3|8.1.3.5(b),NESA|T3.6.2,GDPR|32.1.b,CN-L3|8.1.4.3(a),PCI-DSSv3.2.1|10.1,TBA-FIISB|45.1.1,CSF|DE.CM-1,SWIFT-CSCv1|6.4,HIPAA|164.306(a)(1),CSF|DE.CM-3,NESA|T3.6.5,PCI-DSSv3.2.1|10.7,CSF|DE.CM-7,PCI-DSSv4.0|10.5.1,HIPAA|164.312(b)"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : CMD_EXEC
+          description : "crontab"
+          cmd         : "/usr/bin/crontab -l | /usr/bin/grep \"cronaudit\" | awk '{ print } END { if (NR == 0) print \"none\" }'"
+          expect      : "^[\\s]*[0-9\\s\\*]+[\\s]+/etc/security/aixpert/bin/cronaudit[\\s]*$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "lsitab audit"
+          cmd         : "/usr/sbin/lsitab audit | awk '{ print } END { if (NR == 0) print \"none\" }'"
+          expect      : "^[\\s]*audit:2:boot:audit[\\s]+start[\\s]+>[\\s]+/dev/console[\\s]+2>&1"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "lssec auditclasses"
+          cmd         : "/usr/bin/lssec -f /usr/lib/security/mkuser.default -s user -a auditclasses"
+          expect      : "^user[\\s]+auditclasses[\\s]*=[\\s]*general,SRC,cron,tcpip[\\s]*$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "/etc/security/audit/config"
+          cmd         : "/usr/bin/awk 'BEGIN {x=0;a[\"start:-binmode\"] = \"^on$\"; a[\"start:-streammode\"] = \"^off$\"; a[\"bin:-trail\"] = \"^/audit/trail$\"; a[\"bin:-bin1\"] = \"^/audit/bin1$\"; a[\"bin:-bin2\"] = \"^/audit/bin2$\"; a[\"bin:-binsize\"] = \"^10240$\"; a[\"bin:-cmds\"] = \"^/etc/security/audit/bincmds$\"; a[\"users:-root\"] = \"^general\"} /^[^ ]+:$/ { sec=$1 } { if ($3 ~ a[sec\"-\"$1]) delete a[sec\"-\"$1] } END { for (i in a) x++; if (x > 0) { print \"failed\" } else { print \"pass\" } }' /etc/security/audit/config"
+          expect      : "^pass$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "audit mount"
+          cmd         : "/usr/sbin/lsfs /audit || print \"Audit Filesystem is missing\""
+          expect      : "[\\s]+/audit[\\s]+jfs2[\\s]+"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "7.1.2 Ensure Audit configuration defines audit classes"
+          info        : "This recommendation configures AIX auditing in bin mode.
+
+AIX auditing provides a framework within which to capture pertinent system and security related information, such as failed login attempts, cron usage etc. It is recommended that auditing is enabled as part of a group of measures designed to provide enhanced logging of system and security changes. Further information regarding the setup and management of AIX accounting and auditing can be found in the redbook
+
+Accounting and Auditing for AIX 5L"
+          solution    : "Configure AIX auditing in-line with the High Level AIX Security Expert policy.
+
+Create a /audit filesystem, at least 100 MB in size:
+
+mklv -y <LV name> -t jfs2 -u 1 -c 1 rootvg 1 hdisk0
+crfs -v jfs2 -d auditlv -m /audit -A yes -t no
+mount /audit
+
+Reflect the following configuration in the /etc/security/audit/config file:
+
+vi /etc/security/audit/config
+
+Add in:
+
+start:
+            binmode = on
+            streammode = off
+bin:
+           trail = /audit/trail
+            bin1 = /audit/bin1
+            bin2 = /audit/bin2
+            binsize = 10240
+            cmds = /etc/security/audit/bincmds
+
+Add the auditing entries for root and all other users below the pre-defined audit classes:
+
+users:
+        root = general,SRC,mail,cron,tcpip,ipsec,lvm
+        <user 1> = general,SRC,cron,tcpip
+        <user 2> = general,SRC,cron,tcpip
+        etc.
+
+Update the /usr/lib/security/mkuser.default auditclasses entry to ensure that auditing is set up for any newly created users:
+
+chsec -f /usr/lib/security/mkuser.default -s user -a
+auditclasses=general,SRC,cron,tcpip
+
+A cron job is implemented to monitor the free space in /audit running hourly, to ensure that /audit does not fill up. If /audit is greater than 90% used, /audit/trail is moved to /audit/trailOneLevelBack :
+
+crontab -e
+
+Add in:
+
+0 * * * * /etc/security/aixpert/bin/cronaudit
+
+NOTE: The implementation of a script to suit internal security policy is recommended to further enhance the log rotation process.
+
+Add the audit startup command into /etc/inittab :
+
+mkitab \"audit:2:boot:audit start > /dev/console 2>&1 # Start audit\""
+          reference   : "800-171|3.3.1,CSF|PR.PT-1,NESA|T3.6.6,800-171|3.3.2,QCSC-v1|3.2,QCSC-v1|8.2.1,800-53|AU-11,800-53|AU-12c.,CSF2.0|DE.CM-01,ISO/IEC-27001|A.12.4.1,800-53r5|AU-11,800-53r5|AU-12c.,NIAv2|SM7,CSF2.0|DE.CM-03,CN-L3|7.1.3.3(a),NIAv2|SM8,ITSG-33|AU-11,CN-L3|7.1.3.3(b),CSF2.0|DE.CM-09,ITSG-33|AU-12c.,CN-L3|7.1.3.3(c),QCSC-v1|13.2,CSF2.0|PR.PS-04,CN-L3|8.1.3.5(a),QCSC-v1|6.2,NESA|M5.2.3,CN-L3|8.1.3.5(b),NESA|T3.6.2,GDPR|32.1.b,CN-L3|8.1.4.3(a),PCI-DSSv3.2.1|10.1,TBA-FIISB|45.1.1,CSF|DE.CM-1,SWIFT-CSCv1|6.4,HIPAA|164.306(a)(1),CSF|DE.CM-3,NESA|T3.6.5,PCI-DSSv3.2.1|10.7,CSF|DE.CM-7,PCI-DSSv4.0|10.5.1,HIPAA|164.312(b)"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : CMD_EXEC
+          description : "crontab"
+          cmd         : "/usr/bin/crontab -l | /usr/bin/grep \"cronaudit\" | awk '{ print } END { if (NR == 0) print \"none\" }'"
+          expect      : "^[\\s]*[0-9\\s\\*]+[\\s]+/etc/security/aixpert/bin/cronaudit[\\s]*$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "lsitab audit"
+          cmd         : "/usr/sbin/lsitab audit | awk '{ print } END { if (NR == 0) print \"none\" }'"
+          expect      : "^[\\s]*audit:2:boot:audit[\\s]+start[\\s]+>[\\s]+/dev/console[\\s]+2>&1"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "lssec auditclasses"
+          cmd         : "/usr/bin/lssec -f /usr/lib/security/mkuser.default -s user -a auditclasses"
+          expect      : "^user[\\s]+auditclasses[\\s]*=[\\s]*general,SRC,cron,tcpip[\\s]*$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "/etc/security/audit/config"
+          cmd         : "/usr/bin/awk 'BEGIN {x=0;a[\"start:-binmode\"] = \"^on$\"; a[\"start:-streammode\"] = \"^off$\"; a[\"bin:-trail\"] = \"^/audit/trail$\"; a[\"bin:-bin1\"] = \"^/audit/bin1$\"; a[\"bin:-bin2\"] = \"^/audit/bin2$\"; a[\"bin:-binsize\"] = \"^10240$\"; a[\"bin:-cmds\"] = \"^/etc/security/audit/bincmds$\"; a[\"users:-root\"] = \"^general\"} /^[^ ]+:$/ { sec=$1 } { if ($3 ~ a[sec\"-\"$1]) delete a[sec\"-\"$1] } END { for (i in a) x++; if (x > 0) { print \"failed\" } else { print \"pass\" } }' /etc/security/audit/config"
+          expect      : "^pass$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "audit mount"
+          cmd         : "/usr/sbin/lsfs /audit || print \"Audit Filesystem is missing\""
+          expect      : "[\\s]+/audit[\\s]+jfs2[\\s]+"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "7.1.3 Ensure Audit creates audit processing commands"
+          info        : "This recommendation configures AIX auditing in bin mode.
+
+AIX auditing provides a framework within which to capture pertinent system and security related information, such as failed login attempts, cron usage etc. It is recommended that auditing is enabled as part of a group of measures designed to provide enhanced logging of system and security changes. Further information regarding the setup and management of AIX accounting and auditing can be found in the redbook
+
+Accounting and Auditing for AIX 5L"
+          solution    : "Configure AIX auditing in-line with the High Level AIX Security Expert policy.
+
+Create a /audit filesystem, at least 100 MB in size:
+
+mklv -y <LV name> -t jfs2 -u 1 -c 1 rootvg 1 hdisk0
+crfs -v jfs2 -d auditlv -m /audit -A yes -t no
+mount /audit
+
+Reflect the following configuration in the /etc/security/audit/config file:
+
+vi /etc/security/audit/config
+
+Add in:
+
+start:
+            binmode = on
+            streammode = off
+bin:
+           trail = /audit/trail
+            bin1 = /audit/bin1
+            bin2 = /audit/bin2
+            binsize = 10240
+            cmds = /etc/security/audit/bincmds
+
+Add the auditing entries for root and all other users below the pre-defined audit classes:
+
+users:
+        root = general,SRC,mail,cron,tcpip,ipsec,lvm
+        <user 1> = general,SRC,cron,tcpip
+        <user 2> = general,SRC,cron,tcpip
+        etc.
+
+Update the /usr/lib/security/mkuser.default auditclasses entry to ensure that auditing is set up for any newly created users:
+
+chsec -f /usr/lib/security/mkuser.default -s user -a
+auditclasses=general,SRC,cron,tcpip
+
+A cron job is implemented to monitor the free space in /audit running hourly, to ensure that /audit does not fill up. If /audit is greater than 90% used, /audit/trail is moved to /audit/trailOneLevelBack :
+
+crontab -e
+
+Add in:
+
+0 * * * * /etc/security/aixpert/bin/cronaudit
+
+NOTE: The implementation of a script to suit internal security policy is recommended to further enhance the log rotation process.
+
+Add the audit startup command into /etc/inittab :
+
+mkitab \"audit:2:boot:audit start > /dev/console 2>&1 # Start audit\""
+          reference   : "800-171|3.3.1,CSF|PR.PT-1,NESA|T3.6.6,800-171|3.3.2,QCSC-v1|3.2,QCSC-v1|8.2.1,800-53|AU-11,800-53|AU-12c.,CSF2.0|DE.CM-01,ISO/IEC-27001|A.12.4.1,800-53r5|AU-11,800-53r5|AU-12c.,NIAv2|SM7,CSF2.0|DE.CM-03,CN-L3|7.1.3.3(a),NIAv2|SM8,ITSG-33|AU-11,CN-L3|7.1.3.3(b),CSF2.0|DE.CM-09,ITSG-33|AU-12c.,CN-L3|7.1.3.3(c),QCSC-v1|13.2,CSF2.0|PR.PS-04,CN-L3|8.1.3.5(a),QCSC-v1|6.2,NESA|M5.2.3,CN-L3|8.1.3.5(b),NESA|T3.6.2,GDPR|32.1.b,CN-L3|8.1.4.3(a),PCI-DSSv3.2.1|10.1,TBA-FIISB|45.1.1,CSF|DE.CM-1,SWIFT-CSCv1|6.4,HIPAA|164.306(a)(1),CSF|DE.CM-3,NESA|T3.6.5,PCI-DSSv3.2.1|10.7,CSF|DE.CM-7,PCI-DSSv4.0|10.5.1,HIPAA|164.312(b)"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "7.1.4 Ensure Audit bin(ary) audit event collection is configured"
+      info        : "This recommendation configures AIX auditing in bin mode.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "Configure AIX auditing in-line with the High Level AIX Security Expert policy.
+
+Create a /audit filesystem, at least 100 MB in size:
+
+mklv -y <LV name> -t jfs2 -u 1 -c 1 rootvg 1 hdisk0
+crfs -v jfs2 -d auditlv -m /audit -A yes -t no
+mount /audit
+
+Reflect the following configuration in the /etc/security/audit/config file:
+
+vi /etc/security/audit/config
+
+Add in:
+
+start:
+            binmode = on
+            streammode = off
+bin:
+           trail = /audit/trail
+            bin1 = /audit/bin1
+            bin2 = /audit/bin2
+            binsize = 10240
+            cmds = /etc/security/audit/bincmds
+
+Add the auditing entries for root and all other users below the pre-defined audit classes:
+
+users:
+        root = general,SRC,mail,cron,tcpip,ipsec,lvm
+        <user 1> = general,SRC,cron,tcpip
+        <user 2> = general,SRC,cron,tcpip
+        etc.
+
+Update the /usr/lib/security/mkuser.default auditclasses entry to ensure that auditing is set up for any newly created users:
+
+chsec -f /usr/lib/security/mkuser.default -s user -a
+auditclasses=general,SRC,cron,tcpip
+
+A cron job is implemented to monitor the free space in /audit running hourly, to ensure that /audit does not fill up. If /audit is greater than 90% used, /audit/trail is moved to /audit/trailOneLevelBack :
+
+crontab -e
+
+Add in:
+
+0 * * * * /etc/security/aixpert/bin/cronaudit
+
+NOTE: The implementation of a script to suit internal security policy is recommended to further enhance the log rotation process.
+
+Add the audit startup command into /etc/inittab :
+
+mkitab \"audit:2:boot:audit start > /dev/console 2>&1 # Start audit\""
+      reference   : "800-171|3.3.1,800-171|3.3.2,800-53|AU-2,800-53r5|AU-2,CN-L3|8.1.4.3(a),CSF|PR.PT-1,CSF2.0|PR.PS-04,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,LEVEL|2M,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      cmd         : "/usr/bin/cat /etc/security/audit/config"
+      expect      : "^Manual Review Required$"
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "7.2.2 Ensure syslog is configured to send logs to a remote log host"
+      info        : "This recommendation implements a remote syslog configuration.
+
+To further enhance the local syslog logging process CIS recommends that syslog information, in particular that generated by the auth facility, is logged remotely. This recommendation assumes that a remote and secure syslog server is available on the network. If this is not the case, please skip to the next recommendation.
+
+The primary reason for logging remotely is to provide an un-editable audit trail of system access. If a hacker were to access a system and gain super user authority it would be easy to edit local files and remove all traces of access, providing the system administrator with no way of identifying the individual or group responsible. If the log data is sent remotely at the point of access, these remote logs can then be reconciled with local data to identify tampered and altered files. The logs can also be used as evidence in any subsequent prosecution."
+      solution    : "Explicitly define a remote host for auth.info data in /etc/syslog.conf (enter the remote host IP address in the example below):
+
+printf \"auth.info\t\t@<IP address of remote syslog server>\" >> /etc/syslog.conf
+
+Note: This ensures that remote login, sudo or su attempts are logged separately
+
+Create a remote host entry in /etc/syslog.conf to capture all other output of level info or higher (enter the remote host IP address in the example below):
+
+printf \"*.info;auth.none\t@<IP address of remote syslog server>\n\" >> /etc/syslog.conf
+
+Refresh syslogd to force the daemon to read the edited /etc/syslog.conf :
+
+refresh -s syslogd"
+      reference   : "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.PT-1,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),LEVEL|2A,NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      file        : "/etc/syslog.conf"
+      regex       : "^[\\s]*auth\\.info[\\s]+@"
+      expect      : "^[\\s]*.*@@SYSLOG_SERVER_IP_ADDRESS@[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "7.2.3 Ensure syslog is not configured to receive logs from a remote client"
+      info        : "This recommendation prevents the local syslogd daemon from accepting messages from other hosts on the network.
+
+Apart from a central syslog server, all other hosts should not accept remote syslog messages. By default the syslogd daemon accepts all remote syslog messages as no authentication is required. This means that a hacker could flood a server with syslog messages and potentially fill up the /var filesystem."
+      solution    : "If the server does not act as a central syslog server, suppress the logging of messages originating from remote servers:
+
+chssys -s syslogd -a \"-r\"
+
+Re-cycle syslogd to activate the configuration change:
+
+stopsrc -s syslogd
+startsrc -s syslogd"
+      reference   : "800-171|3.3.8,800-53|AU-9(2),800-53r5|AU-9(2),CN-L3|8.1.3.5(d),CN-L3|8.1.4.3(c),CSF|PR.PT-1,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9(2),LEVEL|2A,NESA|M5.2.3,NESA|M5.5.2,NIAv2|SS13e,PCI-DSSv3.2.1|10.5.3,PCI-DSSv3.2.1|10.5.4,PCI-DSSv4.0|10.3.3,QCSC-v1|8.2.1,QCSC-v1|13.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+      cmd         : "/usr/bin/ps -ef | /usr/bin/grep [s]yslogd"
+      expect      : "^[\\s]*root.*/usr/sbin/syslogd[\\s]+-r\\b"
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_IBM_AIX_7_v1.0.0_L2.audit from CIS IBM AIX 7 Benchmark v1.0.0"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/benchmarks/10385"
+    </report>
+  </else>
+</if>
+
+</check_type>

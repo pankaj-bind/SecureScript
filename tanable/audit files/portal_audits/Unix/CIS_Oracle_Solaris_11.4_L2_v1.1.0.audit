@@ -1,0 +1,112 @@
+#TRUSTED 366df65ff207f1a65579bce63529a0087650d89a74f37856ec327ee78213d36160b37b4984bc43526bae3e6f92ea9e08e3b759c1b11e6681cd3aaf7041bed86624cbaf1aa43ca708500d1a48ca6c0d8b65f7bece3ba0c98b0145e5eba66c8bde2b7432199f88183f9af93c4d6dca8a645860e2ec26a1cd97bce72514021eea17341c48f0363187cdcdb59386543f59c71db73d9f4fe4193fad2c01a4994b0d0d6f49fe5a9c2d56ea00b4292f8a5c4f2d42b4031243380bf09ddb8f8dbf3d6243a3a98bf87103525f7b5f4e9cc36045cb2144f229b922b1327812951914e491d8e1723fe3de509b71cf0072bf4d3137468c0dc6e8a8bdae4ef1baafdd76d82dc56861712fcea96241b2d7843d070b7845150aeb8ce8cb8bc9130f21ec062e25103b9b831a877d8ac4bf7f95e7d899ca4bd26d55ef7eef7fe6df751fb52ffaa76632f7247e9f45be4be3c1e5a27f363e302e1f89beaefceda00f01825cc3fa1e7ed71264abbfed944ebcee1909c2c66ea019bc4b83088a35a01a367ae49b406610972dc3521931748ee7171a1dc6c5a939733fe60a27c839db0d3734b60ae06d320ecee17903b9d42763bb96fe81af4d473419ca27706f15baa284c9ff553bc265b0e3248b12527f86f752a3820188fa9eb3348ef63fdcc84ffc19775a8f7722167190f7b08887c5e54b68d1bc791fba3bdc8bd060c9bb9f013820d690f645a882
+#TRUST-RSA-SHA256 158bc200f227a89b166c7854dd0c1706b545f9cb7b12967e859299fabeef9afa752d83e201e84cf6e1b367824d464e137e5236563f557e78999a3fae6dee599ef7546c0eb71b625f4b062d07e7912aceaa0d103f3b81a86ae804acf2492d189d62e16ea67d211438009290ef6a2aaf109154d7a7eb77d670f70b99d53e4bf4c31ef07e8748b67af00bd4701fc38fa4b54196ab94302d96900bbc659f0d9f2e361b28d0286fcabc9af48f2364c6b707c4e0b179efe9f054ae58946ce774312c1ad9ea2e7ccdc4dec425adb02abc8cc3f04781e43d16727d08d04a7c08053c319ac1e93c149a8c02abaf9ee4868aae989c87bd4b6268284e18bfe0b7d97253e34c1fb75d20e4c757d943fe801b5bd751fd4741a83c2283ee0b7c1a06164157d7b7583691d6aa8bce20daebe6873b3d3d5668c58d379474f0a4d4fe24da1b7e9db05dacc7b3a914855f67c2f6c16adcb4d2410965a51746d50c51a95d81908127a666043bc4bdac84528cacc489cd34dbd86bbf757cbb843e8fe94def6acb81e754dd316ece4b30feac35e2b7f0125b120a47920b43b576441d48347cf118c5b89763d2c186d7c72f793c3ae1536864b59fa5d66729538dcd74de1d54d2fa1524658f2e5297f44c87a2ac6d66dcd5b2d3edc5d2405e199cccb451664975d72abb335dfeb6541eef94c9b3bed0e3766159e516ee22d650cfed58bdb527142ee748b8
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.1 $
+# $Date: 2024/06/17 $
+#
+# Description : This document implements the security configuration as recommended by the
+#               CIS Oracle Solaris 11.4 Benchmark v1.1.0
+#
+#<ui_metadata>
+#<display_name>CIS Oracle Solaris 11.4 L2 v1.1.0</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Oracle Solaris 11.4</name>
+#  <profile>L2</profile>
+#  <version>1.1.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/4777</link>
+#</spec>
+#<labels>cis,solaris_11.4</labels>
+#<benchmark_refs>CCE,CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>PLATFORM_VERSION</name>
+#    <default>11\.4</default>
+#    <description>Solaris Version</description>
+#    <info>Solaris Version</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Unix">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "Solaris 11.4 is installed"
+      file        : "/etc/release"
+      regex       : "^[\\s]+Oracle[\\s]+Solaris[\\s]"
+      expect      : "^[\\s]+Oracle[\\s]+Solaris[\\s]+@PLATFORM_VERSION@"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_Oracle_Solaris_11.4_L2_v1.1.0.audit from CIS Oracle Solaris 11.4 Benchmark v1.1.0"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/4777"
+    </report>
+
+    <custom_item>
+      system      : "SunOS"
+      type        : CMD_EXEC
+      description : "10.1 SN.1 Restrict access to suspend feature"
+      info        : "Solaris 11 does not enable the suspend capability by default and now uses the poweradm command to suspend the system.
+
+Rationale:
+
+Bear in mind that users with physical access to a system can simply remove power from the machine if they are truly motivated to take the system off-line, and granting the capability to use poweradm may be a more graceful way of allowing desktop users to shut down their own machines."
+      solution    : "Perform the following to implement the recommended state:
+
+# poweradm set suspend-enable=false
+
+# poweradm update"
+      reference   : "800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171|3.13.1,800-171|3.13.2,800-53|CM-1,800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53|SA-3,800-53|SA-8,800-53|SA-10,800-53r5|CM-1,800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,800-53r5|SA-3,800-53r5|SA-8,800-53r5|SA-10,CSCv7|5.1,CSCv8|4.1,CSF|DE.AE-1,CSF|ID.GV-1,CSF|ID.GV-3,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.IP-2,CSF|PR.IP-3,CSF|PR.PT-3,GDPR|32.1.b,GDPR|32.4,HIPAA|164.306(a)(1),ITSG-33|CM-1,ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,ITSG-33|SA-3,ITSG-33|SA-8,ITSG-33|SA-8a.,ITSG-33|SA-10,LEVEL|2M,NESA|M1.2.2,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T3.4.1,NESA|T4.5.3,NESA|T4.5.4,NESA|T7.2.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NESA|T7.6.5,NIAv2|GS8b,NIAv2|SS3,NIAv2|SS15a,NIAv2|SS16,NIAv2|VL2,NIAv2|VL7a,NIAv2|VL7b,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|7.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/4777"
+      cmd         : "/usr/sbin/poweradm list | /usr/bin/grep suspend"
+      expect      : "^[\\s]*suspend/suspend-enable[\\s].*smf[\\s]*=[\\s]*false"
+    </custom_item>
+
+    <custom_item>
+      system         : "SunOS"
+      type           : SVC_PROP
+      description    : "10.2 SN.2 Remove Support for Internet Services (inetd)"
+      info           : "If the actions in this section result in disabling all inetd-based services, then there is no point in running inetd at boot time.
+
+Rationale:
+
+If inetd-based services are ever re-enabled in the future it will be necessary to re-enable the inetd daemon as well ('svcadm enable svc:/network/inetd:default')."
+      solution       : "Perform the following to implement the recommended state:
+
+# svcadm disable svc:/network/inetd"
+      reference      : "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.2,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|2M,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1"
+      see_also       : "https://workbench.cisecurity.org/benchmarks/4777"
+      service        : "/network/inetd:default"
+      regex          : "disabled"
+      property       : "restarter/state"
+      svcprop_option : CAN_BE_NULL
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_Oracle_Solaris_11.4_L2_v1.1.0.audit from CIS Oracle Solaris 11.4 Benchmark v1.1.0"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/benchmarks/4777"
+    </report>
+  </else>
+</if>
+
+</check_type>

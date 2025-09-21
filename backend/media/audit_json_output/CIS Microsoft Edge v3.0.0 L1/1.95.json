@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.95 (L1) Ensure 'Enable network prediction' is set to 'Enabled: Don't predict network actions on any network connection'",
+  "info": "This policy setting controls the network prediction feature which controls DNS prefetching, TCP and SSL pre-connection and pre-rendering of web pages.\n\nThe recommended state for this setting is: Enabled: Don't predict network actions on any network connection\n\nOpening connections to resources that may not be used could allow un-needed connections increasing attack surface and, in some cases, could lead to opening connections to resources which the user did not intend to utilize.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Don't predict network actions on any network connection :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Enable network prediction",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "Impact": "None - this is the default behavior, apart from users being able to change the default.\"",
+  "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "2",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "NetworkPredictionOptions",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

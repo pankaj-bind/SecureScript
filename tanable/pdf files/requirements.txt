@@ -1,0 +1,6 @@
+google-generativeai
+python-dotenv
+PyMuPDF
+openai
+python-dotenv
+PyMuPDF

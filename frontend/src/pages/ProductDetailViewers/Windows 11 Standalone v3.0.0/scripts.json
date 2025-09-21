@@ -1,0 +1,1903 @@
+{
+  "1.1.1": {
+  "hardeningScript": "cmd /c \"echo [System Access] > %TEMP%\\secpol.inf && echo PasswordHistorySize = 24 >> %TEMP%\\secpol.inf && secedit /configure /db %windir%\\security\\database\\secedit.sdb /cfg %TEMP%\\secpol.inf /quiet && del %TEMP%\\secpol.inf\"",
+  "auditScript": "net accounts | findstr /B /C:\"Password history length\"",
+  "revertHardeningScript": "cmd /c \"echo [System Access] > %TEMP%\\secpol.inf && echo PasswordHistorySize = 0 >> %TEMP%\\secpol.inf && secedit /configure /db %windir%\\security\\database\\secedit.sdb /cfg %TEMP%\\secpol.inf /quiet && del %TEMP%\\secpol.inf\""
+},
+  "1.1.2": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('MaximumPasswordAge = 0', 'MaximumPasswordAge = 365') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"MaximumPasswordAge\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('MaximumPasswordAge = 365', 'MaximumPasswordAge = 0') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force"
+  },
+  "1.1.3": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('MinimumPasswordAge = 0', 'MinimumPasswordAge = 1') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"MinimumPasswordAge\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('MinimumPasswordAge = 1', 'MinimumPasswordAge = 0') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force"
+  },
+  "1.1.4": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('MinimumPasswordLength = 0', 'MinimumPasswordLength = 14') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"MinimumPasswordLength\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('MinimumPasswordLength = 14', 'MinimumPasswordLength = 0') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force"
+  },
+  "1.1.5": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('PasswordComplexity = 0', 'PasswordComplexity = 1') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"PasswordComplexity\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('PasswordComplexity = 1', 'PasswordComplexity = 0') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force"
+  },
+  "1.1.6": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\SAM\" /v \"RelaxMinimumPasswordLengthLimits\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\SAM\" /v \"RelaxMinimumPasswordLengthLimits\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\SAM\" /v \"RelaxMinimumPasswordLengthLimits\" /f"
+  },
+  "1.1.7": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('ClearTextPassword = 1', 'ClearTextPassword = 0') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"ClearTextPassword\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('ClearTextPassword = 0', 'ClearTextPassword = 1') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force"
+  },
+  "1.2.1": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('LockoutDuration = 0', 'LockoutDuration = 15') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"LockoutDuration\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('LockoutDuration = 15', 'LockoutDuration = 0') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force"
+  },
+  "1.2.2": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('LockoutBadCount = 0', 'LockoutBadCount = 5') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"LockoutBadCount\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('LockoutBadCount = 5', 'LockoutBadCount = 0') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force"
+  },
+  "1.2.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Security\\AccountLockout\" /v \"AllowAdministratorLockout\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Security\\AccountLockout\" /v \"AllowAdministratorLockout\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Security\\AccountLockout\" /v \"AllowAdministratorLockout\" /f"
+  },
+  "1.2.4": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('ResetLockoutCount = 0', 'ResetLockoutCount = 15') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"ResetLockoutCount\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('ResetLockoutCount = 15', 'ResetLockoutCount = 0') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas SECURITYPOLICY\nrm -f c:\\secpol.cfg -force"
+  },
+  "17.1.1": {
+    "hardeningScript": "auditpol /set /subcategory:\"Credential Validation\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"Credential Validation\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Credential Validation\" /success:disable /failure:disable"
+  },
+  "17.2.1": {
+    "hardeningScript": "auditpol /set /subcategory:\"Application Group Management\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"Application Group Management\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Application Group Management\" /success:disable /failure:disable"
+  },
+  "17.2.2": {
+    "hardeningScript": "auditpol /set /subcategory:\"Security Group Management\" /success:enable /failure:disable",
+    "auditScript": "auditpol /get /subcategory:\"Security Group Management\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Security Group Management\" /success:disable /failure:disable"
+  },
+  "17.2.3": {
+    "hardeningScript": "auditpol /set /subcategory:\"User Account Management\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"User Account Management\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"User Account Management\" /success:disable /failure:disable"
+  },
+  "17.3.1": {
+    "hardeningScript": "auditpol /set /subcategory:\"Plug and Play Events\" /success:enable /failure:disable",
+    "auditScript": "auditpol /get /subcategory:\"Plug and Play Events\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Plug and Play Events\" /success:disable /failure:disable"
+  },
+  "17.3.2": {
+    "hardeningScript": "auditpol /set /subcategory:\"Process Creation\" /success:enable /failure:disable",
+    "auditScript": "auditpol /get /subcategory:\"Process Creation\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Process Creation\" /success:disable /failure:disable"
+  },
+  "17.5.1": {
+    "hardeningScript": "auditpol /set /subcategory:\"Account Lockout\" /success:disable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"Account Lockout\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Account Lockout\" /success:disable /failure:disable"
+  },
+  "17.5.2": {
+    "hardeningScript": "auditpol /set /subcategory:\"Group Membership\" /success:enable /failure:disable",
+    "auditScript": "auditpol /get /subcategory:\"Group Membership\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Group Membership\" /success:disable /failure:disable"
+  },
+  "17.5.3": {
+    "hardeningScript": "auditpol /set /subcategory:\"Logoff\" /success:enable /failure:disable",
+    "auditScript": "auditpol /get /subcategory:\"Logoff\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Logoff\" /success:disable /failure:disable"
+  },
+  "17.5.4": {
+    "hardeningScript": "auditpol /set /subcategory:\"Logon\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"Logon\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Logon\" /success:disable /failure:disable"
+  },
+  "17.5.5": {
+    "hardeningScript": "auditpol /set /subcategory:\"Other Logon/Logoff Events\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"Other Logon/Logoff Events\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Other Logon/Logoff Events\" /success:disable /failure:disable"
+  },
+  "17.5.6": {
+    "hardeningScript": "auditpol /set /subcategory:\"Special Logon\" /success:enable /failure:disable",
+    "auditScript": "auditpol /get /subcategory:\"Special Logon\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Special Logon\" /success:disable /failure:disable"
+  },
+  "17.6.1": {
+    "hardeningScript": "auditpol /set /subcategory:\"Detailed File Share\" /success:disable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"Detailed File Share\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Detailed File Share\" /success:disable /failure:disable"
+  },
+  "17.6.2": {
+    "hardeningScript": "auditpol /set /subcategory:\"File Share\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"File Share\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"File Share\" /success:disable /failure:disable"
+  },
+  "17.6.3": {
+    "hardeningScript": "auditpol /set /subcategory:\"Other Object Access Events\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"Other Object Access Events\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Other Object Access Events\" /success:disable /failure:disable"
+  },
+  "17.6.4": {
+    "hardeningScript": "auditpol /set /subcategory:\"Removable Storage\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"Removable Storage\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Removable Storage\" /success:disable /failure:disable"
+  },
+  "17.7.1": {
+    "hardeningScript": "auditpol /set /subcategory:\"Audit Policy Change\" /success:enable /failure:disable",
+    "auditScript": "auditpol /get /subcategory:\"Audit Policy Change\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Audit Policy Change\" /success:disable /failure:disable"
+  },
+  "17.7.2": {
+    "hardeningScript": "auditpol /set /subcategory:\"Authentication Policy Change\" /success:enable /failure:disable",
+    "auditScript": "auditpol /get /subcategory:\"Authentication Policy Change\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Authentication Policy Change\" /success:disable /failure:disable"
+  },
+  "17.7.3": {
+    "hardeningScript": "auditpol /set /subcategory:\"Authorization Policy Change\" /success:enable /failure:disable",
+    "auditScript": "auditpol /get /subcategory:\"Authorization Policy Change\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Authorization Policy Change\" /success:disable /failure:disable"
+  },
+  "17.7.4": {
+    "hardeningScript": "auditpol /set /subcategory:\"MPSSVC Rule-Level Policy Change\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"MPSSVC Rule-Level Policy Change\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"MPSSVC Rule-Level Policy Change\" /success:disable /failure:disable"
+  },
+  "17.7.5": {
+    "hardeningScript": "auditpol /set /subcategory:\"Other Policy Change Events\" /success:disable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"Other Policy Change Events\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Other Policy Change Events\" /success:disable /failure:disable"
+  },
+  "17.8.1": {
+    "hardeningScript": "auditpol /set /subcategory:\"Sensitive Privilege Use\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"Sensitive Privilege Use\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Sensitive Privilege Use\" /success:disable /failure:disable"
+  },
+  "17.9.1": {
+    "hardeningScript": "auditpol /set /subcategory:\"IPsec Driver\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"IPsec Driver\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"IPsec Driver\" /success:disable /failure:disable"
+  },
+  "17.9.2": {
+    "hardeningScript": "auditpol /set /subcategory:\"Other System Events\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"Other System Events\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Other System Events\" /success:disable /failure:disable"
+  },
+  "17.9.3": {
+    "hardeningScript": "auditpol /set /subcategory:\"Security State Change\" /success:enable /failure:disable",
+    "auditScript": "auditpol /get /subcategory:\"Security State Change\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Security State Change\" /success:disable /failure:disable"
+  },
+  "17.9.4": {
+    "hardeningScript": "auditpol /set /subcategory:\"Security System Extension\" /success:enable /failure:disable",
+    "auditScript": "auditpol /get /subcategory:\"Security System Extension\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"Security System Extension\" /success:disable /failure:disable"
+  },
+  "17.9.5": {
+    "hardeningScript": "auditpol /set /subcategory:\"System Integrity\" /success:enable /failure:enable",
+    "auditScript": "auditpol /get /subcategory:\"System Integrity\"",
+    "revertHardeningScript": "auditpol /set /subcategory:\"System Integrity\" /success:disable /failure:disable"
+  },
+  "18.10.12.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableConsumerAccountStateContent\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableConsumerAccountStateContent\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableConsumerAccountStateContent\" /f"
+  },
+  "18.10.12.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableWindowsConsumerFeatures\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableWindowsConsumerFeatures\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableWindowsConsumerFeatures\" /f"
+  },
+  "18.10.13.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Connect\" /v \"RequirePinForPairing\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Connect\" /v \"RequirePinForPairing\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Connect\" /v \"RequirePinForPairing\" /f"
+  },
+  "18.10.14.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CredUI\" /v \"DisablePasswordReveal\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CredUI\" /v \"DisablePasswordReveal\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CredUI\" /v \"DisablePasswordReveal\" /f"
+  },
+  "18.10.14.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI\" /v \"EnumerateAdministrators\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI\" /v \"EnumerateAdministrators\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\CredUI\" /v \"EnumerateAdministrators\" /f"
+  },
+  "18.10.14.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"NoLocalPasswordResetQuestions\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"NoLocalPasswordResetQuestions\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"NoLocalPasswordResetQuestions\" /f"
+  },
+  "18.10.15.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"AllowTelemetry\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"AllowTelemetry\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"AllowTelemetry\" /f"
+  },
+  "18.10.15.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"DisableOneSettingsDownloads\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"DisableOneSettingsDownloads\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"DisableOneSettingsDownloads\" /f"
+  },
+  "18.10.15.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"DoNotShowFeedbackNotifications\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"DoNotShowFeedbackNotifications\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"DoNotShowFeedbackNotifications\" /f"
+  },
+  "18.10.15.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"EnableOneSettingsAuditing\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"EnableOneSettingsAuditing\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"EnableOneSettingsAuditing\" /f"
+  },
+  "18.10.15.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"LimitDiagnosticLogCollection\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"LimitDiagnosticLogCollection\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"LimitDiagnosticLogCollection\" /f"
+  },
+  "18.10.15.7": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"LimitDumpCollection\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"LimitDumpCollection\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DataCollection\" /v \"LimitDumpCollection\" /f"
+  },
+  "18.10.15.8": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\PreviewBuilds\" /v \"AllowBuildPreview\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\PreviewBuilds\" /v \"AllowBuildPreview\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\PreviewBuilds\" /v \"AllowBuildPreview\" /f"
+  },
+  "18.10.16.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeliveryOptimization\" /v \"DODownloadMode\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeliveryOptimization\" /v \"DODownloadMode\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeliveryOptimization\" /v \"DODownloadMode\" /f"
+  },
+  "18.10.17.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableAppInstaller\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableAppInstaller\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableAppInstaller\" /f"
+  },
+  "18.10.17.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableExperimentalFeatures\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableExperimentalFeatures\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableExperimentalFeatures\" /f"
+  },
+  "18.10.17.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableHashOverride\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableHashOverride\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableHashOverride\" /f"
+  },
+  "18.10.17.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableMSAppInstallerProtocol\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableMSAppInstallerProtocol\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppInstaller\" /v \"EnableMSAppInstallerProtocol\" /f"
+  },
+  "18.10.25.1.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Application\" /v \"Retention\" /t REG_SZ /d \"0\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Application\" /v \"Retention\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Application\" /v \"Retention\" /f"
+  },
+  "18.10.25.1.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Application\" /v \"MaxSize\" /t REG_DWORD /d 32768 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Application\" /v \"MaxSize\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Application\" /v \"MaxSize\" /f"
+  },
+  "18.10.25.2.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Security\" /v \"Retention\" /t REG_SZ /d \"0\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Security\" /v \"Retention\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Security\" /v \"Retention\" /f"
+  },
+  "18.10.25.2.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Security\" /v \"MaxSize\" /t REG_DWORD /d 196608 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Security\" /v \"MaxSize\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Security\" /v \"MaxSize\" /f"
+  },
+  "18.10.25.3.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Setup\" /v \"Retention\" /t REG_SZ /d \"0\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Setup\" /v \"Retention\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Setup\" /v \"Retention\" /f"
+  },
+  "18.10.25.3.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Setup\" /v \"MaxSize\" /t REG_DWORD /d 32768 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Setup\" /v \"MaxSize\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\Setup\" /v \"MaxSize\" /f"
+  },
+  "18.10.25.4.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\System\" /v \"Retention\" /t REG_SZ /d \"0\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\System\" /v \"Retention\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\System\" /v \"Retention\" /f"
+  },
+  "18.10.25.4.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\System\" /v \"MaxSize\" /t REG_DWORD /d 32768 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\System\" /v \"MaxSize\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\EventLog\\System\" /v \"MaxSize\" /f"
+  },
+  "18.10.28.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v \"NoDataExecutionPrevention\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v \"NoDataExecutionPrevention\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v \"NoDataExecutionPrevention\" /f"
+  },
+  "18.10.28.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v \"NoHeapTerminationOnCorruption\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v \"NoHeapTerminationOnCorruption\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Explorer\" /v \"NoHeapTerminationOnCorruption\" /f"
+  },
+  "18.10.28.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" /v \"PreXPSP2ShellProtocolBehavior\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" /v \"PreXPSP2ShellProtocolBehavior\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" /v \"PreXPSP2ShellProtocolBehavior\" /f"
+  },
+  "18.10.3.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Appx\" /v \"BlockNonAdminUserInstall\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Appx\" /v \"BlockNonAdminUserInstall\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Appx\" /v \"BlockNonAdminUserInstall\" /f"
+  },
+  "18.10.4.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppPrivacy\" /v \"LetAppsActivateWithVoiceAboveLock\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppPrivacy\" /v \"LetAppsActivateWithVoiceAboveLock\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\AppPrivacy\" /v \"LetAppsActivateWithVoiceAboveLock\" /f"
+  },
+  "18.10.41.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\MicrosoftAccount\" /v \"DisableUserAuth\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\MicrosoftAccount\" /v \"DisableUserAuth\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\MicrosoftAccount\" /v \"DisableUserAuth\" /f"
+  },
+  "18.10.42.10.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableIOAVProtection\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableIOAVProtection\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableIOAVProtection\" /f"
+  },
+  "18.10.42.10.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableRealtimeMonitoring\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableRealtimeMonitoring\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableRealtimeMonitoring\" /f"
+  },
+  "18.10.42.10.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableBehaviorMonitoring\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableBehaviorMonitoring\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableBehaviorMonitoring\" /f"
+  },
+  "18.10.42.10.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableScriptScanning\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableScriptScanning\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Real-Time Protection\" /v \"DisableScriptScanning\" /f"
+  },
+  "18.10.42.16": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\" /v \"PUAProtection\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\" /v \"PUAProtection\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\" /v \"PUAProtection\" /f"
+  },
+  "18.10.42.17": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\" /v \"DisableAntiSpyware\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\" /v \"DisableAntiSpyware\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\" /v \"DisableAntiSpyware\" /f"
+  },
+  "18.10.42.5.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet\" /v \"LocalSettingOverrideSpynetReporting\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet\" /v \"LocalSettingOverrideSpynetReporting\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Spynet\" /v \"LocalSettingOverrideSpynetReporting\" /f"
+  },
+  "18.10.42.6.1.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\" /v \"ExploitGuard_ASR_Rules\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\" /v \"ExploitGuard_ASR_Rules\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\ASR\" /v \"ExploitGuard_ASR_Rules\" /f"
+  },
+  "18.10.42.6.3.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\Network Protection\" /v \"EnableNetworkProtection\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\Network Protection\" /v \"EnableNetworkProtection\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\Windows Defender Exploit Guard\\Network Protection\" /v \"EnableNetworkProtection\" /f"
+  },
+  "18.10.42.7.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\MpEngine\" /v \"EnableFileHashComputation\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\MpEngine\" /v \"EnableFileHashComputation\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender\\MpEngine\" /v \"EnableFileHashComputation\" /f"
+  },
+  "18.10.43.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AuditApplicationGuard\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AuditApplicationGuard\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AuditApplicationGuard\" /f"
+  },
+  "18.10.43.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AllowCameraMicrophoneRedirection\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AllowCameraMicrophoneRedirection\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AllowCameraMicrophoneRedirection\" /f"
+  },
+  "18.10.43.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AllowPersistence\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AllowPersistence\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AllowPersistence\" /f"
+  },
+  "18.10.43.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"SaveFilesToHost\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"SaveFilesToHost\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"SaveFilesToHost\" /f"
+  },
+  "18.10.43.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AppHVSIClipboardSettings\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AppHVSIClipboardSettings\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AppHVSIClipboardSettings\" /f"
+  },
+  "18.10.43.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AllowAppHVSI_ProviderSet\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AllowAppHVSI_ProviderSet\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\AppHVSI\" /v \"AllowAppHVSI_ProviderSet\" /f"
+  },
+  "18.10.50.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\OneDrive\" /v \"DisableFileSyncNGSC\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\OneDrive\" /v \"DisableFileSyncNGSC\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\OneDrive\" /v \"DisableFileSyncNGSC\" /f"
+  },
+  "18.10.5.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"MSAOptional\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"MSAOptional\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"MSAOptional\" /f"
+  },
+  "18.10.56.2.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"DisablePasswordSaving\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"DisablePasswordSaving\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"DisablePasswordSaving\" /f"
+  },
+  "18.10.56.3.11.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"DeleteTempDirsOnExit\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"DeleteTempDirsOnExit\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"DeleteTempDirsOnExit\" /f"
+  },
+  "18.10.56.3.3.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fDisableCdm\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fDisableCdm\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fDisableCdm\" /f"
+  },
+  "18.10.56.3.9.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fPromptForPassword\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fPromptForPassword\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fPromptForPassword\" /f"
+  },
+  "18.10.56.3.9.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fEncryptRPCTraffic\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fEncryptRPCTraffic\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fEncryptRPCTraffic\" /f"
+  },
+  "18.10.56.3.9.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"SecurityLayer\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"SecurityLayer\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"SecurityLayer\" /f"
+  },
+  "18.10.56.3.9.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"UserAuthentication\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"UserAuthentication\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"UserAuthentication\" /f"
+  },
+  "18.10.56.3.9.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"MinEncryptionLevel\" /t REG_DWORD /d 3 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"MinEncryptionLevel\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"MinEncryptionLevel\" /f"
+  },
+  "18.10.57.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Feeds\" /v \"DisableEnclosureDownload\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Feeds\" /v \"DisableEnclosureDownload\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Internet Explorer\\Feeds\" /v \"DisableEnclosureDownload\" /f"
+  },
+  "18.10.58.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Search\" /v \"AllowCortana\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Search\" /v \"AllowCortana\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Search\" /v \"AllowCortana\" /f"
+  },
+  "18.10.75.1.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WTDS\\Components\" /v \"CaptureThreatWindow\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WTDS\\Components\" /v \"CaptureThreatWindow\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WTDS\\Components\" /v \"CaptureThreatWindow\" /f"
+  },
+  "18.10.75.1.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WTDS\\Components\" /v \"NotifyMalicious\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WTDS\\Components\" /v \"NotifyMalicious\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WTDS\\Components\" /v \"NotifyMalicious\" /f"
+  },
+  "18.10.75.1.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WTDS\\Components\" /v \"NotifyPasswordReuse\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WTDS\\Components\" /v \"NotifyPasswordReuse\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WTDS\\Components\" /v \"NotifyPasswordReuse\" /f"
+  },
+  "18.10.75.1.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Policies\\PassportForWork\\Biometrics\" /v \"EnableESSwithSupportedPeripherals\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Policies\\PassportForWork\\Biometrics\" /v \"EnableESSwithSupportedPeripherals\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Policies\\PassportForWork\\Biometrics\" /v \"EnableESSwithSupportedPeripherals\" /f"
+  },
+  "18.10.79.2": {
+    "hardeningScript": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace\" /v \"AllowWindowsInkWorkspace\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace\" /v \"AllowWindowsInkWorkspace\"",
+    "revertHardeningScript": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\WindowsInkWorkspace\" /v \"AllowWindowsInkWorkspace\" /f"
+  },
+  "18.10.80.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Installer\" /v \"EnableUserControl\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Installer\" /v \"EnableUserControl\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Installer\" /v \"EnableUserControl\" /f"
+  },
+  "18.10.80.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Installer\" /v \"AlwaysInstallElevated\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Installer\" /v \"AlwaysInstallElevated\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Installer\" /v \"AlwaysInstallElevated\" /f"
+  },
+  "18.10.8.1.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Biometrics\\FacialFeatures\" /v \"EnhancedAntiSpoofing\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Biometrics\\FacialFeatures\" /v \"EnhancedAntiSpoofing\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Biometrics\\FacialFeatures\" /v \"EnhancedAntiSpoofing\" /f"
+  },
+  "18.10.81.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableMPR\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableMPR\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableMPR\" /f"
+  },
+  "18.10.81.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"DisableAutomaticRestartSignOn\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"DisableAutomaticRestartSignOn\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"DisableAutomaticRestartSignOn\" /f"
+  },
+  "18.10.88.1.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Client\" /v \"AllowBasic\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Client\" /v \"AllowBasic\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Client\" /v \"AllowBasic\" /f"
+  },
+  "18.10.88.1.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Client\" /v \"AllowUnencryptedTraffic\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Client\" /v \"AllowUnencryptedTraffic\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Client\" /v \"AllowUnencryptedTraffic\" /f"
+  },
+  "18.10.88.1.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Client\" /v \"AllowDigest\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Client\" /v \"AllowDigest\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Client\" /v \"AllowDigest\" /f"
+  },
+  "18.10.88.2.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Service\" /v \"AllowBasic\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Service\" /v \"AllowBasic\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Service\" /v \"AllowBasic\" /f"
+  },
+  "18.10.88.2.3": {
+    "hardeningScript": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\" /v \"AllowUnencryptedTraffic\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\" /v \"AllowUnencryptedTraffic\"",
+    "revertHardeningScript": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\WinRM\\Service\" /v \"AllowUnencryptedTraffic\" /f"
+  },
+  "18.10.88.2.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Service\" /v \"DisableRunAs\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Service\" /v \"DisableRunAs\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WinRM\\Service\" /v \"DisableRunAs\" /f"
+  },
+  "18.10.90.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Sandbox\" /v \"AllowClipboardRedirection\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Sandbox\" /v \"AllowClipboardRedirection\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Sandbox\" /v \"AllowClipboardRedirection\" /f"
+  },
+  "18.10.90.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Sandbox\" /v \"AllowNetworking\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Sandbox\" /v \"AllowNetworking\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Sandbox\" /v \"AllowNetworking\" /f"
+  },
+  "18.10.91.2.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender Security Center\\App and Browser protection\" /v \"DisallowExploitProtectionOverride\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender Security Center\\App and Browser protection\" /v \"DisallowExploitProtectionOverride\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows Defender Security Center\\App and Browser protection\" /v \"DisallowExploitProtectionOverride\" /f"
+  },
+  "18.10.92.1.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v \"NoAutoRebootWithLoggedOnUsers\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v \"NoAutoRebootWithLoggedOnUsers\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v \"NoAutoRebootWithLoggedOnUsers\" /f"
+  },
+  "18.10.92.2.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v \"NoAutoUpdate\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v \"NoAutoUpdate\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v \"NoAutoUpdate\" /f"
+  },
+  "18.10.92.2.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v \"ScheduledInstallDay\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v \"ScheduledInstallDay\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU\" /v \"ScheduledInstallDay\" /f"
+  },
+  "18.10.92.2.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"AllowTemporaryEnterpriseFeatureControl\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"AllowTemporaryEnterpriseFeatureControl\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"AllowTemporaryEnterpriseFeatureControl\" /f"
+  },
+  "18.10.92.2.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"SetDisablePauseUXAccess\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"SetDisablePauseUXAccess\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"SetDisablePauseUXAccess\" /f"
+  },
+  "18.10.92.4.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"ManagePreviewBuildsPolicyValue\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"ManagePreviewBuildsPolicyValue\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"ManagePreviewBuildsPolicyValue\" /f"
+  },
+  "18.10.92.4.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferFeatureUpdatesPeriodInDays\" /t REG_DWORD /d 180 /f\nreg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferFeatureUpdates\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferFeatureUpdatesPeriodInDays\"\nreg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferFeatureUpdates\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferFeatureUpdatesPeriodInDays\" /f\nreg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferFeatureUpdates\" /f"
+  },
+  "18.10.92.4.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferQualityUpdatesPeriodInDays\" /t REG_DWORD /d 0 /f\nreg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferQualityUpdates\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferQualityUpdatesPeriodInDays\"\nreg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferQualityUpdates\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferQualityUpdatesPeriodInDays\" /f\nreg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"DeferQualityUpdates\" /f"
+  },
+  "18.10.92.4.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"SetAllowOptionalContent\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"SetAllowOptionalContent\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WindowsUpdate\" /v \"SetAllowOptionalContent\" /f"
+  },
+  "18.1.1.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Personalization\" /v \"NoLockScreenCamera\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Personalization\" /v \"NoLockScreenCamera\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Personalization\" /v \"NoLockScreenCamera\" /f"
+  },
+  "18.1.1.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Personalization\" /v \"NoLockScreenSlideshow\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Personalization\" /v \"NoLockScreenSlideshow\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Personalization\" /v \"NoLockScreenSlideshow\" /f"
+  },
+  "18.1.2.2": {
+    "hardeningScript": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\InputPersonalization\" /v \"AllowInputPersonalization\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\SOFTWARE\\Policies\\Microsoft\\InputPersonalization\" /v \"AllowInputPersonalization\"",
+    "revertHardeningScript": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\InputPersonalization\" /v \"AllowInputPersonalization\" /f"
+  },
+  "18.4.1": {
+    "hardeningScript": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Print\" /v \"RpcAuthnLevelPrivacyEnabled\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Print\" /v \"RpcAuthnLevelPrivacyEnabled\"",
+    "revertHardeningScript": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Print\" /v \"RpcAuthnLevelPrivacyEnabled\" /f"
+  },
+  "18.4.2": {
+    "hardeningScript": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\mrxsmb10\" /v \"Start\" /f"
+  },
+  "18.4.3": {
+    "hardeningScript": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters\" /v \"SMB1\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters\" /v \"SMB1\"",
+    "revertHardeningScript": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\LanmanServer\\Parameters\" /v \"SMB1\" /f"
+  },
+  "18.4.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Cryptography\\Wintrust\\Config\" /v \"EnableCertPaddingCheck\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Cryptography\\Wintrust\\Config\" /v \"EnableCertPaddingCheck\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Cryptography\\Wintrust\\Config\" /v \"EnableCertPaddingCheck\" /f"
+  },
+  "18.4.5": {
+    "hardeningScript": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel\" /v \"DisableExceptionChainValidation\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel\" /v \"DisableExceptionChainValidation\"",
+    "revertHardeningScript": "reg delete \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\kernel\" /v \"DisableExceptionChainValidation\" /f"
+  },
+  "18.4.6": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\NetBT\\Parameters\" /v \"NodeType\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\NetBT\\Parameters\" /v \"NodeType\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\NetBT\\Parameters\" /v \"NodeType\" /f"
+  },
+  "18.5.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"AutoAdminLogon\" /t REG_SZ /d \"0\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"AutoAdminLogon\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"AutoAdminLogon\" /f"
+  },
+  "18.5.10": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"ScreenSaverGracePeriod\" /t REG_SZ /d \"5\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"ScreenSaverGracePeriod\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"ScreenSaverGracePeriod\" /f"
+  },
+  "18.5.13": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\Eventlog\\Security\" /v \"WarningLevel\" /t REG_DWORD /d 90 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\Eventlog\\Security\" /v \"WarningLevel\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\Eventlog\\Security\" /v \"WarningLevel\" /f"
+  },
+  "18.5.2": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\Tcpip6\\Parameters\" /v \"DisableIPSourceRouting\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\Tcpip6\\Parameters\" /v \"DisableIPSourceRouting\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\Tcpip6\\Parameters\" /v \"DisableIPSourceRouting\" /f"
+  },
+  "18.5.3": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v \"DisableIPSourceRouting\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v \"DisableIPSourceRouting\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v \"DisableIPSourceRouting\" /f"
+  },
+  "18.5.5": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v \"EnableICMPRedirect\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v \"EnableICMPRedirect\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\Tcpip\\Parameters\" /v \"EnableICMPRedirect\" /f"
+  },
+  "18.5.7": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\NetBT\\Parameters\" /v \"NoNameReleaseOnDemand\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\NetBT\\Parameters\" /v \"NoNameReleaseOnDemand\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\NetBT\\Parameters\" /v \"NoNameReleaseOnDemand\" /f"
+  },
+  "18.5.9": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\" /v \"SafeDllSearchMode\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\" /v \"SafeDllSearchMode\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\" /v \"SafeDllSearchMode\" /f"
+  },
+  "18.6.11.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Network Connections\" /v \"NC_AllowNetBridge_NLA\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Network Connections\" /v \"NC_AllowNetBridge_NLA\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Network Connections\" /v \"NC_AllowNetBridge_NLA\" /f"
+  },
+  "18.6.11.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Network Connections\" /v \"NC_ShowSharedAccessUI\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Network Connections\" /v \"NC_ShowSharedAccessUI\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Network Connections\" /v \"NC_ShowSharedAccessUI\" /f"
+  },
+  "18.6.14.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths\" /v \"\\\\*\\NETLOGON\" /t REG_SZ /d \"RequireMutualAuthentication=1, RequireIntegrity=1, RequirePrivacy=1\" /f\nreg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths\" /v \"\\\\*\\SYSVOL\" /t REG_SZ /d \"RequireMutualAuthentication=1, RequireIntegrity=1, RequirePrivacy=1\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths\" /v \"\\\\*\\NETLOGON\"\nreg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths\" /v \"\\\\*\\SYSVOL\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths\" /v \"\\\\*\\NETLOGON\" /f\nreg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\NetworkProvider\\HardenedPaths\" /v \"\\\\*\\SYSVOL\" /f"
+  },
+  "18.6.21.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy\" /v \"fMinimizeConnections\" /t REG_DWORD /d 3 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy\" /v \"fMinimizeConnections\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\WcmSvc\\GroupPolicy\" /v \"fMinimizeConnections\" /f"
+  },
+  "18.6.23.2.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\WcmSvc\\wifinetworkmanager\\config\" /v \"AutoConnectAllowedOEM\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\WcmSvc\\wifinetworkmanager\\config\" /v \"AutoConnectAllowedOEM\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\WcmSvc\\wifinetworkmanager\\config\" /v \"AutoConnectAllowedOEM\" /f"
+  },
+  "18.6.4.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\DNSClient\" /v \"DoHPolicy\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\DNSClient\" /v \"DoHPolicy\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\DNSClient\" /v \"DoHPolicy\" /f"
+  },
+  "18.6.8.1": {
+    "hardeningScript": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation\" /v \"AllowInsecureGuestAuth\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation\" /v \"AllowInsecureGuestAuth\"",
+    "revertHardeningScript": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\LanmanWorkstation\" /v \"AllowInsecureGuestAuth\" /f"
+  },
+  "18.7.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"RegisterSpoolerRemoteRpcEndPoint\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"RegisterSpoolerRemoteRpcEndPoint\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"RegisterSpoolerRemoteRpcEndPoint\" /f"
+  },
+  "18.7.10": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint\" /v \"NoWarningNoElevationOnInstall\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint\" /v \"NoWarningNoElevationOnInstall\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint\" /v \"NoWarningNoElevationOnInstall\" /f"
+  },
+  "18.7.11": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint\" /v \"UpdatePromptSettings\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint\" /v \"UpdatePromptSettings\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint\" /v \"UpdatePromptSettings\" /f"
+  },
+  "18.7.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"RedirectionGuardPolicy\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"RedirectionGuardPolicy\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"RedirectionGuardPolicy\" /f"
+  },
+  "18.7.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcUseNamedPipeProtocol\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcUseNamedPipeProtocol\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcUseNamedPipeProtocol\" /f"
+  },
+  "18.7.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcAuthentication\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcAuthentication\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcAuthentication\" /f"
+  },
+  "18.7.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcProtocols\" /t REG_DWORD /d 5 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcProtocols\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcProtocols\" /f"
+  },
+  "18.7.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"ForceKerberosForRpc\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"ForceKerberosForRpc\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"ForceKerberosForRpc\" /f"
+  },
+  "18.7.7": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcTcpPort\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcTcpPort\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\RPC\" /v \"RpcTcpPort\" /f"
+  },
+  "18.7.8": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint\" /v \"RestrictDriverInstallationToAdministrators\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint\" /v \"RestrictDriverInstallationToAdministrators\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\\PointAndPrint\" /v \"RestrictDriverInstallationToAdministrators\" /f"
+  },
+  "18.7.9": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"CopyFilesPolicy\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"CopyFilesPolicy\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"CopyFilesPolicy\" /f"
+  },
+  "18.9.13.1": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Policies\\EarlyLaunch\" /v \"DriverLoadPolicy\" /t REG_DWORD /d 3 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Policies\\EarlyLaunch\" /v \"DriverLoadPolicy\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Policies\\EarlyLaunch\" /v \"DriverLoadPolicy\" /f"
+  },
+  "18.9.19.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"EnableCdp\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"EnableCdp\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"EnableCdp\" /f"
+  },
+  "18.9.20.1.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"DisableWebPnPDownload\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"DisableWebPnPDownload\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Printers\" /v \"DisableWebPnPDownload\" /f"
+  },
+  "18.9.20.1.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" /v \"NoWebServices\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" /v \"NoWebServices\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" /v \"NoWebServices\" /f"
+  },
+  "18.9.26.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"AllowCustomSSPsAPs\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"AllowCustomSSPsAPs\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"AllowCustomSSPsAPs\" /f"
+  },
+  "18.9.26.2": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"RunAsPPL\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"RunAsPPL\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"RunAsPPL\" /f"
+  },
+  "18.9.28.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"BlockUserFromShowingAccountDetailsOnSignin\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"BlockUserFromShowingAccountDetailsOnSignin\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"BlockUserFromShowingAccountDetailsOnSignin\" /f"
+  },
+  "18.9.28.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"DontDisplayNetworkSelectionUI\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"DontDisplayNetworkSelectionUI\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"DontDisplayNetworkSelectionUI\" /f"
+  },
+  "18.9.28.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"DisableLockScreenAppNotifications\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"DisableLockScreenAppNotifications\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"DisableLockScreenAppNotifications\" /f"
+  },
+  "18.9.28.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"AllowDomainPINLogon\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"AllowDomainPINLogon\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\System\" /v \"AllowDomainPINLogon\" /f"
+  },
+  "18.9.3.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit\" /v \"ProcessCreationIncludeCmdLine_Enabled\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit\" /v \"ProcessCreationIncludeCmdLine_Enabled\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit\" /v \"ProcessCreationIncludeCmdLine_Enabled\" /f"
+  },
+  "18.9.33.6.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9\" /v \"DCSettingIndex\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9\" /v \"DCSettingIndex\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9\" /v \"DCSettingIndex\" /f"
+  },
+  "18.9.33.6.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9\" /v \"ACSettingIndex\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9\" /v \"ACSettingIndex\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\f15576e8-98b7-4186-b944-eafa664402d9\" /v \"ACSettingIndex\" /f"
+  },
+  "18.9.33.6.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\" /v \"DCSettingIndex\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\" /v \"DCSettingIndex\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\" /v \"DCSettingIndex\" /f"
+  },
+  "18.9.33.6.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\" /v \"ACSettingIndex\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\" /v \"ACSettingIndex\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\0e796bdb-100d-47d6-a2d5-f7d2daa51f51\" /v \"ACSettingIndex\" /f"
+  },
+  "18.9.35.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fAllowUnsolicited\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fAllowUnsolicited\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fAllowUnsolicited\" /f"
+  },
+  "18.9.35.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fAllowToGetHelp\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fAllowToGetHelp\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\policies\\Microsoft\\Windows NT\\Terminal Services\" /v \"fAllowToGetHelp\" /f"
+  },
+  "18.9.36.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Rpc\" /v \"EnableAuthEpResolution\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Rpc\" /v \"EnableAuthEpResolution\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Rpc\" /v \"EnableAuthEpResolution\" /f"
+  },
+  "18.9.36.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Rpc\" /v \"RestrictRemoteClients\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Rpc\" /v \"RestrictRemoteClients\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows NT\\Rpc\" /v \"RestrictRemoteClients\" /f"
+  },
+  "18.9.4.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\CredSSP\\Parameters\" /v \"AllowEncryptionOracle\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\CredSSP\\Parameters\" /v \"AllowEncryptionOracle\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\CredSSP\\Parameters\" /v \"AllowEncryptionOracle\" /f"
+  },
+  "18.9.4.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CredentialsDelegation\" /v \"AllowProtectedCreds\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CredentialsDelegation\" /v \"AllowProtectedCreds\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\CredentialsDelegation\" /v \"AllowProtectedCreds\" /f"
+  },
+  "18.9.5.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"EnableVirtualizationBasedSecurity\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"EnableVirtualizationBasedSecurity\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"EnableVirtualizationBasedSecurity\" /f"
+  },
+  "18.9.51.1.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\W32Time\\TimeProviders\\NtpClient\" /v \"Enabled\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\W32Time\\TimeProviders\\NtpClient\" /v \"Enabled\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\W32Time\\TimeProviders\\NtpClient\" /v \"Enabled\" /f"
+  },
+  "18.9.5.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"RequirePlatformSecurityFeatures\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"RequirePlatformSecurityFeatures\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"RequirePlatformSecurityFeatures\" /f"
+  },
+  "18.9.5.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"HypervisorEnforcedCodeIntegrity\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"HypervisorEnforcedCodeIntegrity\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"HypervisorEnforcedCodeIntegrity\" /f"
+  },
+  "18.9.5.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"HVCIMATRequired\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"HVCIMATRequired\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"HVCIMATRequired\" /f"
+  },
+  "18.9.5.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"LsaCfgFlags\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"LsaCfgFlags\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"LsaCfgFlags\" /f"
+  },
+  "18.9.5.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"ConfigureSystemGuardLaunch\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"ConfigureSystemGuardLaunch\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"ConfigureSystemGuardLaunch\" /f"
+  },
+  "18.9.5.7": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"ConfigureKernelShadowStacksLaunch\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"ConfigureKernelShadowStacksLaunch\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard\" /v \"ConfigureKernelShadowStacksLaunch\" /f"
+  },
+  "18.9.7.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Device Metadata\" /v \"PreventDeviceMetadataFromNetwork\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Device Metadata\" /v \"PreventDeviceMetadataFromNetwork\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Device Metadata\" /v \"PreventDeviceMetadataFromNetwork\" /f"
+  },
+  "19.5.1.1": {
+    "hardeningScript": "reg add \"HKU\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications\" /v \"NoToastApplicationNotificationOnLockScreen\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKU\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications\" /v \"NoToastApplicationNotificationOnLockScreen\"",
+    "revertHardeningScript": "reg delete \"HKU\\Software\\Policies\\Microsoft\\Windows\\CurrentVersion\\PushNotifications\" /v \"NoToastApplicationNotificationOnLockScreen\" /f"
+  },
+  "19.7.26.1": {
+    "hardeningScript": "reg add \"HKU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" /v \"NoInplaceSharing\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" /v \"NoInplaceSharing\"",
+    "revertHardeningScript": "reg delete \"HKU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer\" /v \"NoInplaceSharing\" /f"
+  },
+  "19.7.38.1": {
+    "hardeningScript": "reg add \"HKU\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot\" /v \"TurnOffWindowsCopilot\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKU\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot\" /v \"TurnOffWindowsCopilot\"",
+    "revertHardeningScript": "reg delete \"HKU\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot\" /v \"TurnOffWindowsCopilot\" /f"
+  },
+  "19.7.42.1": {
+    "hardeningScript": "reg add \"HKU\\Software\\Policies\\Microsoft\\Windows\\Installer\" /v \"AlwaysInstallElevated\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKU\\Software\\Policies\\Microsoft\\Windows\\Installer\" /v \"AlwaysInstallElevated\"",
+    "revertHardeningScript": "reg delete \"HKU\\Software\\Policies\\Microsoft\\Windows\\Installer\" /v \"AlwaysInstallElevated\" /f"
+  },
+  "19.7.5.1": {
+    "hardeningScript": "reg add \"HKU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\" /v \"SaveZoneInformation\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\" /v \"SaveZoneInformation\"",
+    "revertHardeningScript": "reg delete \"HKU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\" /v \"SaveZoneInformation\" /f"
+  },
+  "19.7.5.2": {
+    "hardeningScript": "reg add \"HKU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\" /v \"ScanWithAntiVirus\" /t REG_DWORD /d 3 /f",
+    "auditScript": "reg query \"HKU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\" /v \"ScanWithAntiVirus\"",
+    "revertHardeningScript": "reg delete \"HKU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Attachments\" /v \"ScanWithAntiVirus\" /f"
+  },
+  "19.7.8.1": {
+    "hardeningScript": "reg add \"HKU\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"ConfigureWindowsSpotlight\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKU\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"ConfigureWindowsSpotlight\"",
+    "revertHardeningScript": "reg delete \"HKU\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"ConfigureWindowsSpotlight\" /f"
+  },
+  "19.7.8.2": {
+    "hardeningScript": "reg add \"HKU\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableThirdPartySuggestions\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKU\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableThirdPartySuggestions\"",
+    "revertHardeningScript": "reg delete \"HKU\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableThirdPartySuggestions\" /f"
+  },
+  "19.7.8.5": {
+    "hardeningScript": "reg add \"HKU\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableSpotlightCollectionOnDesktop\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKU\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableSpotlightCollectionOnDesktop\"",
+    "revertHardeningScript": "reg delete \"HKU\\Software\\Policies\\Microsoft\\Windows\\CloudContent\" /v \"DisableSpotlightCollectionOnDesktop\" /f"
+  },
+  "2.2.1": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeTrustedCredManAccessPrivilege = ', 'SeTrustedCredManAccessPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeTrustedCredManAccessPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeTrustedCredManAccessPrivilege = ', 'SeTrustedCredManAccessPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.10": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeCreatePagefilePrivilege = *S-1-5-32-544', 'SeCreatePagefilePrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeCreatePagefilePrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeCreatePagefilePrivilege = *S-1-5-32-544', 'SeCreatePagefilePrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.11": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeCreateTokenPrivilege = ', 'SeCreateTokenPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeCreateTokenPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeCreateTokenPrivilege = ', 'SeCreateTokenPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.12": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeCreateGlobalPrivilege = *S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6', 'SeCreateGlobalPrivilege = *S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeCreateGlobalPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeCreateGlobalPrivilege = *S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6', 'SeCreateGlobalPrivilege = *S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.13": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeCreatePermanentPrivilege = ', 'SeCreatePermanentPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeCreatePermanentPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeCreatePermanentPrivilege = ', 'SeCreatePermanentPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.14": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeCreateSymbolicLinkPrivilege = *S-1-5-32-544', 'SeCreateSymbolicLinkPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeCreateSymbolicLinkPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeCreateSymbolicLinkPrivilege = *S-1-5-32-544', 'SeCreateSymbolicLinkPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.15": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDebugPrivilege = *S-1-5-32-544', 'SeDebugPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeDebugPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDebugPrivilege = *S-1-5-32-544', 'SeDebugPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.16": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDenyNetworkLogonRight = ', 'SeDenyNetworkLogonRight = *S-1-5-32-546') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeDenyNetworkLogonRight\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDenyNetworkLogonRight = *S-1-5-32-546', 'SeDenyNetworkLogonRight = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.17": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDenyBatchLogonRight = ', 'SeDenyBatchLogonRight = *S-1-5-32-546') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeDenyBatchLogonRight\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDenyBatchLogonRight = *S-1-5-32-546', 'SeDenyBatchLogonRight = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.18": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDenyServiceLogonRight = ', 'SeDenyServiceLogonRight = *S-1-5-32-546') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeDenyServiceLogonRight\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDenyServiceLogonRight = *S-1-5-32-546', 'SeDenyServiceLogonRight = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.19": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDenyInteractiveLogonRight = ', 'SeDenyInteractiveLogonRight = *S-1-5-32-546') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeDenyInteractiveLogonRight\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDenyInteractiveLogonRight = *S-1-5-32-546', 'SeDenyInteractiveLogonRight = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.2": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeNetworkLogonRight = *S-1-5-32-544,*S-1-5-32-555', 'SeNetworkLogonRight = *S-1-5-32-544,*S-1-5-32-555') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeNetworkLogonRight\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeNetworkLogonRight = *S-1-5-32-544,*S-1-5-32-555', 'SeNetworkLogonRight = *S-1-5-32-544,*S-1-5-32-555') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.20": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDenyRemoteInteractiveLogonRight = ', 'SeDenyRemoteInteractiveLogonRight = *S-1-5-32-546') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeDenyRemoteInteractiveLogonRight\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeDenyRemoteInteractiveLogonRight = *S-1-5-32-546', 'SeDenyRemoteInteractiveLogonRight = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.21": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeEnableDelegationPrivilege = ', 'SeEnableDelegationPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeEnableDelegationPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeEnableDelegationPrivilege = ', 'SeEnableDelegationPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.22": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeRemoteShutdownPrivilege = *S-1-5-32-544', 'SeRemoteShutdownPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeRemoteShutdownPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeRemoteShutdownPrivilege = *S-1-5-32-544', 'SeRemoteShutdownPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.23": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeAuditPrivilege = *S-1-5-19,*S-1-5-20', 'SeAuditPrivilege = *S-1-5-19,*S-1-5-20') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeAuditPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeAuditPrivilege = *S-1-5-19,*S-1-5-20', 'SeAuditPrivilege = *S-1-5-19,*S-1-5-20') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.24": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeImpersonatePrivilege = *S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6', 'SeImpersonatePrivilege = *S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeImpersonatePrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeImpersonatePrivilege = *S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6', 'SeImpersonatePrivilege = *S-1-5-32-544,*S-1-5-19,*S-1-5-20,*S-1-5-6') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.25": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeIncreaseBasePriorityPrivilege = *S-1-5-32-544', 'SeIncreaseBasePriorityPrivilege = *S-1-5-32-544,*S-1-5-90-0') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeIncreaseBasePriorityPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeIncreaseBasePriorityPrivilege = *S-1-5-32-544,*S-1-5-90-0', 'SeIncreaseBasePriorityPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.26": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeLoadDriverPrivilege = *S-1-5-32-544', 'SeLoadDriverPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeLoadDriverPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeLoadDriverPrivilege = *S-1-5-32-544', 'SeLoadDriverPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.27": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeLockMemoryPrivilege = ', 'SeLockMemoryPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeLockMemoryPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeLockMemoryPrivilege = ', 'SeLockMemoryPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.3": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeTcbPrivilege = ', 'SeTcbPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeTcbPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeTcbPrivilege = ', 'SeTcbPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.30": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeSecurityPrivilege = *S-1-5-32-544', 'SeSecurityPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeSecurityPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeSecurityPrivilege = *S-1-5-32-544', 'SeSecurityPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.31": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeRelabelPrivilege = ', 'SeRelabelPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeRelabelPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeRelabelPrivilege = ', 'SeRelabelPrivilege = ') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.32": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeSystemEnvironmentPrivilege = *S-1-5-32-544', 'SeSystemEnvironmentPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeSystemEnvironmentPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeSystemEnvironmentPrivilege = *S-1-5-32-544', 'SeSystemEnvironmentPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.33": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeManageVolumePrivilege = *S-1-5-32-544', 'SeManageVolumePrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeManageVolumePrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeManageVolumePrivilege = *S-1-5-32-544', 'SeManageVolumePrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.34": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeProfileSingleProcessPrivilege = *S-1-5-32-544', 'SeProfileSingleProcessPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeProfileSingleProcessPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeProfileSingleProcessPrivilege = *S-1-5-32-544', 'SeProfileSingleProcessPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.35": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeSystemProfilePrivilege = *S-1-5-32-544,*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420', 'SeSystemProfilePrivilege = *S-1-5-32-544,*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeSystemProfilePrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeSystemProfilePrivilege = *S-1-5-32-544,*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420', 'SeSystemProfilePrivilege = *S-1-5-32-544,*S-1-5-80-3139157870-2983391045-3678747466-658725712-1809340420') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.36": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeAssignPrimaryTokenPrivilege = *S-1-5-19,*S-1-5-20', 'SeAssignPrimaryTokenPrivilege = *S-1-5-19,*S-1-5-20') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeAssignPrimaryTokenPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeAssignPrimaryTokenPrivilege = *S-1-5-19,*S-1-5-20', 'SeAssignPrimaryTokenPrivilege = *S-1-5-19,*S-1-5-20') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.37": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeRestorePrivilege = *S-1-5-32-544,*S-1-5-32-551', 'SeRestorePrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeRestorePrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeRestorePrivilege = *S-1-5-32-544', 'SeRestorePrivilege = *S-1-5-32-544,*S-1-5-32-551') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.38": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeShutdownPrivilege = *S-1-5-32-544', 'SeShutdownPrivilege = *S-1-5-32-544,*S-1-5-32-545') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeShutdownPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeShutdownPrivilege = *S-1-5-32-544,*S-1-5-32-545', 'SeShutdownPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.39": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeTakeOwnershipPrivilege = *S-1-5-32-544', 'SeTakeOwnershipPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeTakeOwnershipPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeTakeOwnershipPrivilege = *S-1-5-32-544', 'SeTakeOwnershipPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.4": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeIncreaseQuotaPrivilege = *S-1-5-32-544', 'SeIncreaseQuotaPrivilege = *S-1-5-32-544,*S-1-5-19,*S-1-5-20') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeIncreaseQuotaPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeIncreaseQuotaPrivilege = *S-1-5-32-544,*S-1-5-19,*S-1-5-20', 'SeIncreaseQuotaPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.5": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeInteractiveLogonRight = *S-1-5-32-544,*S-1-5-32-545', 'SeInteractiveLogonRight = *S-1-5-32-544,*S-1-5-32-545') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeInteractiveLogonRight\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeInteractiveLogonRight = *S-1-5-32-544,*S-1-5-32-545', 'SeInteractiveLogonRight = *S-1-5-32-544,*S-1-5-32-545') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.6": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeRemoteInteractiveLogonRight = *S-1-5-32-544,*S-1-5-32-555', 'SeRemoteInteractiveLogonRight = *S-1-5-32-544,*S-1-5-32-555') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeRemoteInteractiveLogonRight\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeRemoteInteractiveLogonRight = *S-1-5-32-544,*S-1-5-32-555', 'SeRemoteInteractiveLogonRight = *S-1-5-32-544,*S-1-5-32-555') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.7": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeBackupPrivilege = *S-1-5-32-544,*S-1-5-32-551', 'SeBackupPrivilege = *S-1-5-32-544') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeBackupPrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeBackupPrivilege = *S-1-5-32-544', 'SeBackupPrivilege = *S-1-5-32-544,*S-1-5-32-551') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.8": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeSystemTimePrivilege = *S-1-5-32-544,*S-1-5-19', 'SeSystemTimePrivilege = *S-1-5-32-544,*S-1-5-19') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeSystemTimePrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeSystemTimePrivilege = *S-1-5-32-544,*S-1-5-19', 'SeSystemTimePrivilege = *S-1-5-32-544,*S-1-5-19') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.2.9": {
+    "hardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeTimeZonePrivilege = *S-1-5-32-544,*S-1-5-32-545,*S-1-5-19', 'SeTimeZonePrivilege = *S-1-5-32-544,*S-1-5-32-545,*S-1-5-19') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force",
+    "auditScript": "secedit /export /cfg c:\\secpol.cfg\ngc c:\\secpol.cfg | findstr \"SeTimeZonePrivilege\"",
+    "revertHardeningScript": "secedit /export /cfg c:\\secpol.cfg\npowershell \"(gc C:\\secpol.cfg).replace('SeTimeZonePrivilege = *S-1-5-32-544,*S-1-5-32-545,*S-1-5-19', 'SeTimeZonePrivilege = *S-1-5-32-544,*S-1-5-32-545,*S-1-5-19') | Out-File C:\\secpol.cfg\"\nsecedit /configure /db c:\\windows\\security\\local.sdb /cfg c:\\secpol.cfg /areas USER_RIGHTS\nrm -f c:\\secpol.cfg -force"
+  },
+  "2.3.10.1": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"LSAAnonymousNameLookup\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"LSAAnonymousNameLookup\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"LSAAnonymousNameLookup\" /f"
+  },
+  "2.3.10.10": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"restrictremotesam\" /t REG_SZ /d \"O:BAG:BAD:(A;;RC;;;BA)\" /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"restrictremotesam\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"restrictremotesam\" /f"
+  },
+  "2.3.10.11": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"NullSessionShares\" /t REG_MULTI_SZ /d \"\" /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"NullSessionShares\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"NullSessionShares\" /f"
+  },
+  "2.3.10.12": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"ForceGuest\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"ForceGuest\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"ForceGuest\" /f"
+  },
+  "2.3.10.2": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"RestrictAnonymousSAM\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"RestrictAnonymousSAM\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"RestrictAnonymousSAM\" /f"
+  },
+  "2.3.10.3": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"RestrictAnonymous\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"RestrictAnonymous\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"RestrictAnonymous\" /f"
+  },
+  "2.3.10.4": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"DisableDomainCreds\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"DisableDomainCreds\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"DisableDomainCreds\" /f"
+  },
+  "2.3.10.5": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"EveryoneIncludesAnonymous\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"EveryoneIncludesAnonymous\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"EveryoneIncludesAnonymous\" /f"
+  },
+  "2.3.10.6": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"NullSessionPipes\" /t REG_MULTI_SZ /d \"\" /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"NullSessionPipes\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"NullSessionPipes\" /f"
+  },
+  "2.3.10.7": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedExactPaths\" /v \"Machine\" /t REG_MULTI_SZ /d \"System\\CurrentControlSet\\Control\\ProductOptions System\\CurrentControlSet\\Control\\Server Applications Software\\Microsoft\\Windows NT\\CurrentVersion\" /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedExactPaths\" /v \"Machine\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedExactPaths\" /v \"Machine\" /f"
+  },
+  "2.3.10.8": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedPaths\" /v \"Machine\" /t REG_MULTI_SZ /d \"System\\CurrentControlSet\\Control\\Print\\Printers System\\CurrentControlSet\\Services\\Eventlog Software\\Microsoft\\OLAP Server Software\\Microsoft\\Windows NT\\CurrentVersion\\Print Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows System\\CurrentControlSet\\Control\\ContentIndex System\\CurrentControlSet\\Control\\Terminal Server System\\CurrentControlSet\\Control\\Terminal Server\\UserConfig System\\CurrentControlSet\\Control\\Terminal Server\\DefaultUserConfiguration Software\\Microsoft\\Windows NT\\CurrentVersion\\Perflib System\\CurrentControlSet\\Services\\Sysmonlog\" /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedPaths\" /v \"Machine\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\SecurePipeServers\\Winreg\\AllowedPaths\" /v \"Machine\" /f"
+  },
+  "2.3.10.9": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"RestrictNullSessAccess\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"RestrictNullSessAccess\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"RestrictNullSessAccess\" /f"
+  },
+  "2.3.11.1": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"UseMachineId\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"UseMachineId\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"UseMachineId\" /f"
+  },
+  "2.3.11.10": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"NTLMMinServerSec\" /t REG_DWORD /d 537395200 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"NTLMMinServerSec\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"NTLMMinServerSec\" /f"
+  },
+  "2.3.11.11": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"AuditReceivingNTLMTraffic\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"AuditReceivingNTLMTraffic\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"AuditReceivingNTLMTraffic\" /f"
+  },
+  "2.3.11.12": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"RestrictSendingNTLMTraffic\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"RestrictSendingNTLMTraffic\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"RestrictSendingNTLMTraffic\" /f"
+  },
+  "2.3.11.2": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"AllowNullSessionFallback\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"AllowNullSessionFallback\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"AllowNullSessionFallback\" /f"
+  },
+  "2.3.11.3": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\pku2u\" /v \"AllowOnlineID\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\pku2u\" /v \"AllowOnlineID\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\pku2u\" /v \"AllowOnlineID\" /f"
+  },
+  "2.3.11.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters\" /v \"SupportedEncryptionTypes\" /t REG_DWORD /d 2147483640 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters\" /v \"SupportedEncryptionTypes\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters\" /v \"SupportedEncryptionTypes\" /f"
+  },
+  "2.3.11.5": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"NoLMHash\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"NoLMHash\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"NoLMHash\" /f"
+  },
+  "2.3.11.6": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"ForceLogoffWhenHourExpire\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"ForceLogoffWhenHourExpire\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"ForceLogoffWhenHourExpire\" /f"
+  },
+  "2.3.11.7": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"LMCompatibilityLevel\" /t REG_DWORD /d 5 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"LMCompatibilityLevel\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"LMCompatibilityLevel\" /f"
+  },
+  "2.3.11.8": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LDAP\" /v \"LDAPClientIntegrity\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LDAP\" /v \"LDAPClientIntegrity\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LDAP\" /v \"LDAPClientIntegrity\" /f"
+  },
+  "2.3.11.9": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"NTLMMinClientSec\" /t REG_DWORD /d 537395200 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"NTLMMinClientSec\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\\MSV1_0\" /v \"NTLMMinClientSec\" /f"
+  },
+  "2.3.1.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"NoConnectedUser\" /t REG_DWORD /d 3 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"NoConnectedUser\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"NoConnectedUser\" /f"
+  },
+  "2.3.1.2": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"EnableGuestAccount\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"EnableGuestAccount\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"EnableGuestAccount\" /f"
+  },
+  "2.3.1.3": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"LimitBlankPasswordUse\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"LimitBlankPasswordUse\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"LimitBlankPasswordUse\" /f"
+  },
+  "2.3.1.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"NewAdministratorName\" /t REG_SZ /d \"[A-Za-z0-9]+\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"NewAdministratorName\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"NewAdministratorName\" /f"
+  },
+  "2.3.1.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"NewGuestName\" /t REG_SZ /d \"[A-Za-z0-9]+\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"NewGuestName\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"NewGuestName\" /f"
+  },
+  "2.3.15.1": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Kernel\" /v \"ObCaseInsensitive\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Kernel\" /v \"ObCaseInsensitive\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Kernel\" /v \"ObCaseInsensitive\" /f"
+  },
+  "2.3.15.2": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\" /v \"ProtectionMode\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\" /v \"ProtectionMode\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\" /v \"ProtectionMode\" /f"
+  },
+  "2.3.17.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"FilterAdministratorToken\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"FilterAdministratorToken\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"FilterAdministratorToken\" /f"
+  },
+  "2.3.17.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"ConsentPromptBehaviorAdmin\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"ConsentPromptBehaviorAdmin\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"ConsentPromptBehaviorAdmin\" /f"
+  },
+  "2.3.17.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"ConsentPromptBehaviorUser\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"ConsentPromptBehaviorUser\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"ConsentPromptBehaviorUser\" /f"
+  },
+  "2.3.17.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableInstallerDetection\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableInstallerDetection\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableInstallerDetection\" /f"
+  },
+  "2.3.17.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableSecureUIAPaths\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableSecureUIAPaths\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableSecureUIAPaths\" /f"
+  },
+  "2.3.17.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableLUA\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableLUA\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableLUA\" /f"
+  },
+  "2.3.17.7": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"PromptOnSecureDesktop\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"PromptOnSecureDesktop\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"PromptOnSecureDesktop\" /f"
+  },
+  "2.3.17.8": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableVirtualization\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableVirtualization\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"EnableVirtualization\" /f"
+  },
+  "2.3.2.1": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"SCENoApplyLegacyAuditPolicy\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"SCENoApplyLegacyAuditPolicy\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"SCENoApplyLegacyAuditPolicy\" /f"
+  },
+  "2.3.2.2": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"CrashOnAuditFail\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"CrashOnAuditFail\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Control\\Lsa\" /v \"CrashOnAuditFail\" /f"
+  },
+  "2.3.7.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"DisableCAD\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"DisableCAD\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"DisableCAD\" /f"
+  },
+  "2.3.7.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"DontDisplayLastUserName\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"DontDisplayLastUserName\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"DontDisplayLastUserName\" /f"
+  },
+  "2.3.7.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"InactivityTimeoutSecs\" /t REG_DWORD /d 900 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"InactivityTimeoutSecs\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"InactivityTimeoutSecs\" /f"
+  },
+  "2.3.7.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"LegalNoticeText\" /t REG_SZ /d \"@LEGAL_NOTICE_TEXT@\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"LegalNoticeText\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"LegalNoticeText\" /f"
+  },
+  "2.3.7.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"LegalNoticeCaption\" /t REG_SZ /d \"@LEGAL_CAPTION_TEXT@\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"LegalNoticeCaption\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v \"LegalNoticeCaption\" /f"
+  },
+  "2.3.7.7": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"PasswordExpiryWarning\" /t REG_DWORD /d 5 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"PasswordExpiryWarning\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"PasswordExpiryWarning\" /f"
+  },
+  "2.3.7.8": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"ScRemoveOption\" /t REG_SZ /d \"1\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"ScRemoveOption\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v \"ScRemoveOption\" /f"
+  },
+  "2.3.8.1": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\" /v \"RequireSecuritySignature\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\" /v \"RequireSecuritySignature\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\" /v \"RequireSecuritySignature\" /f"
+  },
+  "2.3.8.2": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\" /v \"EnableSecuritySignature\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\" /v \"EnableSecuritySignature\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\" /v \"EnableSecuritySignature\" /f"
+  },
+  "2.3.8.3": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\" /v \"EnablePlainTextPassword\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\" /v \"EnablePlainTextPassword\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LanmanWorkstation\\Parameters\" /v \"EnablePlainTextPassword\" /f"
+  },
+  "2.3.9.1": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"AutoDisconnect\" /t REG_DWORD /d 15 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"AutoDisconnect\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"AutoDisconnect\" /f"
+  },
+  "2.3.9.2": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"RequireSecuritySignature\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"RequireSecuritySignature\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"RequireSecuritySignature\" /f"
+  },
+  "2.3.9.3": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"EnableSecuritySignature\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"EnableSecuritySignature\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"EnableSecuritySignature\" /f"
+  },
+  "2.3.9.4": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"EnableForcedLogoff\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"EnableForcedLogoff\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"EnableForcedLogoff\" /f"
+  },
+  "2.3.9.5": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"SMBServerNameHardeningLevel\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"SMBServerNameHardeningLevel\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LanManServer\\Parameters\" /v \"SMBServerNameHardeningLevel\" /f"
+  },
+  "5.10": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\FTPSVC\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\FTPSVC\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\FTPSVC\" /v \"Start\" /f"
+  },
+  "5.12": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\sshd\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\sshd\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\sshd\" /v \"Start\" /f"
+  },
+  "5.23": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\RpcLocator\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\RpcLocator\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\RpcLocator\" /v \"Start\" /f"
+  },
+  "5.25": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\RemoteAccess\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\RemoteAccess\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\RemoteAccess\" /v \"Start\" /f"
+  },
+  "5.27": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\simptcp\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\simptcp\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\simptcp\" /v \"Start\" /f"
+  },
+  "5.29": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\sacsvr\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\sacsvr\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\sacsvr\" /v \"Start\" /f"
+  },
+  "5.3": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\Browser\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\Browser\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\Browser\" /v \"Start\" /f"
+  },
+  "5.30": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\SSDPSRV\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\SSDPSRV\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\SSDPSRV\" /v \"Start\" /f"
+  },
+  "5.31": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\upnphost\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\upnphost\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\upnphost\" /v \"Start\" /f"
+  },
+  "5.32": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\WMSvc\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\WMSvc\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\WMSvc\" /v \"Start\" /f"
+  },
+  "5.35": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\WMPNetworkSvc\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\WMPNetworkSvc\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\WMPNetworkSvc\" /v \"Start\" /f"
+  },
+  "5.36": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\icssvc\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\icssvc\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\icssvc\" /v \"Start\" /f"
+  },
+  "5.40": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\W3SVC\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\W3SVC\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\W3SVC\" /v \"Start\" /f"
+  },
+  "5.41": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\XboxGipSvc\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\XboxGipSvc\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\XboxGipSvc\" /v \"Start\" /f"
+  },
+  "5.42": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\XblAuthManager\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\XblAuthManager\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\XblAuthManager\" /v \"Start\" /f"
+  },
+  "5.43": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\XblGameSave\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\XblGameSave\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\XblGameSave\" /v \"Start\" /f"
+  },
+  "5.44": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\XboxNetApiSvc\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\XboxNetApiSvc\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\XboxNetApiSvc\" /v \"Start\" /f"
+  },
+  "5.6": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\IISADMIN\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\IISADMIN\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\IISADMIN\" /v \"Start\" /f"
+  },
+  "5.7": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\irmon\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\irmon\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\irmon\" /v \"Start\" /f"
+  },
+  "5.9": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Services\\LxssManager\" /v \"Start\" /t REG_DWORD /d 4 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Services\\LxssManager\" /v \"Start\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Services\\LxssManager\" /v \"Start\" /f"
+  },
+  "9.2.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\" /v \"EnableFirewall\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\" /v \"EnableFirewall\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\" /v \"EnableFirewall\" /f"
+  },
+  "9.2.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\" /v \"DefaultInboundAction\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\" /v \"DefaultInboundAction\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\" /v \"DefaultInboundAction\" /f"
+  },
+  "9.2.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\" /v \"DisableNotifications\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\" /v \"DisableNotifications\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\" /v \"DisableNotifications\" /f"
+  },
+  "9.2.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogFilePath\" /t REG_SZ /d \"%SYSTEMROOT%\\System32\\logfiles\\firewall\\privatefw.log\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogFilePath\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogFilePath\" /f"
+  },
+  "9.2.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogFileSize\" /t REG_DWORD /d 16384 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogFileSize\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogFileSize\" /f"
+  },
+  "9.2.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogDroppedPackets\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogDroppedPackets\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogDroppedPackets\" /f"
+  },
+  "9.2.7": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogSuccessfulConnections\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogSuccessfulConnections\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PrivateProfile\\Logging\" /v \"LogSuccessfulConnections\" /f"
+  },
+  "9.3.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"EnableFirewall\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"EnableFirewall\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"EnableFirewall\" /f"
+  },
+  "9.3.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"DefaultInboundAction\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"DefaultInboundAction\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"DefaultInboundAction\" /f"
+  },
+  "9.3.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"DisableNotifications\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"DisableNotifications\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"DisableNotifications\" /f"
+  },
+  "9.3.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"AllowLocalPolicyMerge\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"AllowLocalPolicyMerge\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"AllowLocalPolicyMerge\" /f"
+  },
+  "9.3.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"AllowLocalIPsecPolicyMerge\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"AllowLocalIPsecPolicyMerge\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\" /v \"AllowLocalIPsecPolicyMerge\" /f"
+  },
+  "9.3.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogFilePath\" /t REG_SZ /d \"%SYSTEMROOT%\\System32\\logfiles\\firewall\\publicfw.log\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogFilePath\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogFilePath\" /f"
+  },
+  "9.3.7": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogFileSize\" /t REG_DWORD /d 16384 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogFileSize\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogFileSize\" /f"
+  },
+  "9.3.8": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogDroppedPackets\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogDroppedPackets\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogDroppedPackets\" /f"
+  },
+  "9.3.9": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogSuccessfulConnections\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogSuccessfulConnections\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\WindowsFirewall\\PublicProfile\\Logging\" /v \"LogSuccessfulConnections\" /f"
+  },
+  "18.10.9.1.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVDiscoveryVolumeType\" /t REG_SZ /d \"\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVDiscoveryVolumeType\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVDiscoveryVolumeType\" /f"
+  },
+  "18.10.9.1.10": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVHardwareEncryption\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVHardwareEncryption\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVHardwareEncryption\" /f"
+  },
+  "18.10.9.1.11": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVPassphrase\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVPassphrase\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVPassphrase\" /f"
+  },
+  "18.10.9.1.12": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVAllowUserCert\" /t REG_DWORD /d 1 /f\nreg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVEnforceUserCert\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVAllowUserCert\"\nreg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVEnforceUserCert\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVAllowUserCert\" /f\nreg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVEnforceUserCert\" /f"
+  },
+  "18.10.9.1.2": {
+    "hardeningScript": "reg add \"HKLM\\SOFTWARE\\Policies\\Microsoft\\FVE\" /v \"FDVRecovery\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\SOFTWARE\\Policies\\Microsoft\\FVE\" /v \"FDVRecovery\"",
+    "revertHardeningScript": "reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\FVE\" /v \"FDVRecovery\" /f"
+  },
+  "18.10.9.1.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVManageDRA\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVManageDRA\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVManageDRA\" /f"
+  },
+  "18.10.9.1.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVRecoveryPassword\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVRecoveryPassword\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVRecoveryPassword\" /f"
+  },
+  "18.10.9.1.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVRecoveryKey\" /t REG_DWORD /d 2 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVRecoveryKey\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVRecoveryKey\" /f"
+  },
+  "18.10.9.1.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVHideRecoveryPage\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVHideRecoveryPage\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVHideRecoveryPage\" /f"
+  },
+  "18.10.9.1.7": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVActiveDirectoryBackup\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVActiveDirectoryBackup\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVActiveDirectoryBackup\" /f"
+  },
+  "18.10.9.1.8": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVActiveDirectoryInfoToStore\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVActiveDirectoryInfoToStore\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVActiveDirectoryInfoToStore\" /f"
+  },
+  "18.10.9.1.9": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVRequireActiveDirectoryBackup\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVRequireActiveDirectoryBackup\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"FDVRequireActiveDirectoryBackup\" /f"
+  },
+  "18.10.9.2.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseEnhancedPin\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseEnhancedPin\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseEnhancedPin\" /f"
+  },
+  "18.10.9.2.10": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRequireActiveDirectoryBackup\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRequireActiveDirectoryBackup\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRequireActiveDirectoryBackup\" /f"
+  },
+  "18.10.9.2.11": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSHardwareEncryption\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSHardwareEncryption\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSHardwareEncryption\" /f"
+  },
+  "18.10.9.2.12": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSPassphrase\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSPassphrase\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSPassphrase\" /f"
+  },
+  "18.10.9.2.13": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseAdvancedStartup\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseAdvancedStartup\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseAdvancedStartup\" /f"
+  },
+  "18.10.9.2.14": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"EnableBDEWithNoTPM\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"EnableBDEWithNoTPM\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"EnableBDEWithNoTPM\" /f"
+  },
+  "18.10.9.2.15": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPM\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPM\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPM\" /f"
+  },
+  "18.10.9.2.16": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPMPIN\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPMPIN\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPMPIN\" /f"
+  },
+  "18.10.9.2.17": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPMKey\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPMKey\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPMKey\" /f"
+  },
+  "18.10.9.2.18": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPMKeyPIN\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPMKeyPIN\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"UseTPMKeyPIN\" /f"
+  },
+  "18.10.9.2.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSAllowSecureBootForIntegrity\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSAllowSecureBootForIntegrity\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSAllowSecureBootForIntegrity\" /f"
+  },
+  "18.10.9.2.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRecovery\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRecovery\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRecovery\" /f"
+  },
+  "18.10.9.2.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSManageDRA\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSManageDRA\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSManageDRA\" /f"
+  },
+  "18.10.9.2.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRecoveryPassword\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRecoveryPassword\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRecoveryPassword\" /f"
+  },
+  "18.10.9.2.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRecoveryKey\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRecoveryKey\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSRecoveryKey\" /f"
+  },
+  "18.10.9.2.7": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSHideRecoveryPage\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSHideRecoveryPage\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSHideRecoveryPage\" /f"
+  },
+  "18.10.9.2.8": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSActiveDirectoryBackup\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSActiveDirectoryBackup\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSActiveDirectoryBackup\" /f"
+  },
+  "18.10.9.2.9": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSActiveDirectoryInfoToStore\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSActiveDirectoryInfoToStore\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"OSActiveDirectoryInfoToStore\" /f"
+  },
+  "18.10.9.3.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVDiscoveryVolumeType\" /t REG_SZ /d \"\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVDiscoveryVolumeType\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVDiscoveryVolumeType\" /f"
+  },
+  "18.10.9.3.10": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVHardwareEncryption\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVHardwareEncryption\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVHardwareEncryption\" /f"
+  },
+  "18.10.9.3.11": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVPassphrase\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVPassphrase\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVPassphrase\" /f"
+  },
+  "18.10.9.3.12": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVAllowUserCert\" /t REG_DWORD /d 1 /f\nreg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVEnforceUserCert\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVAllowUserCert\"\nreg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVEnforceUserCert\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVAllowUserCert\" /f\nreg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVEnforceUserCert\" /f"
+  },
+  "18.10.9.3.14": {
+    "hardeningScript": "reg add \"HKLM\\System\\CurrentControlSet\\Policies\\Microsoft\\FVE\" /v \"RDVDenyWriteAccess\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\System\\CurrentControlSet\\Policies\\Microsoft\\FVE\" /v \"RDVDenyWriteAccess\"",
+    "revertHardeningScript": "reg delete \"HKLM\\System\\CurrentControlSet\\Policies\\Microsoft\\FVE\" /v \"RDVDenyWriteAccess\" /f"
+  },
+  "18.10.9.3.15": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVDenyCrossOrg\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVDenyCrossOrg\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVDenyCrossOrg\" /f"
+  },
+  "18.10.9.3.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRecovery\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRecovery\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRecovery\" /f"
+  },
+  "18.10.9.3.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVManageDRA\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVManageDRA\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVManageDRA\" /f"
+  },
+  "18.10.9.3.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRecoveryPassword\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRecoveryPassword\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRecoveryPassword\" /f"
+  },
+  "18.10.9.3.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRecoveryKey\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRecoveryKey\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRecoveryKey\" /f"
+  },
+  "18.10.9.3.6": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVHideRecoveryPage\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVHideRecoveryPage\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVHideRecoveryPage\" /f"
+  },
+  "18.10.9.3.7": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVActiveDirectoryBackup\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVActiveDirectoryBackup\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVActiveDirectoryBackup\" /f"
+  },
+  "18.10.9.3.8": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVActiveDirectoryInfoToStore\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVActiveDirectoryInfoToStore\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVActiveDirectoryInfoToStore\" /f"
+  },
+  "18.10.9.3.9": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRequireActiveDirectoryBackup\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRequireActiveDirectoryBackup\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"RDVRequireActiveDirectoryBackup\" /f"
+  },
+  "18.10.9.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"DisableExternalDMAUnderLock\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"DisableExternalDMAUnderLock\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\FVE\" /v \"DisableExternalDMAUnderLock\" /f"
+  },
+  "18.9.24.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Kernel DMA Protection\" /v \"DeviceEnumerationPolicy\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Kernel DMA Protection\" /v \"DeviceEnumerationPolicy\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\Kernel DMA Protection\" /v \"DeviceEnumerationPolicy\" /f"
+  },
+  "18.9.33.6.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\abfc2519-3608-4c2a-94ea-171b0ed546ab\" /v \"DCSettingIndex\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\abfc2519-3608-4c2a-94ea-171b0ed546ab\" /v \"DCSettingIndex\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\abfc2519-3608-4c2a-94ea-171b0ed546ab\" /v \"DCSettingIndex\" /f"
+  },
+  "18.9.33.6.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\abfc2519-3608-4c2a-94ea-171b0ed546ab\" /v \"ACSettingIndex\" /t REG_DWORD /d 0 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\abfc2519-3608-4c2a-94ea-171b0ed546ab\" /v \"ACSettingIndex\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Power\\PowerSettings\\abfc2519-3608-4c2a-94ea-171b0ed546ab\" /v \"ACSettingIndex\" /f"
+  },
+  "18.9.7.1.1": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\" /v \"DenyDeviceIDs\" /t REG_DWORD /d 1 /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\" /v \"DenyDeviceIDs\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\" /v \"DenyDeviceIDs\" /f"
+  },
+  "18.9.7.1.2": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\\DenyDeviceIDs\" /v \"1\" /t REG_SZ /d \"PCI\\CC_0C0A\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\\DenyDeviceIDs\" /v \"1\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\\DenyDeviceIDs\" /v \"1\" /f"
+  },
+  "18.9.7.1.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\" /v \"DenyDeviceClasses\" /t REG_DWORD /d 1 /f\nreg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\\DenyDeviceClasses\" /v \"1\" /t REG_SZ /d \"{d48179be-ec20-11d1-b6b8-00c04fa372a7}\" /f\nreg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\\DenyDeviceClasses\" /v \"2\" /t REG_SZ /d \"{7ebefbc0-3200-11d2-b4c2-00a0C9697d07}\" /f\nreg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\\DenyDeviceClasses\" /v \"3\" /t REG_SZ /d \"{c06ff265-ae09-48f0-812c-16753d7cba83}\" /f\nreg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\\DenyDeviceClasses\" /v \"4\" /t REG_SZ /d \"{6bdd1fc1-810f-11d0-bec7-08002be2092f}\" /f",
+    "auditScript": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$values = '{d48179be-ec20-11d1-b6b8-00c04fa372a7}', '{7ebefbc0-3200-11d2-b4c2-00a0C9697d07}', '{c06ff265-ae09-48f0-812c-16753d7cba83}', '{6bdd1fc1-810f-11d0-bec7-08002be2092f}'; $path = 'Registry::HKEY_LOCAL_MACHINE\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\\DenyDeviceClasses'; Get-Item -Path $path -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Property | ForEach-Object { $value = (Get-ItemProperty -Path $path -Name $_).$_; if ($values -contains $value) { $values = $values | Where-Object { $_ -ne $value } } }; if ($values) { 'The following values are missing:'; ''; $values; ''; 'STATUS: FAILED' } else { 'STATUS: PASSED' }\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\\DenyDeviceClasses\" /f\nreg delete \"HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceInstall\\Restrictions\" /v \"DenyDeviceClasses\" /f"
+  }
+
+}

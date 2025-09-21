@@ -1,0 +1,465 @@
+#TRUSTED 5ed4f6584693f9d824f9638e86b7defcc0e6e6642cb5c503c9a92a984365dd1176b44304716dcd1eb64ea2a3e27270791db1ed4b5dc49c9549280ae06fd377c2fab1aa98bf2896be4f9eb38b356223f235af80e404e91dcc9cba5b3314768dd052efa888c662328e6dd9cd372e36a649a6180771a0b8dd6d4d7bd6fd3c15069cfaae3b4bbd5f565684337408af29751bbb58651aafdf5ea4f3d75641ae51b0c689f97c2e20d6a31004ea2771c63573b117d77d205b24ed9ff4195df7f0c5cfbf3d300cae9e03ca48e952832238bd375d5fc33dfc2ff7c785fa8a0daed9a573d151fee04a7c319febae2e96c1a4828a2f7c5cbda899cfffdea2f88e5cb5e308a0e18a2e02595b921dcca42bcf67bc6a105dbc7fddaddf1ada2f7668d5a6270c99f472f0bd3bb9150d1640cd8f0005678dc1f9e424d09e298606b791b03a882f655dc8ee5c916dba5bfb5cb26732eccb9c54dd2d49238b55662b0a51016ae5d465790b206b20bba4b211f76c09483f58a638df658536d1beba0c0686a5182a1d72e65743dd3fc24cb0f1e742bc88a7fe88eba09dd482a0cbd49abaff97e442b91a78b6ddb94cd612f756bb2152b0b626533b05fbd9536c1480e577cc98965c13fa349f6d73f0546799e65e3cecd7414bc8848f111b59dd129299d227aacc45c81bb3e6db13792afbf7d3deab96c02e5b630c6d918da3b91f67b216b44005eb631a
+#TRUST-RSA-SHA256 157c117ee96fd57c7a52e007aa7036300829e04be6954d23da6835c2c579d5594cab11f710dc386746d4c0d6634c19b0b8dd7246ce6b5c4d5006b9275775a10c05f826869e3ff941abb83cca551a51868cfe18cd9b42af256b4f06d3ff9004dcd3e31289a7ad69d662731fa5228793217337bb1577d8f370432a155810e9dc98cd70226c5746b7195abe456f28aaa29a906e5d400a1be36229b056543b1d94c06a069b524c8b180fafb9b9f7f4bdd76034500ef0963658c151ba27abb380600dc6c216ad4946cd3e8215afd34dfb1acec87ab64c1c1e2eaed90b34cd002ac8fab7831c36462d8b22dc6965d3bf1825fcd400110c2d710878d73c2467f86ffdb223ad5bba14d874ce53a135102f65b4d0e861ab6e187ae7a17d2a86dfe3a00535306318ec3aae97156ce4b9cc95f71d3a5b9db7bdfaa0851d53e7f72ac75d52f056af1a3534c69e7430182c67901cf6a0ed86af0eebe2324289b8f3e6d81bb823679676e7ba90319eced4c93b2e87afdad21bf78bcdca075762ff50f44d498e98fd1680c58c78efb1ad0bfa80393894f3ecc8347445eaa611a05b606a0da8d08cbc794b046f8ac73a97a63daf62e1b07757089cd5c8ff4e64da7b91b37e16913c3f0a0aafc9737ede2f312f02f7bb7aafe2e2d8f1ae1083e2516fd6eb6202fced1d353f82715050d9ac1be536c3a54e7eaf101e92e6205a8d7535cac0942835c5
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.1 $
+# $Date: 2024/06/17 $
+#
+# Description : This document implements the security configuration as recommended by the
+#               CIS MongoDB 5 benchmark v1.2.0
+#
+#<ui_metadata>
+#<display_name>CIS MongoDB 5 L1 OS Linux v1.2.0</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>MongoDB 5</name>
+#  <profile>L1 OS Linux</profile>
+#  <version>1.2.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/15136</link>
+#</spec>
+#<labels>mongodb,mongodb_5,cis,linux_mongodb_5,update_20230227</labels>
+#<benchmark_refs>CCE,CIS_Recommendation,CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>MONGOD_CONF_FULL_PATH</name>
+#    <default>/etc/mongod.conf</default>
+#    <description>Full path to the mongodb conf file</description>
+#    <info>Full path to the mongodb conf file</info>
+#    <value_type>UNIX_FILE_PATH</value_type>
+#  </variable>
+#  <variable>
+#    <name>MONGODB_DBPATH</name>
+#    <default>/var/lib/mongodb</default>
+#    <description>Full path to the mongodb database files</description>
+#    <info>Full path to the mongodb database files</info>
+#    <value_type>UNIX_FILE_PATH</value_type>
+#  </variable>
+#  <variable>
+#    <name>MONGO_USER</name>
+#    <default>mongodb</default>
+#    <description>User that owns the mongodb database files</description>
+#    <info>User that owns the mongodb database files</info>
+#    <value_type>UNIX_ACCT</value_type>
+#  </variable>
+#  <variable>
+#    <name>MONGO_GROUP</name>
+#    <default>mongodb</default>
+#    <description>Group that owns the mongodb database files</description>
+#    <info>Group that owns the mongodb database files</info>
+#    <value_type>UNIX_ACCT</value_type>
+#  </variable>
+#  <variable>
+#    <name>MONGODB_VERSION</name>
+#    <default>5</default>
+#    <description>MongoDB Version</description>
+#    <info>MongoDB Version</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Unix">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : CMD_EXEC
+      description : "Check for MongoDB 5"
+      cmd         : "mongo --version"
+      expect      : "MongoDB shell version v@MONGODB_VERSION@"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_mongodb_5_Benchmark_Level_1_OS_Linux_v1.2.0.audit from CIS MongoDB 5 Benchmark"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+    </report>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "2.1 Ensure Authentication is configured"
+      info        : "This setting ensures that all clients, users, servers are required to authenticate before being granted access to the MongoDB database.
+
+Authentication is the process of verifying the identity of a client. When access control, i.e. authorization, is enabled, MongoDB requires all clients to authenticate themselves in order to determine their access.
+
+from MongoDB documentation
+
+Authentication Mechanisms
+
+MongoDB supports a number of authentication mechanisms that clients can use to verify their identity. These mechanisms allow MongoDB to integrate into your existing authentication system.
+
+MongoDB supports multiple authentication mechanisms:
+
+SCRAM (Default)
+
+x.509 Certificate Authentication.
+
+Certificate Authority
+
+For production use, your MongoDB deployment should use valid certificates generated and signed by a certificate authority. You or your organization can generate and maintain an independent certificate authority, or use certificates generated by third-party TLS/SSL vendors.
+
+In addition to supporting the aforementioned mechanisms, MongoDB Enterprise also supports the following mechanisms:
+
+LDAP proxy authentication
+
+Kerberos authentication.
+
+Rationale:
+
+Failure to authenticate clients, users, servers can enable unauthorized access to the MongoDB database and can prevent tracing actions back to their sources.
+
+It's highly recommended that password length and complexity also be in-place. When performing the traditional user/password authentication against MongoDB there is not in-place intrinsic password complexity check and there is no LOCKING mechanism with multiple failure logins. So, MongoDB is prone to brute force attacks compared to other database systems."
+      solution    : "The authentication mechanism should be implemented before anyone accesses the MongoDB Server.
+To enable the authentication mechanism:
+
+Start the MongoDB instance without authentication.
+
+mongod --port 27017 --dbpath /data/db1
+
+Or
+
+mongod.exe --port 27017 --dbpath db1
+
+Create the system user administrator, ensuring that its password meets organizationally-defined password in terms of length and complexity requirements as there is no in-place locking mechanism for multiple failed login attempts against MongoDB.
+
+use admin
+db.createUser(
+  {
+    user: 'MongoAdmin',
+    pwd: 'password',
+    roles: [ { role: 'root', db: 'admin' } ]
+  }
+)
+
+Open mongod.conf and change for authorization value to enabled:
+
+security:
+    authorization: 'enabled'
+
+Restart the MongoDB instance
+
+service mongod restart
+
+Default Value:
+
+By default, authorization is set to disable."
+      reference   : "800-171|3.5.2,800-171|3.5.3,800-53|IA-2(1),800-53|IA-2(2),800-53|IA-5(1),800-53r5|IA-2(1),800-53r5|IA-2(2),800-53r5|IA-5(1),CN-L3|7.1.2.7(b),CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSCv7|16.3,CSCv8|5.2,CSCv8|6.3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),ITSG-33|IA-2(2),ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,NESA|T5.4.2,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|4.1,TBA-FIISB|35.1,TBA-FIISB|36.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+      file        : "@MONGOD_CONF_FULL_PATH@"
+      regex       : "^[\\s]*authorization[\\s]*:"
+      expect      : "^[\\s]*authorization[\\s]*:[\\s]*(?i)enabled(?-i)"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "2.2 Ensure that MongoDB does not bypass authentication via the localhost exception"
+      info        : "MongoDB should not be set to bypass authentication via the localhost exception. The localhost exception allows the user to enable authorization before creating the first user in the system. When active, the localhost exception allows all connections from the localhost interface to have full access to that instance. The exception applies only when there are no users created in the MongoDB instance.
+
+Note: This recommendation only applies when there are no users created in the MongoDB instance.
+
+Rationale:
+
+Disabling this exception will prevent unauthorized local access to the MongoDB database. It will also ensure the traceability of each database activity to a specific user. Localhost Exception allows direct connect to Mongod's without any UN/PW."
+      solution    : "To disable local authentication on the MongoDB database.
+Type OS Console Command
+
+mongod --setParameter enableLocalhostAuthBypass=0
+
+or
+To manually configure use the setParameter option in the mongo configuration file to set it to false.
+
+setParameter:
+  enableLocalhostAuthBypass: false
+
+Default Value:
+
+By default, localhost exception value (enableLocalhostAuthBypass) is true."
+      reference   : "800-171|3.5.3,800-53|IA-2(1),800-53|IA-2(2),800-53r5|IA-2(1),800-53r5|IA-2(2),CN-L3|7.1.2.7(b),CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSCv7|16.3,CSCv8|6.3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-2(1),ITSG-33|IA-2(2),LEVEL|1A,NESA|T5.4.2,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,NIAv2|AM36,NIAv2|VL3c,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+      file        : "@MONGOD_CONF_FULL_PATH@"
+      regex       : "^[\\s]*enableLocalhostAuthBypass[\\s]*:"
+      expect      : "^[\\s]*enableLocalhostAuthBypass[\\s]*:[\\s]*(?i)false(?-i)"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "3.3 Ensure that MongoDB is run using a non-privileged, dedicated service account"
+      info        : "The MongoDB service should not be run using a privileged account such as 'root' because this unnecessarily exposes the operating system to high risk.
+
+Rationale:
+
+Using a non-privileged, dedicated service account restricts the database from accessing the critical areas of the operating system which are not required by the MongoDB. This will also mitigate the potential for unauthorized access via a compromised, privileged account on the operating system.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "Create a dedicated user for performing MongoDB database activity.
+
+Set the Database data files, the keyfile, and the SSL private key files to only be readable by the mongod/mongos user.
+
+Set the log files to only be writable by the mongod/mongos user and readable only by root.
+
+Default Value:
+
+Not configured"
+      reference   : "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSCv7|4.3,CSCv8|5.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1M,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+      cmd         : "ps -ef | grep -E \"mongos|mongod\""
+      expect      : "Manual Review Required"
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "4.2 Ensure Weak Protocols are Disabled"
+      info        : "Servers can be configured to disable specific TLS/SSL protocol versions which may be vulnerable to exploitation and/or lack features which improve the level of security as provided by newer versions of the protocol.
+
+Rationale:
+
+The TLSv1.0 protocol is vulnerable to the BEAST attack when used in CBC mode (October 2011). Unfortunately, the TLSv1.0 uses CBC modes for all of the block mode ciphers, which only leaves the RC4 streaming cipher which is also weak and is not recommended. Therefore, it is recommended that the TLSv1.0 protocol be disabled. The TLSv1.1 protocol does not support Authenticated Encryption with Associated Data (AEAD) which is designed to simultaneously provide confidentiality, integrity, and authenticity.
+
+The NIST SP 800-52r2 guidelines for TLS configuration require that TLS 1.2 is configured with FIPS-based cipher suites be supported by all government TLS servers and clients and requires support of TLS 1.3 by January 1, 2024. A September 2018 IETF draft also depreciates the usage of TLSv1.0 and TLSv1.1 as shown in the references.
+
+Impact:
+
+If an attempt to connect using a disabled protocol is made the connection attempt will fail and may have unanticipated impact on clients attempting to establish the connection."
+      solution    : "For mongod ('Primary daemon process for the MongoDB system')
+In the configuration file /etc/mongod.conf, set the disabledProtocols option to to include TLS1_0,TLS1_1:
+
+net:
+  ssl:
+    mode: requireSSL
+    PEMKeyFile: /etc/ssl/mongodb.pem
+    CAFile: /etc/ssl/caToValidateClientCertificates.pem
+    disabledProtocols: TLS1_0,TLS1_1
+
+And restart monogdb instance with
+
+mongod --config /etc/mongod.conf
+
+Or
+
+mongod --sslDisabledProtocols 'TLS1_0,TLS1_1
+
+Default Value:
+
+TLS1_0 if TLS 1.1+ is available on the system."
+      reference   : "800-171|3.13.8,800-53|SC-8,800-53r5|SC-8,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8,ITSG-33|SC-8a.,LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+      file        : "@MONGOD_CONF_FULL_PATH@"
+      regex       : "^[\\s]*disabledProtocols[\\s]*:"
+      expect      : "^[\\s]*disabledProtocols[\\s]*:[\\s]*(?=.*TLS1_0)(?=.*TLS1_1).*"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK
+      description : "4.3 Ensure Encryption of Data in Transit TLS or SSL (Transport Encryption)"
+      info        : "Use TLS or SSL to protect all incoming and outgoing connections. This should include using TLS or SSL to encrypt communication between the mongod and mongos components of a MongoDB client as well as between all applications and MongoDB.
+
+MongoDB supports TLS/SSL (Transport Layer Security/Secure Sockets Layer) to encrypt all of MongoDB's network traffic. TLS/SSL ensures that MongoDB network traffic is only readable by the intended client.
+
+Please note: As of MongoDB version 4.2 SSL has been deprecated.
+
+Also, starting in MongoDB version 4.0, MongoDB disables support for TLS 1.0 encryption on systems where TLS 1.1+ is available.
+
+Rationale:
+
+This prevents sniffing of cleartext traffic between MongoDB components or performing a man-in-the-middle attack for MongoDB."
+      solution    : "Configure MongoDB servers to require the use of SSL or TLS to encrypt all MongoDB network communications.
+To implement SSL or TLS to encrypt all MongoDB network communication, perform the following steps:
+For mongod ('Primary daemon process for the MongoDB system')
+In the configuration file /etc/mongod.conf, set the PEMKeyFile option to the certificate file's path and then start the component with this command:
+
+net:
+   tls:
+      mode: requireTLS
+      certificateKeyFile: /etc/ssl/mongodb.pem
+      CAFile: /etc/ssl/caToValidateClientCertificates.pem
+
+And restart monogdb instance with
+
+mongod --config /etc/mongod.conf
+
+Default Value:
+
+Not configured"
+      reference   : "800-171|3.13.8,800-53|SC-8,800-53r5|SC-8,CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ITSG-33|SC-8,ITSG-33|SC-8a.,LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+      file        : "@MONGOD_CONF_FULL_PATH@"
+      regex       : "^[\\s]*mode[\\s]*:"
+      expect      : "^[\\s]*mode[\\s]*:[\\s]*requireTLS"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "5.1 Ensure that system activity is audited"
+      info        : "Track access and changes to database configurations and data. MongoDB Enterprise includes a system auditing facility that can record system events (e.g. user operations, connection events) on a MongoDB instance. These audit records permit forensic analysis and allow administrators to verify proper controls.
+
+Rationale:
+
+System level logs can be handy while troubleshooting an operational problem or handling a security incident."
+      solution    : "Set the value of auditLog.destination to the appropriate value from the following options:
+syslog
+To enable auditing and print audit events to syslog
+
+mongod --dbpath data/db --auditDestination syslog
+
+console
+To enable auditing and print audit events to standard output (i.e., stdout)
+
+mongod --dbpath data/db --auditDestination console
+
+Json File
+To enable auditing and print audit events to a file in JSON format. Printing audit events to file in JSON format degrades server performance more than printing to a file in BSON format.
+
+mongod --dbpath data/db --auditDestination file --auditFormat JSON --auditPath data/db/auditLog.json
+
+Bson File
+To enable auditing and print audit events to a file in BSON binary format
+
+mongod --dbpath data/db --auditDestination file --auditFormat BSON --auditPath data/db/auditLog.bson
+
+Default Value:
+
+Not configured"
+      reference   : "800-171|3.3.1,800-171|3.3.2,800-53|AU-3,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.3.3(a),CN-L3|8.1.4.3(b),CSCv7|6.2,CSCv7|6.3,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-12,LEVEL|1A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+      cmd         : "/usr/bin/grep -A4 'auditLog' @MONGOD_CONF_FULL_PATH@ | /usr/bin/grep 'destination'"
+      expect      : "^[\\s]*auditLog.destination[\\s]*:[\\s]*(syslog|console|file)"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "6.1 Ensure that MongoDB uses a non-default port"
+      info        : "Changing the default port used by MongoDB makes it harder for attackers to find the database and target it.
+
+Rationale:
+
+Standard ports are used in automated attacks and by attackers to verify which applications are running on a server.
+
+Impact:
+
+Hackers frequently scan IP addresses for commonly used ports, so it's not uncommon to use a different port to 'fly under the radar'. This is just to avoid detection, other than that there is no added safety by using a different port."
+      solution    : "Change the port for MongoDB server to a number other than 27017.
+In mongod.conf edit the below lines
+
+# network interfaces
+net:
+  port: $Orginasation Defined port
+  bindIp: $Orginasation Defined IP"
+      reference   : "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|1A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+      cmd         : "grep port: @MONGOD_CONF_FULL_PATH@ | grep 27017 | awk '{print} END {if (NR == 0) print \"pass\" ; else print \"fail\"}'"
+      expect      : "^pass$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "7.1 Ensure appropriate key file permissions are set - keyFile"
+      info        : "In the Shared Cluster, the certificate or keyfile is utilized for authentications. Implementing proper file permissions on the certificate or keyfile will prevent unauthorized access to it.
+
+Rationale:
+
+Protecting the certificate/keyfile strengthens authentication in the sharded cluster and prevents unauthorized access to the MongoDB database."
+      solution    : "Set the keyFile ownership to mongodb user and remove other permissions by executing these commands:
+
+chmod 600 /keyfile
+sudo chown mongodb:mongodb /keyfile
+
+Default Value:
+
+Not configured"
+      reference   : "800-171|3.5.2,800-53|IA-5,800-53|IA-5(1),800-53r5|IA-5,800-53r5|IA-5(1),CSCv7|16.4,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5,ITSG-33|IA-5(1),LEVEL|1M,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+      cmd         : "keyfile=$(/usr/bin/cat @MONGOD_CONF_FULL_PATH@ | /usr/bin/awk '/keyfile/ { print $2 }' | /usr/bin/sort -u); ls -l $keyfile"
+      expect      : "-rw-------[\\s]+\\d+[\\s]+mongodb[\\s]+mongodb"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "7.1 Ensure appropriate key file permissions are set - PEMKeyFile"
+      info        : "In the Shared Cluster, the certificate or keyfile is utilized for authentications. Implementing proper file permissions on the certificate or keyfile will prevent unauthorized access to it.
+
+Rationale:
+
+Protecting the certificate/keyfile strengthens authentication in the sharded cluster and prevents unauthorized access to the MongoDB database."
+      solution    : "Set the keyFile ownership to mongodb user and remove other permissions by executing these commands:
+
+chmod 600 /keyfile
+sudo chown mongodb:mongodb /keyfile
+
+Default Value:
+
+Not configured"
+      reference   : "800-171|3.5.2,800-53|IA-5,800-53|IA-5(1),800-53r5|IA-5,800-53r5|IA-5(1),CSCv7|16.4,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5,ITSG-33|IA-5(1),LEVEL|1M,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+      cmd         : "pemkeyfile=$(/usr/bin/cat @MONGOD_CONF_FULL_PATH@ | /usr/bin/awk '/PEMKeyFile/ { print $2 }' | /usr/bin/sort -u); ls -l $pemkeyfile"
+      expect      : "-rw-------[\\s]+\\d+[\\s]+mongodb[\\s]+mongodb"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "7.1 Ensure appropriate key file permissions are set - CAFile"
+      info        : "In the Shared Cluster, the certificate or keyfile is utilized for authentications. Implementing proper file permissions on the certificate or keyfile will prevent unauthorized access to it.
+
+Rationale:
+
+Protecting the certificate/keyfile strengthens authentication in the sharded cluster and prevents unauthorized access to the MongoDB database."
+      solution    : "Set the keyFile ownership to mongodb user and remove other permissions by executing these commands:
+
+chmod 600 /keyfile
+sudo chown mongodb:mongodb /keyfile
+
+Default Value:
+
+Not configured"
+      reference   : "800-171|3.5.2,800-53|IA-5,800-53|IA-5(1),800-53r5|IA-5,800-53r5|IA-5(1),CSCv7|16.4,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5,ITSG-33|IA-5(1),LEVEL|1M,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+      cmd         : "cafile=$(/usr/bin/cat @MONGOD_CONF_FULL_PATH@ | /usr/bin/awk '/CAFile/ { print $2 }' | /usr/bin/sort -u); ls -l $cafile"
+      expect      : "-rw-------[\\s]+\\d+[\\s]+mongodb[\\s]+mongodb"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CHECK
+      description : "7.2 Ensure appropriate database file permissions are set"
+      info        : "MongoDB database files need to be protected using file permissions.
+
+Rationale:
+
+This will restrict unauthorized users from accessing the database."
+      solution    : "Set ownership of the database file to mongodb user and remove other permissions using the following commands:
+
+chmod 770 /var/lib/mongodb
+chown mongodb:mongodb /var/lib/mongodb
+
+Default Value:
+
+Not configured"
+      reference   : "800-171|3.1.1,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSF|PR.AC-4,CSF|PR.PT-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|1M,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+      file        : "@MONGODB_DBPATH@"
+      owner       : "@MONGO_USER@"
+      mask        : "007"
+      group       : "@MONGO_GROUP@"
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_mongodb_5_Benchmark_Level_1_OS_Linux_v1.2.0.audit from CIS MongoDB 5 Benchmark"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/benchmarks/15136"
+    </report>
+  </else>
+</if>
+
+</check_type>

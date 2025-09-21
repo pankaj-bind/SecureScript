@@ -1,0 +1,1136 @@
+#TRUSTED 625fddcf3c556e0f9a6dba8c2988cdd433e2143d4294306bce55332e9ee95d2c06b1fb38f503004508249806bf6c11ec028eae2a1e6d0670f0d0d48442494b886c7bb67785c282cd87a5d16784c4c5db5bf30dc1869eec1dc2588faa21a6a80179ad3160969c7be4038955417031fd5cf4ab479b363f9d498574e127de0296d9d85e3b55e653b8b0e6ba7d4dce889b05b10114552418395ebfcd406181601a51419ac4a60aaf62a7548e59147a46121939148046d6f38627e53cf123b6b57378cefcdca0f8982ee43935fc0bd38a5bdecda3dd60bb2b941a8370409b85f2498badb033e2b5e8aae5a14c0f3568c066f676ba152f78fe70644c33a72afe8ff7627fca0381b07f58d3b707170d487c75b3cf91ed8f473ac8cf0595ad8e3386ecb7766b4ebdfcc47fd561eac274c76ed64ad6101dc9f9277ab579f5f50ea0c7cd4fabfc40843d6be05d0cb80e35a5571492416fc761ba31046a9f96ba4f8f2cdd63f6f619172c18196d3d8057fb8ddfe01636120aebaae91af78d4a56e53d162e66a83372ab89c2bc343de5947b6bc7d869e11ecb8f6e74da4791cbef30ab924b120dd266c2cf39ab8d51d85cf37a776a4a6899892a51d4e1871c0e5a10c1070d62a7fc51399c0a29129d641b36bd4991d3158a42db11dc811561e5410a20c2d2c1112e53a6412ae4b829a0772f376d947b31e77de348a3911770d1cd2f2aecde48
+#TRUST-RSA-SHA256 28e034d27a1d772c58eca3bc108d989c666e16a741c2c5036b053cda32db9ae5f24521b408fd972666a0735892f13a613d1847695d6c5fc7a411e7ee6a2dc8f3edca9848d3158d194e8fc2611d6977dd4494822bd937141a66279c332f111b0673236f95f19ca1f602f32cf26047db29d59d2a1ff07b31f58b25845f7d9a5c91c078eb36a5ae017f0cf819454ae31dc9d0e05a78a746d15ed4d7d5b74cc42a8a23ed6cd0e88878fa55abb5f0956be63fb0bfadb65c7f585559f793ccf20b286bf8feb89bd1672ce2cffa45dca25f9720c89ca9573fc13f3958efa057a217e56214182bec82d1e7badecc35bfac32f8bf2d73152f92fdbead058e6dcef90079317253819c950f02e305b518f9c36cac2a9daf019c6f825fac15fff753d8de18eb55cade2301f6ae69ad4881354e26d1b8d114b20bfde0521bcbb8066060cc20e92da0240c6f44e42fad08e4b7f580b88542e766b4f81acc2c6806ea1902599c0b4d8f9d32fbfb3cf0e6a1461b34daa18282651b0e7732c456b84c9aa7fcee89583358478f35f75863db801f7ef2bb5eed7b5fe48d423f239a9a5f00a2ba491a867174e03d231b76dd1ea795755e0939d5063d9e217fac4d7fb8c3c7776642525d78239fc0f79701bf9da60f17b9014368b1e0a001544e0a60c623c27d04d7a3746e860d69fa48784f72f073ef16076a02def94e2ec0990f8231f8c724c60774b0
+#
+# This script is Copyright (C) 2004-2024 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2024/06/24 $
+#
+# description : This .audit is designed against the CIS Cisco IOS XE 16.x Benchmark v2.1.0
+#
+#<ui_metadata>
+#<display_name>CIS Cisco IOS XE 16.x v2.1.0 L2</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Cisco IOS XE 16.x</name>
+#  <profile>L2</profile>
+#  <version>2.1.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/12917</link>
+#</spec>
+#<labels>cis,cisco_ios_xe_16.x</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>AG_INGRESS_ACL_NAME</name>
+#    <default>CIS-BORDER-ACL</default>
+#    <description>AG ingress ACL Name</description>
+#    <info>The name of the access control list on the perimeter router's external interface used to block internal source addresses.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>SNMP_PRIVACY_PROTOCOL</name>
+#    <default>AES128</default>
+#    <description>1.5.10 minimum privacy protocol</description>
+#    <info>The encryption protocol to be used for SNMPv3</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>NTP_KEY_ID</name>
+#    <default>1</default>
+#    <description>Authentication key ID for NTP servs</description>
+#    <info>This key should be used to authenticate communications with the routers NTP servers</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>EXTERNAL_INTERFACE</name>
+#    <default>GigabitEthernet2</default>
+#    <description>External interface name</description>
+#    <info>The external interface for your organization.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>KEY_CHAIN_NAME</name>
+#    <default>CIS-KEY-CHAIN</default>
+#    <description>Keychain name</description>
+#    <info>The keychain name for your organization's routing protocol.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>OSPF_KEY_ID</name>
+#    <default>1</default>
+#    <description>OSPF Key ID</description>
+#    <info>Your organization's OSPF key ID</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>AS_NUMBER</name>
+#    <default>100</default>
+#    <description>AS Number</description>
+#    <info>The Autonomous System number used by the router</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>INTERNAL_NETWORK</name>
+#    <default>192\.168\.1\.0 0\.0\.0\.255</default>
+#    <description>Internal IP address and netmask</description>
+#    <info>Your organization's internal IP address range, defined by an IP address and network mask. This network is used in the TCP intercept ACL and in the AG ingress ACL to block spoofed addresses.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>EIGRP_INTERFACE</name>
+#    <default>GigabitEthernet2</default>
+#    <description>EIGRP Interface(s)</description>
+#    <info>The designated interface(s) for EIGRP</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#  <variable>
+#    <name>OSPF_INTERFACE</name>
+#    <default>GigabitEthernet2</default>
+#    <description>OSPF Interface(s)</description>
+#    <info>The designated interfaces for OSPF.</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Cisco">
+
+<if>
+  <condition type:"AND">
+    <item>
+      type        : CONFIG_CHECK
+      description : "Check if Cisco IOS 16 is installed"
+      item        : "^version 16"
+    </item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_Cisco_IOS_XE_16.x_v2.1.0_L2.audit from CIS Cisco IOS XE 16.x Benchmark v2.1.0"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+    </report>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "1.1.6 Set 'aaa accounting' to log all privileged use commands using 'commands 15'"
+      info        : "Runs accounting for all commands at the specified privilege level.
+
+Authentication, authorization and accounting (AAA) systems provide an authoritative source for managing and monitoring access for devices. Centralizing control improves consistency of access control, the services that may be accessed once authenticated and accountability by tracking services accessed. Additionally, centralizing access control simplifies and reduces administrative costs of account provisioning and de-provisioning, especially when managing a large number of devices. AAA Accounting provides a management and audit trail for user and administrative sessions through TACACS+."
+      solution    : "Configure AAA accounting for commands.
+
+hostname(config)#aaa accounting commands 15 {default | list-name | guarantee-first}
+{start-stop | stop-only | none} {radius | group group-name}
+
+Impact:
+
+Enabling 'aaa accounting' for privileged commands records and sends activity to the accounting servers and enables organizations to monitor and analyze privileged activity."
+      reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.3,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      item        : "aaa accounting commands 15 [^ ]+"
+    </item>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "1.1.7 Set 'aaa accounting connection'"
+      info        : "Provides information about all outbound connections made from the network access server.
+
+Authentication, authorization and accounting (AAA) systems provide an authoritative source for managing and monitoring access for devices. Centralizing control improves consistency of access control, the services that may be accessed once authenticated and accountability by tracking services accessed. Additionally, centralizing access control simplifies and reduces administrative costs of account provisioning and de-provisioning, especially when managing a large number of devices. AAA Accounting provides a management and audit trail for user and administrative sessions through RADIUS and TACACS+."
+      solution    : "Configure AAA accounting for connections.
+
+hostname(config)#aaa accounting connection {default | list-name | guarantee-first}
+{start-stop | stop-only | none} {radius | group group-name}
+
+Impact:
+
+Implementing aaa accounting connection creates accounting records about connections from the network access server. Organizations should regular monitor these connection records for exceptions, remediate issues, and report findings regularly."
+      reference   : "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSCv7|16.2,CSCv8|5.6,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|2A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      item        : "aaa accounting connection [^ ]+"
+    </item>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "1.1.8 Set 'aaa accounting exec'"
+      info        : "Runs accounting for the EXEC shell session.
+
+Authentication, authorization and accounting (AAA) systems provide an authoritative source for managing and monitoring access for devices. Centralizing control improves consistency of access control, the services that may be accessed once authenticated and accountability by tracking services accessed. Additionally, centralizing access control simplifies and reduces administrative costs of account provisioning and de-provisioning, especially when managing a large number of devices. AAA Accounting provides a management and audit trail for user and administrative sessions through RADIUS and TACACS+."
+      solution    : "Configure AAA accounting for EXEC shell session.
+
+hostname(config)#aaa accounting exec {default | list-name | guarantee-first}
+{start-stop | stop-only | none} {radius | group group-name}
+
+Impact:
+
+Enabling aaa accounting exec creates accounting records for the EXEC terminal sessions on the network access server. These records include start and stop times, usernames, and date information. Organizations should regularly monitor these records for exceptions, remediate issues, and report findings."
+      reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.3,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      item        : "aaa accounting exec [^ ]+"
+    </item>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "1.1.9 Set 'aaa accounting network'"
+      info        : "Runs accounting for all network-related service requests.
+
+Authentication, authorization and accounting (AAA) systems provide an authoritative source for managing and monitoring access for devices. Centralizing control improves consistency of access control, the services that may be accessed once authenticated and accountability by tracking services accessed. Additionally, centralizing access control simplifies and reduces administrative costs of account provisioning and de-provisioning, especially when managing a large number of devices. AAA Accounting provides a management and audit trail for user and administrative sessions through RADIUS and TACACS+."
+      solution    : "Configure AAA accounting for connections.
+
+hostname(config)#aaa accounting network {default | list-name | guarantee-first}
+{start-stop | stop-only | none} {radius | group group-name}
+
+Impact:
+
+Implementing aaa accounting network creates accounting records for a method list including ARA, PPP, SLIP, and NCPs sessions. Organizations should regular monitor these records for exceptions, remediate issues, and report findings."
+      reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.3,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      item        : "aaa accounting network [^ ]+"
+    </item>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "1.1.10 Set 'aaa accounting system'"
+      info        : "Performs accounting for all system-level events not associated with users, such as reloads.
+
+Authentication, authorization and accounting (AAA) systems provide an authoritative source for managing and monitoring access for devices. Centralizing control improves consistency of access control, the services that may be accessed once authenticated and accountability by tracking services accessed. Additionally, centralizing access control simplifies and reduces administrative costs of account provisioning and de-provisioning, especially when managing a large number of devices. AAA Accounting provides a management and audit trail for user and administrative sessions through RADIUS and TACACS+."
+      solution    : "Configure AAA accounting system.
+
+hostname(config)#aaa accounting system {default | list-name | guarantee-first}
+{start-stop | stop-only | none} {radius | group group-name}
+
+Impact:
+
+Enabling aaa accounting system creates accounting records for all system-level events. Organizations should regular monitor these records for exceptions, remediate issues, and report findings regularly."
+      reference   : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.3,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      item        : "aaa accounting system [^ ]+"
+    </item>
+
+    <if>
+      <condition type:"AND">
+        <item>
+          type        : CONFIG_CHECK
+          description : "SNMP is enabled"
+          item        : "snmp-server community .+"
+        </item>
+      </condition>
+
+      <then>
+        <item>
+          type        : CONFIG_CHECK
+          description : "1.5.9 Set 'priv' for each 'snmp-server group' using SNMPv3"
+          info        : "Specifies authentication of a packet with encryption when using SNMPv3
+
+SNMPv3 provides much improved security over previous versions by offering options for Authentication and Encryption of messages. When configuring a user for SNMPv3 you have the option of using a range of encryption schemes, or no encryption at all, to protect messages in transit. AES128 is the minimum strength encryption method that should be deployed."
+          solution    : "For each SNMPv3 group created on your router add privacy options by issuing the following command...
+
+hostname(config)#snmp-server group {<em>group_name</em>} v3 priv
+
+Impact:
+
+Organizations using SNMP can significantly reduce the risks of unauthorized access by using the 'snmp-server group v3 priv' setting to encrypt messages in transit."
+          reference   : "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),LEVEL|2A,NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|2.1,TBA-FIISB|29.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          regex       : "snmp-server group .+ v3 priv"
+          item        : "snmp-server group .+ v3"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "1.5.10 Require 'aes 128' as minimum for 'snmp-server user' when using SNMPv3"
+          info        : "Specify the use of a minimum of 128-bit AES algorithm for encryption when using SNMPv3.
+
+SNMPv3 provides much improved security over previous versions by offering options for Authentication and Encryption of messages. When configuring a user for SNMPv3 you have the option of using a range of encryption schemes, or no encryption at all, to protect messages in transit. AES128 is the minimum strength encryption method that should be deployed."
+          solution    : "For each SNMPv3 user created on your router add privacy options by issuing the following command.
+
+hostname(config)#snmp-server user {user_name} {group_name} v3 auth sha {auth_password} priv aes 128 {priv_password} {acl_name_or_number}
+
+Impact:
+
+Organizations using SNMP can significantly reduce the risks of unauthorized access by using the 'snmp-server user' setting with appropriate authentication and privacy protocols to encrypt messages in transit."
+          reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|18.5,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          cmd         : "show snmp user"
+          item        : "Privacy Protocol: @SNMP_PRIVACY_PROTOCOL@"
+        </item>
+      </then>
+
+      <else>
+        <report type:"PASSED">
+          description : "1.5.9 Set 'priv' for each 'snmp-server group' using SNMPv3"
+          info        : "Specifies authentication of a packet with encryption when using SNMPv3
+
+SNMPv3 provides much improved security over previous versions by offering options for Authentication and Encryption of messages. When configuring a user for SNMPv3 you have the option of using a range of encryption schemes, or no encryption at all, to protect messages in transit. AES128 is the minimum strength encryption method that should be deployed."
+          solution    : "For each SNMPv3 group created on your router add privacy options by issuing the following command...
+
+hostname(config)#snmp-server group {<em>group_name</em>} v3 priv
+
+Impact:
+
+Organizations using SNMP can significantly reduce the risks of unauthorized access by using the 'snmp-server group v3 priv' setting to encrypt messages in transit."
+          reference   : "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),LEVEL|2A,NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|2.1,TBA-FIISB|29.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+
+        <report type:"PASSED">
+          description : "1.5.10 Require 'aes 128' as minimum for 'snmp-server user' when using SNMPv3"
+          info        : "Specify the use of a minimum of 128-bit AES algorithm for encryption when using SNMPv3.
+
+SNMPv3 provides much improved security over previous versions by offering options for Authentication and Encryption of messages. When configuring a user for SNMPv3 you have the option of using a range of encryption schemes, or no encryption at all, to protect messages in transit. AES128 is the minimum strength encryption method that should be deployed."
+          solution    : "For each SNMPv3 user created on your router add privacy options by issuing the following command.
+
+hostname(config)#snmp-server user {user_name} {group_name} v3 auth sha {auth_password} priv aes 128 {priv_password} {acl_name_or_number}
+
+Impact:
+
+Organizations using SNMP can significantly reduce the risks of unauthorized access by using the 'snmp-server user' setting with appropriate authentication and privacy protocols to encrypt messages in transit."
+          reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|18.5,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|2A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+      </else>
+    </if>
+
+    <item>
+      type            : CONFIG_CHECK
+      description     : "2.2.8 Set 'login success/failure logging'"
+      info            : "Without generating audit records that are specific to the security and mission needs of the organization, it would be difficult to establish, correlate, and investigate the events relating to an incident or identify those responsible for one.
+
+Audit records can be generated from various components within the information system (e.g., module or policy filter)."
+      solution        : "hostname(config)#login on-failure log
+hostname(config)#login on-success log
+hostname(config)#end"
+      reference       : "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4"
+      see_also        : "https://workbench.cisecurity.org/benchmarks/12917"
+      item            : "login on-(failure|success) log"
+      min_occurrences : "2"
+    </item>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "2.3.1.1 Set 'ntp authenticate'"
+      info        : "Enable NTP authentication.
+
+Using authenticated NTP ensures the Cisco device only permits time updates from authorized NTP servers."
+      solution    : "Configure NTP authentication:
+
+hostname(config)#ntp authenticate
+
+Impact:
+
+Organizations should establish three Network Time Protocol (NTP) hosts to set consistent time across the enterprise. Enabling the 'ntp authenticate' command enforces authentication between NTP hosts."
+      reference   : "800-171|3.3.6,800-171|3.3.7,800-53|AU-7,800-53|AU-8,800-53r5|AU-7,800-53r5|AU-8,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(b),CSCv7|6.1,CSCv8|8.4,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-7,ITSG-33|AU-8,LEVEL|2A,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|37.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      item        : "ntp authenticate"
+    </item>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "2.3.1.2 Set 'ntp authentication-key'"
+      info        : "Define an authentication key for Network Time Protocol (NTP).
+
+Using an authentication key provides a higher degree of security as only authenticated NTP servers will be able to update time for the Cisco device."
+      solution    : "Configure at the NTP key ring and encryption key using the following command
+
+hostname(config)#ntp authentication-key {ntp_key_id} md5 {ntp_key_hash}
+
+Impact:
+
+Organizations should establish three Network Time Protocol (NTP) hosts to set consistent time across the enterprise. Enabling the 'ntp authentication-key' command enforces encrypted authentication between NTP hosts."
+      reference   : "800-171|3.3.6,800-171|3.3.7,800-53|AU-7,800-53|AU-8,800-53r5|AU-7,800-53r5|AU-8,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(b),CSCv7|6.1,CSCv8|8.4,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-7,ITSG-33|AU-8,LEVEL|2A,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|37.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      regex       : "ntp authentication-key @NTP_KEY_ID@ md5"
+      item        : "ntp authentication-key .+"
+    </item>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "2.3.1.3 Set the 'ntp trusted-key'"
+      info        : "Ensure you authenticate the identity of a system to which Network Time Protocol (NTP) will synchronize
+
+This authentication function provides protection against accidentally synchronizing the system to another system that is not trusted, because the other system must know the correct authentication key."
+      solution    : "Configure the NTP trusted key using the following command
+
+hostname(config)#ntp trusted-key {ntp_key_id}
+
+Impact:
+
+Organizations should establish three Network Time Protocol (NTP) hosts to set consistent time across the enterprise. Enabling the 'ntp trusted-key' command enforces encrypted authentication between NTP hosts."
+      reference   : "800-171|3.3.6,800-171|3.3.7,800-53|AU-7,800-53|AU-8,800-53r5|AU-7,800-53r5|AU-8,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(b),CSCv7|6.1,CSCv8|8.4,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-7,ITSG-33|AU-8,LEVEL|2A,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|37.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      regex       : "ntp trusted-key @NTP_KEY_ID@"
+      item        : "ntp trusted-key .+"
+    </item>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "2.3.1.4 Set 'key' for each 'ntp server'"
+      info        : "Specifies the authentication key for NTP.
+
+This authentication feature provides protection against accidentally synchronizing the ntp system to another system that is not trusted, because the other system must know the correct authentication key."
+      solution    : "Configure each NTP Server to use a key ring using the following command.
+
+hostname(config)#ntp server {<em>ntp-server_ip_address</em>}{key <em>ntp_key_id</em>}
+
+Impact:
+
+Organizations should establish three Network Time Protocol (NTP) hosts to set consistent time across the enterprise. Enabling the 'ntp server key' command enforces encrypted authentication between NTP hosts."
+      reference   : "800-171|3.3.6,800-171|3.3.7,800-53|AU-7,800-53|AU-8,800-53r5|AU-7,800-53r5|AU-8,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(b),CSCv7|6.1,CSCv8|8.4,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-7,ITSG-33|AU-8,LEVEL|2A,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|37.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      regex       : "ntp server .+ key @NTP_KEY_ID@"
+      item        : "ntp server .+ key .+"
+    </item>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <item>
+          type            : CONFIG_CHECK
+          description     : "check for single interface loopback"
+          item            : "interface [Ll]oopback"
+          max_occurrences : "1"
+        </item>
+
+        <item>
+          type            : CONFIG_CHECK
+          description     : "check for single loopback ip"
+          context         : "interface [Ll]oopback"
+          item            : "ip address"
+          min_occurrences : "1"
+        </item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "2.4.1 Create a single 'interface loopback'"
+          info        : "Configure a single loopback interface.
+
+Software-only loopback interface that emulates an interface that is always up. It is a virtual interface supported on all platforms.
+
+Alternate loopback addresses create a potential for abuse, mis-configuration, and inconsistencies. Additional loopback interfaces must be documented and approved prior to use by local security personnel."
+          solution    : "Define and configure one loopback interface.
+
+hostname(config)#interface loopback <<em>number</em>>
+hostname(config-if)#ip address <<em>loopback_ip_address</em>> <<em>loopback_subnet_mask</em>>
+
+Impact:
+
+Organizations should plan and establish 'loopback interfaces' for the enterprise network. Loopback interfaces enable critical network information such as OSPF Router IDs and provide termination points for routing protocol sessions."
+          reference   : "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|2A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "2.4.2 Set AAA 'source-interface'"
+      info        : "Force AAA to use the IP address of a specified interface for all outgoing AAA packets
+
+This is required so that the AAA server (RADIUS or TACACS+) can easily identify routers and authenticate requests by their IP address."
+      solution    : "Bind AAA services to the loopback interface.
+
+Hostname(config)#ip radius source-interface loopback {loopback_interface_number}
+or
+Hostname(config)#aaa group server tacacs+ {group_name} hostname(config-sg-tacacs+)#ip tacacs source-interface {loopback_interface_number}
+
+Impact:
+
+Organizations should design and implement authentication, authorization, and accounting (AAA) services for effective monitoring of enterprise network devices. Binding AAA services to the source-interface loopback enables these services."
+      reference   : "800-171|3.1.1,800-53|AC-2(1),800-53r5|AC-2(1),CN-L3|7.1.3.2(d),CSCv7|16.2,CSCv8|5.6,CSF|PR.AC-1,CSF|PR.AC-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2(1),LEVEL|2A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      item        : "ip (tacacs|radius) source-interface [Ll]oopback"
+    </item>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "2.4.3 Set 'ntp source' to Loopback Interface"
+      info        : "Use a particular source address in Network Time Protocol (NTP) packets.
+
+Set the source address to be used when sending NTP traffic. This may be required if the NTP servers you peer with filter based on IP address."
+      solution    : "Bind the NTP service to the loopback interface.
+
+hostname(config)#ntp source loopback {<em>loopback_interface_number}</em>
+
+Impact:
+
+Organizations should plan and implement network time protocol (NTP) services to establish official time for all enterprise network devices. Setting 'ntp source loopback' enforces the proper IP address for NTP services."
+      reference   : "800-171|3.3.6,800-171|3.3.7,800-53|AU-7,800-53|AU-8,800-53r5|AU-7,800-53r5|AU-8,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(b),CSCv7|6.1,CSCv8|8.4,CSF|PR.PT-1,CSF|RS.AN-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-7,ITSG-33|AU-8,LEVEL|2A,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|37.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      item        : "ntp source [Ll]oopback"
+    </item>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "2.4.4 Set 'ip tftp source-interface' to the Loopback Interface"
+      info        : "Specify the IP address of an interface as the source address for TFTP connections.
+
+This is required so that the TFTP servers can easily identify routers and authenticate requests by their IP address."
+      solution    : "Bind the TFTP client to the loopback interface.
+
+hostname(config)#ip tftp source-interface loopback {<em>loobpback_interface_number</em>}
+
+Impact:
+
+Organizations should plan and implement trivial file transfer protocol (TFTP) services in the enterprise by setting 'tftp source-interface loopback', which enables the TFTP servers to identify routers and authenticate requests by IP address."
+      reference   : "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|2A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      item        : "ip tftp source-interface [Ll]oopback"
+    </item>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "3.1.2 Set 'no ip proxy-arp'"
+      info        : "Disable proxy ARP on all interfaces.
+
+Address Resolution Protocol (ARP) provides resolution between IP and MAC Addresses (or other Network and Link Layer addresses on none IP networks) within a Layer 2 network.
+
+Proxy ARP is a service where a device connected to one network (in this case the Cisco router) answers ARP Requests which are addressed to a host on another network, replying with its own MAC Address and forwarding the traffic on to the intended host.
+
+Sometimes used for extending broadcast domains across WAN links, in most cases Proxy ARP on enterprise networks is used to enable communication for hosts with mis-configured subnet masks, a situation which should no longer be a common problem. Proxy ARP effectively breaks the LAN Security Perimeter, extending a network across multiple Layer 2 segments. Using Proxy ARP can also allow other security controls such as PVLAN to be bypassed."
+      solution    : "Disable proxy ARP on all interfaces.
+
+hostname(config)#interface {interface}
+hostname(config-if)#no ip proxy-arp
+
+Impact:
+
+Organizations should plan and implement network policies to ensure unnecessary services are explicitly disabled. The 'ip proxy-arp' feature effectively breaks the LAN security perimeter and should be disabled."
+      reference   : "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|2A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      context     : "interface .+"
+      item        : "no ip proxy-arp"
+    </item>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <item>
+          type        : CONFIG_CHECK
+          description : "deny internal networks"
+          context     : "ip access-list extended @AG_INGRESS_ACL_NAME@$"
+          regex       : "deny +ip @INTERNAL_NETWORK@ any log"
+          item        : "deny +ip @INTERNAL_NETWORK@ .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "deny 127.0.0.0"
+          context     : "ip access-list extended @AG_INGRESS_ACL_NAME@$"
+          regex       : "deny +ip 127\\.0\\.0\\.0 0\\.255\\.255\\.255 any log"
+          item        : "deny +ip 127\\.0\\.0\\.0 .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "deny 10.0.0.0"
+          context     : "ip access-list extended @AG_INGRESS_ACL_NAME@$"
+          regex       : "deny +ip 10\\.0\\.0\\.0 0\\.255\\.255\\.255 any log"
+          item        : "deny +ip 10\\.0\\.0\\.0 .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "deny 0.0.0.0"
+          context     : "ip access-list extended @AG_INGRESS_ACL_NAME@$"
+          regex       : "deny +ip 0\\.0\\.0\\.0 0\\.255\\.255\\.255 any log"
+          item        : "deny +ip 0\\.0\\.0\\.0 .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "deny 172.16.0.0"
+          context     : "ip access-list extended @AG_INGRESS_ACL_NAME@$"
+          regex       : "deny +ip 172\\.16\\.0\\.0 0\\.15\\.255\\.255 any log"
+          item        : "deny +ip 172\\.16\\.0\\.0 .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "deny 192.168.0.0"
+          context     : "ip access-list extended @AG_INGRESS_ACL_NAME@$"
+          regex       : "deny +ip 192\\.168\\.0\\.0 0\\.0\\.255\\.255 any log"
+          item        : "deny +ip 192\\.168\\.0\\.0 .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "deny 192.0.2.0"
+          context     : "ip access-list extended @AG_INGRESS_ACL_NAME@$"
+          regex       : "deny +ip 192\\.0\\.2\\.0 0\\.0\\.0\\.255 any log"
+          item        : "deny +ip 192\\.0\\.2\\.0 .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "deny 169.254.0.0"
+          context     : "ip access-list extended @AG_INGRESS_ACL_NAME@$"
+          regex       : "deny +ip 169\\.254\\.0\\.0 0\\.0\\.255\\.255 any log"
+          item        : "deny +ip 169\\.254\\.0\\.0 .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "deny 224.0.0.0"
+          context     : "ip access-list extended @AG_INGRESS_ACL_NAME@$"
+          regex       : "deny +ip 224\\.0\\.0\\.0 31\\.255\\.255\\.255 any log"
+          item        : "deny +ip 224\\.0\\.0\\.0 .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "deny 255.255.255.255"
+          context     : "ip access-list extended @AG_INGRESS_ACL_NAME@$"
+          regex       : "deny +ip host 255\\.255\\.255\\.255 any log"
+          item        : "deny +ip host 255\\.255\\.255\\.255 .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "default deny"
+          context     : "ip access-list extended @AG_INGRESS_ACL_NAME@$"
+          regex       : "deny +ip any any log"
+          item        : "deny +ip any .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "external interface has acl applied"
+          context     : "interface @EXTERNAL_INTERFACE@"
+          item        : "ip access-group @AG_INGRESS_ACL_NAME@ in"
+        </item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "3.2.1 Set 'ip access-list extended' to Forbid Private Source Addresses from External Networks"
+          info        : "This command places the router in access-list configuration mode, where you must define the denied or permitted access conditions by using the deny and permit commands.
+
+Configuring access controls can help prevent spoofing attacks. To reduce the effectiveness of IP spoofing, configure access control to deny any traffic from the external network that has a source address that should reside on the internal network. Include local host address or any reserved private addresses (RFC 1918).
+
+Ensure the permit rule(s) above the final deny rule only allow traffic according to your organization's least privilege policy."
+          solution    : "Configure ACL for private source address restrictions from external networks.
+
+hostname(config)#ip access-list extended {<span><em>name | number</em>}
+</span><span>hostname(config-nacl)#deny ip {</span><em>internal_networks</em>} any log
+hostname(config<span>-nacl</span>)#deny ip 127.0.0.0 0.255.255.255 any log
+hostname(config<span>-nacl</span>)#deny ip 10.0.0.0 0.255.255.255 any log
+hostname(config<span>-nacl</span>)#deny ip 0.0.0.0 0.255.255.255 any log
+hostname(config<span>-nacl</span>)#deny ip 172.16.0.0 0.15.255.255 any log
+hostname(config<span>-nacl</span>)#deny ip 192.168.0.0 0.0.255.255 any log
+hostname(config<span>-nacl</span>)#deny ip 192.0.2.0 0.0.0.255 any log
+hostname(config<span>-nacl</span>)#deny ip 169.254.0.0 0.0.255.255 any log
+hostname(config<span>-nacl</span>)#deny ip 224.0.0.0 31.255.255.255 any log
+hostname(config<span>-nacl</span>)#deny ip host 255.255.255.255 any log
+hostname(config<span>-nacl</span>)#permit {protocol} {source_ip} {source_mask} {destination} {destination_mask} log
+hostname(config<span>-nacl</span>)#deny any any log
+hostname(config)#interface <external_<em>interface</em>>
+hostname(config-if)#access-group <<em>access-list</em>> in
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that explicitly separate internal from external networks. Adding 'ip access-list' explicitly permitting and denying internal and external networks enforces these policies."
+          reference   : "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|2A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <item>
+      type        : CONFIG_CHECK
+      description : "3.2.2 Set inbound 'ip access-group' on the External Interface"
+      info        : "This command places the router in access-list configuration mode, where you must define the denied or permitted access conditions by using the deny and permit commands.
+
+Configuring access controls can help prevent spoofing attacks. To reduce the effectiveness of IP spoofing, configure access control to deny any traffic from the external network that has a source address that should reside on the internal network. Include local host address or any reserved private addresses (RFC 1918).
+
+Ensure the permit rule(s) above the final deny rule only allow traffic according to your organization's least privilege policy."
+      solution    : "Apply the access-group for the external (untrusted) interface
+
+hostname(config)#interface {external_interface}
+hostname(config-if)#ip access-group {name | number} in
+
+Impact:
+
+Organizations should plan and implement enterprise security policies explicitly permitting and denying access based upon access lists. Using the 'ip access-group' command enforces these policies by explicitly identifying groups permitted access."
+      reference   : "800-171|3.14.6,800-171|3.14.7,800-53|SI-4,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CSCv7|9.2,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.DS-5,CSF|PR.IP-8,CSF|RS.AN-1,CSF|RS.CO-3,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|SI-4,LEVEL|2A,NESA|M1.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+      context     : "interface @EXTERNAL_INTERFACE@"
+      item        : "ip access-group @AG_INGRESS_ACL_NAME@ in"
+    </item>
+
+    <if>
+      <condition type:"AND">
+        <item>
+          type        : CONFIG_CHECK
+          description : "EIGRP is enabled"
+          item        : "router eigrp .+"
+        </item>
+      </condition>
+
+      <then>
+        <item>
+          type        : CONFIG_CHECK
+          description : "3.3.1.1 Set 'key chain'"
+          info        : "Define an authentication key chain to enable authentication for routing protocols. A key chain must have at least one key and can have up to 2,147,483,647 keys.
+
+NOTE: Only DRP Agent, EIGRP, and RIPv2 use key chains.
+
+Routing protocols such as DRP Agent, EIGRP, and RIPv2 use key chains for authentication."
+          solution    : "Establish the key chain.
+
+hostname(config)#key chain {<em>key-chain_name</em>}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using 'key chains' for routing protocols enforces these policies."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          regex       : "key chain @KEY_CHAIN_NAME@"
+          item        : "key chain .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "3.3.1.2 Set 'key'"
+          info        : "Configure an authentication key on a key chain.
+
+This is part of the routing authentication setup"
+          solution    : "Configure the key number.
+
+hostname(config-keychain)#key {<em>key-number</em>}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using 'key numbers' for key chains for routing protocols enforces these policies."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          context     : "key chain .+"
+          item        : "key .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "3.3.1.3 Set 'key-string'"
+          info        : "Configure the authentication string for a key.
+
+This is part of the routing authentication setup"
+          solution    : "Configure the key string.
+
+hostname(config-keychain-key)#key-string <<em>key-string</em>>
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using 'key strings' for key chains for routing protocols enforces these policies."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          context     : "key chain .+"
+          item        : "key-string .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "3.3.1.4 Set 'address-family ipv4 autonomous-system'"
+          info        : "Configure the EIGRP address family.
+
+Rationale: EIGRP is a true multi-protocol routing protocol and the 'address-family' feature enables restriction of exchanges with specific neighbors"
+          solution    : "Configure the EIGRP address family.
+
+hostname(config)#router eigrp <<em>virtual-instance-name</em>>
+hostname(config-router)#address-family ipv4 autonomous-system {<em>eigrp_as-number</em>}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using 'address-family' for EIGRP enforces these policies by restricting the exchanges between predefined network devices."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          context     : "router eigrp .+"
+          item        : "address-family ipv4.*autonomous-system [0-9]+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "3.3.1.5 Set 'af-interface default'"
+          info        : "Defines user defaults to apply to EIGRP interfaces that belong to an address-family.
+
+Part of the EIGRP address-family setup"
+          solution    : "Configure the EIGRP address family.
+
+hostname(config)#router eigrp <<em>virtual-instance-name</em>>
+hostname(config-router)#address-family ipv4 autonomous-system {<em>eigrp_as-number</em>}
+hostname(config-router-af)#af-interface default
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using 'af-interface default' for EIGRP interfaces enforces these policies by restricting the exchanges between predefined network devices."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          context     : "router eigrp .+"
+          item        : "af-interface default"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "3.3.1.6 Set 'authentication key-chain'"
+          info        : "Configure the EIGRP address family key chain.
+
+This is part of the EIGRP authentication configuration"
+          solution    : "Configure the EIGRP address family key chain.
+
+hostname(config)#router eigrp <virtual-instance-name>
+hostname(config-router)#address-family ipv4 autonomous-system {eigrp_as-number}
+hostname(config-router-af)#af-interface {interface-name}
+hostname(config-router-af-interface)#authentication key-chain {eigrp_key-chain_name}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using the address-family 'key chain' for EIGRP enforces these policies by restricting the exchanges between predefined network devices."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          context     : "router eigrp .+"
+          regex       : "authentication key-chain @KEY_CHAIN_NAME@"
+          item        : "authentication key-chain .+"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "3.3.1.8 Set 'ip authentication key-chain eigrp'"
+          info        : "Specify the type of authentication used in Enhanced Interior Gateway Routing Protocol (EIGRP) packets per interface.
+
+Configuring EIGRP authentication key-chain number and name to restrict packet exchanges between network devices."
+          solution    : "Configure the interface with the EIGRP key chain.
+
+hostname(config)#interface {<em>interface_name</em>}
+hostname(config-if)#ip authentication key-chain eigrp {<em>eigrp_as-number</em>} {<em>eigrp_key-chain_name</em>}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Configuring the interface with 'ip authentication key chain' for EIGRP by name and number enforces these policies by restricting the exchanges between network devices."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          context     : "interface @EIGRP_INTERFACE@"
+          regex       : "ip authentication key-chain eigrp @AS_NUMBER@ @KEY_CHAIN_NAME@"
+          item        : "ip authentication key-chain eigrp"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "3.3.1.9 Set 'ip authentication mode eigrp'"
+          info        : "Configure authentication to prevent unapproved sources from introducing unauthorized or false routing messages.
+
+This is part of the EIGRP authentication configuration"
+          solution    : "Configure the interface with the EIGRP authentication mode.
+
+hostname(config)#interface {<em>interface_name</em>}
+hostname(config-if)#ip authentication mode eigrp {<em><span>eigrp_as-number</span></em><span>}</span> md5
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Configuring the interface with 'ip authentication mode' for EIGRP by number and mode enforces these policies by restricting the exchanges between network devices."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          context     : "interface @EIGRP_INTERFACE@"
+          regex       : "ip authentication mode eigrp @AS_NUMBER@ md5"
+          item        : "ip authentication mode eigrp"
+        </item>
+      </then>
+
+      <else>
+        <report type:"PASSED">
+          description : "3.3.1.1 Set 'key chain'"
+          info        : "Define an authentication key chain to enable authentication for routing protocols. A key chain must have at least one key and can have up to 2,147,483,647 keys.
+
+NOTE: Only DRP Agent, EIGRP, and RIPv2 use key chains.
+
+Routing protocols such as DRP Agent, EIGRP, and RIPv2 use key chains for authentication."
+          solution    : "Establish the key chain.
+
+hostname(config)#key chain {<em>key-chain_name</em>}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using 'key chains' for routing protocols enforces these policies."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+
+        <report type:"PASSED">
+          description : "3.3.1.2 Set 'key'"
+          info        : "Configure an authentication key on a key chain.
+
+This is part of the routing authentication setup"
+          solution    : "Configure the key number.
+
+hostname(config-keychain)#key {<em>key-number</em>}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using 'key numbers' for key chains for routing protocols enforces these policies."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+
+        <report type:"PASSED">
+          description : "3.3.1.3 Set 'key-string'"
+          info        : "Configure the authentication string for a key.
+
+This is part of the routing authentication setup"
+          solution    : "Configure the key string.
+
+hostname(config-keychain-key)#key-string <<em>key-string</em>>
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using 'key strings' for key chains for routing protocols enforces these policies."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+
+        <report type:"PASSED">
+          description : "3.3.1.4 Set 'address-family ipv4 autonomous-system'"
+          info        : "Configure the EIGRP address family.
+
+Rationale: EIGRP is a true multi-protocol routing protocol and the 'address-family' feature enables restriction of exchanges with specific neighbors"
+          solution    : "Configure the EIGRP address family.
+
+hostname(config)#router eigrp <<em>virtual-instance-name</em>>
+hostname(config-router)#address-family ipv4 autonomous-system {<em>eigrp_as-number</em>}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using 'address-family' for EIGRP enforces these policies by restricting the exchanges between predefined network devices."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+
+        <report type:"PASSED">
+          description : "3.3.1.5 Set 'af-interface default'"
+          info        : "Defines user defaults to apply to EIGRP interfaces that belong to an address-family.
+
+Part of the EIGRP address-family setup"
+          solution    : "Configure the EIGRP address family.
+
+hostname(config)#router eigrp <<em>virtual-instance-name</em>>
+hostname(config-router)#address-family ipv4 autonomous-system {<em>eigrp_as-number</em>}
+hostname(config-router-af)#af-interface default
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using 'af-interface default' for EIGRP interfaces enforces these policies by restricting the exchanges between predefined network devices."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+
+        <report type:"PASSED">
+          description : "3.3.1.6 Set 'authentication key-chain'"
+          info        : "Configure the EIGRP address family key chain.
+
+This is part of the EIGRP authentication configuration"
+          solution    : "Configure the EIGRP address family key chain.
+
+hostname(config)#router eigrp <virtual-instance-name>
+hostname(config-router)#address-family ipv4 autonomous-system {eigrp_as-number}
+hostname(config-router-af)#af-interface {interface-name}
+hostname(config-router-af-interface)#authentication key-chain {eigrp_key-chain_name}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using the address-family 'key chain' for EIGRP enforces these policies by restricting the exchanges between predefined network devices."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+
+        <report type:"PASSED">
+          description : "3.3.1.8 Set 'ip authentication key-chain eigrp'"
+          info        : "Specify the type of authentication used in Enhanced Interior Gateway Routing Protocol (EIGRP) packets per interface.
+
+Configuring EIGRP authentication key-chain number and name to restrict packet exchanges between network devices."
+          solution    : "Configure the interface with the EIGRP key chain.
+
+hostname(config)#interface {<em>interface_name</em>}
+hostname(config-if)#ip authentication key-chain eigrp {<em>eigrp_as-number</em>} {<em>eigrp_key-chain_name</em>}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Configuring the interface with 'ip authentication key chain' for EIGRP by name and number enforces these policies by restricting the exchanges between network devices."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+
+        <report type:"PASSED">
+          description : "3.3.1.9 Set 'ip authentication mode eigrp'"
+          info        : "Configure authentication to prevent unapproved sources from introducing unauthorized or false routing messages.
+
+This is part of the EIGRP authentication configuration"
+          solution    : "Configure the interface with the EIGRP authentication mode.
+
+hostname(config)#interface {<em>interface_name</em>}
+hostname(config-if)#ip authentication mode eigrp {<em><span>eigrp_as-number</span></em><span>}</span> md5
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Configuring the interface with 'ip authentication mode' for EIGRP by number and mode enforces these policies by restricting the exchanges between network devices."
+          reference   : "800-171|3.1.16,800-171|3.1.17,800-171|3.4.1,800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|AC-18,800-53|AC-18(1),800-53|AC-18(3),800-53|CM-2,800-53|CM-6,800-53|CM-7,800-53|CM-7(1),800-53|CM-9,800-53r5|AC-18,800-53r5|AC-18(1),800-53r5|AC-18(3),800-53r5|CM-2,800-53r5|CM-6,800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|CM-9,CSCv7|9.2,CSCv8|4.2,CSF|DE.AE-1,CSF|PR.DS-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF|PR.PT-4,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ITSG-33|AC-18,ITSG-33|AC-18(1),ITSG-33|AC-18(3),ITSG-33|CM-2,ITSG-33|CM-6,ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|CM-9,LEVEL|2A,NESA|T1.2.1,NESA|T1.2.2,NESA|T3.2.5,NESA|T5.4.2,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.1,NESA|T7.6.2,NESA|T7.6.3,NIAv2|NS33,NIAv2|NS34,NIAv2|NS38,NIAv2|SS15a,NIAv2|SS16,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,SWIFT-CSCv1|2.3"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+      </else>
+    </if>
+
+    <if>
+      <condition type:"AND">
+        <item>
+          type        : CONFIG_CHECK
+          description : "OSPF is enabled"
+          item        : "router ospf .+"
+        </item>
+      </condition>
+
+      <then>
+        <item>
+          type        : CONFIG_CHECK
+          description : "3.3.2.1 Set 'authentication message-digest' for OSPF area"
+          info        : "Enable MD5 authentication for OSPF.
+
+This is part of the OSPF authentication setup."
+          solution    : "Configure the Message Digest option for OSPF.
+
+hostname(config)#router ospf <<em>ospf_process-id</em>>
+hostname(config-router)#area <<em>ospf_area-id</em>> authentication message-digest
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Configuring the area 'authentication message-digest' for OSPF enforces these policies by restricting exchanges between network devices."
+          reference   : "800-53|IA-3,800-53r5|IA-3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3,ITSG-33|IA-3a.,LEVEL|2A,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          context     : "router ospf .+"
+          item        : "area [^ ]+ authentication message-digest"
+        </item>
+
+        <item>
+          type        : CONFIG_CHECK
+          description : "3.3.2.2 Set 'ip ospf message-digest-key md5'"
+          info        : "Enable Open Shortest Path First (OSPF) Message Digest 5 (MD5) authentication.
+
+This is part of the OSPF authentication setup"
+          solution    : "Configure the appropriate interface(s) for Message Digest authentication
+
+hostname(config)#interface {<em>interface_name</em>}
+hostname(config-if)#ip ospf message-digest-key {<em>ospf_md5_key-id</em>} md5 {<em>ospf_md5_key</em>}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Configuring the proper interface(s) for 'ip ospf message-digest-key md5' enforces these policies by restricting exchanges between network devices."
+          reference   : "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),LEVEL|2A,NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|2.1,TBA-FIISB|29.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          context     : "interface @OSPF_INTERFACE@"
+          regex       : "ip ospf message-digest-key @OSPF_KEY_ID@ md5 [0-7] ([A-Za-z0-9]+)"
+          item        : "ip ospf message-digest-key @OSPF_KEY_ID@"
+        </item>
+      </then>
+
+      <else>
+        <report type:"PASSED">
+          description : "3.3.2.1 Set 'authentication message-digest' for OSPF area"
+          info        : "Enable MD5 authentication for OSPF.
+
+This is part of the OSPF authentication setup."
+          solution    : "Configure the Message Digest option for OSPF.
+
+hostname(config)#router ospf <<em>ospf_process-id</em>>
+hostname(config-router)#area <<em>ospf_area-id</em>> authentication message-digest
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Configuring the area 'authentication message-digest' for OSPF enforces these policies by restricting exchanges between network devices."
+          reference   : "800-53|IA-3,800-53r5|IA-3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3,ITSG-33|IA-3a.,LEVEL|2A,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+
+        <report type:"PASSED">
+          description : "3.3.2.2 Set 'ip ospf message-digest-key md5'"
+          info        : "Enable Open Shortest Path First (OSPF) Message Digest 5 (MD5) authentication.
+
+This is part of the OSPF authentication setup"
+          solution    : "Configure the appropriate interface(s) for Message Digest authentication
+
+hostname(config)#interface {<em>interface_name</em>}
+hostname(config-if)#ip ospf message-digest-key {<em>ospf_md5_key-id</em>} md5 {<em>ospf_md5_key</em>}
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Configuring the proper interface(s) for 'ip ospf message-digest-key md5' enforces these policies by restricting exchanges between network devices."
+          reference   : "800-171|3.13.8,800-53|SC-8(1),800-53r5|SC-8(1),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSF|PR.DS-2,CSF|PR.DS-5,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|SC-8(1),LEVEL|2A,NESA|T7.4.1,NIAv2|NS5d,NIAv2|NS6b,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|2.1,TBA-FIISB|29.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+      </else>
+    </if>
+
+    <if>
+      <condition type:"AND">
+        <item>
+          type        : CONFIG_CHECK
+          description : "BGP is enabled"
+          item        : "router [Bb][Gg][Pp] .+"
+        </item>
+      </condition>
+
+      <then>
+        <item>
+          type        : CONFIG_CHECK
+          description : "3.3.3.1 Set 'neighbor password'"
+          info        : "Enable message digest5 (MD5) authentication on a TCP connection between two BGP peers
+
+Enforcing routing authentication reduces the likelihood of routing poisoning and unauthorized routers from joining BGP routing."
+          solution    : "Configure BGP neighbor authentication where feasible.
+
+hostname(config)#router bgp <<em>bgp_as-number</em>>
+hostname(config-router)#neighbor <<em>bgp_neighbor-ip</em> | <em>peer-group-name</em>> password <<em>password</em>>
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using the 'neighbor password' for BGP enforces these policies by restricting the type of authentication between network devices."
+          reference   : "800-53|IA-3,800-53r5|IA-3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3,ITSG-33|IA-3a.,LEVEL|2A,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+          context     : "router [Bb][Gg][Pp] .+"
+          regex       : "neighbor [^ ]+ password [0-7] ([A-Za-z0-9\\/\\$]{30})"
+          item        : "neighbor [^ ]+ password .+"
+        </item>
+      </then>
+
+      <else>
+        <report type:"PASSED">
+          description : "3.3.3.1 Set 'neighbor password'"
+          info        : "Enable message digest5 (MD5) authentication on a TCP connection between two BGP peers
+
+Enforcing routing authentication reduces the likelihood of routing poisoning and unauthorized routers from joining BGP routing."
+          solution    : "Configure BGP neighbor authentication where feasible.
+
+hostname(config)#router bgp <<em>bgp_as-number</em>>
+hostname(config-router)#neighbor <<em>bgp_neighbor-ip</em> | <em>peer-group-name</em>> password <<em>password</em>>
+
+Impact:
+
+Organizations should plan and implement enterprise security policies that require rigorous authentication methods for routing protocols. Using the 'neighbor password' for BGP enforces these policies by restricting the type of authentication between network devices."
+          reference   : "800-53|IA-3,800-53r5|IA-3,CSF|PR.AC-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-3,ITSG-33|IA-3a.,LEVEL|2A,NESA|T5.4.3,QCSC-v1|13.2,TBA-FIISB|27.1"
+          see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+        </report>
+      </else>
+    </if>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_Cisco_IOS_XE_16.x_v2.1.0_L2.audit from CIS Cisco IOS XE 16.x Benchmark v2.1.0"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/benchmarks/12917"
+    </report>
+  </else>
+</if>
+
+</check_type>

@@ -1,0 +1,673 @@
+#TRUSTED aceb82413bbd2b3309045d049e83165196bfe401424cdc704653bd8a4f488e98faefbd989e8a9d5bfe8e307fa208fc383f25f5436f5fc6ff5afb0efa65debe146642a9924db32c558f3dfb42fcd19ac441b1083bcc1f350c279ad22b527130bb606ad07f5e566a665d50d5e7fc6f41d80ab46d134a9f2df68c964c8cd44d449416e9948daae76bd6f34671f7089b1c9375278d5f34458f35dc7ba47beff1b050e27823b1dae3556fa72dd8c2f4a4f2d7a760df538dff922fa8db0a94e24e61878c24edfc8ecd38e1a1a9730cd871486820978089fa4af886888d73621cda8a6e68a9d33370dbd8d73983172880a51e320cab0a2662a171a3604558d4c0337efd41a6b35e932e33a9ff71f667aa3919628c50e50d9f7d7e218b893102b9b2a661e0a85e661e44ae2b7fae871c2b34305855fa5ed836b57d55bcfb4a721b0f6e86dbe342b943f93034280218778b3773f198c09d2009f659a506a5146012b2c0ccbbd3a51ee71fcf04f6d9fbdd68158d20646a8ca3c8d653bdafc9c1015f8101d6608b7eac17688f962f137da82d51d594220c9f7ac531a2eebb821d69a05293b304c8937b65c3951c12c23d9fce114e45f2850534db84c2640bce2191df9ccf9ba9b9862c1e7aef2273d8bb41f109b58122544119bbc1d1a08302fc8bdf02f8981f9871cbef6d2fd0a04365d0433d19de85048f7fbde7a1ba402aca680a25f900
+#TRUST-RSA-SHA256 908cd1c4bab8e4d9384ef9330beed99198c836cac7c36e85ca4a3001a7db1cfa3ed637fd518616e304dc181c9736f7dc4381b40397650875a77bfd20156fedb467fad72fabe8b0583161a9926b94d75aaf668fc16b4ab2d521694fdfae12ed10a24e66d957f610d03099ce113888efdff66b4c5ae9cf332a6102080cc780471ac50a37ff31a577da1de7efba7ba8c4ba91264f2faa57bc31b083f964b61d7885598cfff4d205fbe8a8b8afa76bfcf5e2f6ad47511ea821b7c198afa9cbdcaa1616c2b3b78e71ff407225aabc9a1a094421e5ae1c17a37de7be050925e35660efe1675f4391bef8e10d3d7b3bdf9aa4f2b7b9554fd1c31cd907d763c215f49978cf870c1865fd80728c4ab1c1eb341e72c4c16efb6c6849a7e786c4d777d3099a065ca52d3083ea928465ccfc5f9dec4c86b2f4ee7e6a14a6287305b8f9e3b5e20c0e27d6c52e4863e1116cbb6701f01d32f603151def32a6050a7865fea7df4e935702edbbd5d2cb3db8236899c1c642e18e06645dc93b1525ec7adcbde53f092a2a23171fb1152e63d0349adf856b60006f75374de5a79915c77eb668c677faa4ceea99f9603cbfacf564c6ba92b4b6c99f9d768a5df7ff8417ce3fb2656cd3e31e5ec0e9fef3ea60401da3118794564c5682170313c08981f431f81c46e039066c847bb24ab99ec675f17ff3b9443be46a4f0106078e37823a390e2848ecaf
+#
+# This script is Copyright (C) 2004-2025 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.0 $
+# $Date: 2025/05/06 $
+#
+# Description : This document implements the security configuration as recommended by the
+#               DISA VMware vSphere 7.0 ESXi v1r4 STIG.
+#
+#<ui_metadata>
+#<display_name>DISA STIG VMware vSphere 7.0 ESXi OS v1r4</display_name>
+#<spec>
+#  <type>DISA STIG</type>
+#  <name>VMware vSphere 7.0</name>
+#  <profile>ESXi Bare Metal Host</profile>
+#  <version>1.4.0</version>
+#  <link>https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip</link>
+#</spec>
+#<labels>vmware_esxi_7.0_bare_metal,disa,unix</labels>
+#<benchmark_refs>CAT,CCE,CCI,DISA_Benchmark,Group-ID,Rule-ID,STIG-ID,STIG-Legacy,Vuln-ID</benchmark_refs>
+#<variables>
+#  <variable>
+#    <name>AUDIT_RECORD_STORAGE_DIRECTORY</name>
+#    <default>/scratch/auditLog</default>
+#    <description>Persistent storage for audit records</description>
+#    <info>Persistent storage for audit records</info>
+#    <value_type>STRING</value_type>
+#  </variable>
+#</variables>
+#</ui_metadata>
+
+<check_type:"Unix">
+
+<if>
+  <condition type:"AND">
+    <custom_item>
+      type        : CMD_EXEC
+      description : "VMkernel found"
+      cmd         : "uname -a"
+      expect      : "VMkernel"
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "DISA_STIG_VMware_vSphere_7.0_ESXi_Bare_Metal_Host_v1r4.audit from DISA VMware vSphere 7.0 ESXi v1r4 STIG"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+    </report>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000009 - The ESXi host SSH daemon must be configured with the DOD logon banner."
+      info        : "The warning message reinforces policy awareness during the logon process and facilitates possible legal action against attackers. Alternatively, systems whose ownership should not be obvious should ensure use of a banner that does not provide easy attribution."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+Banner /etc/issue"
+      reference   : "800-171|3.1.9,800-171r3|03.01.09,800-53|AC-8a.,800-53r5|AC-8a.,CAT|II,CCI|CCI-000048,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.5,ITSG-33|AC-8a.,NESA|M5.2.5,NESA|T5.5.1,NIAv2|AM10a,NIAv2|AM10b,NIAv2|AM10c,NIAv2|AM10d,NIAv2|AM10e,Rule-ID|SV-256383r958390_rule,STIG-ID|ESXI-70-000009,TBA-FIISB|45.2.4,Vuln-ID|V-256383"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep banner"
+      expect      : "^[\\s]*banner[\\s]+/etc/issue[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000010 - The ESXi host Secure Shell (SSH) daemon must use FIPS 140-2 validated cryptographic modules to protect the confidentiality of remote access sessions."
+      info        : "OpenSSH on the ESXi host ships with a FIPS 140-2 validated cryptographic module that is enabled by default. For backward compatibility reasons, this can be disabled so this setting can be audited and corrected if necessary."
+      solution    : "From an ESXi shell, run the following command:
+
+# esxcli system security fips140 ssh set -e true
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following commands:
+
+$esxcli = Get-EsxCli -v2
+$arguments = $esxcli.system.security.fips140.ssh.set.CreateArgs()
+$arguments.enable = $true
+$esxcli.system.security.fips140.ssh.set.Invoke($arguments)"
+      reference   : "800-171|3.1.13,800-171r3|03.13.08,800-53|AC-17(2),800-53r5|AC-17(2),CAT|II,CCI|CCI-000068,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,CSF2.0|PR.AA-05,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.6.7,ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-256384r958408_rule,STIG-ID|ESXI-70-000010,SWIFT-CSCv1|2.6,Vuln-ID|V-256384"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "esxcli system security fips140 ssh get"
+      expect      : "^[\\s]*Enabled[\\s]*:[\\s]*true[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000012 - The ESXi host Secure Shell (SSH) daemon must ignore '.rhosts' files - .rhosts files."
+      info        : "SSH trust relationships mean a compromise on one host can allow an attacker to move trivially to other hosts. SSH can emulate the behavior of the obsolete 'rsh' command in allowing users to enable insecure access to their accounts via '.rhosts' files."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+IgnoreRhosts yes"
+      reference   : "800-171|3.5.3,800-171r3|03.05.03,800-53|IA-2(3),800-53r5|IA-2(1),CAT|II,CCI|CCI-000767,CN-L3|7.1.3.1(a),CN-L3|7.1.3.1(e),CN-L3|8.1.4.1(a),CN-L3|8.1.4.2(a),CN-L3|8.5.4.1(a),CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ITSG-33|IA-2(3),NESA|T2.3.8,NESA|T5.3.1,NESA|T5.4.2,NESA|T5.5.1,NESA|T5.5.2,NESA|T5.5.3,NIAv2|AM2,NIAv2|AM8,NIAv2|AM14b,QCSC-v1|5.2.2,QCSC-v1|13.2,Rule-ID|SV-256385r984206_rule,STIG-ID|ESXI-70-000012,SWIFT-CSCv1|1.2,TBA-FIISB|35.1,TBA-FIISB|36.1,Vuln-ID|V-256385"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep ignorerhosts"
+      expect      : "^[\\s]*ignorerhosts[\\s]+yes[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000013 - The ESXi host Secure Shell (SSH) daemon must not allow host-based authentication."
+      info        : "SSH trust relationships mean a compromise on one host can allow an attacker to move trivially to other hosts. SSH's cryptographic host-based authentication is more secure than '.rhosts' authentication because hosts are cryptographically authenticated. However, it is not recommended that hosts unilaterally trust one another, even within an organization."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+HostbasedAuthentication no"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256386r959010_rule,STIG-ID|ESXI-70-000013,SWIFT-CSCv1|2.3,Vuln-ID|V-256386"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep hostbasedauthentication"
+      expect      : "^[\\s]*hostbasedauthentication[\\s]+no[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000015 - The ESXi host Secure Shell (SSH) daemon must not allow authentication using an empty password."
+      info        : "Configuring this setting for the SSH daemon provides additional assurance that remote logon via SSH will require a password, even in the event of misconfiguration elsewhere."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+PermitEmptyPasswords no"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256387r959010_rule,STIG-ID|ESXI-70-000015,SWIFT-CSCv1|2.3,Vuln-ID|V-256387"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep permitemptypasswords"
+      expect      : "^[\\s]*permitemptypasswords[\\s]+no[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000016 - The ESXi host Secure Shell (SSH) daemon must not permit user environment settings."
+      info        : "SSH environment options potentially allow users to bypass access restriction in some configurations. Users must not be able to present environment options to the SSH daemon."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+PermitUserEnvironment no"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256388r959010_rule,STIG-ID|ESXI-70-000016,SWIFT-CSCv1|2.3,Vuln-ID|V-256388"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep permituserenvironment"
+      expect      : "^[\\s]*permituserenvironment[\\s]+no[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000020 - The ESXi host Secure Shell (SSH) daemon must perform strict mode checking of home directory configuration files."
+      info        : "If other users have access to modify user-specific SSH configuration files, they may be able to log on the system as another user."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+StrictModes yes"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256389r959010_rule,STIG-ID|ESXI-70-000020,SWIFT-CSCv1|2.3,Vuln-ID|V-256389"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep strictmodes"
+      expect      : "^[\\s]*strictmodes[\\s]+yes[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000021 - The ESXi host Secure Shell (SSH) daemon must not allow compression or must only allow compression after successful authentication."
+      info        : "If compression is allowed in an SSH connection prior to authentication, vulnerabilities in the compression software could result in compromise of the system from an unauthenticated connection, potentially with root privileges."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+Compression no"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256390r959010_rule,STIG-ID|ESXI-70-000021,SWIFT-CSCv1|2.3,Vuln-ID|V-256390"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep compression"
+      expect      : "^[\\s]*compression[\\s]+no[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000022 - The ESXi host Secure Shell (SSH) daemon must be configured to not allow gateway ports."
+      info        : "SSH Transmission Control Protocol (TCP) connection forwarding provides a mechanism to establish TCP connections proxied by the SSH server. This function can provide convenience similar to a virtual private network (VPN) with the similar risk of providing a path to circumvent firewalls and network Access Control Lists (ACLs). Gateway ports allow remote forwarded ports to bind to nonloopback addresses on the server."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+GatewayPorts no"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256391r959010_rule,STIG-ID|ESXI-70-000022,SWIFT-CSCv1|2.3,Vuln-ID|V-256391"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep gatewayports"
+      expect      : "^[\\s]*gatewayports[\\s]+no[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000023 - The ESXi host Secure Shell (SSH) daemon must be configured to not allow X11 forwarding."
+      info        : "X11 forwarding over SSH allows for the secure remote execution of X11-based applications. This feature can increase the attack surface of an SSH connection."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+X11Forwarding no"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256392r959010_rule,STIG-ID|ESXI-70-000023,SWIFT-CSCv1|2.3,Vuln-ID|V-256392"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep x11forwarding"
+      expect      : "^[\\s]*x11forwarding[\\s]+no[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000025 - The ESXi host Secure Shell (SSH) daemon must not permit tunnels."
+      info        : "OpenSSH has the ability to create network tunnels (layer 2 and layer 3) over an SSH connection. This function can provide similar convenience to a virtual private network (VPN) with the similar risk of providing a path to circumvent firewalls and network Access Control Lists (ACLs)."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+PermitTunnel no"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256393r959010_rule,STIG-ID|ESXI-70-000025,SWIFT-CSCv1|2.3,Vuln-ID|V-256393"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep permittunnel"
+      expect      : "^[\\s]*permittunnel[\\s]+no[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000026 - The ESXi host Secure Shell (SSH) daemon must set a timeout count on idle sessions."
+      info        : "Setting a timeout ensures that a user login will be terminated as soon as the 'ClientAliveCountMax' is reached."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+ClientAliveCountMax 3"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256394r959010_rule,STIG-ID|ESXI-70-000026,SWIFT-CSCv1|2.3,Vuln-ID|V-256394"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep clientalivecountmax"
+      expect      : "^[\\s]*clientalivecountmax[\\s]+3[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000027 - The ESXi host Secure Shell (SSH) daemon must set a timeout interval on idle sessions."
+      info        : "Automatically logging out idle users guards against compromises via hijacked administrative sessions."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+ClientAliveInterval 200"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|III,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256395r959010_rule,STIG-ID|ESXI-70-000027,SWIFT-CSCv1|2.3,Vuln-ID|V-256395"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep clientaliveinterval"
+      expect      : "^[\\s]*clientaliveinterval[\\s]+200[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000047 - The ESXi Image Profile and vSphere Installation Bundle (VIB) acceptance levels must be verified."
+      info        : "Verify the ESXi Image Profile to only allow signed VIBs. An unsigned VIB represents untested code installed on an ESXi host. The ESXi Image profile supports four acceptance levels:
+
+1. VMwareCertified - VIBs created, tested, and signed by VMware.
+2. VMwareAccepted - VIBs created by a VMware partner but tested and signed by VMware.
+3. PartnerSupported - VIBs created, tested, and signed by a certified VMware partner.
+4. CommunitySupported - VIBs that have not been tested by VMware or a VMware partner.
+
+Community Supported VIBs are not supported and do not have a digital signature. To protect the security and integrity of ESXi hosts, do not allow unsigned (CommunitySupported) VIBs to be installed on hosts.
+
+Satisfies: SRG-OS-000366-VMM-001430, SRG-OS-000370-VMM-001460, SRG-OS-000404-VMM-001650"
+      solution    : "From the vSphere Client, select the ESXi Host and go to Configure >> System >> Security Profile.
+
+Under 'Host Image Profile Acceptance Level', click 'Edit...'.
+
+Using the drop-down selection, set the acceptance level as 'VMwareCertified', 'VMwareAccepted', or 'PartnerSupported'. The default is 'PartnerSupported'.
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following commands:
+
+$esxcli = Get-EsxCli -v2
+$arguments = $esxcli.software.acceptance.set.CreateArgs()
+$arguments.level = 'PartnerSupported'
+$esxcli.software.acceptance.set.Invoke($arguments)
+
+Note: 'VMwareCertified' or 'VMwareAccepted' may be substituted for 'PartnerSupported', depending on local requirements. These are case sensitive."
+      reference   : "800-171|3.4.5,800-171|3.4.8,800-171|3.13.16,800-171r3|03.04.05,800-171r3|03.04.08b.,800-171r3|03.13.08,800-53|CM-5(3),800-53|CM-7(5)(b),800-53|SC-28(1),800-53r5|CM-7(5)(b),800-53r5|SC-28(1),CAT|I,CCI|CCI-001749,CCI|CCI-001774,CCI|CCI-002475,CN-L3|8.1.4.7(b),CN-L3|8.1.4.8(b),CSF|PR.DS-1,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.DS-01,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.5.33,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.4,ISO-27001-2022|A.8.9,ISO-27001-2022|A.8.19,ISO-27001-2022|A.8.31,ISO-27001-2022|A.8.32,ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-5(3),ITSG-33|CM-7,ITSG-33|SC-28(1),NESA|T3.2.3,NESA|T5.1.1,NESA|T5.6.1,NESA|T7.5.1,NESA|T7.5.3,NESA|T7.6.3,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,PCI-DSSv3.2.1|3.4,PCI-DSSv4.0|3.3.2,PCI-DSSv4.0|3.5.1,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|7.2,Rule-ID|SV-256410r984242_rule,STIG-ID|ESXI-70-000047,SWIFT-CSCv1|2.3,TBA-FIISB|28.1,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3,Vuln-ID|V-256410"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "esxcli software acceptance get"
+      expect      : "^[\\s]*(PartnerSupported|VMwareCertified|VMwareAccepted)[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000056 - The ESXi host must configure the firewall to restrict access to services running on the host."
+      info        : "Unrestricted access to services running on an ESXi host can expose a host to outside attacks and unauthorized access. Reduce the risk by configuring the ESXi firewall to only allow access from authorized networks.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "From the vSphere Client, go to Hosts and Clusters.
+
+Select the ESXi Host >> Configure >> System >> Firewall.
+
+Click 'Edit...'. For each enabled service, uncheck the check box to 'Allow connections from any IP address' and input the site-specific network(s) required.
+
+The following example formats are acceptable:
+
+192.168.0.0/24
+192.168.1.2, 2001::1/64
+fd3e:29a6:0a81:e478::/64
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following commands:
+
+$esxcli = Get-EsxCli -v2
+#This disables the allow all rule for the target service. We are targeting the sshServer service in this example.
+$arguments = $esxcli.network.firewall.ruleset.set.CreateArgs()
+$arguments.rulesetid = 'sshServer'
+$arguments.allowedall = $false
+$esxcli.network.firewall.ruleset.set.Invoke($arguments)
+
+#Next add the allowed IPs for the service. Note doing the 'vSphere Web Client' service this way may disable access but may be done through vCenter or through the console.
+$arguments = $esxcli.network.firewall.ruleset.allowedip.add.CreateArgs()
+$arguments.rulesetid = 'sshServer'
+$arguments.ipaddress = '10.0.0.0/8'
+$esxcli.network.firewall.ruleset.allowedip.add.Invoke($arguments)
+
+This must be done for each enabled service."
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256417r959010_rule,STIG-ID|ESXI-70-000056,SWIFT-CSCv1|2.3,Vuln-ID|V-256417"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "esxcli network firewall ruleset list"
+      expect      : "Manual Review Required"
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000076 - The ESXi host must enable Secure Boot."
+      info        : "Secure Boot is part of the Unified Extensible Firmware Interface (UEFI) firmware standard. With UEFI Secure Boot enabled, a host refuses to load any UEFI driver or app unless the operating system bootloader has a valid digital signature. Secure Boot for ESXi requires support from the firmware and requires that all ESXi kernel modules, drivers, and vSphere Installation Bundles (VIBs) be signed by VMware or a partner subordinate.
+
+Secure Boot is enabled in the BIOS of the ESXi physical server and supported by the hypervisor boot loader. There is no ESXi control to 'turn on' Secure Boot. Requiring Secure Boot (failing to boot without it present) is accomplished in another control."
+      solution    : "From an ESXi shell, run the following command:
+
+# /usr/lib/vmware/secureboot/bin/secureBoot.py -c
+
+If the output indicates that Secure Boot cannot be enabled, correct the discrepancies and try again.
+
+If the discrepancies cannot be rectified, this finding is downgraded to a CAT III."
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256430r959010_rule,STIG-ID|ESXI-70-000076,SWIFT-CSCv1|2.3,Vuln-ID|V-256430"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/secureboot/bin/secureBoot.py -s"
+      expect      : "^Enabled$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000078 - The ESXi host must use DOD-approved certificates."
+      info        : "The default self-signed host certificate issued by the VMware Certificate Authority (VMCA) must be replaced with a DOD-approved certificate when the host will be accessed directly, such as during a virtual machine (VM) console connection.
+
+The use of a DOD certificate on the host assures clients the service they are connecting to is legitimate and properly secured.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "Join the ESXi host to vCenter before replacing the certificate.
+
+Obtain a DOD-issued certificate and private key for the host following the requirements below:
+
+Key size: 2048 bits or more (PEM encoded)
+
+Key format: PEM
+VMware supports PKCS8 and PKCS1 (RSA keys)
+x509 version 3
+
+SubjectAltName must contain DNS Name=<machine_FQDN>
+
+CRT (Base-64) format
+
+Contains the following Key Usages: Digital Signature, Non Repudiation, Key Encipherment
+
+Start time of one day before the current time
+
+CN (and SubjectAltName) set to the host name (or IP address) that the ESXi host has in the vCenter Server inventory
+
+From the vSphere Web Client, select the ESXi host's vCenter Server >> Configure >> System >> Advanced Settings.
+
+Select the 'vpxd.certmgmt.mode' value and ensure it is set to 'custom'.
+
+Put the host into maintenance mode.
+
+Temporarily enable Secure Shell (SSH) on the host. Use Secure Copy Protocol (SCP) to transfer the new certificate and key to /tmp. SSH to the host. Back up the existing certificate and key:
+
+# mv /etc/vmware/ssl/rui.crt /etc/vmware/ssl/rui.crt.bak
+# mv /etc/vmware/ssl/rui.key /etc/vmware/ssl/rui.key.bak
+
+Copy the new certificate and key to '/etc/vmware/ssl/' and rename them to 'rui.crt' and 'rui.key' respectively.
+
+Restart management agents to implement the new certificate:
+
+# services.sh restart"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256431r1067573_rule,STIG-ID|ESXI-70-000078,SWIFT-CSCv1|2.3,Vuln-ID|V-256431"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "openssl x509 -in /etc/vmware/ssl/rui.crt -text | grep Issuer"
+      expect      : "Manual Review Required"
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000082 - The ESXi host Secure Shell (SSH) daemon must disable port forwarding."
+      info        : "While enabling Transmission Control Protocol (TCP) tunnels is a valuable function of sshd, this feature is not appropriate for use on the ESXi hypervisor."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+AllowTcpForwarding no"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256434r959010_rule,STIG-ID|ESXI-70-000082,SWIFT-CSCv1|2.3,Vuln-ID|V-256434"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep allowtcpforwarding"
+      expect      : "^[\\s]*allowtcpforwarding[\\s]+no[\\s]*$"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000083 - The ESXi host OpenSLP service must be disabled."
+      info        : "OpenSLP implements the Service Location Protocol to help CIM clients discover CIM servers over TCP 427. This service is not widely needed and has had vulnerabilities exposed in the past. To reduce attack surface area and following the minimum functionality principal, the OpenSLP service must be disabled unless explicitly needed and approved.
+
+Note: Disabling the OpenSLP service may affect monitoring and third-party systems that use the WBEM DTMF protocols."
+      solution    : "From the vSphere Client go to Hosts and Clusters.
+
+Select the ESXi Host >> Configure >> System >> Services.
+
+Select the 'slpd' service. If the service is started, click 'Stop'.
+
+Click 'Edit Startup Policy...'. Select 'Start and stop manually'. Click 'OK'.
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following command:
+
+Get-VMHost | Get-VMHostService | Where {$_.Label -eq 'slpd'} | Set-VMHostService -Policy Off
+Get-VMHost | Get-VMHostService | Where {$_.Label -eq 'slpd'} | Stop-VMHostService"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256435r959010_rule,STIG-ID|ESXI-70-000083,SWIFT-CSCv1|2.3,Vuln-ID|V-256435"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/etc/init.d/slpd status"
+      expect      : "(slpd is not running|not found)"
+    </custom_item>
+
+    <if>
+      <condition auto:"FAILED" type:"AND">
+        <custom_item>
+          type        : CMD_EXEC
+          description : "Audit Log Size"
+          cmd         : "/bin/esxcli system auditrecords get | /bin/grep 'Audit Log Size'"
+          expect      : "^[\\s]*Audit Log Size[\\s]*:[\\s]*[1-9][0-9]{2,}$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "Audit Log Active"
+          cmd         : "/bin/esxcli system auditrecords get | /bin/grep 'Audit Log Active'"
+          expect      : "^[\\s]*Audit Log Active[\\s]*:[\\s]*true$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "Audit Remote Host Enabled"
+          cmd         : "/bin/esxcli system auditrecords get | /bin/grep 'Audit Remote Host Enabled'"
+          expect      : "^[\\s]*Audit Remote Host Enabled[\\s]*:[\\s]*true$"
+        </custom_item>
+
+        <custom_item>
+          type        : CMD_EXEC
+          description : "Audit Log Directory"
+          cmd         : "/bin/esxcli system auditrecords get | /bin/grep 'Audit Log Directory'"
+          expect      : "^[\\s]*Audit Log Directory[\\s]*:[\\s]*@AUDIT_RECORD_STORAGE_DIRECTORY@$"
+        </custom_item>
+      </condition>
+
+      <then>
+        <report type:"PASSED">
+          description : "ESXI-70-000084 - The ESXi host must enable audit logging."
+          info        : "ESXi offers both local and remote audit recordkeeping to meet the requirements of the NIAP Virtualization Protection Profile and Server Virtualization Extended Package. Local records are stored on any accessible local or VMFS path. Remote records are sent to the global syslog servers configured elsewhere.
+
+To operate in the NIAP validated state, ESXi must enable and properly configure this audit system. This system is disabled by default.
+
+Note: Audit records can be viewed locally via the '/bin/auditLogReader' utility over SSH or at the ESXi shell."
+          solution    : "From an ESXi shell, run the following commands:
+
+Optional: Set the audit log location to persistent storage. This is set to '/scratch/auditLog' by default and does not normally need to be changed.
+
+# esxcli system auditrecords local set --directory='/full/path/here'
+
+Mandatory:
+
+# esxcli system auditrecords local set --size=100
+# esxcli system auditrecords local enable
+# esxcli system auditrecords remote enable
+# esxcli system syslog reload
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following commands:
+
+$esxcli = Get-EsxCli -v2
+$arguments = $esxcli.system.auditrecords.local.set.CreateArgs()
+*Optional* $arguments.directory = '/full/path/here'
+$arguments.size='100'
+$esxcli.system.auditrecords.local.set.Invoke($arguments)
+$esxcli.system.auditrecords.local.enable.Invoke()
+$esxcli.system.auditrecords.remote.enable.Invoke()"
+          reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256436r959010_rule,STIG-ID|ESXI-70-000084,SWIFT-CSCv1|2.3,Vuln-ID|V-256436"
+          see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+          show_output : YES
+        </report>
+      </then>
+    </if>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000085 - The ESXi host must enable strict x509 verification for SSL syslog endpoints."
+      info        : "When sending syslog data to a remote host via SSL, the ESXi host is presented with the endpoint's SSL server certificate. In addition to trust verification, configured elsewhere, this 'x509-strict' option performs additional validity checks on CA root certificates during verification.
+
+These checks are generally not performed (CA roots are inherently trusted) and might cause incompatibilities with existing, misconfigured CA roots. The NIAP requirements in the Virtualization Protection Profile and Server Virtualization Extended Package, however, require even CA roots to pass validations."
+      solution    : "From an ESXi shell, run the following commands:
+
+# esxcli system syslog config set --x509-strict='true'
+# esxcli system syslog reload
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following commands:
+
+$esxcli = Get-EsxCli -v2
+$arguments = $esxcli.system.syslog.config.set.CreateArgs()
+$arguments.x509strict = $true
+$esxcli.system.syslog.config.set.Invoke($arguments)
+$esxcli.system.syslog.reload.Invoke()"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256437r959010_rule,STIG-ID|ESXI-70-000085,SWIFT-CSCv1|2.3,Vuln-ID|V-256437"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/bin/esxcli system syslog config get | /bin/grep 509"
+      expect      : "^[\\s]*Strict X509Compliance[\\s]*:[\\s]*true"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000090 - The ESXi host rhttpproxy daemon must use FIPS 140-2 validated cryptographic modules to protect the confidentiality of remote access sessions."
+      info        : "ESXi runs a reverse proxy service called rhttpproxy that front ends internal services and application programming interfaces (APIs) over one HTTPS port by redirecting virtual paths to localhost ports.
+
+This proxy implements a FIPS 140-2 validated OpenSSL cryptographic module that is in FIPS mode by default. This configuration must be validated and maintained to protect the traffic that rhttpproxy manages."
+      solution    : "From an ESXi shell, run the following command:
+
+# esxcli system security fips140 rhttpproxy set -e true
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following commands:
+
+$esxcli = Get-EsxCli -v2
+$arguments = $esxcli.system.security.fips140.rhttpproxy.set.CreateArgs()
+$arguments.enable = $true
+$esxcli.system.security.fips140.rhttpproxy.set.Invoke($arguments)"
+      reference   : "800-171|3.1.13,800-171r3|03.13.08,800-53|AC-17(2),800-53r5|AC-17(2),CAT|II,CCI|CCI-000068,CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.4.1(c),CSF|PR.AC-3,CSF|PR.PT-4,CSF2.0|PR.AA-05,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.6.7,ISO/IEC-27001|A.6.2.2,ITSG-33|AC-17(2),NESA|T5.4.2,NIAv2|AM37,PCI-DSSv3.2.1|2.3,PCI-DSSv4.0|2.2.7,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,Rule-ID|SV-256442r958408_rule,STIG-ID|ESXI-70-000090,SWIFT-CSCv1|2.6,Vuln-ID|V-256442"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/bin/esxcli system security fips140 rhttpproxy get"
+      expect      : "^[\\s]*Enabled[\\s]*:[\\s]*true"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000092 - The ESXi host must not be configured to override virtual machine (VM) configurations."
+      info        : "Each VM on an ESXi host runs in its own 'vmx' process. Upon creation, a vmx process will look in two locations for configuration items, the ESXi host itself and the per-vm *.vmx file in the VM storage path on the datastore. The settings on the ESXi host are read first and take precedence over settings in the *.vmx file.
+
+This can be a convenient way to set a setting in one place and have it apply to all VMs running on that host. The difficulty is in managing those settings and determining the effective state. Since managing per-VM vmx settings can be fully automated and customized while the ESXi setting cannot be easily queried, the ESXi configuration must not be used."
+      solution    : "From an ESXi shell, run the following command:
+
+# echo -n >/etc/vmware/settings"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256444r959010_rule,STIG-ID|ESXI-70-000092,SWIFT-CSCv1|2.3,Vuln-ID|V-256444"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "stat -c \"%s\" /etc/vmware/settings"
+      expect      : "^0$"
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CONTENT_CHECK_NOT
+      description : "ESXI-70-000093 - The ESXi host must not be configured to override virtual machine (VM) logger settings."
+      info        : "Each VM on an ESXi host runs in its own 'vmx' process. Upon creation, a vmx process will look in two locations for configuration items, the ESXi host itself and the per-vm *.vmx file in the VM storage path on the datastore. The settings on the ESXi host are read first and take precedence over settings in the *.vmx file.
+
+This can be a convenient way to set a setting in one place and have it apply to all VMs running on that host. The difficulty is in managing those settings and determining the effective state. Since managing per-VM vmx settings can be fully automated and customized while the ESXi setting cannot be easily queried, the ESXi configuration must not be used."
+      solution    : "From an ESXi shell, run the following commands:
+
+# cp /etc/vmware/config /etc/vmware/config.bak
+# grep -v '^vmx\.log' /etc/vmware/config.bak>/etc/vmware/config"
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256445r959010_rule,STIG-ID|ESXI-70-000093,SWIFT-CSCv1|2.3,Vuln-ID|V-256445"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      file        : "/etc/vmware/config"
+      regex       : "^vmx\\.log"
+      expect      : "^vmx\\.log"
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000094 - The ESXi host must require TPM-based configuration encryption."
+      info        : "An ESXi host's configuration consists of configuration files for each service that runs on the host. The configuration files typically reside in the /etc/ directory, but they can also reside in other namespaces. The configuration files contain run-time information about the state of the services. Over time, the default values in the configuration files might change, for example, when settings on the ESXi host are changed.
+
+A cron job backs up the ESXi configuration files periodically, when ESXi shuts down gracefully or on demand, and creates an archived configuration file in the boot bank. When ESXi reboots, it reads the archived configuration file and recreates the state that ESXi was in when the backup was taken.
+
+Before vSphere 7.0 Update 2, the archived ESXi configuration file is not encrypted. In vSphere 7.0 Update 2 and later, the archived configuration file is encrypted. When the ESXi host is configured with a Trusted Platform Module (TPM), the TPM is used to 'seal' the configuration to the host, providing a strong security guarantee and additional protection from offline attacks.
+
+Configuration encryption uses the physical TPM when it is available and supported at install or upgrade time. If the TPM was added or enabled later, the ESXi host must be told to reconfigure to use the newly available TPM. Once the TPM configuration encryption is enabled, it cannot be disabled.
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "Ensure the TPM 2.0 chip is enabled in the BIOS and the ESX UI does not show any errors about a present but unavailable TPM.
+
+This setting cannot be configured until the TPM is properly enabled in the BIOS.
+
+From an ESXi shell, run the following command:
+
+# esxcli system settings encryption set --mode=TPM
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following commands:
+
+$esxcli = Get-EsxCli -v2
+$arguments = $esxcli.system.settings.encryption.set.CreateArgs()
+$arguments.mode = 'TPM'
+$esxcli.system.settings.encryption.set.Invoke($arguments)
+
+Evacuate the host and gracefully reboot for changes to take effect."
+      reference   : "800-171|3.4.2,800-171r3|03.04.02a.,800-53|CM-6b.,800-53r5|CM-6b.,CAT|II,CCI|CCI-000366,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6b.,NESA|T3.2.1,Rule-ID|SV-256446r959010_rule,STIG-ID|ESXI-70-000094,SWIFT-CSCv1|2.3,Vuln-ID|V-256446"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/bin/esxcli system settings encryption get"
+      expect      : "^[\\s]*Mode[\\]s*:[\\s]*TPM[\\s]*$"
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000095 - The ESXi host must implement Secure Boot enforcement."
+      info        : "Secure Boot is part of the UEFI firmware standard. With UEFI Secure Boot enabled, a host refuses to load any UEFI driver or app unless the operating system bootloader has a valid digital signature. Secure Boot for ESXi requires support from the firmware and it requires that all ESXi kernel modules, drivers and VIBs be signed by VMware or a partner subordinate.
+
+Secure Boot is enabled in the BIOS of the ESXi physical server and supported by the hypervisor boot loader. This control flips ESXi from merely supporting Secure Boot to requiring it. Without this setting enabled, and configuration encryption, an ESXi host could be subject to offline attacks. An attacker could simply transfer the ESXi install drive to a non-Secure Boot host and boot it up without ESXi complaining.
+
+Note: This setting is only available in 7.0 Update 2 and later.
+
+Satisfies: SRG-OS-000480-VMM-002000, SRG-OS-000257-VMM-000910, SRG-OS-000278-VMM-001000, SRG-OS-000446-VMM-001790
+
+NOTE: Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance."
+      solution    : "This setting cannot be configured until Secure Boot is properly enabled in the BIOS.
+
+From an ESXi shell, run the following command:
+
+# esxcli system settings encryption set --require-secure-boot=true
+
+or
+
+From a PowerCLI command prompt while connected to the ESXi host, run the following commands:
+
+$esxcli = Get-EsxCli -v2
+$arguments = $esxcli.system.settings.encryption.set.CreateArgs()
+$arguments.requiresecureboot = $true
+$esxcli.system.settings.encryption.set.Invoke($arguments)
+
+Evacuate the host and gracefully reboot for changes to take effect."
+      reference   : "800-171|3.3.8,800-171r3|03.03.08,800-53|AU-9,800-53|AU-9(3),800-53|SI-6b.,800-53r5|AU-9,800-53r5|AU-9(3),800-53r5|SI-6b.,CAT|II,CCI|CCI-001494,CCI|CCI-001496,CCI|CCI-002699,CN-L3|7.1.2.3(d),CN-L3|7.1.3.3(f),CN-L3|8.1.3.5(c),CN-L3|8.1.4.3(c),CN-L3|8.1.4.3(d),CSF|PR.PT-1,CSF2.0|PR.DS-10,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.33,ISO-27001-2022|A.8.15,ISO/IEC-27001|A.12.4.2,ITSG-33|AU-9,ITSG-33|AU-9(3),ITSG-33|SI-6a.,NESA|M5.2.3,NESA|M5.5.2,NESA|T3.6.4,NESA|T8.2.9,NIAv2|SM5,NIAv2|SM6,PCI-DSSv3.2.1|10.5,PCI-DSSv3.2.1|10.5.2,PCI-DSSv4.0|10.3.2,QCSC-v1|8.2.1,QCSC-v1|13.2,Rule-ID|SV-256447r959010_rule,STIG-ID|ESXI-70-000095,TBA-FIISB|37.3.3,Vuln-ID|V-256447"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/bin/esxcli system settings encryption get"
+      expect      : "^[\\s]*Require Secure Boot[\\]s*:[\\s]*true[\\s]*$"
+      severity    : MEDIUM
+    </custom_item>
+
+    <custom_item>
+      type        : CMD_EXEC
+      description : "ESXI-70-000274 - The ESXi host SSH daemon must be configured to only use FIPS 140-2 validated ciphers."
+      info        : "Use of weak or untested encryption algorithms undermines the purposes of using encryption to protect data. ESXi must implement cryptographic modules adhering to the higher standards approved by the federal government because this provides assurance they have been tested and validated."
+      solution    : "From an ESXi shell, add or correct the following line in '/etc/ssh/sshd_config':
+
+Ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+      reference   : "800-171|3.13.11,800-171r3|03.13.11,800-53|SC-13,800-53r5|SC-13b.,CAT|II,CCI|CCI-002450,CSF|PR.DS-5,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,DISA_Benchmark|VMW_vSphere_7-0_ESXi_STIG,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(iv),HIPAA|164.312(e)(2)(ii),ISO-27001-2022|A.8.24,ISO/IEC-27001|A.10.1.1,ITSG-33|SC-13,ITSG-33|SC-13a.,NESA|M5.2.6,NESA|T7.4.1,NIAv2|CY3,NIAv2|CY4,NIAv2|CY5b,NIAv2|CY5c,NIAv2|CY5d,NIAv2|CY7,NIAv2|NS5e,QCSC-v1|6.2,Rule-ID|SV-256449r959006_rule,STIG-ID|ESXI-70-000274,Vuln-ID|V-256449"
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+      cmd         : "/usr/lib/vmware/openssh/bin/sshd -T | /bin/grep ciphers"
+      expect      : "^[\\s]*ciphers aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr[\\s]*$"
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "DISA_STIG_VMware_vSphere_7.0_ESXi_Bare_Metal_Host_v1r4.audit from DISA VMware vSphere 7.0 ESXi v1r4 STIG"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://dl.dod.cyber.mil/wp-content/uploads/stigs/zip/U_VMW_vSphere_7-0_Y25M04_STIG.zip"
+    </report>
+  </else>
+</if>
+
+</check_type>

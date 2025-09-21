@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.6.23.2.1 (L1) Ensure 'Allow Windows to automatically connect to suggested open hotspots, to networks shared by contacts, and to hotspots offering paid services' is set to 'Disabled'",
+  "info": "\"This policy setting determines whether users can enable the following WLAN settings: 'Connect to suggested open hotspots,' 'Connect to networks shared by my contacts,' and 'Enable paid services'.\n\n - 'Connect to suggested open hotspots' enables Windows to automatically connect users to open hotspots it knows about by crowdsourcing networks that other people using Windows have connected to.\n - 'Connect to networks shared by my contacts' enables Windows to automatically connect to networks that the user's contacts have shared with them, and enables users on this device to share networks with their contacts.\n - 'Enable paid services' enables Windows to temporarily connect to open hotspots to determine if paid services are available.\n\nThe recommended state for this setting is: Disabled",
+  "Note": "This Group Policy path is provided by the Group Policy template wlansvc.admx/adml that is included with the Microsoft Windows 10 Release 1511 Administrative Templates (or newer).",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Network\\WLAN Service\\WLAN Settings\\Allow Windows to automatically connect to suggested open hotspots, to networks shared by contacts, and to hotspots offering paid services",
+  "Impact": "Connect to suggested open hotspots\n\n,\n\nConnect to networks shared by my contacts\n\n, and\n\nEnable paid services\n\nwill each be turned off and users on the device will be prevented from enabling them.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|15.5,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17603",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Microsoft\\WcmSvc\\wifinetworkmanager\\config",
+  "reg_item": "AutoConnectAllowedOEM",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

@@ -1,0 +1,13 @@
+{
+  "type": "CHECK_ACCOUNT",
+  "description": "2.3.1.3 (L1) Configure 'Accounts: Rename administrator account'",
+  "info": "The built-in local administrator account is a well-known account name that attackers will target. It is recommended to choose another name for this account, and to avoid names that denote administrative or elevated access accounts. Be sure to also change the default description for the local administrator (through the Computer Management console).\n\nThe Administrator account exists on all computers that run the Windows 2000 or newer operating systems. If you rename this account, it is slightly more difficult for unauthorized persons to guess this privileged user name and password combination.\n\nThe built-in Administrator account cannot be locked out, regardless of how many times an attacker might use a bad password. This capability makes the Administrator account a popular target for brute force attacks that attempt to guess passwords. The value of this countermeasure is lessened because this account has a well-known SID, and there are third-party tools that allow authentication by using the SID rather than the account name. Therefore, even if you rename the Administrator account, an attacker could launch a brute force attack by using the SID to log on.",
+  "solution": "\"To establish the recommended configuration via GP, configure the following UI path:\n\nComputer Configuration\\Policies\\Windows Settings\\Security Settings\\Local Policies\\Security Options\\Accounts: Rename administrator account",
+  "Impact": "You will have to inform users who are authorized to use this account of the new account name. (The guidance for this setting assumes that the Administrator account was not disabled, which was recommended earlier in this chapter.)\"",
+  "reference": "800-171|3.5.2,800-171r3|03.05.12,800-53|IA-5,800-53r5|IA-5,CSCv8|4.7,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5,LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/21318",
+  "value_type": "POLICY_TEXT",
+  "value_data": "\\b[Aa]dmin(istrator)?",
+  "account_type": "ADMINISTRATOR_ACCOUNT",
+  "check_type": "CHECK_NOT_REGEX"
+}

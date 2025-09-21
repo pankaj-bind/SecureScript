@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.9.4.1 (L1) Ensure 'Encryption Oracle Remediation' is set to 'Enabled: Force Updated Clients'",
+  "info": "Some versions of the CredSSP protocol that is used by some applications (such as Remote Desktop Connection) are vulnerable to an encryption oracle attack against the client. This policy controls compatibility with vulnerable clients and servers and allows you to set the level of protection desired for the encryption oracle vulnerability.\n\nThe recommended state for this setting is: Enabled: Force Updated Clients\n\nThis setting is important to mitigate the CredSSP encryption oracle vulnerability, for which information was published by Microsoft on 03/13/2018 in\n\nCVE-2018-0886 | CredSSP Remote Code Execution Vulnerability\n\n. All versions of Windows from Windows Vista onwards are affected by this vulnerability, and will be compatible with this recommendation provided that they have been patched at least through May 2018 (or later).",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Force Updated Clients :\n\nComputer Configuration\\Policies\\Administrative Templates\\System\\Credentials Delegation\\Encryption Oracle Remediation",
+  "Note": "This Group Policy path is provided by the Group Policy template CredSsp.admx/adml that is included with the Microsoft Windows 10 Release 1803 Administrative Templates (or newer).",
+  "Impact": "Client applications which use CredSSP will not be able to fall back to the insecure versions and services using CredSSP will not accept unpatched clients. This setting should not be deployed until all remote hosts support the newest version, which is achieved by ensuring that all Microsoft security updates at least through May 2018 are installed.\"",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|3.4,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/21318",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\CredSSP\\Parameters",
+  "reg_item": "AllowEncryptionOracle",
+  "reg_option": "CAN_NOT_BE_NULL"
+}
