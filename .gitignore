@@ -22,9 +22,6 @@ pip-wheel-metadata/
 # PyInstaller
 *.spec
 
-# Django stuff
-*.sqlite3
-
 # VS Code settings (optional)
 .vscode/
 
