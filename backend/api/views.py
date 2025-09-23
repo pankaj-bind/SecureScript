@@ -1,9 +1,12 @@
 # api/views.py
 
+import os
+import json
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.files.base import ContentFile
-from django.utils import timezone 
+from django.utils import timezone
 from django.utils.text import slugify
 from rest_framework import generics, status, serializers
 from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
@@ -28,7 +31,8 @@ from .serializers import (
     UserProfileSerializer,
     UserProfileUpdateSerializer,
     ReportListSerializer,
-    ReportCreateSerializer, 
+    ReportCreateSerializer,
+    ScriptUpdateSerializer,
 )
 
 
@@ -48,7 +52,7 @@ class RequestPasswordResetOTPView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        serializer = OTPRequestSerializer(data=request.data) 
+        serializer = OTPRequestSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data["email"]
             user = User.objects.get(email__iexact=email)
@@ -56,8 +60,8 @@ class RequestPasswordResetOTPView(APIView):
             otp_code = PasswordResetOTP.generate_otp()
             PasswordResetOTP.objects.create(user=user, otp=otp_code)
             send_mail(
-                subject="Your Password Reset OTP Code", 
-                message=f"Your OTP for password reset is: {otp_code}. It is valid for 5 minutes.", 
+                subject="Your Password Reset OTP Code",
+                message=f"Your OTP for password reset is: {otp_code}. It is valid for 5 minutes.",
                 from_email="noreply@yourapp.com",
                 recipient_list=[email],
                 fail_silently=False,
@@ -67,7 +71,7 @@ class RequestPasswordResetOTPView(APIView):
 
 
 class VerifyPasswordResetOTPView(APIView):
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = OTPVerifySerializer(data=request.data)
@@ -76,12 +80,12 @@ class VerifyPasswordResetOTPView(APIView):
             otp_code = serializer.validated_data["otp"]
             try:
                 user = User.objects.get(email__iexact=email)
-                otp_instance = PasswordResetOTP.objects.get(user=user, otp=otp_code) 
+                otp_instance = PasswordResetOTP.objects.get(user=user, otp=otp_code)
                 if otp_instance.is_valid():
                     return Response({"message": "OTP verified successfully."})
                 else:
                     otp_instance.delete()
-                    return Response({"error": "OTP has expired."}, status=status.HTTP_400_BAD_REQUEST) 
+                    return Response({"error": "OTP has expired."}, status=status.HTTP_400_BAD_REQUEST)
             except (User.DoesNotExist, PasswordResetOTP.DoesNotExist):
                 return Response({"error": "Invalid OTP or email."}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -94,24 +98,24 @@ class SetNewPasswordView(APIView):
         serializer = SetNewPasswordSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data["email"]
-            otp_code = serializer.validated_data["otp"] 
+            otp_code = serializer.validated_data["otp"]
             password = serializer.validated_data["password"]
             try:
                 user = User.objects.get(email__iexact=email)
                 otp_instance = PasswordResetOTP.objects.get(user=user, otp=otp_code)
                 if otp_instance.is_valid():
-                    user.set_password(password) 
+                    user.set_password(password)
                     user.save()
                     otp_instance.delete()
                     return Response(
-                        {"message": "Password has been reset successfully."} 
+                        {"message": "Password has been reset successfully."}
                     )
                 else:
                     otp_instance.delete()
                     return Response({"error": "OTP has expired."}, status=status.HTTP_400_BAD_REQUEST)
             except (User.DoesNotExist, PasswordResetOTP.DoesNotExist):
-                return Response( 
-                    {"error": "Invalid OTP or email. Please start over."}, status=status.HTTP_400_BAD_REQUEST 
+                return Response(
+                    {"error": "Invalid OTP or email. Please start over."}, status=status.HTTP_400_BAD_REQUEST
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -128,11 +132,61 @@ class AuditParserUploadView(generics.CreateAPIView):
     permission_classes = [IsAdminUser]
 
 
+# --- View for editing the generated script.json ---
+class UpdateProductScriptView(APIView):
+    """
+    Allows updating the 'commands/script.json' file for a specific product.
+    """
+    permission_classes = [IsAuthenticated] # Or IsAdminUser to restrict further
+
+    def put(self, request, pk):
+        try:
+            product = Product.objects.get(pk=pk)
+        except Product.DoesNotExist:
+            return Response({"error": "Product not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if not product.audit_json_output_path:
+            return Response(
+                {"error": "This product has no generated audit files to edit."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        serializer = ScriptUpdateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Construct the full path to the target file
+        script_file_path = os.path.join(
+            settings.MEDIA_ROOT,
+            product.audit_json_output_path,
+            'commands',
+            'script.json'
+        )
+        
+        if not os.path.exists(os.path.dirname(script_file_path)):
+             return Response(
+                {"error": "The 'commands' directory does not exist for this product."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        try:
+            # Write the validated JSON content to the file
+            with open(script_file_path, 'w', encoding='utf-8') as f:
+                json.dump(serializer.validated_data['script_content'], f, indent=4)
+        except IOError as e:
+            return Response(
+                {"error": f"Failed to write to the script file: {e}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+        return Response({"message": "Successfully updated the script.json file."})
+
+
 # Technology Data Views
 class TechnologyDataView(generics.ListAPIView):
     queryset = TechnologyType.objects.prefetch_related("organizations__products").order_by('-updated_at').all()
     serializer_class = TechnologyTypeSerializer
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
 
     def get_serializer_context(self):
         return {"request": self.request}
@@ -159,7 +213,7 @@ class ProductDetailView(generics.RetrieveAPIView):
 class TemplateListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
-    def get_serializer_class(self): 
+    def get_serializer_class(self):
         if self.request.method == 'POST':
             return TemplateCreateSerializer
         return TemplateListSerializer
@@ -179,7 +233,7 @@ class TemplateDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class TemplateImportView(APIView):
     permission_classes = [IsAuthenticated]
-    parser_classes = [JSONParser] 
+    parser_classes = [JSONParser]
 
     def post(self, request, *args, **kwargs):
         data = request.data
@@ -192,8 +246,8 @@ class TemplateImportView(APIView):
         revert_script = data.get('revert_script')
 
         if not org_name or not benchmark_name:
-            return Response( 
-                {"error": "Invalid template file. Missing name fields."}, 
+            return Response(
+                {"error": "Invalid template file. Missing name fields."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -201,7 +255,7 @@ class TemplateImportView(APIView):
             product = Product.objects.get(name=benchmark_name, organization__name=org_name)
         except Product.DoesNotExist:
             return Response(
-                {"error": "The benchmark for this template could not be found."}, 
+                {"error": "The benchmark for this template could not be found."},
                 status=status.HTTP_404_NOT_FOUND
             )
 
@@ -210,7 +264,7 @@ class TemplateImportView(APIView):
             user=request.user,
             product=product,
             policies=policies if policies is not None else [],
-            harden_script=harden_script or "", 
+            harden_script=harden_script or "",
             check_script=check_script or "",
             revert_script=revert_script or ""
         )
@@ -223,7 +277,7 @@ class TemplateImportView(APIView):
 
 class ReportListCreateView(generics.ListCreateAPIView):
     """
-    Handles listing reports for a template and creating new reports. 
+    Handles listing reports for a template and creating new reports.
     """
     permission_classes = [IsAuthenticated]
 
@@ -240,7 +294,7 @@ class ReportListCreateView(generics.ListCreateAPIView):
         return Report.objects.filter(template_id=template_id, template__user=self.request.user)
 
     def perform_create(self, serializer):
-        template_id = self.kwargs.get('template_pk') 
+        template_id = self.kwargs.get('template_pk')
         try:
              template = Template.objects.get(id=template_id, user=self.request.user)
         except Template.DoesNotExist:
@@ -250,7 +304,7 @@ class ReportListCreateView(generics.ListCreateAPIView):
 
         # Get additional data for the PDF
         local_time = timezone.localtime(timezone.now())
-        try: 
+        try:
             # Safely get the user's profile and company name
             user_profile = UserProfile.objects.get(user=self.request.user)
             company_name = user_profile.company_name or 'N/A'
@@ -258,7 +312,7 @@ class ReportListCreateView(generics.ListCreateAPIView):
             company_name = 'N/A'
 
         pdf_data_for_generator = {
-            'username': self.request.user.username, 
+            'username': self.request.user.username,
             'template_id': template.id,
             'serial_number': report.serial_number,
             'product_name': template.product.organization.name,
@@ -266,7 +320,7 @@ class ReportListCreateView(generics.ListCreateAPIView):
             'report_type': report.get_report_type_display(),
             'policies': report.results,
             'date': local_time.strftime('%d/%m/%Y'),
-            'time': local_time.strftime('%I:%M:%S %p'), 
+            'time': local_time.strftime('%I:%M:%S %p'),
             'organization_name': company_name,
         }
 
@@ -280,7 +334,7 @@ class ReportListCreateView(generics.ListCreateAPIView):
 
 class ReportDetailView(generics.RetrieveDestroyAPIView):
     """
-    Handles deleting a report. 
+    Handles deleting a report.
     """
     permission_classes = [IsAuthenticated]
     serializer_class = ReportListSerializer
@@ -306,7 +360,7 @@ def update_user_profile(request):
     try:
         profile = request.user.userprofile
     except UserProfile.DoesNotExist:
-        profile = UserProfile.objects.create(user=request.user) 
+        profile = UserProfile.objects.create(user=request.user)
     serializer = UserProfileUpdateSerializer(
         profile, data=request.data, partial=True, context={"request": request}
     )

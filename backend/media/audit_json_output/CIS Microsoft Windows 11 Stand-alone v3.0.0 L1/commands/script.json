@@ -1,1 +1,7 @@
-{}
+{
+    "1.1.1": {
+        "hardeningScript": "cmd /c \"echo [System Access] > %TEMP%\\secpol.inf && echo PasswordHistorySize = 24 >> %TEMP%\\secpol.inf && secedit /configure /db %windir%\\security\\database\\secedit.sdb /cfg %TEMP%\\secpol.inf /quiet && del %TEMP%\\secpol.inf\"",
+        "auditScript": "net accounts | findstr /B /C:\"Password history length\"",
+        "revertHardeningScript": "cmd /c \"echo [System Access] > %TEMP%\\secpol.inf && echo PasswordHistorySize = 0 >> %TEMP%\\secpol.inf && secedit /configure /db %windir%\\security\\database\\secedit.sdb /cfg %TEMP%\\secpol.inf /quiet && del %TEMP%\\secpol.inf\""
+    }
+}

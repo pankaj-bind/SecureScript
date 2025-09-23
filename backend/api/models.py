@@ -346,3 +346,14 @@ def process_audit_file_receiver(sender, instance, created, **kwargs):
             # --- MODIFICATION END ---
         except Exception as e:
             print(f"Error processing audit file with parser {instance.audit_parser.name}: {e}")
+
+# --- Proxy Model for Script Editing ---
+class Script(Product):
+    """
+    A proxy model based on Product to create a separate admin interface
+    for editing the 'script.json' file.
+    """
+    class Meta:
+        proxy = True
+        verbose_name = "Script"
+        verbose_name_plural = "Add Script"

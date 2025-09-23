@@ -1,13 +1,23 @@
 # api/serializers.py
 
 import re
+import os
+from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from allauth.account.adapter import get_adapter
 from .models import TechnologyType, Organization, Product, UserProfile, AuditParser, Template, Report
-from django.conf import settings
-import os
+
+# --- Script Update Serializer ---
+class ScriptUpdateSerializer(serializers.Serializer):
+    """
+    Serializer for validating the JSON content for the script file.
+    """
+    script_content = serializers.JSONField()
+
+    class Meta:
+        fields = ['script_content']
 
 # --- Helper function for script generation ---
 def generate_script_from_policies(policies, script_type):
@@ -54,7 +64,7 @@ class TemplateListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'organization_name', 'benchmark_name', 'policies',
             'harden_script', 'check_script', 'revert_script', 'policy_count'
-        ]
+         ]
 
     def get_policy_count(self, obj):
         return len(obj.policies)
