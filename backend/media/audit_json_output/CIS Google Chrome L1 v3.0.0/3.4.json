@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "3.4 (L1) Ensure 'Block third party cookies' is set to 'Enabled'",
+  "info": "Chrome allows cookies to be set by web page elements that are not from the domain in the user's address bar. Enabling this feature prevents third party cookies from being set.\n\nThe recommended state for this setting is: Enabled (1)\n\nBlocking third-party cookies can help protect a user's privacy by eliminating a number of website tracking cookies.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled :\n\nComputer Configuration\\Administrative Templates\\Google\\Google Chrome\\Block third party cookies",
+  "Impact": "Enabling this setting prevents cookies from being set by web page elements that are not from the domain that is in the browser's address bar.",
+  "NOTE": "Third Party Cookies and Tracking Protection are required for many business critical websites, including Microsoft 365 web apps (Office 365), SalesForce, and SAP Analytics Cloud. If these, or similar services, are needed by the organization, then this setting can be Disabled.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "BlockThirdPartyCookies",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

@@ -255,6 +255,18 @@ def process_audit_file(input_file_path, base_output_folder):
         
         # --- 2. Generate individual policy JSONs ---
         process_policy_checks(input_file_path, output_folder_path)
+        
+        # --- 3. (NEW) Generate an empty commands/script.json ---
+        commands_folder_path = os.path.join(output_folder_path, "commands")
+        os.makedirs(commands_folder_path, exist_ok=True)
+
+        # Create an empty dictionary to ensure the JSON file is empty
+        script_data = {}
+
+        script_json_path = os.path.join(commands_folder_path, "script.json")
+        with open(script_json_path, "w", encoding="utf-8") as f:
+            # Write the empty JSON object to the file
+            json.dump(script_data, f, indent=2)
 
         return output_folder_path
     except Exception as e:

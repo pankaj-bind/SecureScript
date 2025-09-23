@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.9.1 (L1) Ensure 'Enable First-Party Sets' Is Disabled",
+  "info": "This policy controls access to the First-Party Sets. First-party Sets are a way for sites to declare relationships with each other and enable limited cross-site cookie access for specific, user-facing purposes. It can configured to either:\n\n - Disabled (0): Disable First-Party Sets for all affected users\n - Enabled (1): Enable First-Party Sets for all affected users\n\nSetting this policy will not allow sites to declare the relationships that allow them to access the cross-site cookies.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Content settings\\Enable Firty-Party Sets",
+  "Impact": "This may cause unexpected behavior as a user moves between affiliated sites.\"",
+  "reference": "800-53|AU-4,800-53r5|AU-4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.8.6,ITSG-33|AU-4,LEVEL|1M,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "FirstPartySetsEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

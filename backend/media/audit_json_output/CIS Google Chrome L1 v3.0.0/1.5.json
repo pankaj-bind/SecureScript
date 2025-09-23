@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.5 (L1) Ensure 'Allow the audio sandbox to run' is set to 'Enabled'",
+  "info": "\"This setting controls whether audio processes in Google Chrome run in a sandbox.",
+  "NOTE": "Security software setups within your environment might interfere with the sandbox.\n\nThe recommended state for this setting is: Enabled (1)\n\nHaving audio processes run in a sandbox ensures that if a website misuses audio processes that data may not be manipulated or exfiltrated from the system.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Allow the audio sandbox to run",
+  "Impact": "None - This is the default behavior.\"",
+  "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|10.5,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.8.6,ITSG-33|AU-4,LEVEL|1A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "AudioSandboxEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

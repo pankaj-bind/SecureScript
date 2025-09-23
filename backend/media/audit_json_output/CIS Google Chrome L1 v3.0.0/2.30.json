@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.30 (L1) Ensure 'Enable Renderer App Container' Is Enabled",
+  "info": "This setting controls the ability for Google Chrome to allow the Render App Container sandbox to be used while navigating to certain sites. It can be configured to either:\n\n - Disabled (0): Disable the Renderer App Container sandbox\n - Enabled (1): Enable the Renderer App Container sandbox\n\nIf the value for RendererAppContainerEnabled is not changed from the default, it will behave as if it is enabled.\n\nDisabling this policy would weaken the sandbox that Google Chrome uses for the renderer process, and will have a detrimental effect on the security and stability of the browser. This policy needs to be enabled to maintain security and stability.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Enable Renderer App Container",
+  "Impact": "This would only impact users if there is third-party software that must run inside renderer processes.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "RendererAppContainerEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

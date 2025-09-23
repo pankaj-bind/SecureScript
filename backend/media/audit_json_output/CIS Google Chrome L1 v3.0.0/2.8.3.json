@@ -1,0 +1,16 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.8.3 (L1) Ensure 'Configure the required domain names for remote access clients' is set to 'Enabled'  with a domain defined",
+  "info": "\"Chrome allows the configuration of a list of domains that are allowed to access the user's system. When enabled, remote systems can only connect if they are one of the specified domains listed.\n\nSetting this to an empty list (Disabled) allows remote systems from any domain to connect to this user's system.\n\nThe recommended state for this setting is: Enabled (1) and at least one domain set",
+  "NOTE": "The list of domains is organization specific.\n\nRemote assistance connections shall be restricted.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled and enter an organizational specific domain(s) (e.g. nodomain.local ):\n\nComputer Configuration\\Polices\\Administrative Templates\\Google\\Google Chrome\\Remote access\\Configure the required domain names for remote access clients",
+  "Impact": "If this setting is enabled, only systems from the specified domains can connect to the user's system.\"",
+  "reference": "800-171|3.1.1,800-171|3.1.2,800-171|3.1.12,800-171|3.13.1,800-171|3.13.5,800-171|3.14.6,800-171|3.14.7,800-171r3|03.01.12,800-171r3|03.13.01,800-171r3|03.14.06,800-53|AC-17,800-53|AC-17(1),800-53|SC-7,800-53|SI-4,800-53r5|AC-17,800-53r5|AC-17(1),800-53r5|SC-7,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.4.4(c),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CN-L3|8.1.10.6(i),CN-L3|8.1.10.6(j),CSCv7|12.12,CSCv8|13.5,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.AC-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-8,CSF|PR.PT-4,CSF|RS.AN-1,CSF|RS.CO-3,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|DE.CM-01,CSF2.0|DE.CM-06,CSF2.0|DE.CM-09,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.14,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.16,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.13.1.3,ITSG-33|AC-17,ITSG-33|AC-17(1),ITSG-33|SC-7,ITSG-33|SI-4,LEVEL|1M,NESA|M1.2.2,NESA|T4.5.4,NESA|T5.4.4,NESA|T5.4.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.6,TBA-FIISB|43.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_TEXT",
+  "value_data": ".+",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome\\RemoteAccessHostClientDomainList",
+  "reg_item": "1",
+  "reg_option": "CAN_NOT_BE_NULL",
+  "check_type": "CHECK_REGEX"
+}

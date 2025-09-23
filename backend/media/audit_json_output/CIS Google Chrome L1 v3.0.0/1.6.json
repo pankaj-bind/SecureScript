@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.6 (L1) Ensure 'Ask where to save each file before downloading' is set to 'Enabled'",
+  "info": "Google Chrome offers to download files automatically to the default download directory without prompting.\n\nIf this setting is enabled, users are always asked where to save each file before downloading.\n\nThe recommended state for this setting is: Enabled (1)\n\nUsers shall be prevented from the drive-by-downloads threat.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set thefollowing UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Ask where to save each file before downloading",
+  "Impact": "None - This is the default behavior.\"",
+  "reference": "800-171|3.13.13,800-171r3|03.13.13,800-53|SC-18(2),800-53r5|SC-18(2),CSF|DE.CM-5,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-18(2),LEVEL|1A,NIAv2|SU3,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "PromptForDownloadLocation",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.22 (L1) Ensure 'Import autofill form data from default browser on first run' is set to 'Disabled'",
+  "info": "This setting controls whether users are allowed to import autofill data from other browsers into Google Chrome.\n\nIf you set this setting to Disabled users will be unable to perform an import of autofill data during Google Chrome run. This will also prevent users from importing data after Google Chrome has been set up.\n\nThe recommended state for this setting is: Disabled (0)\n\nAllowing autofill data to be imported could potentially allow sensitive data such as personally identifiable information (PII) from a non-secured source into Google Chrome. Considering that storage of sensitive data should be handled with care, disabling this setting is recommended.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Import autofill form data from default browser on first run",
+  "Impact": "None - This is the default behavior.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "ImportAutofillFormData",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

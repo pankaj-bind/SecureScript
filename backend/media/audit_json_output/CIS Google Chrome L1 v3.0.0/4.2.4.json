@@ -1,0 +1,13 @@
+{
+  "type": "REG_CHECK",
+  "description": "4.2.4 (L1) Ensure 'Block clipboard on these sites' Is Configured",
+  "info": "\"This setting allows administrators to list specific sites that do not have access to the clipboard site permissions.",
+  "Note": "This does not include using keyboard shortcuts. Those are not gated by the clipboard site permission.\n\nSpecifying URLs that do not have access to the clipboard site permissions limits data for sites that have access to data on the clipboard, and allows for more sites to have access.\n\nSetting this policy denies specified URLs to have access to the clipboard site permissions. This will limit the specified sites to access the data on the clipboard that other sites do. DefaultClipboardSetting is recommended to be set to disabled so this list would be a backup to that policy in case it was enabled, left as the default, or removed.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled and set Show to the blocked URLs:\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Content settings\\Block clipboard on these sites",
+  "Impact": "Enforcing this recommendation can cause the clipboard functionality to not work identically for every site.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1M,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_TEXT",
+  "value_data": "HKLM\\Software\\Policies\\Google\\Chrome\\ClipboardBlockedForUrls",
+  "reg_option": "MUST_EXIST"
+}

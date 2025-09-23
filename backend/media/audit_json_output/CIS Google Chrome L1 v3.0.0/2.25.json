@@ -1,0 +1,12 @@
+{
+  "type": "REG_CHECK",
+  "description": "2.25 (L1) Ensure 'Allow file or directory picker APIs to be called without prior user gesture' Is Disabled",
+  "info": "This setting controls the ability for showOpenFilePicker() showSaveFilePicker() and showDirectoryPicker() web APIs to be called without user interaction.\n\nIf the value for FileOrDirectoryPickerWithoutGestureAllowedForOrigins is not changed from the default, it will behave as if it is disabled.\n\nSetting this policy would allow the URLs selected to call the showOpenFilePicker() showSaveFilePicker() and showDirectoryPicker() web APIs without any user gesture/interaction. This policy does not need to be set for this reason.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Allow file or directory picker APIs to be called without prior user gesture",
+  "Impact": "Disabling this policy should have no impact on the user.\"",
+  "reference": "800-171|3.11.2,800-171|3.11.3,800-171r3|03.11.02,800-53|RA-5,800-53r5|RA-5,CSCv7|9.4,CSCv8|7.2,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,CSF2.0|GV.SC-10,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-01,CSF2.0|ID.RA-08,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.8,ISO/IEC-27001|A.12.6.1,ITSG-33|RA-5,LEVEL|1A,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.7.1,PCI-DSSv3.2.1|6.1,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.7",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_TEXT",
+  "value_data": "HKLM\\Software\\Policies\\Google\\Chrome\\FileOrDirectoryPickerWithoutGestureAllowedForOrigins",
+  "reg_option": "MUST_NOT_EXIST"
+}

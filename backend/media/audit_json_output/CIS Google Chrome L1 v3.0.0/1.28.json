@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.28 (L1) Ensure 'Suppress the unsupported OS warning' is set to 'Disabled'",
+  "info": "Google Chrome will show a warning that appears when Google Chrome is running on a computer or operating system that is no longer supported.\n\nThe recommended state for this setting is: Disabled (0)\n\nThe user shall be informed if the used software is no longer supported.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Polices\\Administrative Templates\\Google\\Google Chrome\\Suppress the unsupported OS warning",
+  "Impact": "None - This is the default behavior.\"",
+  "reference": "800-171r3|03.16.02,800-53|SA-22,800-53r5|SA-22,CSCv7|2.2,CSCv8|2.2,CSF2.0|ID.AM-08,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "SuppressUnsupportedOSWarning",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

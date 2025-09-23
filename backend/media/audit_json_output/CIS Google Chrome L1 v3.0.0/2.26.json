@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.26 (L1) Ensure 'Enable Google Search Side Panel' Is Disabled",
+  "info": "This setting controls the Google Search Side Panel. It can be configured to either:\n\n - Disabled (0): Disable Google Search Side Panel on all web pages\n - Enabled (1): Enable Google Search Side Panel on all web pages\n\nSetting this policy will not allow the Google Search Side Panel on any webpages.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Enable Google Search Side Panel",
+  "Impact": "This should have no user impact.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "GoogleSearchSidePanelEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

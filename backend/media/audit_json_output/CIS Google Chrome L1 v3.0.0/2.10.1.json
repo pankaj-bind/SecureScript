@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.10.1 (L1) Ensure 'Allow automatic sign-in to Microsoft cloud identity providers' Is Enabled",
+  "info": "This policy setting allows accounts backed by a Microsoft(R) cloud identity provider (i.e., Microsoft Azure Active Directory or the consumer Microsoft account identity provider) can be signed into web properties using that identity automatically. It can be configured to either:\n\n - Disabled (0): Disable Microsoft(R) cloud authentication\n - Enabled (1): Enable Microsoft(R) cloud authentication\n\nIf the value for CloudAPAuthEnabled is not changed from the default, it will behave as it is disabled.\n\nEnabling this policy setting allows users to use Microsoft Cloud Authentication for any site that requires CA (Cloud Authentication) and does not require an extension.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled: Enable Microsoft(R) cloud authentication :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Microsoft(R) Active Directory(R) management settings\\Allow automatic sign-in to Microsoft(R) cloud identity providers",
+  "Impact": "There should be no impact to the user.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1M,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "CloudAPAuthEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

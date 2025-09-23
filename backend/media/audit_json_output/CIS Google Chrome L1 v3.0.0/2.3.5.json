@@ -1,0 +1,12 @@
+{
+  "type": "REG_CHECK",
+  "description": "2.3.5 (L1) Ensure 'Block third-party storage partitioning for these origins' Is Configured",
+  "info": "This setting will block specific sites your organization selects from accessing the storage session from any other site. This will allow an organization to block third party trackers that are embedded on multiple sites from tracking a user across the sites they visit. It will also allow blocking third party access to the user agent and to infer data about the user from the data from another site.\n\nSetting the Level 2 recommendation DefaultThirdPartyStoragePartitioningSetting will block all sites, not just this set list in ThirdPartyStoragePartitioningBlockedForOrigins\n\nIf your organization does not want to block all third-party sites from accessing the user agent, you can configure a curated list of sites to block.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled and set Show to the approved URLs:\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Content settings\\Block third-party storage partitioning for these origins",
+  "Impact": "This might cause the user experience to vary from allowed sites to blocked sites.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1M,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_TEXT",
+  "value_data": "HKLM\\Software\\Policies\\Google\\Chrome\\ThirdPartyStoragePartitioningBlockedForOrigins",
+  "reg_option": "MUST_EXIST"
+}

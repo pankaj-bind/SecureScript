@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "5.3 (L1) Ensure 'Set disk cache size, in bytes' is set to 'Enabled: 250609664'",
+  "info": "This setting controls the size of the cache, in bytes, used to store files on the disk.\n\nThe recommended state for this setting is: Enabled: 250609664 or greater\n\nNOTE The value specified in this setting isn't a hard boundary but rather a suggestion to the caching system; any value below a few megabytes is too small and will be rounded up to a reasonable minimum.\n\nHaving enough disk space for browser cache is important for a computer investigation and for investigators such as Computer Forensics Analysts to be able to retrieve pertinent information to the investigation.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled: 250609664 :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Set disk cache size in bytes",
+  "Impact": "Browser cache will take up to 250MB in disk space.\"",
+  "reference": "800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.08.03,800-53|MP-6,800-53r5|MP-6,800-53r5|SR-12,CSCv7|7.4,CSCv8|3.5,CSF|PR.DS-3,CSF|PR.IP-6,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.10,ISO-27001-2022|A.7.10,ISO-27001-2022|A.7.14,ISO-27001-2022|A.8.10,ISO/IEC-27001|A.8.3.2,ITSG-33|MP-6,LEVEL|1A,NESA|T1.4.1,NESA|T1.4.2,NIAv2|MS5b,NIAv2|MS6,NIAv2|MS9,NIAv2|MS10a,NIAv2|MS10b,NIAv2|MS10c,NIAv2|MS10d,NIAv2|MS10e,NIAv2|MS10f,NIAv2|MS11a,NIAv2|MS11b,NIAv2|MS12a,NIAv2|MS12b,NIAv2|MS12c,NIAv2|MS13,NIAv2|MS14,NIAv2|MS17,NIAv2|MS18a,NIAv2|MS18b,NIAv2|MS18c,NIAv2|MS20,NIAv2|MS21,NIAv2|NS16,QCSC-v1|3.2,QCSC-v1|6.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "250609664",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "DiskCacheSize",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

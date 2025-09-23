@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.8.7 (L1) Ensure 'Enable the use of relay servers by the remote access host' is set to 'Disabled'.",
+  "info": "Google Chrome allows the use of relay servers when clients are trying to connect to this machine and a direct connection is not available.\n\n - Disable (0): The use of relay servers by the remote access host is not allowed\n - Enabled (1): The use of relay servers by the remote access host is allowed\n\nThe recommended state for this setting is: Disabled (0)\n\nRelay servers shall not be used to circumvent firewall restrictions.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Polices\\Administrative Templates\\Google\\Google Chrome\\Remote access\\Enable the use of relay servers by the remote access host",
+  "Impact": "If this setting is disabled, remote clients can not use relay servers to connect to this machine.",
+  "NOTE": "Setting this to Disabled doesn't turn remote access off, but only allows connections from the same network (not NAT traversal or relay).\"",
+  "reference": "800-171|3.1.1,800-171|3.1.2,800-171|3.1.12,800-171|3.13.1,800-171|3.13.5,800-171|3.14.6,800-171|3.14.7,800-171r3|03.01.12,800-171r3|03.13.01,800-171r3|03.14.06,800-53|AC-17,800-53|AC-17(1),800-53|SC-7,800-53|SI-4,800-53r5|AC-17,800-53r5|AC-17(1),800-53r5|SC-7,800-53r5|SI-4,CN-L3|7.1.3.5(a),CN-L3|8.1.4.4(c),CN-L3|8.1.10.5(b),CN-L3|8.1.10.6(f),CN-L3|8.1.10.6(i),CN-L3|8.1.10.6(j),CSCv7|12.12,CSCv8|13.5,CSF|DE.AE-1,CSF|DE.AE-2,CSF|DE.AE-3,CSF|DE.AE-4,CSF|DE.CM-1,CSF|DE.CM-5,CSF|DE.CM-6,CSF|DE.CM-7,CSF|DE.DP-2,CSF|DE.DP-3,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.AC-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.IP-8,CSF|PR.PT-4,CSF|RS.AN-1,CSF|RS.CO-3,CSF2.0|DE.AE-02,CSF2.0|DE.AE-03,CSF2.0|DE.CM-01,CSF2.0|DE.CM-06,CSF2.0|DE.CM-09,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.14,ISO-27001-2022|A.6.7,ISO-27001-2022|A.8.16,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.13.1.3,ITSG-33|AC-17,ITSG-33|AC-17(1),ITSG-33|SC-7,ITSG-33|SI-4,LEVEL|1A,NESA|M1.2.2,NESA|T4.5.4,NESA|T5.4.4,NESA|T5.4.5,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.6,TBA-FIISB|43.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "RemoteAccessHostAllowRelayedConnection",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

@@ -1,0 +1,12 @@
+{
+  "type": "REG_CHECK",
+  "description": "2.2.5 (L1) Ensure 'Allow local file access to file:// URLs on these sites in the PDF Viewer' Is Disabled",
+  "info": "This setting will allow specified URLs to access file:// URLs in the PDF Viewer. By default all domains are blocked from accessing file:// URLs in the PDF Viewer\n\nBlocking all domains, or a restricted list of domains, from opening a downloaded PDF file blocks the possibility of a malicious file being masked as a PDF. It could also block unknown or malicious code contained within the PDF that would run on the immediate opening within a browser tab.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Content settings\\Allow local file access to file:// URLs on these sites in the PDF Viewer",
+  "Impact": "Users will be required to open PDF files manually in the PDF Viewer or in the organization's PDF viewing application.\"",
+  "reference": "800-171|3.1.1,800-171r3|03.01.01,800-53|AC-2,800-53r5|AT-2,CN-L3|7.1.3.2(d),CSCv7|3.3,CSCv8|14.6,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.8.2,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_TEXT",
+  "value_data": "HKLM\\Software\\Policies\\Google\\Chrome\\PdfLocalFileAccessAllowedForDomains",
+  "reg_option": "MUST_NOT_EXIST"
+}

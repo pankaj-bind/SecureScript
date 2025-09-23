@@ -1,0 +1,13 @@
+{
+  "type": "REG_CHECK",
+  "description": "2.27 (L1) Ensure 'Http Allowlist' Is Properly Configured",
+  "info": "\"This setting allows administrators to list specific sites that will not be upgraded to HTTPS and will not show an error interstitial if HTTPS-First Mode is enabled.",
+  "Note": "Wildcards ( * [*] etc.) are not allowed in the URL listings.\n\nSetting this policy allows organizations to maintain access to servers that do not support HTTPS without having to disable HTTPS-First mode or HTTPS Upgrades.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled and set Show to the approved URLs:\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\HTTP Allowlist",
+  "Impact": "This should not have an impact on the user.\"",
+  "reference": "800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.06,800-53|CM-7,800-53|CM-7(1),800-53|SI-7,800-53|SI-7(1),800-53r5|CM-7,800-53r5|CM-7(1),800-53r5|SI-7,800-53r5|SI-7(1),CN-L3|7.1.3.5(b),CSCv7|2.5,CSCv8|2.7,CSF|PR.DS-6,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|ID.RA-09,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(c)(1),HIPAA|164.312(c)(2),HIPAA|164.312(e)(2)(i),ITSG-33|CM-7,ITSG-33|CM-7(1),ITSG-33|SI-7,ITSG-33|SI-7a.,ITSG-33|SI-7(1),LEVEL|1M,NESA|T3.4.1,NESA|T7.3.2,NESA|T7.3.3,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,PCI-DSSv3.2.1|10.5.5,QCSC-v1|3.2,SWIFT-CSCv1|2.3,SWIFT-CSCv1|6.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_TEXT",
+  "value_data": "HKLM\\Software\\Policies\\Google\\Chrome\\HttpAllowlist",
+  "reg_option": "MUST_EXIST"
+}

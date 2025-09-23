@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.2.1 (L1) Ensure 'Control use of insecure content exceptions' is set to 'Enabled: Do not allow any site to load mixed content'",
+  "info": "\"Setting controls whether users can add exceptions to allow mixed content for specific sites.\n\n - Do not allow any site to load mixed content (2)\n - Allow users to add exceptions to allow mixed content (3)\n\nThe recommended state for this setting is: Enabled with the value of Do not allow any site to load mixed content (2)",
+  "NOTE": "This policy can be overridden for specific URL patterns using the\n\nInsecureContentAllowedForUrls\n\nand\n\nInsecureContentBlockedForUrls\n\npolicies.\n\nAllowing mixed (secure / insecure) content from a site can lead to malicious content being loaded. Mixed content occurs if the initial request is secure over HTTPS, but HTTPS and HTTP content is subsequently loaded to display the web page. HTTPS content is secure. HTTP content is insecure.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled: Do not allow any site to load mixed content :\n\nComputer Configuration\\Polices\\Administrative Templates\\Google\\Google Chrome\\Content Settings\\Control use of insecure content exceptions",
+  "Impact": "Users will not be able to mix content.\"",
+  "reference": "800-171|3.13.1,800-171r3|03.13.01,800-53|SC-7(3),800-53|SC-7(4),800-53r5|SC-7(3),800-53r5|SC-7(4),CN-L3|8.1.10.6(j),CSCv7|7.5,CSCv8|9.3,CSF|PR.AC-5,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.8.16,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(3),ITSG-33|SC-7(4),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|1.1,TBA-FIISB|43.1,TBA-FIISB|44.1.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "2",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "DefaultInsecureContentSetting",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

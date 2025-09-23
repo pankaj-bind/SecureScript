@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.11 (L1) Ensure 'Allow download restrictions' is set to 'Enabled: Block malicious downloads'",
+  "info": "\"Google Chrome can block certain types of downloads, and won't let users bypass the security warnings, depending on the classification of Safe Browsing.\n\n - No special restrictions. Default. (0, Disabled ) (Default)\n - Block malicious downloads and dangerous file types. (1)\n - Block malicious downloads, uncommon or unwanted downloads and dangerous file types. (2)\n - Block all downloads. (3)\n - Block malicious downloads. Recommended. (4)\n\nThe recommended state for this setting is: Enabled with a value of Block malicious downloads. Recommended. (4)",
+  "NOTE": "These restrictions apply to downloads triggered from webpage content, as well as the Download link... menu option. They don't apply to the download of the currently displayed page or to saving as PDF from the printing options.\n\nUsers shall be prevented from downloading malicious file types, and shall not be able to bypass security warnings.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled: Block malicious downloads. Recommended. :\n\nComputer Configuration\\Polices\\Administrative Templates\\Google\\Google Chrome\\Allow download restrictions",
+  "Impact": "If this setting is enabled, all downloads are allowed, except for those that carry Safe Browsing warnings. These are downloads that have been identified as risky or from a risky source by the\n\nGoogle Safe Browsing Global intelligence engine\"",
+  "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|10.5,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.8.6,ITSG-33|AU-4,LEVEL|1A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "4",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "DownloadRestrictions",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

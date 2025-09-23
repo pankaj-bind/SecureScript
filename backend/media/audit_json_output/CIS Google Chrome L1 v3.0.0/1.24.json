@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.24 (L1) Ensure 'Import search engines from default browser on first run' is set to 'Disabled'",
+  "info": "This setting controls whether users are able to import search engine settings from another browser into Google Chrome as well as whether said setting is imported on first use.\n\nIf you set this setting to Disabled users will be unable to perform an import of their search engine settings from other browsers into Google Chrome.\n\nThe recommended state for this setting is: Disabled (0)\n\nHaving search engine settings automatically imported or allowing users to import the settings from another browser into Google Chrome could allow for a malicious search engine to be set.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Import search engines from default browser on first run",
+  "Impact": "None - This is the default behavior.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "ImportSearchEngine",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

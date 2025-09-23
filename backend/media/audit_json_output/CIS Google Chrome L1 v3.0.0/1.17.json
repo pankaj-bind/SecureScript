@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.17 (L1) Ensure 'Enable online OCSP/CRL checks' is set to 'Disabled'",
+  "info": "Google Chrome can reactivate soft-fail, online revocation checks although they can provide some benefit in most cases.\n\nIf this setting is disabled, unsecure online OCSP/CRL checks are no longer performed.\n\nThe recommended state for this setting is: Disabled (0)\n\nCRLSets are primarily a means by which Chrome can quickly block certificates in emergency situations. As a secondary function they can also contain some number of non-emergency revocations. These latter revocations are obtained by crawling CRLs published by CAs.\n\nOnline (i.e. OCSP and CRL) checks are not, by default, performed by Chrome. The underlying system certificate library always performs these checks no matter what Chrome does, so enabling it here is redundant.\n\nAn attacker may block OCSP traffic and cause revocation checks to pass in order to cause usage of soft-fail behavior. Furthermore, the browser may leak what website is being accessed and who accesses it to CA servers.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Enable online OCSP/CRL checks",
+  "Impact": "None - This is the default behavior.\"",
+  "reference": "800-171|3.5.2,800-171r3|03.05.12,800-53|IA-5(2),800-53r5|IA-5(2),CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(2),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "EnableOnlineRevocationChecks",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

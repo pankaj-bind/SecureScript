@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "3.6 (L1) Ensure 'Control how Chrome Cleanup reports data to Google' is set to 'Disabled'",
+  "info": "\"Chrome provides a Cleanup feature to detect unwanted software. If this setting is Enabled the results of the cleanup may be shared with Google (based on the setting of\n\nSafeBrowsingExtendedReportingEnabled\n\n) to assist with future unwanted software detection. These results will contain file metadata, automatically installed extensions, and registry keys.\n\nIf the setting is Disabled the results of the cleanup will not be shared with Google regardless of the value of\n\nSafeBrowsingExtendedReportingEnabled\n\n.\n\nThe recommended state for this setting is: Disabled (0)",
+  "NOTE": "This setting is not available on Windows instances that are not joined to a Microsoft(R) Active Directory(R) domain.\n\nAnonymous crash/usage data can be used to identify people, companies, and information, which can be considered data ex-filtration from company systems.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set thefollowing UI path to Disabled :\n\nComputer Configuration\\Administrative Templates\\Google\\Google Chrome\\Control how Chrome Cleanup reports data to Google",
+  "Impact": "Chrome Cleanup detected unwanted software and will no longer report metadata about the scan to Google.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "ChromeCleanupReportingEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

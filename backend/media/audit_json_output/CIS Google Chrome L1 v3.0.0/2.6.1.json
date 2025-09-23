@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.6.1 (L1) Ensure 'Enable saving passwords to the password manager' is Explicitly Configured",
+  "info": "\"Google Chrome has a built-in password manager to store passwords for users. Chrome will use local authentication to allow users to gain access to these passwords.\n\nThe recommended state for this setting is: Explicitly set to Enabled (1) or Disabled (0) based on the organization's needs.",
+  "NOTE": "If you choose to Enable this setting, please review Disable synchronization of data with Google and ensure this setting is configured to meet organizational requirements.\n\nThe Google Chrome password manager is Enabled by default and each organization should review and determine if they want to allow users to store passwords in the Browser. If another solution is used instead of the built in Chrome option then an organization should configure the setting to Disabled\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, configure the following setting to meet organizational requirements:\n\nComputer Configuration\\Polices\\Administrative Templates\\Google\\Google Chrome\\Password manager\\Enable saving passwords to the password manager",
+  "Impact": "Organizationally dependent.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1M,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1\" || \"0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "PasswordManagerEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

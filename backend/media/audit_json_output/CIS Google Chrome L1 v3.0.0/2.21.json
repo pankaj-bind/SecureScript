@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.21 (L1) Ensure 'Allow reporting of domain reliability related data' Is Disabled",
+  "info": "This setting controls the defaults for clipboard permission access from sites. It can be configured to either:\n\n - Disabled (0): Never send domain reliability data to Google\n - Enabled (1): Domain Reliability data may be sent to Google depending on Chrome User Metrics (UMA) policy\n\nIf the value for DomainReliabilityAllowed is not changed from the default, it will behave as it is enabled.\n\nSetting this policy to disabled can stop any accidental data leakage.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google Chrome\\Allow reporting of domain reliability related data",
+  "Impact": "There should be no impact on the user.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.1,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "DomainReliabilityAllowed",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

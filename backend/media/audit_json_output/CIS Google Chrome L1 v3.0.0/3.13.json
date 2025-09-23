@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "3.13 (L1) Ensure 'Enable Safe Browsing for trusted sources' is set to 'Disabled'",
+  "info": "\"Google Chrome can be adjusted to allow downloads without Safe Browsing checks when the requested file is from a trusted source. Trusted sources can be defined using recommendation 'Configure the list of domains on which Safe Browsing will not trigger warnings'.\n\nThe recommended state for this setting is: Disabled (0)",
+  "NOTE": "On Microsoft(R) Windows(R), this functionality is only available on instances that are joined to a Microsoft(R) Active Directory(R) domain, running on Windows 10 Pro, or enrolled in Chrome Browser Cloud Management.\n\nInformation requested from trusted sources shall not be sent to Google's safe browsing servers.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Administrative Templates\\Google\\Google Chrome\\Enable Safe Browsing for trusted sources",
+  "Impact": "If this setting is disabled, files downloaded from intranet resources will not be checked by Google Services.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "SafeBrowsingForTrustedSourcesEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

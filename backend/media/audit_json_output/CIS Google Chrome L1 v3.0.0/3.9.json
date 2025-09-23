@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "3.9 (L1) Ensure 'Enable deleting browser and download history' is set to 'Disabled'",
+  "info": "\"Google Chrome can delete the browser and download history using the clear browsing data menu.\n\nThe recommended state for this setting is: Disabled (0)",
+  "NOTE": "Even when this setting is disabled, the browsing and download history aren't guaranteed to be retained. Users can edit or delete the history database files directly, and the browser itself may remove (based on expiration period) or archive any or all history items at any time\n\nIf users can delete websites they have visited or files they have downloaded it will be easier for them to hide evidence that they have visited unauthorized or malicious sites.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Administrative Templates\\Google\\Google Chrome\\Enable deleting browser and download history",
+  "Impact": "If this setting is disabled, browsing and download history cannot be deleted by using the clear browsing data menu.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "AllowDeletingBrowserHistory",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "3.11 (L1) Ensure 'Enable or disable spell checking web service' is set to 'Disabled'",
+  "info": "Google Chrome can use Google web service to help resolve spelling errors.\n\nThe recommended state for this setting is: Disabled (0)\n\nInformation typed in may be leaked to Google's spellcheck web service.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Administrative Templates\\Google\\Google Chrome\\Enable or disable spell checking web service",
+  "Impact": "After disabling this feature, Chrome no longer sends the entire contents of text fields to Google as you type them. Spell checking can still be performed using a downloaded dictionary. This setting only controls the usage of the online service.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "SpellCheckServiceEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

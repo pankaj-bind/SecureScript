@@ -1,0 +1,12 @@
+{
+  "type": "REG_CHECK",
+  "description": "1.25 (L1) Ensure 'List of names that will bypass the HSTS policy check' is set to 'Disabled'",
+  "info": "This setting allows a list of names to be specified that will be exempt from HTTP Strict Transport Security (HSTS) policy checks, then potentially upgraded from http:// to https://.\n\nThe recommended state for this setting is: Disabled (0)\n\nAllowing hostnames to be exempt from HSTS checks could allow for protocol downgrade attacks and cookie hijackings.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\List of names that will bypass the HSTS policy check",
+  "Impact": "None - This is the default behavior.\"",
+  "reference": "800-171|3.13.1,800-171r3|03.13.01,800-53|SC-7(3),800-53|SC-7(4),800-53r5|SC-7(3),800-53r5|SC-7(4),CN-L3|8.1.10.6(j),CSCv7|7.4,CSCv8|9.3,CSF|PR.AC-5,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.8.16,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(3),ITSG-33|SC-7(4),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|1.1,TBA-FIISB|43.1,TBA-FIISB|44.1.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_TEXT",
+  "value_data": "HKLM\\Software\\Policies\\Google\\Chrome\\HSTSPolicyBypassList",
+  "reg_option": "MUST_NOT_EXIST"
+}
