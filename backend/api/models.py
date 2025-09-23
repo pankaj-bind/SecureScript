@@ -21,7 +21,7 @@ def get_audit_parser_upload_path(instance, filename):
     into a directory named after the parser instance.
     """
     # Sanitize the instance name to create a valid directory name
-    dir_name = "".join(x for x in instance.name if x.isalnum() or x in " .-_").rstrip() 
+    dir_name = "".join(x for x in instance.name if x.isalnum() or x in " .-_").rstrip()
     return os.path.join('audit_parsers', dir_name, filename)
 
 
@@ -37,7 +37,7 @@ class AuditParser(models.Model):
     class Meta:
         ordering = ['name']
         verbose_name = "Audit Parser"
-        verbose_name_plural = "Audit Parsers" 
+        verbose_name_plural = "Audit Parsers"
 
 
 # --- Model for Password Reset ---
@@ -60,7 +60,7 @@ class TechnologyType(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name 
+        return self.name
 
     class Meta:
         verbose_name = "Technology Type"
@@ -75,7 +75,7 @@ class Organization(models.Model):
         max_length=500,
         blank=True,
         null=True,
-        help_text="Paste the full URL of the organization's logo image" 
+        help_text="Paste the full URL of the organization's logo image"
     )
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -91,16 +91,15 @@ class Product(models.Model):
     VIEWER_CHOICES = [
         ('Default', 'Default Viewer'),
         ('Microsoft Edge', 'Microsoft Edge Viewer'),
-        ('Google Chrome', 'Google Chrome Viewer'), 
-        ('Windows 11 Standalone v3.0.0', 'Windows 11 Standalone v3.0.0 Viewer'),
-        ('Windows 11 Standalone v4.0.0', 'Windows 11 Standalone v4.0.0 Viewer'),
-        ('Windows 11 Enterprise v4.0.0', 'Windows 11 Enterprise v4.0.0 Viewer'),
+        ('Google Chrome', 'Google Chrome Viewer'),
+        ('Windows 11 Standalone', 'Windows 11 Standalone Viewer'),
+        ('Windows 11 Enterprise', 'Windows 11 Enterprise Viewer'),
     ]
 
     name = models.CharField(
-        max_length=255, 
+        max_length=255,
         help_text="e.g., CIS Foundation Benchmark v2.0.0",
-        editable=False, 
+        editable=False,
         default='<Name will be generated automatically>'
     )
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, related_name='products')
@@ -115,7 +114,7 @@ class Product(models.Model):
 
     page_viewer = models.CharField(
         max_length=100,
-        choices=VIEWER_CHOICES, 
+        choices=VIEWER_CHOICES,
         default='Default',
         help_text="Select the frontend component to use for displaying this product's details."
     )
@@ -128,9 +127,9 @@ class Product(models.Model):
     )
     tenable_audit_file = models.FileField(
         upload_to='tenable_audits/',
-        blank=True, 
+        blank=True,
         null=True,
-        help_text="Upload the Tenable audit file. This will be processed to generate JSON data." 
+        help_text="Upload the Tenable audit file. This will be processed to generate JSON data."
     )
     audit_json_output_path = models.CharField(
         max_length=512,
@@ -145,7 +144,7 @@ class Product(models.Model):
         return self.name
 
     class Meta:
-        ordering = ['name'] 
+        ordering = ['name']
 
 
 class UserProfile(models.Model):
@@ -162,7 +161,7 @@ class UserProfile(models.Model):
         ('other', 'Other'),
         ('prefer_not_to_say', 'Prefer not to say'),
     ]
-    gender = models.CharField(max_length=20, choices=GENDER_CHOICES, blank=True) 
+    gender = models.CharField(max_length=20, choices=GENDER_CHOICES, blank=True)
 
     profile_picture = models.ImageField(
         upload_to='profile_pictures/',
@@ -182,7 +181,7 @@ class UserProfile(models.Model):
         return f"{self.first_name} {self.last_name}".strip()
 
     @property
-    def display_name(self): 
+    def display_name(self):
         return self.full_name if self.full_name else self.user.username
 
     class Meta:
@@ -198,7 +197,7 @@ class Template(models.Model):
     # Store generated scripts
     harden_script = models.TextField(blank=True)
     check_script = models.TextField(blank=True)
-    revert_script = models.TextField(blank=True) 
+    revert_script = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
@@ -215,7 +214,8 @@ class Template(models.Model):
 # Helper function for report upload path
 def get_report_upload_path(instance, filename):
     """
-    Determines the upload path for a report PDF, organizing it by template ID. """ 
+    Determines the upload path for a report PDF, organizing it by template ID.
+    """
     product_name_slug = slugify(instance.template.product.name)
     template_id = instance.template.id
     return os.path.join(
@@ -231,7 +231,7 @@ class Report(models.Model):
         ('Audit-Report', 'Audit Report'),
         ('Hardening-Report', 'Hardening Report'),
         ('Revert-Hardening-Report', 'Revert Hardening Report'),
-    ] 
+    ]
 
     template = models.ForeignKey(Template, on_delete=models.CASCADE, related_name='reports')
     report_type = models.CharField(max_length=50, choices=REPORT_TYPE_CHOICES)
@@ -254,7 +254,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         UserProfile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs): 
+def save_user_profile(sender, instance, **kwargs):
     if hasattr(instance, 'userprofile'):
         instance.userprofile.save()
 
@@ -273,7 +273,7 @@ def delete_old_profile_picture(sender, instance, **kwargs):
 @receiver(post_save, sender=Product)
 def update_organization_on_product_save(sender, instance, **kwargs):
     try:
-        instance.organization.save() 
+        instance.organization.save()
     except Organization.DoesNotExist:
         pass
 
@@ -292,7 +292,7 @@ def product_pre_save_receiver(sender, instance, **kwargs):
         try:
             _product_old_tenable_file[instance.pk] = sender.objects.get(pk=instance.pk).tenable_audit_file
         except sender.DoesNotExist:
-            _product_old_tenable_file[instance.pk] = None 
+            _product_old_tenable_file[instance.pk] = None
 
 @receiver(post_save, sender=Product)
 def process_audit_file_receiver(sender, instance, created, **kwargs):
@@ -306,7 +306,7 @@ def process_audit_file_receiver(sender, instance, created, **kwargs):
 
             spec = importlib.util.spec_from_file_location(module_name, parser_file_path)
             parser_module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(parser_module) 
+            spec.loader.exec_module(parser_module)
 
             if not hasattr(parser_module, 'process_audit_file'):
                 print(f"Error: 'process_audit_file' function not found in {parser_file_path}")
@@ -315,8 +315,8 @@ def process_audit_file_receiver(sender, instance, created, **kwargs):
             process_audit_file_func = parser_module.process_audit_file
 
             input_file_full_path = instance.tenable_audit_file.path
-            output_base_dir = os.path.join(settings.MEDIA_ROOT, 'audit_json_output') 
-            
+            output_base_dir = os.path.join(settings.MEDIA_ROOT, 'audit_json_output')
+
             # --- MODIFICATION START ---
             # Set a fallback product name from the filename
             filename = os.path.basename(input_file_full_path)
@@ -339,7 +339,7 @@ def process_audit_file_receiver(sender, instance, created, **kwargs):
                     print(f"Warning: Could not read or parse metadata.json: {e}. Using fallback name.")
 
                 relative_output_path = os.path.relpath(generated_folder_path, settings.MEDIA_ROOT)
-                Product.objects.filter(pk=instance.pk).update( 
+                Product.objects.filter(pk=instance.pk).update(
                     name=product_name,
                     audit_json_output_path=relative_output_path
                 )
