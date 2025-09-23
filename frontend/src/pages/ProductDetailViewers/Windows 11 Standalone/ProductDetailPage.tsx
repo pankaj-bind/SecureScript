@@ -4,7 +4,8 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getProductDetails, ProductDetails, createTemplate } from '../../../services/authService';
 import axios from 'axios';
-import customScripts from './scripts.json'; // Import the viewer's specific scripts
+// --- CHANGE 1: REMOVE the static import of scripts.json ---
+// import customScripts from './scripts.json';
 
 // --- Type Interfaces ---
 interface AuditFile {
@@ -27,7 +28,8 @@ interface Policy {
 
 // --- Helper Components ---
 
-const PolicyDetailView: React.FC<{ policy: Policy | null }> = ({ policy }) => {
+// --- CHANGE 2: UPDATE PolicyDetailView to accept scripts as a prop ---
+const PolicyDetailView: React.FC<{ policy: Policy | null; customScripts: Record<string, any> | null }> = ({ policy, customScripts }) => {
     const [hardenScript, setHardenScript] = useState('');
     const [checkScript, setCheckScript] = useState('');
     const [revertScript, setRevertScript] = useState('');
@@ -44,9 +46,9 @@ const PolicyDetailView: React.FC<{ policy: Policy | null }> = ({ policy }) => {
             const policyIdMatch = policy.description.match(/^(\d+(\.\d+)*)/);
             const policyId = policyIdMatch ? policyIdMatch[0] : null;
 
-            // Check if a custom script exists for this policy ID
-            if (policyId && (customScripts as any)[policyId]) {
-                const scripts = (customScripts as any)[policyId];
+            // --- CHANGE 3: USE the customScripts prop instead of the imported variable ---
+            if (policyId && customScripts && customScripts[policyId]) {
+                const scripts = customScripts[policyId];
                 setHardenScript(scripts.hardeningScript || '# No custom hardening script provided.');
                 setCheckScript(scripts.auditScript || '# No custom audit script provided.');
                 setRevertScript(scripts.revertHardeningScript || '# No custom revert script provided.');
@@ -80,7 +82,7 @@ const PolicyDetailView: React.FC<{ policy: Policy | null }> = ({ policy }) => {
             setCheckScript(`reg query "${reg_key}" /v "${reg_item}"`);
             setRevertScript(`reg delete "${reg_key}" /v "${reg_item}" /f`);
         }
-    }, [policy]);
+    }, [policy, customScripts]); // Add customScripts to dependency array
 
     const handleScriptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -223,50 +225,8 @@ const PolicyDetailView: React.FC<{ policy: Policy | null }> = ({ policy }) => {
     );
 };
 
+
 // --- Main Page Component ---
-
-const generateScriptForPolicies = (policies: Policy[], scriptType: 'hardeningScript' | 'auditScript' | 'revertHardeningScript'): string => {
-    const scriptParts: string[] = [];
-
-    for (const policy of policies) {
-        let scriptPart = '';
-        const policyIdMatch = policy.description.match(/^(\d+(\.\d+)*)/);
-        const policyId = policyIdMatch ? policyIdMatch[0] : null;
-
-        if (policyId && (customScripts as any)[policyId]) {
-            scriptPart = (customScripts as any)[policyId][scriptType] || '';
-        }
-        else {
-            const { reg_key, reg_item, value_data, value_type, reg_option } = policy;
-            if (scriptType === 'hardeningScript') {
-                if (reg_option === 'MUST_NOT_EXIST' && value_data) {
-                    scriptPart = `reg delete "${value_data}" /f`;
-                } else if (reg_key && reg_item) {
-                    const regType = value_type === 'POLICY_DWORD' ? 'REG_DWORD' : 'REG_SZ';
-                    scriptPart = `reg add "${reg_key}" /v "${reg_item}" /t ${regType} /d "${value_data}" /f`;
-                }
-            } else if (scriptType === 'auditScript') {
-                if (reg_option === 'MUST_NOT_EXIST' && value_data) {
-                    scriptPart = `reg query "${value_data}"`;
-                } else if (reg_key && reg_item) {
-                    scriptPart = `reg query "${reg_key}" /v "${reg_item}"`;
-                }
-            } else if (scriptType === 'revertHardeningScript') {
-                if (reg_option === 'MUST_NOT_EXIST' && value_data) {
-                    scriptPart = `# No automatic revert for MUST_NOT_EXIST policy: ${policy.description}`;
-                } else if (reg_key && reg_item) {
-                    scriptPart = `reg delete "${reg_key}" /v "${reg_item}" /f`;
-                }
-            }
-        }
-
-        if (scriptPart) {
-            scriptParts.push(`# Policy: ${policy.description}\n${scriptPart}`);
-        }
-    }
-
-    return scriptParts.join('\n\n');
-};
 
 const ProductDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -278,6 +238,9 @@ const ProductDetailPage: React.FC = () => {
     const [templateMessage, setTemplateMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    // --- CHANGE 4: ADD state to hold the fetched scripts ---
+    const [customScripts, setCustomScripts] = useState<Record<string, any> | null>(null);
+
 
     const naturalSort = useCallback((a: Policy, b: Policy) => {
         const regex = /^(\d+(\.\d+)*)/;
@@ -313,6 +276,21 @@ const ProductDetailPage: React.FC = () => {
             try {
                 const productData = await getProductDetails(id);
                 setProduct(productData);
+
+                // --- CHANGE 5: FETCH the custom scripts from the new URL ---
+                if (productData.script_json_url) {
+                    try {
+                        const scriptResponse = await axios.get(productData.script_json_url);
+                        setCustomScripts(scriptResponse.data);
+                    } catch (scriptError) {
+                        console.warn("Could not load remote script.json, dynamic scripts will be used.", scriptError);
+                        // Set to an empty object to prevent re-fetching and allow fallbacks to work
+                        setCustomScripts({}); 
+                    }
+                } else {
+                     setCustomScripts({}); // No remote script, use fallbacks
+                }
+
 
                 if (productData.audit_files && productData.audit_files.length > 0) {
                     const filePromises = productData.audit_files
@@ -384,25 +362,26 @@ const ProductDetailPage: React.FC = () => {
     };
 
     const isAllFilteredSelected = filteredPolicies.length > 0 && filteredPolicies.every(p => selectedPolicies.has(p.description));
-    const handleCreateTemplate = async () => {
-        if (selectedPolicies.size === 0) {
-            setTemplateMessage("Please select at least one policy to create a template.");
-            return;
-        }
 
-        const policiesToSave = policies.filter(p => selectedPolicies.has(p.description));
-        try {
-            // Corrected payload to match the CreateTemplatePayload interface
-            await createTemplate({
-                product: product!.id,
-                policies: policiesToSave,
-            });
-            setTemplateMessage("Template created successfully!");
-            setSelectedPolicies(new Set());
-        } catch (error) {
-            setTemplateMessage("Failed to create template.");
-        }
-    };
+    const handleCreateTemplate = async () => {
+    if (selectedPolicies.size === 0) {
+        setTemplateMessage("Please select at least one policy to create a template.");
+        return;
+    }
+
+    const policiesToSave = policies.filter(p => selectedPolicies.has(p.description));
+    try {
+        // Corrected payload to match the CreateTemplatePayload interface
+        await createTemplate({
+            product: product!.id,
+            policies: policiesToSave,
+        });
+        setTemplateMessage("Template created successfully!");
+        setSelectedPolicies(new Set());
+    } catch (error) {
+        setTemplateMessage("Failed to create template.");
+    }
+};
 
     if (isLoading) {
         return <div className="text-center p-10">Loading product details...</div>;
@@ -478,10 +457,11 @@ const ProductDetailPage: React.FC = () => {
                                 />
                                 <button
                                     onClick={() => setSelectedPolicy(policy)}
-                                    className={`w-full text-left px-3 py-2 rounded-md transition-colors duration-200 text-sm ${selectedPolicy?.description === policy.description
+                                    className={`w-full text-left px-3 py-2 rounded-md transition-colors duration-200 text-sm ${
+                                        selectedPolicy?.description === policy.description
                                             ? 'bg-blue-600 text-white font-semibold'
                                             : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                        }`}
+                                    }`}
                                 >
                                     {policy.description}
                                 </button>
@@ -492,7 +472,8 @@ const ProductDetailPage: React.FC = () => {
 
                 <main className="md:w-2/3 lg:w-3/4">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md min-h-[70vh]">
-                        <PolicyDetailView policy={selectedPolicy} />
+                        {/* --- CHANGE 6: PASS the customScripts state as a prop --- */}
+                        <PolicyDetailView policy={selectedPolicy} customScripts={customScripts} />
                     </div>
                 </main>
             </div>

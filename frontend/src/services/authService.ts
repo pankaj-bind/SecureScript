@@ -1,5 +1,4 @@
 // src/services/authService.ts
-// src/services/authService.ts
 import axios from 'axios';
 import apiClient from '../api/apiClient'; 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/';
@@ -21,6 +20,7 @@ export interface ProductDetails {
   organization_id: number;
   audit_files: AuditFile[];
   page_viewer: string;
+  script_json_url: string | null;
 }
 
 export interface Template {
@@ -48,7 +48,6 @@ export interface Report {
 }
 
 export interface ReportPayload {
-    // MODIFIED: Use the new, longer report type names
     report_type: 'Audit-Report' | 'Hardening-Report' | 'Revert-Hardening-Report';
     serial_number: string;
     policies: { name: string; status: 'Passed' | 'Failed' }[];
