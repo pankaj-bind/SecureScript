@@ -1,0 +1,3338 @@
+#TRUSTED 96c6d27119a7156898e8a39e1e967c16400049551644a7f01e6d98be97da1be58854b1b43315905dff83c40393c89fe76ffecf6c3c70df2e77ce108386968133e558548d2ad5d81deee274aaced0fd3c29cfac5c1c7bca4746b6261f285d710e7d2f62eea7f16a973b3af84c0f85454befe5807c9a4eede8ca48708e8c6f60d403e8c830db147d94d3321029a3f0fcd58d966e90c312b219a5b353b5ddb0c30f8f934fcd9f699dd0c6feac3c88a51c32b9f9883ce8029d0afa201c90a09225b16e08198443718cc7cc51b647ae50e714874c39de092c13e2ee4c5caf4c470dee07bc69a574543c3b6446a6376201f909323616a47c015bb179fe1ebcf5b237e38bbc0a5726172b467813ed94bb7cda7bdfe2eb2926c5ebfd131e4badc917f95c7009102f10f360c67ac4a68a36f3fa47fb4c89656eb64719342e04c5f66a1433b520774069cba41fbfc272f7ff514b970399b404adb986997d1b7646cf6bc3e2ff185c9d3143f28db0ff74ff94e9894cdbdf5a3c0f3a2dd5d147f6c98d1b5a2c47504ad804ff054a3d687529c6b7932ac658c8978f80d5c9bf7bff289341bb3a8cb3e000ddc210a70c14e35e91087cc3355894cd57f77283a8eccc3758a1f9cffb8862013a4fc28e5ccc4593ffa39a30cef0a75d4af11e004ced832de3fcf24ac0cd6124cefe53c0f3c888fb0680bade2f48b696560e96fe6eaa25fc3b30dca1
+#TRUST-RSA-SHA256 60b79ff9d866128856cdfbe991bd0a265697c8a566a9a13314211ea0aa811df360ac9b07492670a5f6a22b7a1f492361c905dcbb090193756d97818a335903b6e1c4cd17ac8e7b870d44f93242da6b7aa2aaaed7f46f8986aa850178887f1c0dbaa95dfdc247bf80613c52757ca0d331c43af211b3b870896b69099f7d9ef28bae0635815e6560efc19c5bf43a70ac104fa67a7f8aaedd3311b58873322063798169138edbed3e56d18238951edae2e3a9e278e4cf280d1256790dce86f09a20d942ac5e95fb7ccc3f96acfb0ce1009d2f69fd8604659fe730abcdf5ebf72b762d1b69ed8adbe1203037f77ed8e57b319cd80c598cef054de51fcdd0a6e9ceec0e992aa03dd8d82a9d278f1af3dd98de6c8a2e05edbd041928ab159ec5dc86ca8747f79cc23b2653ba108373f5ec0e23a7061106988792cf757b62a26d8cbd2552a82956ee7a39ccccf967777ed15070c7b242ea0b5716b17f779b650adcc043e97e6a89a39e853227f221b479da13d09e5848fb75ad2165562abdfe04d132caaf041009847af0a2dbfbcb631fbf48f34b7db4160496b5120da95f71fc1ac3e5b6e437ecefdd93cdb9b15ed34aef441e721a030ee0c5c6230877a2b4e7c67a434869646ca04785caf5621f0b1187d89a6a933339cd6574e7fdccb5c2209ef5ebffb232271825d38e88a11f829ff806151f7f56ff6f7ab1163868ede8efd0bcc8
+#
+# This script is Copyright (C) 2004-2025 and is owned by Tenable, Inc. or an Affiliate thereof.
+#
+# This script is released under the Tenable Subscription License and
+# may not be used from within scripts released under another license
+# without authorization from Tenable, Inc.
+#
+# See the following licenses for details:
+#
+# http://static.tenable.com/prod_docs/Nessus_6_SLA_and_Subscription_Agreement.pdf
+#
+# @PROFESSIONALFEED@
+# $Revision: 1.1 $
+# $Date: 2025/01/06 $
+#
+# description : This .audit is designed against the CIS Microsoft Edge Benchmark 3.0.0
+#
+#<ui_metadata>
+#<display_name>CIS Microsoft Edge v3.0.0 L1</display_name>
+#<spec>
+#  <type>CIS</type>
+#  <name>Microsoft Edge</name>
+#  <profile>L1</profile>
+#  <version>3.0.0</version>
+#  <link>https://workbench.cisecurity.org/benchmarks/18501</link>
+#</spec>
+#<labels>cis,ms_edge,agent</labels>
+#<benchmark_refs>CSCv6,CSCv7,CSCv8,LEVEL</benchmark_refs>
+#</ui_metadata>
+
+<check_type:"Windows" version:"2">
+<group_policy:"Microsoft Edge">
+
+<if>
+  <condition type:"OR">
+    <custom_item>
+      type            : AUDIT_POWERSHELL
+      description     : "Check for MS Edge package"
+      value_type      : POLICY_TEXT
+      value_data      : "Name : Microsoft.MicrosoftEdge"
+      powershell_args : "Get-AppxPackage -Name Microsoft.MicrosoftEdge | Select 'Name' | Format-List"
+      check_type      : CHECK_REGEX
+    </custom_item>
+
+    <custom_item>
+      type        : FILE_CHECK
+      description : "Check for MS Edge application"
+      value_type  : POLICY_TEXT
+      value_data  : "%ProgramFiles(x86)%\Microsoft\Edge\Application\msedge.exe"
+      file_option : MUST_EXIST
+    </custom_item>
+  </condition>
+
+  <then>
+    <report type:"PASSED">
+      description : "CIS_Microsoft_Edge_v3.0.0_L1.audit from CIS Microsoft Edge Benchmark v3.0.0"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+    </report>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.100 (L1) Ensure 'Enable site isolation for every site' is set to 'Enabled'"
+      info        : "This policy setting ensures that each website runs in its own process so that a site will not be able to utilize or take data from another running site.
+
+The recommended state for this setting is: Enabled
+
+Enabling site isolation can help stop sites from inadvertently sharing data with other running sites. This will help protect data from untrusted sources."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable site isolation for every site
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "SitePerProcess"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.10.1 (L1) Ensure 'Allow Basic authentication for HTTP' is set to 'Disabled'"
+      info        : "This policy setting determines if Basic authentication receives challenges over non-secure HTTP. Basic authentication is a non-secure authentication method that relies on sending the username and password to the server in plaintext.
+
+The recommended state for this setting is: Disabled
+
+Note: This policy setting is ignored (and Basic is always forbidden) if the
+
+AuthSchemes (Supported authentication schemes)
+
+policy is set and does not include Basic.
+
+Basic authentication is less robust than other authentication methods available because credentials including passwords are transmitted in plain text. An attacker who can capture these credentials in plain text can gain access to the system."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\HTTP authentication\Allow Basic authentication for HTTP
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Non-secure HTTP requests from the Basic authentication scheme are blocked, and only secure HTTPS is allowed."
+      reference   : "800-171|3.1.13,800-171|3.5.2,800-171|3.13.8,800-53|AC-17(2),800-53|IA-5,800-53|IA-5(1),800-53|SC-8,800-53|SC-8(1),800-53r5|AC-17(2),800-53r5|IA-5,800-53r5|IA-5(1),800-53r5|SC-8,800-53r5|SC-8(1),CN-L3|7.1.2.7(g),CN-L3|7.1.3.1(d),CN-L3|8.1.2.2(a),CN-L3|8.1.2.2(b),CN-L3|8.1.4.1(c),CN-L3|8.1.4.7(a),CN-L3|8.1.4.8(a),CN-L3|8.2.4.5(c),CN-L3|8.2.4.5(d),CN-L3|8.5.2.2,CSCv7|14.4,CSCv8|3.10,CSF|PR.AC-1,CSF|PR.AC-3,CSF|PR.DS-2,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,CSF2.0|PR.AA-05,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),HIPAA|164.312(e)(1),HIPAA|164.312(e)(2)(i),ISO/IEC-27001|A.6.2.2,ISO/IEC-27001|A.10.1.1,ISO/IEC-27001|A.13.2.3,ITSG-33|AC-17(2),ITSG-33|IA-5,ITSG-33|IA-5(1),ITSG-33|SC-8,ITSG-33|SC-8a.,ITSG-33|SC-8(1),LEVEL|1A,NESA|T4.3.1,NESA|T4.3.2,NESA|T4.5.1,NESA|T4.5.2,NESA|T5.2.3,NESA|T5.4.2,NESA|T7.3.3,NESA|T7.4.1,NIAv2|AM37,NIAv2|IE8,NIAv2|IE9,NIAv2|IE12,NIAv2|NS5d,NIAv2|NS6b,NIAv2|NS29,NIAv2|SS24,PCI-DSSv3.2.1|2.3,PCI-DSSv3.2.1|4.1,PCI-DSSv4.0|2.2.7,PCI-DSSv4.0|4.2.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|2.1,SWIFT-CSCv1|2.6,SWIFT-CSCv1|4.1,TBA-FIISB|29.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "BasicAuthOverHttpEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.101 (L1) Ensure 'Enable tab organization suggestions' is set to 'Disabled'"
+      info        : "This policy setting controls whether Microsoft Edge can use its tab organization service to help name or suggest tab groups.
+
+The recommended state for this setting is: Disabled
+
+Sending Microsoft Edge tab data (URLs, page titles, and existing group information) to the tab organization service could led to privacy concerns or sensitive data being exposed to a third-party."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable tab organization suggestions
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+Suggestions for tab groups will not be available to users."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "TabServicesEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.10.2 (L1) Ensure 'Allow cross-origin HTTP Authentication prompts' is set to 'Disabled'"
+      info        : "This policy setting controls whether third-party sub-content can open a HTTP Basic Auth dialog and is typically disabled.
+
+The recommended state for this setting is: Disabled
+
+This setting is typically disabled to help combat phishing attempts."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\HTTP authentication\Allow cross-origin HTTP Authentication prompts
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Disabling this setting should have minimal impact to the user as it is typically disabled by default and third-party sub-content can't open a HTTP Basic Auth dialog box."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "AllowCrossOriginAuthPrompt"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.102 (L1) Ensure 'Enable the Search bar' is set to 'Disabled'"
+      info        : "This policy setting configures the use of the search bar. The search bar is used to search the web from a user's desktop or from an application. The search bar provides a search box, powered by Edge default search engine, that shows web suggestions and opens all web searches in Microsoft Edge.
+
+The search bar can be launched from the 'More tools' menu or jump list in Microsoft Edge.
+
+The recommended state for this setting is: Disabled
+
+Note: The option to enable the search bar at startup will be toggled on if the 'SearchbarIsEnabledOnStartup' (Allow the Search bar at Windows startup) policy is Enabled If the 'SearchbarIsEnabledOnStartup' is Disabled or not configured the option to enable the search bar at startup will be toggled off.
+
+Allowing users to have the ability to search from their desktop or an application could lead to the user unintentionally pasting sensitive information in the search bar."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable the Search bar
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+User's will not be able to use the search featured powered by Edge default search engine from a desktop or an application."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "SearchbarAllowed"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.104 (L1) Ensure 'Enable upload files from mobile in Microsoft Edge desktop' is set to 'Disabled'"
+      info        : "This policy settings allows the configuration of the Edge 'Upload from mobile' feature. The 'Upload from mobile' feature allows users to select file(s) from a mobile device and upload to a via a webpage in Microsoft Edge.
+
+The recommended state for this setting is: Disabled
+
+Allowing users the ability to use the file upload from mobile feature in Microsoft Edge could lead to data leakage or intellectual property being exposed."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable upload files from mobile in Microsoft Edge desktop
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+The file upload from mobile feature in Microsoft Edge will not function."
+      reference   : "800-171|3.4.9,800-171|3.13.13,800-53|CM-10,800-53|CM-11,800-53|SC-18,800-53r5|CM-10,800-53r5|CM-11,800-53r5|SC-18,CSCv7|7.2,CSCv8|9.4,CSF|DE.CM-3,CSF|DE.CM-5,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|SC-18,LEVEL|1A,NIAv2|SU3,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|5.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "UploadFromPhoneEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.105 (L1) Ensure 'Enable use of ephemeral profiles' is set to 'Disabled'"
+      info        : "This policy setting controls whether user profiles are switched to ephemeral mode. In ephemeral mode, profile data is saved on disk for the length of the session and then the data is deleted after the session is over. Therefore, no data is saved to the device.
+
+The recommended state for this setting is: Disabled
+
+Allowing use of ephemeral profiles allows a user to use Microsoft Edge with no data being logged to the system. Deleting browser data will delete information that may be important for a computer investigation and investigators such as Computer Forensics Analysts may not be able to retrieve pertinent information to the investigation."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable use of ephemeral profiles
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ForceEphemeralProfiles"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.106 (L1) Ensure 'Enable warnings for insecure forms' is set to 'Enabled'"
+      info        : "This policy setting controls the handling of insecure forms (forms submitted over HTTP) embedded in secure (HTTPS) sites in the browser.
+
+When enabled, a full-page warning will be shown, and autofill will be disabled for those forms. When disabled, warnings will not be shown for insecure forms, and autofill will work normally.
+
+The recommended state for this setting is: Enabled
+
+The default setting of enabled warnings for insecure forms enforces secure connections when domains are capable of HTTPS and prevents auto-filling of data imported from a non-secure source."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable warnings for insecure forms
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "InsecureFormsWarningsEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.107 (L1) Ensure 'Enables DALL-E themes generation' is set to 'Disabled'"
+      info        : "This policy setting configures the use of generated browser themes using DALL-E and apply them to Microsoft Edge. DALL-E is an open Artificial Intelligence (AI) system that creates realistic images and art from text descriptions (prompts).
+
+The recommended state for this setting is: Disabled
+
+The rush to bring GenAI to market has brought to light concerns about the training data rapidly ingested by these large language models (LLMs). Content creators have complained copyright infringement on the content generated by these products. This has resulted in lawsuits against major corporations the results of which may shape future laws and regulations about the use of certain products and/or the content created by them.
+
+Due to this, there is an unknown element of risk involved in utilizing content generated by DALL-E in an enterprise environment and it is therefore recommended to disable this setting to mitigate that future risk around intellectual property."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enables DALL-E themes generation
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not be able to generate browser themes using DALL-E."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "AIGenThemesEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.110 (L1) Ensure 'Enhance the security state in Microsoft Edge' is set to 'Enabled: Balanced mode' or higher"
+      info        : "This policy setting configures 'enhance the security state' in Microsoft Edge. Enhanced security in Microsoft Edge helps safeguard against memory-related vulnerabilities by disabling just-in-time (JIT) JavaScript compilation and enabling additional operating system protections for the browser. These protections include Hardware-enforced Stack Protection and Arbitrary Code Guard (ACG).
+
+Enhanced security provides two levels of browsing security: Balanced and Strict. Balanced mode is an adaptive mode that builds on a user's behavior on a particular device. Strict mode applies added security protections for all the sites a user visits. Users may report some challenges accomplishing their usual tasks when in strict mode.
+
+The recommended state for this setting is: Enabled: Balanced mode Configuring this setting to Enabled: Strict mode also conforms to the benchmark.
+
+Balance mode will help reduce the risk of an attack by automatically applying stricter security settings on unfamiliar sites while adapting to browsing habits over time."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Balanced mode or Enabled: Strict mode :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enhance the security state in Microsoft Edge
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will no longer be able to bypass protection for previously visited unfamiliar sites.
+
+Edge will apply added security protections to sites that are not visited often or are unknown. Websites that are browsed frequently will be left out.
+
+Note: Most sites will work as expected."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1" || "3"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "EnhanceSecurityMode"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.11.1 (L1) Ensure 'Enable the linked account feature' is set to 'Disabled'"
+      info        : "This policy setting determines if Microsoft Edge can guide a user to the account management page where they can link a Microsoft Account (MSA) to an Azure Active Directory (Azure AD) account.
+
+The recommended state for this setting is: Disabled
+
+Linking personal Microsoft Accounts to a company device could inadvertently lead to data being transferred from the environment to a personal device."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Identity and sign-in\Enable the linked account feature
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Linked account information will not be shown on a flyout and when the Azure AD profile doesn't have a linked account it will not show the 'Add account' button."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "LinkedAccountEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.11.2 (L1) Ensure 'Guided Switch Enabled' is set to 'Disabled'"
+      info        : "This policy setting allows Microsoft Edge to prompt the user to switch to the appropriate profile when Microsoft Edge detects that a link is a personal or work link.
+
+The recommended state for this setting is: Disabled
+
+Linking personal Microsoft Accounts to a company device could inadvertently lead to data being transferred from the environment to a personal device."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Identity and sign-in\Guided Switch Enabled
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users won't be prompted to switch to another account when there's a profile and link mismatch."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "GuidedSwitchEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.112 (L1) Ensure 'Hide the First-run experience and splash screen' is set to 'Enabled'"
+      info        : "This policy setting controls whether the First-run experience and splash screen is presented to the user the first time Microsoft Edge is opened. Some of the options presented to the user include the ability to import data from other web browsers on the system.
+
+The recommended state for this setting is: Enabled
+
+Allowing the First-run experience and configuration options could potentially allow the user to perform actions that are prohibited such as importing autofill, credit card, and other sensitive data."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Hide the First-run experience and splash screen
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not be prompted with the First-run experience screens."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "HideFirstRunExperience"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.113 (L1) Ensure 'In-app support Enabled' is set to 'Disabled'"
+      info        : "This policy setting allows users to contact in-app Microsoft support agents directly from the Microsoft Edge browser.
+
+The recommended state for this setting is: Disabled
+
+In-app support shares a user's browsing and search history, which could inadvertently expose and share sensitive data with Microsoft."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\In-app support Enabled
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not be able to use or turn on the in-app support feature in the Microsoft Edge browser."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "InAppSupportEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REG_CHECK
+      description : "1.116 (L1) Ensure 'Manage exposure of local IP addresses by WebRTC' is set to 'Disabled'"
+      info        : "This policy setting specifies a list of URLs or patterns which local IP address will be exposed by WebRTC.
+
+The recommended state for this setting is: Disabled
+
+Note: If this policy is enabled, disabled, or not configured, and
+
+edge://flags/#enable-webrtc-hide-local-ips-with-mdns
+
+is Disabled, WebRTC will expose local IP addresses.
+
+Enabling this setting and allowing exposure of IP addresses can allow an attacker to gather information about the internal network that could potentially be utilized to breach and traverse a network."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Manage exposure of local IP addressess by WebRTC
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_TEXT
+      value_data  : "HKLM\SOFTWARE\Policies\Microsoft\Edge\WebRtcLocalIpsAllowedUrls"
+      reg_option  : MUST_NOT_EXIST
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.117 (L1) Ensure 'Notify a user that a browser restart is recommended or required for pending updates' is set to 'Enabled: Required - Show a recurring prompt to the user indicating that a restart is required'"
+      info        : "This setting determines whether a notification to restart Microsoft Edge due to an update is recommended or required.
+
+The recommended state for this setting is: Enabled: Required - Show a recurring prompt to the user indicating that a restart is required
+
+Note: If this setting is set to Enabled: Required - Show a recurring prompt to the user indicating that a restart is required the browser will be automatically restarted based on the
+
+RelaunchNotificationPeriod
+
+setting which is recommended to be 24 hours.
+
+The end-user will receive a notification informing them that an update has been applied and that the browser must be restarted for the update to be completed. Once updates have been pushed by the organization it is pertinent that the update is applied as soon as possible. Enabling this notification will ensure that users restart their browser in a timely fashion."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Required - Show a recurring prompt to the user indicating that a restart is required :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Notify a user that a browser restart is recommended or required for pending updates
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+When updates are applied by an organization the end-user will receive a notification after 24 hours that they must restart the browser for updates to complete, after 24 hours the browser will be automatically restarted."
+      reference   : "800-171|3.11.2,800-171|3.11.3,800-171|3.14.1,800-53|RA-5,800-53|SI-2,800-53|SI-2(2),800-53r5|RA-5,800-53r5|RA-7,800-53r5|SI-2,800-53r5|SI-2(2),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSCv7|3.5,CSCv8|7.4,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,CSF2.0|GV.SC-10,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-01,CSF2.0|ID.RA-08,CSF2.0|PR.PS-02,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.1,ITSG-33|RA-5,ITSG-33|SI-2,ITSG-33|SI-2(2),LEVEL|1A,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.6.2,NESA|T7.7.1,NIAv2|PR9,PCI-DSSv3.2.1|6.1,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,PCI-DSSv4.0|6.3.3,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.2,SWIFT-CSCv1|2.7"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "2"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "RelaunchNotification"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.118 (L1) Ensure 'Restrict exposure of local IP address by WebRTC' is set to 'Enabled: Allow public interface over http default route. This doesn't expose the local IP address'"
+      info        : "This policy setting specifies whether the local IP address will be exposed by WebRTC.
+
+The recommended state for this setting is: Enabled: Allow public interface over http default route. This doesn't expose the local IP address
+
+Allowing the exposure of IP addresses allows the attacker to gather information on the internal network that could potentially be utilized to breach and traverse the network."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Allow public interface over http default route. This doesn't expose the local IP address :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Restrict exposure of local IP address by WebRTC
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+The local IP address will not be exposed."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_TEXT
+      value_data  : "default_public_interface_only"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "WebRtcLocalhostIpHandling"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.119 (L1) Ensure 'Set disk cache size, in bytes' is set to 'Enabled: 250609664'"
+      info        : "This setting controls the size of the cache, in bytes, used to store files on the disk.
+
+The recommended state for this setting is: Enabled: 250609664
+
+Note: The value specified in this policy isn't a hard boundary but rather a suggestion to the caching system; any value below a few megabytes is too small and will be rounded up to a reasonable minimum.
+
+Note #2: The recommended disk size for cache is 50 - 250MB, according to Microsoft.
+
+Having enough disk space for browser cache is important for a computer investigation and investigators such as Computer Forensics Analysts to be able to retrieve pertinent information to the investigation."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: 250609664 :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Set disk cache size, in bytes
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Browser cache will take up to 250MB in disk space."
+      reference   : "800-53|AU-4,800-53r5|AU-4,CSCv7|6.4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|1A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "[250609664..MAX]"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "DiskCacheSize"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.120 (L1) Ensure 'Set the time period for update notifications' is set to 'Enabled: 86400000'"
+      info        : "This setting does not determine if updates are applied, the policy setting allows setting a time period in which users are notified that Microsoft Edge has been updated and must be closed and re-opened.
+
+The recommended state for this setting is: Enabled: 86400000
+
+This setting is a notification for the end-user informing them that an update has been applied and that the browser must be restarted in order for the update to be completed. Once updates have been pushed by the organization it is pertinent that said update takes effect as soon as possible. Enabling this notification will ensure users restart the browser in a timely fashion."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: 86400000 :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Set the time period for update notifications
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+When updates are applied by an organization the end-user will receive a notification after 24 hours that they must restart the browser for updates to complete."
+      reference   : "800-171|3.11.2,800-171|3.11.3,800-171|3.14.1,800-53|RA-5,800-53|SI-2,800-53|SI-2(2),800-53r5|RA-5,800-53r5|RA-7,800-53r5|SI-2,800-53r5|SI-2(2),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSCv7|3.5,CSCv8|7.4,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,CSF2.0|GV.SC-10,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-01,CSF2.0|ID.RA-08,CSF2.0|PR.PS-02,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.1,ITSG-33|RA-5,ITSG-33|SI-2,ITSG-33|SI-2(2),LEVEL|1A,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.6.2,NESA|T7.7.1,NIAv2|PR9,PCI-DSSv3.2.1|6.1,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,PCI-DSSv4.0|6.3.3,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.2,SWIFT-CSCv1|2.7"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "86400000"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "RelaunchNotificationPeriod"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.121 (L1) Ensure 'Shopping in Microsoft Edge Enabled' is set to 'Disabled'"
+      info        : "This policy setting allows users to compare the prices of products, get coupons or rebates from the website, auto-apply coupons, and help checkout faster using autofill data. Coupons for the current retailer and prices from other retailers will be fetched from a server.
+
+The recommended state for this setting is: Disabled
+
+Note: Starting in Microsoft Edge version 90.0.818.56, the behavior of the messaging letting users know that there is a coupon, rebate, price comparison or price history available on shopping domains is also done through a horizontal banner below the address bar.
+
+Shopping in Microsoft Edge shares a user's browsing and search history to provide price comparison and coupons, which could inadvertently expose and share sensitive data with a third-party."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Shopping in Microsoft Edge Enabled
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users with roles that require this feature will have to perform price comparisons on their own unless exempted from this setting."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "EdgeShoppingAssistantEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.123 (L1) Ensure 'Show Microsoft Rewards experiences' is set to 'Disabled'"
+      info        : "This policy setting controls whether the Microsoft Reward experience is available to users and if notifications are received. The Microsoft Rewards experience is a free program that allows the user to earn points when searching on Bing.com. With these points, the users can buy merchandise from the Microsoft Store online and in Windows 10.
+
+The recommended state for this setting is: Disabled
+
+Note: The Bing Rewards experience was merged with the Microsoft Reward experience in 2016.
+
+Due to privacy concerns, data should never be sent to or tracked by any third-party since this data could contain sensitive information."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Show Microsoft Rewards experiences
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+The Microsoft Rewards experience will not show in the Microsoft Edge user profile."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ShowMicrosoftRewards"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.124 (L1) Ensure 'Show the Reload in Internet Explorer mode button in the toolbar' is set to 'Disabled'"
+      info        : "This policy setting shows the Reload in Internet Explorer mode button in the toolbar. IE Mode in Microsoft Edge allows organizations that still need Internet Explorer 11, (which is not supported) for backward compatibility with existing websites.
+
+The recommended state for this setting is: Disabled
+
+Note: The button will only be shown on the toolbar when the
+
+Allow unconfigured sites to be reloaded in Internet Explorer mode
+
+policy is Enabled (which is set to Disabled in the benchmark).
+
+Internet Explorer is officially retired and unsupported. Allowing browsers to reconfigure into Internet Explorer mode could open an organization up to malicious sites due to its lack of support for modern security features."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Show the Reload in Internet Explorer mode button in the toolbar
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not be able to see or use the Internet Explorer Mode toolbar."
+      reference   : "800-171|3.4.9,800-171|3.13.13,800-53|CM-10,800-53|CM-11,800-53|SC-18,800-53r5|CM-10,800-53r5|CM-11,800-53r5|SC-18,CSCv7|7.1,CSCv7|7.2,CSCv8|9.1,CSCv8|9.4,CSF|DE.CM-3,CSF|DE.CM-5,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|SC-18,LEVEL|1A,NIAv2|SU3,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|5.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "InternetExplorerModeToolbarButtonEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.125 (L1) Ensure 'Specifies whether SharedArrayBuffers can be used in a non cross-origin-isolated context' is set to 'Disabled'"
+      info        : "This policy setting specifies whether SharedArrayBuffers can be used in a non-cross-origin-isolated context. A SharedArrayBuffer is a binary data buffer that can be used to create views on shared memory. SharedArrayBuffers have a memory access vulnerability in several popular CPUs.
+
+The recommended state for this setting is: Disabled
+
+Disabling this policy prevents attackers from being able to exploit memory access vulnerabilities found in popular CPUs."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Specifies whether SharedArrayBuffers can be used in a non cross-origin-isolated context
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users may experience slightly slower loading of webpages."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "SharedArrayBufferUnrestrictedAccessAllowed"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.128 (L1) Ensure 'Standalone Sidebar Enabled' is set to 'Disabled'"
+      info        : "This policy setting controls whether users will have the ability to activate the standalone sidebar. The standalone sidebar is an optional mode for the sidebar in Microsoft Edge and uses Bing AI. When this mode is activated by a user, the sidebar appears in a fixed position on the Microsoft Windows desktop and is hidden from the browser application frame.
+
+The recommended state for this setting is: Disabled
+
+Microsoft Edge determines what data to send to Bing AI based on the user's query and their consent to share data with Microsoft. This could allow data to be transmitted to a third-party cloud service. This could lead to sensitive data being exposed.
+
+Bing AI offers various features, such as summarizing financial reports, comparing financials of different companies, and aiding users in creating and editing content which could also lead to sensitive data being exposed."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Standalone Sidebar Enabled
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not be able to access the
+
+HubsSidebarEnabled
+
+(Show Hubs Sidebar) and it will also prevent them from accessing standalone sidebar and using the Bing AI feature."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "StandaloneHubsSidebarEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.129 (L1) Ensure 'Suggest similar pages when a webpage can't be found' is set to 'Disabled'"
+      info        : "This policy setting controls whether Microsoft Edge may connect to a web service to generate URLs and search suggestions for website connectivity issues. If disabled standard errors will be issued, if enabled errors will be customized with URL suggestions.
+
+The recommended state for this setting is: Disabled
+
+This setting could potentially lead to a leak of information regarding the types of websites being visited, it may also open users up to redirection to a malicious site in the event that the service generating information becomes compromised."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Suggest similar pages when a webpage can't be found
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will still be presented with an error if a website cannot be reached however, the message may be more generic than the user would get in the instance of this service being enabled."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "AlternateErrorPagesEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.130 (L1) Ensure 'Suppress the unsupported OS warning' is set to 'Disabled'"
+      info        : "This policy setting suppresses the warning that appears when Microsoft Edge is running on a computer or operating system that is no longer supported. If this policy is disabled or unset, the warnings will appear on such unsupported computers or operating systems.
+
+The recommended state for this setting is: Disabled
+
+Users will be notified if the Operating System software is no longer supported."
+      solution    : "To establish the recommended configuration via Group Policy, set the following UI path to Disabled :
+
+Computer Configuration\Polices\Administrative Templates\Microsoft Edge\Suppress the unsupported OS warning
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-53|SA-22,800-53r5|SA-22,CSCv7|2.2,CSCv8|2.2,CSF2.0|ID.AM-08,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "SuppressUnsupportedOSWarning"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.133 (L1) Ensure 'Wait for Internet Explorer mode tabs to completely unload before ending the browser session' is set to 'Disabled'"
+      info        : "This policy setting causes Microsoft Edge to continue running until all Internet Explorer tabs have completely finished unloading. This allows Internet Explorer plugins like ActiveX controls to perform additional critical work even after the browser has been closed.
+
+The recommended state for this setting is: Disabled
+
+Enabling this policy can cause stability and performance issues, and Microsoft Edge processes may remain active in the background with no visible windows if the webpage or plugin prevents Internet Explorer from unloading. This policy should only be used if your organization depends on a plugin that requires this behavior."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Wait for Internet Explorer mode tabs to completely unload before ending the browser session
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "InternetExplorerIntegrationAlwayswaitForUnload"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.134 (L1) Ensure 'Wallet Donation Enabled' is set to 'Disabled'"
+      info        : "The Wallet Donation feature in Microsoft Edge allows users to view their donation summary, explore Nonprofit organizations (NPOs), donate to an NPO, manage their monthly donations, and view their donation history.
+
+The recommended state for this setting is: Disabled
+
+Allowing users the ability to use the wallet donation feature in Microsoft Edge could lead to sensitive data being exposed."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable wallet donation in Microsoft Edge.
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+The wallet donation feature in Microsoft Edge will not function."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "WalletDonationEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.17.1 (L1) Ensure 'Enable saving passwords to the password manager' is set to 'Disabled'"
+      info        : "This policy setting enables or disables the ability for users to save their passwords in Microsoft Edge.
+
+The recommended state for this setting is: Disabled
+
+Saving passwords in Edge could lead to a user's web passwords being breached if an attacker were to gain access to their web browser especially in the case of an unattended and unlocked workstation."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Password manager and protection\Enable saving passwords to the password manager
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be unable to utilize the Microsoft Edge built-in password manager."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "PasswordManagerEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.18.1 (L1) Ensure 'Enable startup boost' is set to 'Disabled'"
+      info        : "This policy setting allows Microsoft Edge processes to start at OS sign-in and restart in background after the last browser window is closed.
+
+If Microsoft Edge is running in background mode, the browser might not close when the last window is closed, and the browser won't be restarted in background when the window closes. See the
+
+BackgroundModeEnabled (Continue running background apps after Microsoft Edge closes)
+
+policy for information about what happens after configuring Microsoft Edge background mode behavior.
+
+The recommended state for this setting is: Disabled
+
+Note: The startup boost policy may initially be configured off or on by the user; the user can configure its behavior in edge://settings/system.
+
+Allowing processes from the browser to run in the background could allow a malicious script or code to continue running once the browser windows has been closed."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Performance\Enable startup boost
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will experience normal browser start-up times which may seem slow in comparison to Startup boost."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "StartupBoostEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.2.1 (L1) Ensure 'Enable Google Cast' is set to 'Disabled'"
+      info        : "This policy setting determines whether Google Cast is available to users.
+
+The recommended state for this setting is: Disabled
+
+Note: When this setting is set to Disabled the
+
+Show the cast icon in the toolbar
+
+setting is ignored as the icon is removed.
+
+The use of Google Cast could allow users to show potentially sensitive information to non-trusted devices. These devices could be in public areas."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Cast\Enable Google Cast
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not be able to utilize Google Cast and the icon will not be displayed in Microsoft Edge."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "EnableMediaRouter"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.21.1 (L1) Ensure 'Specifies whether to allow websites to make requests to more-private network endpoints' is set to 'Disabled'"
+      info        : "This policy setting controls whether insecure websites are allowed to make requests to more private network endpoints.
+
+A network endpoint is more private than another if:
+
+ - Its IP address is localhost and the other is not.
+ - Its IP address is private and the other is public.
+
+In the future, depending on spec evolution, this policy might apply to all cross-origin requests directed at private IPs or localhost.
+
+A website is deemed secure if it meets the definition of a secure context in
+
+https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts
+
+. Otherwise, it will be treated as an insecure context.
+
+The recommended state for this setting is: Disabled
+
+Note: This policy relates to the Private Network Access specification. See
+
+https://wicg.github.io/private-network-access/
+
+for more details.
+
+Note #2: If this policy is not configured or set to
+
+Disabled
+
+, the default behavior for requests from insecure contexts to more-private network endpoints will depend on the user's personal configuration for the
+
+BlockInsecurePrivateNetworkRequests
+
+feature, which may be set by a field trial or on the command line.
+
+Allowing public internet sites to 'peek' behind your firewall by using the user's browser to mix intranet resources into internet-delivered pages represents a dangerous attack surface. The baseline requires enforcement of the new browser restriction that any such intranet requests are blocked if the internet page was delivered over insecure HTTP.
+
+Note: If for some reason you need to permit insecure cross-network requests for legacy sites, you can configure temporary exceptions in
+
+Allow the listed sites to make requests to more-private network endpoints from insecure contexts
+
+."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Private Network Request Settings\Specifies whether to allow websites to make requests to more-private network endpoints
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be unable to allow non-secure public contexts to request resources from private addresses."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "InsecurePrivateNetworkRequestsAllowed"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.25.1 (L1) Ensure 'Configure Microsoft Defender SmartScreen' is set to 'Enabled'"
+      info        : "This policy setting allows configuration of Microsoft Defender SmartScreen. Microsoft Defender SmartScreen helps to identify phishing and malware websites and to make informed decisions about downloads.
+
+The recommended state for this setting is: Enabled
+
+Windows Defender SmartScreen can provide messages and warnings to users to help thwart phishing attempts and malicious software."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\SmartScreen settings\Configure Microsoft Defender SmartScreen
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "SmartScreenEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.25.2 (L1) Ensure 'Configure Microsoft Defender SmartScreen to block potentially unwanted apps' is set to 'Enabled'"
+      info        : "This policy setting allows configuration of Microsoft Defender SmartScreen and whether potentially unwanted apps are blocked.
+
+The recommended state for this setting is: Enabled
+
+Windows Defender SmartScreen can block unwanted apps that will help inform and protect users from vulnerabilities related to adware and low-reputation apps."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\SmartScreen settings\Configure Microsoft Defender SmartScreen to block potentially unwanted apps
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Microsoft Defender SmartScreen will block potentially dangerous apps. This could stop the user from installing an app that could be potentially harmful to the system."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "SmartScreenPuaEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.25.3 (L1) Ensure 'Enable Microsoft Defender SmartScreen DNS requests' is set to 'Disabled'"
+      info        : "This policy setting configures DNS requests made by Microsoft Defender SmartScreen.
+
+The recommended state for this setting is: Disabled
+
+Note: This policy is available only on Windows instances that are joined to a Microsoft Active Directory domain, Windows 10 Pro or Enterprise instances that enrolled for device management, or macOS instances that are that are managed via MDM or joined to a domain via MCX.
+
+Whenever SmartScreen is enabled for Edge browser, SmartScreen tries to check if the website is a phishing/malicious URL and does a local DNS query. If the DNS server fails to resolve the website, Web Isolation will not be used to isolate those websites."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\SmartScreen settings\Enable Microsoft Defender SmartScreen DNS requests
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+DNS server might not resolve queries sent to external websites or the website may have no information stored on its local server or cache.
+
+Warning: Disabling DNS requests will prevent Microsoft Defender SmartScreen from getting IP addresses, and potentially impact the IP-based protections provided."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "SmartScreenDnsRequestsEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.25.4 (L1) Ensure 'Force Microsoft Defender SmartScreen checks on downloads from trusted sources' is set to 'Enabled'"
+      info        : "This policy setting controls whether Microsoft Defender SmartScreen can check if downloads have been retrieved from a trusted source.
+
+The recommended state for this setting is: Enabled
+
+Windows Defender SmartScreen can verify that downloads are from a trusted source can greatly reduce the chances of a user downloading an infected package to their machine."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\SmartScreen settings\Force Microsoft Defender SmartScreen checks on downloads from trusted sources
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "SmartScreenForTrustedDownloadsEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.25.5 (L1) Ensure 'Prevent bypassing Microsoft Defender SmartScreen prompts for sites' is set to 'Enabled'"
+      info        : "This policy setting controls whether users may bypass the SmartScreen warning if a site is deemed unsafe.
+
+The recommended state for this setting is: Enabled
+
+Windows Defender SmartScreen can provide messages and warnings to users to help thwart phishing and malicious software. However, by default, users may bypass these warnings."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\SmartScreen settings\Prevent bypassing Microsoft Defender SmartScreen prompts for sites
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+SmartScreen will not allow a user to bypass the warning message."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "PreventSmartScreenPromptOverride"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.25.6 (L1) Ensure 'Prevent bypassing of Microsoft Defender SmartScreen warnings about downloads' is set to 'Enabled'"
+      info        : "This policy setting controls whether users may override Microsoft Defender SmartScreen warnings regarding downloads that are unverified.
+
+The recommended state for this setting is: Enabled
+
+Smartscreen checks downloads and verifies whether they are deemed safe or not. Only allowing verified downloads greatly reduces risk of a download containing a virus, spyware, or other unwanted software."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\SmartScreen settings\Prevent bypassing of Microsoft Defender SmartScreen warnings about downloads
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+User will not be able to download software that has not been verified by SmartScreen."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "PreventSmartScreenPromptOverrideForFiles"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.26.1 (L1) Ensure 'Disable Bing chat entry-points on Microsoft Edge Enterprise new tab page' is set to 'Disabled'"
+      info        : "By default, there are two Bing Chat entry-points on the new tab page. One is inside the new tab page search box, and one is in the Bing Autosuggest drawer on-click.
+
+The recommended state for this setting is: Disabled
+
+Allowing the use of the Bing chat entry-points feature in Microsoft Edge could lead to sensitive data being exposed."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Startup, home page and new tab page in Microsoft Edge.
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+The Bing chat entry-points will not appear on the new tab page."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "NewTabPageBingChatEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.27 (L1) Ensure 'Ads setting for sites with intrusive ads' is set to 'Enabled: Block ads on sites with intrusive ads.'"
+      info        : "This setting controls whether ads are blocked on sites with intrusive ads. Intrusive ads are typically ads that push invasive, unwelcomed, and irrelevant ads in front of consumers. These ads can pop up unexpectedly, block the host page, open new pages and windows, or play video and audio at inopportune times.
+
+The recommended state for this setting is: Enabled: Block ads on sites with intrusive ads.
+
+Intrusive ads are ads found on websites that are invasive or unwelcome. These ads can contain malicious files or can fool an unknowing user into giving away their username and/or password."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Block ads on sites with intrusive ads. :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Ads setting for sites with intrusive ads
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Ads that may be non-intrusive could be blocked."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "2"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "AdsSettingForIntrusiveAdsSites"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.28 (L1) Ensure 'Allow download restrictions' is set to 'Enabled:  Block malicious downloads'"
+      info        : "This policy setting controls whether Microsoft Edge blocks certain types of downloads, and prevents users from bypassing security warnings, depending on the classification of Safe Browsing.
+
+The recommended state for this setting is: Enabled: Block malicious downloads
+
+Note: These restrictions only apply to downloads from web page content, as well as the 'download link...' context menu option. These restrictions don't apply to saving or downloading the currently displayed page, or to the 'Save as PDF' option from the printing options. For more information on Microsoft Defender SmartScreen, please visit
+
+Microsoft Defender SmartScreen Frequently Asked Questions
+
+.
+
+Note #2: Microsoft Edge relies on Internet Explorer zones (Local Machine, Local Intranet, Trusted, Internet, Restricted) to determine which sites may bypass this policy setting. Please see
+
+Security Zones in Edge - text/plain
+
+for more information.
+
+Downloads could contain malware that has the potential to exfiltrate sensitive data or encrypt critical systems for ransom."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Block malicious downloads :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow download restrictions
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be prevented from downloading certain types of files and will not be able to bypass security warnings."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "4"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "DownloadRestrictions"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.31 (L1) Ensure 'Allow Google Cast to connect to Cast devices on all IP addresses' is set to 'Disabled'"
+      info        : "This policy setting controls whether Google Cast is able to connect to all IP Addresses or only private IP Addresses as defined in RFC1918 (IPv4) and RFC4193 (IPv6).
+
+The recommended state for this setting is: Disabled
+
+Note: If the
+
+EnabledMediaRouter
+
+policy is set to Disabled there is no positive or negative effect for this setting.
+
+Allowing Google Cast to connect to public IP addresses could allow media and other potentially sensitive data to be exposed to the public. Disabling this setting will ensure that Google Cast is only able to connect to private (ie: internal) IP addresses."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow Google Cast to connect to Cast devices on all IP addresses
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "MediaRouterCastAllowAllIPs"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.3.2 (L1) Ensure 'Control use of insecure content exceptions' is set to 'Enabled: Do not allow any site to load mixed content'"
+      info        : "This policy setting allows for the configuration for users to add exceptions to allow mixed content for specific sites.
+
+The recommended state for this setting is: Enabled: Do not allow any site to load mixed content
+
+Note: This policy can be overridden for specific URL patterns using the
+
+insecurecontentAllowedForUrls (Allow insecure content on specified sites)
+
+and
+
+insecurecontentBlockedForUrls (Block insecure content on specified sites) policies
+
+.
+
+Allowing mixed (secure / insecure) content from a site can lead to malicious content being loaded. Mixed content occurs if the initial request is secure over HTTPS, but HTTPS and HTTP content is subsequently loaded to display the web page. HTTPS content is secure. HTTP content is insecure."
+      solution    : "To establish the recommended configuration via Group Policy, set the following UI path to Enabled: Do not allow any site to load mixed content :
+
+Computer Configuration\Polices\Administrative Templates\Microsoft Edge\Content Settings\Control use of insecure content exceptions
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not be able to add exceptions for mixed content webpages."
+      reference   : "800-171|3.13.1,800-53|SC-7(3),800-53|SC-7(4),800-53r5|SC-7(3),800-53r5|SC-7(4),CN-L3|8.1.10.6(j),CSCv7|7.5,CSCv8|9.3,CSF|PR.AC-5,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(3),ITSG-33|SC-7(4),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|1.1,TBA-FIISB|43.1,TBA-FIISB|44.1.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "2"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "DefaultinsecurecontentSetting"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.32 (L1) Ensure 'Allow import of data from other browsers on each Microsoft Edge launch' is set to 'Disabled'"
+      info        : "This policy setting controls if users will get a prompt following each Microsoft Edge launch to import their data from other browsers. Microsoft Edge will import data such as passwords, bookmarks, cookies, browsing history, and payment information depending on which browser this data is being imported from. At this time, Microsoft Edge can only import data from Google Chrome, Mozilla Firefox, Internet Explorer, and some third-party Password Managers.
+
+The recommended state for this setting is: Disabled
+
+Allowing users to import data from another browser into Microsoft Edge could allow for sensitive data to be imported into Edge."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow import of data from other browsers on each Microsoft Edge launch
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+Users will not get a prompt to import their data from other browsers after each Microsoft Edge launch."
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ImportOnEachLaunch"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.33 (L1) Ensure 'Allow importing of autofill form data' is set to 'Disabled'"
+      info        : "This policy setting controls the user's ability to import autofill data from other browsers into Microsoft Edge.
+
+The recommended state for this setting is: Disabled
+
+Allowing autofill data to be imported could potentially allow sensitive data such as personally identifiable information (PII) from a non-secured source into Microsoft Edge. Storage of sensitive data should be handled with care."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow importing of autofill form data
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be unable to perform an import of autofill data during Microsoft Edge first run. This will also prevent users from importing data after Microsoft Edge has been set up."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ImportAutofillFormData"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.34 (L1) Ensure 'Allow importing of browser settings' is set to 'Disabled'"
+      info        : "This policy setting controls whether users are able to import settings from another browser into Microsoft Edge.
+
+The recommended state for this setting is: Disabled
+
+Having settings automatically imported or allowing users to import settings from another browser into Microsoft Edge could potentially allow for non-recommended settings to be applied temporarily creating a potential security risk."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow importing of browser settings
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be unable to perform an import of other browser settings into Microsoft Edge."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ImportBrowserSettings"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.3.5 (L1) Ensure 'Control use of the File System API for writing' is set to 'Enabled: Don't allow any site to request write access to files and directories'"
+      info        : "This policy setting specifies whether websites can ask for write access to the host operating system's filesystem using the File System API. By default, websites can ask for access. Users can change this setting. By setting this policy to (2), access is denied.
+
+The recommended state for this setting is: Enabled: Don't allow any site to request write access to files and directories
+
+There is a large category of attack vectors that are opened up by allowing web applications access to files. By setting this policy to Enabled: Don't allow any site to request write access to files and directories implements additional protection to safeguard against accidental sharing of sensitive information contained in local files."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Don't allow any site to request write access to files and directories :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Content settings\Control use of the File System API for writing
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users with creative roles that require the File System API access permission to write files for photo, video, and text editors or for creating integrated development environments will need additional permissions granted based on their role."
+      reference   : "800-171|3.4.9,800-171|3.13.13,800-53|CM-10,800-53|CM-11,800-53|SC-18,800-53r5|CM-10,800-53r5|CM-11,800-53r5|SC-18,CSCv7|7.2,CSCv8|9.4,CSF|DE.CM-3,CSF|DE.CM-5,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|SC-18,LEVEL|1A,NIAv2|SU3,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|5.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "2"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "DefaultFileSystemWriteGuardSetting"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.35 (L1) Ensure 'Allow importing of home page settings' is set to 'Disabled'"
+      info        : "This policy setting controls whether users are able to import homepage settings from another browser into Microsoft Edge as well as whether homepage settings are imported on first use.
+
+The recommended state for this setting is: Disabled
+
+Having settings automatically imported or allowing users to import settings from another browser into Microsoft Edge could potentially allow for non-recommended settings to be applied temporarily creating a potential security risk."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow importing of home page settings
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be unable to import homepage settings from other browsers into Microsoft Edge."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ImportHomepage"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.36 (L1) Ensure 'Allow importing of payment info' is set to 'Disabled'"
+      info        : "This policy setting controls whether users are able to import payment information from another browser into Microsoft Edge as well as whether payment information is imported on first use.
+
+The recommended state for this setting is: Disabled
+
+Having payment information automatically imported or allowing users to import payment data from another browser into Microsoft Edge could allow for sensitive data to be imported into Edge."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow importing of payment info
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be unable to perform a payment information import from other browsers into Microsoft Edge."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ImportPaymentInfo"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.37 (L1) Ensure 'Allow importing of saved passwords' is set to 'Disabled'"
+      info        : "This policy setting controls whether users are able to import saved passwords from another browser into Microsoft Edge as well as whether passwords are imported on first use.
+
+The recommended state for this setting is: Disabled
+
+Having saved passwords automatically imported or allowing users to import password data from another browser into Microsoft Edge allows for sensitive data to be imported into Edge."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow importing of saved passwords
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be unable to import saved passwords from other browsers into Microsoft Edge."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ImportSavedPasswords"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.3.8 (L1) Ensure 'Default automatic downloads setting' is set to 'Enabled: Don't allow any website to perform automatic downloads'"
+      info        : "This policy setting controls whether websites can perform multiple downloads successively without user interaction.
+
+The recommended state for this setting is: Enabled: Don't allow any website to perform automatic downloads
+
+Unintentional malicious content could be downloaded without user interaction if websites are allowed to perform automatic downloads."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Don't allow any website to perform automatic downloads :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Content settings\Default automatic downloads setting
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Websites will not be able to perform automatic downloads."
+      reference   : "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "2"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "DefaultAutomaticDownloadsSetting"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.38 (L1) Ensure 'Allow importing of search engine settings' is set to 'Disabled'"
+      info        : "This policy setting controls whether users are able to import search engine settings from another browser into Microsoft Edge as well as whether said setting is imported on first use.
+
+The recommended state for this setting is: Disabled
+
+Having search engine settings automatically imported or allowing users to import the settings from another browser into Microsoft Edge could allow for a malicious search engine to be set."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow importing of search engine settings
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be unable to perform an import of their search engine settings from other browsers into Microsoft Edge."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ImportSearchEngine"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.3.9 (L1) Ensure 'Default geolocation setting' is set to 'Enabled: Don't allow any site to track users' physical location'"
+      info        : "This policy setting controls whether a users' physical location can be tracked by websites.
+
+The recommended state for this setting is: Enabled: Don't allow any site to track users' physical location
+
+Geolocation should not be shared with websites to ensure protection of the user's privacy regarding location. Additionally, location information could lead to clues regarding the user's network infrastructure surrounding the device they are utilizing."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Don't allow any site to track users' physical location :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Content settings\Default geolocation setting
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Location information will not be shared with websites in Microsoft Edge. This could have an effect on websites that utilize this information for customized content."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "2"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "DefaultGeolocationSetting"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.39 (L1) Ensure 'Allow managed extensions to use the Enterprise Hardware Platform API' is set to 'Disabled'"
+      info        : "This policy setting allows extensions installed by enterprise policies to be allowed to use the Enterprise Hardware Platform API. This API handles requests from extensions for the manufacturer and model of the hardware platform where the browser is running.
+
+The recommended state for this setting is: Disabled
+
+Allowing extensions to access the Enterprise Hardware Platform API could lead to the system being compromised. It is recommended that this setting is disabled unless otherwise directed by Enterprise policies."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow managed extensions to use the Enterprise Hardware Platform API
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.4.9,800-171|3.13.13,800-53|CM-10,800-53|CM-11,800-53|SC-18,800-53r5|CM-10,800-53r5|CM-11,800-53r5|SC-18,CSCv7|7.2,CSCv8|9.4,CSF|DE.CM-3,CSF|DE.CM-5,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|SC-18,LEVEL|1A,NIAv2|SU3,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|5.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "EnterpriseHardwarePlatformAPIEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.43 (L1) Ensure 'Allow personalization of ads, Microsoft Edge, search, news and other Microsoft services by sending browsing history, favorites and collections, usage and other browsing data to Microsoft' is set to 'Disabled'"
+      info        : "This policy setting controls whether Microsoft is able to collect a user's browsing history and searches in Microsoft Edge for the purpose of personalizing searches, news, and other Microsoft services.
+
+The recommended state for this setting is: Disabled
+
+Sharing a user's browsing and search history could inadvertently expose data which could be sensitive."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow personalization of ads, Microsoft Edge, search, news and other Microsoft services by sending browsing history, favorites and collections, usage and other browsing data to Microsoft
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users' data will not be shared with Microsoft and the personalization of searches, news, etc. will not be available."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "PersonalizationReportingEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.44 (L1) Ensure 'Allow queries to a Browser Network Time service' is set to 'Enabled'"
+      info        : "This policy setting controls whether Microsoft Edge can send queries to a network time service for accurate timestamps. This check helps in validation of certificates.
+
+The recommended state for this setting is: Enabled
+
+Microsoft Edge uses a network time service to randomly track times from a trusted external service. This allows Microsoft Edge the ability for verification of a certificate's validity and is important for certificate validation."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow queries to a Browser Network Time service
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.3.6,800-171|3.3.7,800-53|AU-7,800-53|AU-8,800-53r5|AU-7,800-53r5|AU-8,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(b),CSCv7|6.1,CSCv8|8.4,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-7,ITSG-33|AU-8,LEVEL|1A,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4,TBA-FIISB|37.4"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "BrowserNetworkTimeQueriesEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.45 (L1) Ensure 'Allow remote debugging' is set to 'Disabled'"
+      info        : "This policy setting controls whether users may use remote debugging. This feature allows remote debugging of live content on a Windows 10 or later device from a Windows or macOS computer.
+
+The recommended state for this setting is: Disabled
+
+Disabling remote debugging enhances security and protects applications from unauthorized access. Some attack tools can exploit this feature to extract information, or to insert malicious code."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow remote debugging
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not be able access the remote debugging feature in Microsoft Edge."
+      reference   : "800-171|3.4.9,800-171|3.13.13,800-53|CM-10,800-53|CM-11,800-53|SC-18,800-53r5|CM-10,800-53r5|CM-11,800-53r5|SC-18,CSCv7|7.2,CSCv8|9.4,CSF|DE.CM-3,CSF|DE.CM-5,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|SC-18,LEVEL|1A,NIAv2|SU3,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|5.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "RemoteDebuggingAllowed"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.46 (L1) Ensure 'Allow the audio sandbox to run' is set to 'Enabled'"
+      info        : "This policy setting controls whether audio processes in Microsoft Edge run in a sandbox.
+
+The recommended state for this setting is: Enabled
+
+Note: Security software setups within your environment might interfere with the sandbox.
+
+Having audio processes run in a sandbox ensures that if a website misuses audio processes that data may not be manipulated or exfiltrated from the system."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow the audio sandbox to run
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+The audio process will not run in the sandbox and the WebRTC audio-processing module will run in the renderer process."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "AudioSandboxEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.48 (L1) Ensure 'Allow user feedback' is set to 'Disabled'"
+      info        : "This policy setting controls whether users are able to utilize the Edge Feedback feature to send feedback, suggestions and surveys to Microsoft as well as issue reports.
+
+The recommended state for this setting is: Disabled
+
+Data should not be shared with third-party vendors in an enterprise managed environment."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow user feedback
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not be able to send feedback to Microsoft."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "UserFeedbackAllowed"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.5.1 (L1) Ensure 'Configure Edge Website Typo Protection' is set to 'Enabled'"
+      info        : "This policy setting configures whether to turn on Edge TyposquattingChecker. The Edge TyposquattingChecker provides warning messages to help protect users from potential typo squatting sites. Typo squatting is a type of social engineering attack which targets internet users who incorrectly type a URL into their web browser rather than using a search engine. Typically, it involves tricking users into visiting malicious websites with URLs that are common misspellings of legitimate websites.
+
+The recommended state for this setting is: Enabled
+
+Edge
+
+TyposquattingChecker
+
+will provide a warning message and can help protect users from potential typo squatting by alerting the user to the potential of accessing a malicious site."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Edge Website Typo Protection settings\Configure Edge Website Typo Protection
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will receive a warning message if they attempt to access a site deemed (by Microsoft) a typosquatting site."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "TyposquattingCheckerEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.52 (L1) Ensure 'Allow websites to query for available payment methods' is set to 'Disabled'"
+      info        : "This policy setting allows you to set whether a website can check to see if the user has payment methods saved.
+
+The recommended state for this setting is: Disabled
+
+Saving payment information in Microsoft Edge could lead to the sensitive data being leaked and used for non-legitimate purposes."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Allow websites to query for available payment methods
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Websites will be unable to query whether payment information within Microsoft Edge is available."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "PaymentMethodQueryEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.54 (L1) Ensure 'Automatically import another browser's data and settings at first run' is set to 'Enabled: Disables automatic import, and the import section of the first-run experience is skipped'"
+      info        : "This policy setting controls whether settings are imported from another browser into Microsoft Edge.
+
+The recommended state for this setting is: Enabled: Disables automatic import, and the import section of the first-run experience is skipped
+
+Note: The browser data from Microsoft Edge Legacy will always be silently migrated at the first run, irrespective of the value of this policy.
+
+Having settings automatically imported from another browser into Microsoft Edge could potentially allow for non-recommended settings to be applied temporarily creating a potential security risk."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Disables automatic import, and the import section of the first-run experience is skipped :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Automatically import another browser's data and settings at first run
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "4"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "AutoImportAtFirstRun"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.55 (L1) Ensure 'Automatically open downloaded MHT or MHTML files from the web in Internet Explorer mode' is set to 'Disabled'"
+      info        : "This policy setting controls whether MHT or MHTML files that are downloaded from the web are automatically opened in Internet Explorer mode. MHTML files are archives of HTML code and companion files such as images and audio.
+
+The recommended state for this setting is: Disabled
+
+Internet Explorer is officially retired and unsupported. Opening files in an unsupported browser that does not have modern protections could lead to an attack that exploits a vulnerability in the legacy software."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Automatically open downloaded MHT or MHTML files from the web in Internet Explorer mode
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+MHT or MHTML files will not open in Internet Explorer mode."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|7.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "InternetExplorerIntegrationZoneIdentifierMhtFileAllowed"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.57 (L1) Ensure 'Block tracking of users' web-browsing activity' is set to 'Enabled: Balanced (Blocks harmful trackers and trackers from sites user has not visited; content and ads will be less personalized)' or higher"
+      info        : "This policy setting controls whether websites may track user's web-browsing activity.
+
+The recommended state for this setting is: Enabled: Balanced (Blocks harmful trackers and trackers from sites user has not visited; content and ads will be less personalized)
+
+Configuring this setting to Enabled: Strict (blocks harmful trackers and majority of trackers from all sites; content and ads will have minimal personalization. Some parts of sites might not work) also conforms to the benchmark.
+
+Allowing websites to track user web-browsing activity allows for sites to gather information which could be potentially harmful and used to target users and businesses."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Balanced (Blocks harmful trackers and trackers from sites user has not visited; content and ads will be less personalized) :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Block tracking of users' web-browsing activity
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Content and ads will have minimal personalization and the website may not function properly."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "2" || "3"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "TrackingPrevention"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.59 (L1) Ensure 'Clear browsing data when Microsoft Edge closes' is set to 'Disabled'"
+      info        : "This policy controls whether web browser data, such as forms, passwords and visited sites is deleted each time Microsoft Edge is closed.
+
+The Recommended state for this setting is: Disabled
+
+Note: If this policy is enabled, the
+
+AllowDeletingBrowserHistory
+
+policy, will take precedence over the
+
+ClearBrowsingDataOnExit
+
+policy and all data will be deleted when Microsoft Edge closes, regardless of how
+
+AllowDeletingBrowserHistory
+
+is configured. The
+
+AllowDeletingBrowserHistory
+
+policy is set to Disabled as a safeguard incase this policy is changed.
+
+Deleting browser data on close will delete information that may be important for a computer investigation and investigators such as Computer Forensics Analysts may not be able to retrieve pertinent information to the investigation."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Clear browsing data when Microsoft Edge closes
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Browsing data will not be deleted on closing and the user will not be able to change this setting.
+
+Note: This setting will preserve browsing history that could contain a user's personal browsing history. Ensure this setting is in compliance with organizational policies."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ClearBrowsingDataOnExit"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.60 (L1) Ensure 'Clear cached images and files when Microsoft Edge closes' is set to 'Disabled'"
+      info        : "This policy controls whether cached images and files are deleted each time Microsoft Edge closes.
+
+The recommended state for this setting is: Disabled
+
+Note: If this policy is disabled, do not enable the
+
+ClearBrowsingDataOnExit
+
+policy, because it will take precedence over the
+
+ClearCachedImagesAndFilesOnExit
+
+policy and will delete all browsing data when Microsoft Edge closes, regardless of how the
+
+ClearCachedImagesAndFilesOnExit
+
+policy is configured.
+
+Deleting browser data on close will delete information that may be important for a computer investigation and investigators such as Computer Forensics Analysts may not be able to retrieve pertinent information to the investigation."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Clear cached images and files when Microsoft Edge closes
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Cached images and files will not be deleted on closing and the user will be unable to change this setting."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ClearCachedImagesAndFilesOnExit"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.61 (L1) Ensure 'Clear history for IE and IE mode every time you exit' is set to 'Disabled'"
+      info        : "This policy setting controls if history will be cleared for Internet Explorer (IE) and IE mode every time a user exits the browser.
+
+The recommended state for this setting is: Disabled
+
+Deleting browser data will delete information that may be important for a computer investigation. Investigators such as Computer Forensics Analysts may not be able to retrieve pertinent information to the investigation."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Clear history for IE and IE mode every time you exit
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+History will not be cleared for IE and IE mode every time a user exits the browser."
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "InternetExplorerModeclearDataOnExitEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.62 (L1) Ensure 'Compose is enabled for writing on the web' is set to 'Disabled'"
+      info        : "This policy setting allows the configuration of Compose in Microsoft Edge. Compose provides help for writing with AI-generated text, which lets the user get ideas for writing. This includes elaborating on text, re-writing, changing tone, formatting the text, and more.
+
+The recommended state for this setting is: Disabled
+
+Note: Even with this setting Disabled compose will still be available for prompt-based text generation through the sidebar and must be managed with either 'EdgeDiscoverEnabled' (Discover feature In Microsoft Edge) policy or 'HubsSidebarEnabled' (Show Hubs Sidebar) policy. The 'HubsSidebarEnabled' is disabled with recommendation
+
+(L1) Ensure 'Standalone Sidebar Enabled' is set to 'Disabled'
+
+.
+
+Allowing compose in Microsoft Edge could lead to data being transmitted to a third-party cloud service, which could lead to sensitive data or intellectual property being exposed."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Compose is enabled for writing on the web
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+Compose in Microsoft Edge will not function."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ComposeInlineEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.63 (L1) Ensure 'Configure browser process code integrity guard setting' is set to 'Enabled: Enable code integrity guard enforcement in the browser process.'"
+      info        : "This policy setting controls the use of code integrity guard in the browser process, which only allows Microsoft signed binaries to load.
+
+The recommended state for this setting is: Enabled: Enable code integrity guard enforcement in the browser process.
+
+Code Integrity Guard ensures Microsoft's digital signature is present when loading binaries into a process. Binaries without Microsoft's digital signature are blocked to protect the system from unknown binaries and prevent the injection of untrustworthy binaries into a process."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Enable code integrity guard enforcement in the browser process. :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Configure browser process code integrity guard setting
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Binaries without Microsoft's digital signature are blocked from being loaded into a process."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "2"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "browserCodeIntegritySetting"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.64 (L1) Ensure 'Configure InPrivate mode availability' is set to 'Enabled: InPrivate mode disabled'"
+      info        : "This policy setting controls whether Edge InPrivate mode is available or even forced for the user.
+
+The recommended state for this setting is: Enabled: InPrivate mode disabled
+
+Disabling InPrivate mode for Microsoft Edge will ensure that browsing data is logged on the system which may be important for forensics."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: InPrivate mode disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Configure InPrivate mode availability
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not be able to initiate the InPrivate browsing mode for Microsoft Edge."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "InPrivateModeAvailability"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.66 (L1) Ensure 'Configure Related Matches in Find on Page' is set to 'Disabled'"
+      info        : "This policy setting specifies how the user receives Related Matches in Find on Page, which provides spellcheck, synonyms, and Q&amp;amp;A results in Microsoft Edge.
+
+The recommended setting for this policy is: Disabled
+
+Note: Disabling this setting still allows users to receive related matches in Find on Page on
+
+limited sites
+
+. The results are processed on the user's device instead of a cloud service.
+
+Sharing a user's browsing and search history to a cloud service could inadvertently expose data. Due to privacy concerns, data should never be sent to any third-party."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Configure Related Matches in Find on Page
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not see all suggestions for better matches found on page, only from limited sites."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "RelatedMatchesCloudServiceEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REG_CHECK
+      description : "1.68 (L1) Ensure 'Configure the list of names that will bypass the HSTS policy check' is set to 'Disabled'"
+      info        : "This policy setting allows a list of names to be specified that will be exempt from HTTP Strict Transport Security (HSTS) policy checks then potentially upgraded from http:// to https://.
+
+The recommended state for this setting is: Disabled
+
+Allowing hostnames to be exempt from HSTS policy checks could allow for
+
+protocol downgrade attacks
+
+and
+
+cookie hijackings
+
+."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Configure the list of names that will bypass the HSTS policy check
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+There should be no adverse effect to users."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_TEXT
+      value_data  : "HKLM\SOFTWARE\Policies\Microsoft\Edge\HSTSPolicyBypassList"
+      reg_option  : MUST_NOT_EXIST
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.69 (L1) Ensure 'Configure the list of types that are excluded from synchronization' is set to 'Enabled'"
+      info        : "This policy setting allows you to specify data types that will be limited/excluded from uploading data to the Microsoft Edge synchronization service.
+
+The recommended state for this setting is: Enabled with the following CASE SENSITIVE datatype passwords
+
+Note: In a High Security/Sensitive Data Environment (L2), this setting should also include the following options: settings favorites addressesAndMore extensions and collections
+
+Storing and sharing information could potentially expose sensitive information including but not limited to user passwords and login information. Allowing this synchronization could also potentially allow an end user to pull corporate data that was synchronized into the cloud to a personal machine."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled with the following CASE SENSITIVE datatype passwords :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Configure the list of types that are excluded from synchronization
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Password data will not be synchronized with the Azure AD Tenant."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_TEXT
+      value_data  : "passwords"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge\SyncTypesListDisabled"
+      reg_item    : "1"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.70 (L1) Ensure 'Configure the Share experience' is set to 'Enabled: Don't allow using the Share experience'"
+      info        : "This policy setting allows users to be able to access the Share experience from the
+
+Settings and More
+
+menu in Microsoft Edge, which can allow information to be shared with other apps on the system.
+
+The recommended state for this setting is: Enabled: Don't allow using the Share experience
+
+Having this setting enabled could allow malicious content from Microsoft Edge to be exposed to other parts of the operating system."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Don't allow using the Share experience :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Configure the Share experience
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft
+
+here
+
+.
+
+Impact:
+
+Users will not be able to view or use the Share button in the toolbar as it will be hidden."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ConfigureShare"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.7.1 (L1) Ensure 'Configure users ability to override feature flags' is set to 'Enabled: Prevent users from overriding feature flags'"
+      info        : "This policy setting configures users' ability to override state of feature flags. Feature flags are settings a team can define that indicate whether a given set of features is visible in the user experience and/or invoked within the functionality.
+
+The recommended state for this setting is: Enabled: Prevent users from overriding feature flags
+
+the user's ability to enter commands and to override programs should be limited at the CLI in order to prevent users from altering systems configurations. Additionally, Feature flags are not necessary for users, as they are used by the DevOps team during the development and experimental process."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Prevent users from overriding feature flags :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Experimentation\Configure users ability to override feature flags
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+It can be risky for experimental features to be allowed in an enterprise managed environment because this can introduce bugs and security holes into systems, making it easier for an attacker to gain access. It is generally preferred to only use production-ready features."
+      reference   : "800-171|3.4.9,800-171|3.13.13,800-53|CM-10,800-53|CM-11,800-53|SC-18,800-53r5|CM-10,800-53r5|CM-11,800-53r5|SC-18,CSCv7|7.2,CSCv8|9.4,CSF|DE.CM-3,CSF|DE.CM-5,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|SC-18,LEVEL|1A,NIAv2|SU3,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|5.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "FeatureFlagoverridesControl"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.71 (L1) Ensure 'Configure whether form data and HTTP headers will be sent when entering or exiting Internet Explorer mode' is set to 'Enabled: Do not send form data or headers'"
+      info        : "This policy setting configures navigations that switch between Internet Explorer mode and Microsoft Edge will include form data. IE Mode in Microsoft Edge allows organizations that still need Internet Explorer 11, (which is not supported) for backward compatibility with existing websites.
+
+The recommended state for this setting is: Enabled: Do not send form data or headers
+
+Allowing autofill data to be imported could potentially allow sensitive data, such as personally identifiable information (PII) to be exposed. Storage of sensitive data should be handled with care and not stored within the browser."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Do not send form data or headers :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Configure whether form data and HTTP headers will be sent when entering or exiting Internet Explorer mode
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+When entering or exiting IE mode, form data and headers will not be shared between Internet Explorer mode and Microsoft Edge and vice versa."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "InternetExplorerIntegrationComplexNavDataTypes"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.72 (L1) Ensure 'Continue running background apps after Microsoft Edge closes' is set to 'Disabled'"
+      info        : "This policy setting determines whether processes from Microsoft Edge may start at Operating System sign-in and continue running once an Edge browser window is closed. This allows background apps and the current browsing session to remain active, including any session cookies. An open background process displays an icon in the system tray and can always be closed from there.
+
+The recommended state for this setting is: Disabled
+
+Allowing processes from the browser to run in the background could allow a malicious script or code to continue running even once the browser windows has been closed."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Continue running background apps after Microsoft Edge closes
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+The browser will close its processes and will not continue running as a background process."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "BackgroundModeEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.73 (L1) Ensure 'Control communication with the Experimentation and Configuration Service' is set to 'Enabled: Disable communication with the Experimentation and Configuration Service'"
+      info        : "This policy setting controls whether Microsoft Edge uses the Experimentation and Configuration Service to deploy the Experimentation and Configuration payload which consists of a list of early in development features that Microsoft is enabling for testing and feedback.
+
+The recommended state for this setting is: Enabled: Disable communication with the Experimentation and Configuration Service
+
+This setting allows feedback (data) to be sent back to a third-party for testing of development features for Microsoft Edge, and can also deliver a payload that contains a list of actions to take on certain domains for compatibility reasons."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Disable communication with the Experimentation and Configuration Service :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Control communication with the Experimentation and Configuration Service
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Data will not be sent back to a third-party and payloads will not be delivered."
+      reference   : "800-171|3.4.8,800-53|CM-7(5),800-53|CM-10,800-53r5|CM-7(5),800-53r5|CM-10,CSCv7|2.7,CSCv8|2.5,CSF|DE.CM-3,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.5.1,ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,TBA-FIISB|44.2.2,TBA-FIISB|49.2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ExperimentationAndConfigurationServiceControl"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.78 (L1) Ensure 'Delete old browser data on migration' is set to 'Disabled'"
+      info        : "This policy controls whether web browser data is deleted after migration to Microsoft Edge, this data includes forms, passwords, and visited sites.
+
+The recommended state for this setting is: Disabled
+
+Deleting browser data will delete information that may be important for a computer investigation and investigators such as Computer Forensics Analysts may not be able to retrieve pertinent information to the investigation."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Delete old browser data on migration
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Browsing data will not be deleted during migration."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "DeleteDataOnMigration"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.79 (L1) Ensure 'Disable saving browser history' is set to 'Disabled'"
+      info        : "This policy controls whether browser history is saved and prevents users from changing the policy.
+
+The recommended state for this setting is: Disabled
+
+Deleting browser data will delete information that may be important for a computer investigation and investigators such as Computer Forensics Analysts may not be able to retrieve pertinent information to the investigation."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Disable saving browser history
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior.
+
+Note: This setting will preserve browsing history that could contain a user's personal browsing history. Ensure this setting is in compliance with organizational policies."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "SavingBrowserHistoryDisabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.80 (L1) Ensure 'Disable synchronization of data using Microsoft sync services' is set to 'Enabled'"
+      info        : "This policy setting controls whether data synchronization with Microsoft sync services is allowed as well as whether the sync consent prompt appears to users. Examples of synced data include, but are not limited to, history and favorites.
+
+The recommended state for this setting is: Enabled
+
+Data should not be shared with third-party vendors in an enterprise-managed environment."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Disable synchronization of data using Microsoft sync services
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be unable to sync data with Microsoft, the prompt for sync consent will also be hidden from the user."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "SyncDisabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.8.1 (L1) Ensure 'Blocks external extensions from being installed' is set to 'Enabled'"
+      info        : "This policy setting determines whether external extensions (an extension that is not installed from the Chrome Web Store) can be installed.
+
+The recommended state for this setting is: Enabled
+
+Allowing users to install extensions from other locations (not the Chrome Web Store) can lead to malicious extensions being installed."
+      solution    : "To establish the recommended configuration via Group Policy, set the following UI path to Enabled :
+
+Computer Configuration\Polices\Administrative Templates\Microsoft Edge\Extensions\Blocks external extensions from being installed
+
+Impact:
+
+User will only be allowed to install extension for the Chrome web store."
+      reference   : "800-171|3.4.1,800-171|3.4.7,800-171|3.4.9,800-53|CM-7(2),800-53|CM-8(3),800-53|CM-10,800-53|CM-11,800-53r5|CM-7(2),800-53r5|CM-8(3),800-53r5|CM-10,800-53r5|CM-11,CN-L3|8.1.10.2(a),CN-L3|8.1.10.2(b),CSCv8|2.3,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|ID.AM-01,CSF2.0|ID.AM-02,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|CM-7(2),ITSG-33|CM-8(3),LEVEL|1A,NESA|T1.2.1,NESA|T1.2.2,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.3,SWIFT-CSCv1|5.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "BlockExternalExtensions"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.81 (L1) Ensure 'DNS interception checks enabled' is set to 'Enabled'"
+      info        : "This policy setting determines whether a local switch is configured for DNS interception checks. These checks attempt to discover if the browser is behind a proxy that redirects unknown host names.
+
+The recommended state for this setting is: Enabled
+
+Note: This detection might not be necessary in an enterprise environment where the network configuration is known. It can be disabled to avoid additional DNS and HTTP traffic on start-up and each DNS configuration change.
+
+Disabling these checks could potentially allow DNS hijacking and poisoning."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\DNS interception checks enabled
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-53|SI-8,800-53r5|SI-8,CSCv7|7.7,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|1A,QCSC-v1|3.2,QCSC-v1|8.2.1"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "DNSInterceptionChecksEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.82 (L1) Ensure 'Edge 3P SERP Telemetry Enabled' is set to 'Disabled'"
+      info        : "This policy setting controls Edge3P Telemetry in Microsoft Edge. Edge3P Telemetry captures the searches a user does on third-party search providers without identifying the person or the device.
+
+The recommended state for this setting is: Disabled
+
+Enabling this feature sends data to a third-party service, which could lead to sensitive data being exposed."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Edge 3P SERP Telemetry Enabled
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+Data will not be sent to a third-party."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "Edge3PSerpTelemetryEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.83 (L1) Ensure 'Edge Wallet E-Tree Enabled' is set to 'Disabled'"
+      info        : "This policy settings configures the use of the Wallet E-Tree feature in Microsoft Edge.
+
+The recommended state for this setting is: Disabled
+
+Allowing a third-party to track users while browsing the internet in Microsoft Edge, Weather from Microsoft Start, or Microsoft Wallet can lead to privacy and possible data loss issues."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Edge Wallet E-Tree Enabled
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+The Edge Wallet E-Tree feature will not be available to users."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "EdgeWalletEtreeEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.84 (L1) Ensure 'Enable AutoFill for addresses' is set to 'Disabled'"
+      info        : "This policy controls whether the AutoFill feature of Microsoft Edge is enabled for the auto-complete feature for addresses and other information in web forms.
+
+The recommended state for this setting is: Disabled
+
+Allowing autofill data to be saved in Microsoft Edge could potentially allow storage of sensitive data such as personally identifiable information (PII). Considering that storage of sensitive data should be handled with care disabling this setting is recommended."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable AutoFill for addresses
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be unable to store autofill address information in Microsoft Edge and they will also not be prompted to use such information on webforms. Disabling this setting also stops any past activity of autofill."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "AutofillAddressEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.85 (L1) Ensure 'Enable AutoFill for payment instructions' is set to 'Disabled'"
+      info        : "This policy setting controls whether users can utilize payment information, such as credit or debit cards in web forms using previously stored information.
+
+The recommended state for this setting is: Disabled
+
+Having payment information stored and auto filled in Microsoft Edge could allow for an attacker to gain access to this sensitive data."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable AutoFill for payment instructions
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Note #2: In older Microsoft Windows Administrative Templates, this setting was initially named
+
+AutoFill for credit cards
+
+, but it was renamed to
+
+Enable AutoFill for payment instructions
+
+.
+
+Impact:
+
+Users will be unable to use and store AutoFill data for credit and debit card information in Microsoft Edge."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "AutofillCreditCardEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.86 (L1) Ensure 'Enable browser legacy extension point blocking' is set to 'Enabled'"
+      info        : "This policy setting sets the
+
+ProcessExtensionPointDisablePolicy
+
+on Microsoft Edge's browser process to block code injection from legacy third party applications.
+
+The recommended state for this setting is: Enabled
+
+Note: Per Microsoft, only turn off the policy if there are compatibility issues with third-party software that must run inside Microsoft Edge's browser process.
+
+If this policy is set to Disabled it may have a detrimental effect on Microsoft Edge's security and stability as unknown and potentially hostile code can load inside Microsoft Edge's browser process."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable browser legacy extension point blocking
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Compatibility issues with third-party software can occur."
+      reference   : "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "BrowserLegacyExtensionPointsBlockingEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.87 (L1) Ensure 'Enable component updates in Microsoft Edge' is set to 'Enabled'"
+      info        : "This policy determines whether updates for Microsoft Edge components are enabled in Microsoft Edge.
+
+The recommendation state for this setting is: Enabled
+
+Note: Updates that are deemed 'critical for security' are still applied even if you disable this policy as well as any component that doesn't contain executable code, that doesn't significantly alter the behavior of the browser.
+
+Component updates should always be up to date to ensure the latest security patches and capabilities are applied."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable component updates in Microsoft Edge
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft.
+
+Impact:
+
+Updates will be automatically downloaded."
+      reference   : "800-171|3.11.2,800-171|3.11.3,800-171|3.14.1,800-53|RA-5,800-53|SI-2,800-53|SI-2(2),800-53r5|RA-5,800-53r5|RA-7,800-53r5|SI-2,800-53r5|SI-2(2),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSCv7|3.5,CSCv8|7.4,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,CSF2.0|GV.SC-10,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-01,CSF2.0|ID.RA-08,CSF2.0|PR.PS-02,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.1,ITSG-33|RA-5,ITSG-33|SI-2,ITSG-33|SI-2(2),LEVEL|1A,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.6.2,NESA|T7.7.1,NIAv2|PR9,PCI-DSSv3.2.1|6.1,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,PCI-DSSv4.0|6.3.3,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.2,SWIFT-CSCv1|2.7"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ComponentUpdatesEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.88 (L1) Ensure 'Enable CryptoWallet feature' is set to 'Disabled'"
+      info        : "The CryptoWallet feature allows users to securely store, manage, and transact digital assets such as Bitcoin, Ethereum, and other cryptocurrencies.
+
+The recommended state for this setting is: Disabled
+
+In an enterprise organization, users should not be able to manage, buy or sell assets such as Bitcoin, Ethereum, and other cryptocurrencies."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable CryptoWallet feature
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+The CryptoWallet feature will not be accessible to users."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "CryptoWalletEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.89 (L1) Ensure 'Enable deleting browser and download history' is set to 'Disabled'"
+      info        : "This policy controls whether users can delete browser and download history for Microsoft Edge.
+
+The recommended state for this setting is: Disabled
+
+Note: Even when this policy is Disabled the browsing and download history isn't guaranteed to be retained. Users can edit or delete the history database files directly, and the browser itself may remove (based on expiration period) or archive any or all history items at any time.
+
+Deleting browser data will delete information that may be important for a computer investigation. Investigators such as Computer Forensics Analysts may not be able to retrieve pertinent information to the investigation."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable deleting browser and download history
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Browser data deletion by users will be prohibited.
+
+Note: This setting will preserve browsing history that could contain a user's personal browsing history. Ensure this setting is in compliance with organizational policies."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "AllowDeletingBrowserHistory"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.90 (L1) Ensure 'Enable Discover access to page contents for AAD profiles' is set to 'Disabled'"
+      info        : "This policy setting controls discover access to page contents for AAD profiles. Discover is an extension that hosts Bing Chat and in order to summarize pages and interact with text selections, it needs to be able to access the page contents. When enabled, page contents will be sent to Bing.
+
+The recommended state for this setting is: Disabled
+
+Enabling this policy setting allows data to be transmitted to a third-party (BING), which could lead to sensitive data being exposed."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable Discover access to page contents for AAD profiles
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Discover will not be able to access page contents and therefore Bing Chat will not be able to summarize pages and interact with text selections."
+      reference   : "800-171|3.4.6,800-171|3.4.7,800-53|CM-7b.,800-53r5|CM-7b.,CN-L3|7.1.3.5(c),CN-L3|7.1.3.7(d),CN-L3|8.1.4.4(b),CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-7a.,LEVEL|1A,NIAv2|SS13b,NIAv2|SS14a,NIAv2|SS14c,PCI-DSSv3.2.1|2.2.2,PCI-DSSv4.0|2.2.4,QCSC-v1|3.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "DiscoverPageContextenabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.9.1 Ensure 'Enable Gamer Mode' is set to 'Disabled'"
+      info        : "Microsoft Edge Gamer Mode allows the personalize of browsers with gaming themes and gives the option of enabling Efficiency Mode for PC gaming, the Gaming feed on new tabs, sidebar apps for gamers, and more.
+
+The recommended state for this setting is: Disabled
+
+Allowing users the ability to use the gamer mode feature in Microsoft Edge could lead to data leakage or intellectual property being exposed."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Games settings\Enable gamer mode in Microsoft Edge
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from
+
+Download Edge for Business
+
+.
+
+Impact:
+
+The gamer mode feature in Microsoft Edge will not function."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "GamerModeEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.92 (L1) Ensure 'Enable Follow service in Microsoft Edge' is set to 'Disabled'"
+      info        : "This policy setting allows the Microsoft Edge browser to enable the follow service which allows users to follow an influencer, site, or topic in Microsoft Edge.
+
+The recommended state for this setting is: Disabled
+
+Enabling this feature will create a personalized feed in Edge's Collections section. In order to create a personalized feed, data will be collected from the browser. Due to privacy concerns, data should never be sent to any third-party."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable Follow service in Microsoft Edge
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will not be able to follow an influencer, site, or topic in Microsoft Edge."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "EdgeFollowEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.93 (L1) Ensure 'Enable globally scoped HTTP auth cache' is set to 'Disabled'"
+      info        : "This policy setting controls whether HTTP auth credentials may be automatically used in the context of another web site visited in Microsoft Edge.
+
+The recommended state for this setting is: Disabled
+
+Note: This policy is intended to give enterprises depending on the legacy behavior a chance to update their login procedures and will be removed in the future.
+
+Allowing HTTP auth credentials to be shared without the user's consent could lead to a user sharing sensitive information without their knowledge. Enabling this setting could also lead to some types of cross-site attacks, that would allow users to be tracked across sites without the use of cookies."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable globally scoped HTTP auth cache
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "GloballyScopeHTTPAuthCacheEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.95 (L1) Ensure 'Enable network prediction' is set to 'Enabled: Don't predict network actions on any network connection'"
+      info        : "This policy setting controls the network prediction feature which controls DNS prefetching, TCP and SSL pre-connection and pre-rendering of web pages.
+
+The recommended state for this setting is: Enabled: Don't predict network actions on any network connection
+
+Opening connections to resources that may not be used could allow un-needed connections increasing attack surface and, in some cases, could lead to opening connections to resources which the user did not intend to utilize."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled: Don't predict network actions on any network connection :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable network prediction
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior, apart from users being able to change the default."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "2"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "NetworkPredictionOptions"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.96 (L1) Ensure 'Enable profile creation from the Identity flyout menu or the Settings page' is set to 'Disabled'"
+      info        : "This policy setting controls whether user profiles can create new profiles in Microsoft Edge.
+
+The recommended state for this setting is: Disabled
+
+Allowing users to create new profiles could allow for such profiles to be removed or switched which may end up in a situation that hides or even removes data which may be important for computer investigation and investigators such as Computer Forensics Analysts may not be able to retrieve pertinent information to the investigation."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable profile creation from the Identity flyout menu or the Settings page
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Users will be unable to utilize the
+
+Add profile
+
+option in Microsoft Edge."
+      reference   : "800-171|3.1.1,800-53|AC-2,800-53r5|AC-2,CN-L3|7.1.3.2(d),CSCv7|16.6,CSCv8|5.1,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|1A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "BrowserAddProfileEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.97 (L1) Ensure 'Enable resolution of navigation errors using a web service' is set to 'Disabled'"
+      info        : "This policy setting controls whether Microsoft Edge can issue a dataless connection to a web service to probe networks, (ex: Hotel and Airport Wi-Fi) for connectivity issues.
+
+The recommended state for this setting is: Disabled
+
+Note: Except on Windows 8 and later versions of Windows, Microsoft Edge
+
+always
+
+uses native APIs to resolve connectivity issues.
+
+This setting could potentially allow information about the user's network to be disclosed."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Disabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable resolution of navigation errors using a web service
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+Microsoft Edge will use native APIs for potential resolution of network connectivity and navigation issues."
+      reference   : "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "0"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "ResolveNavigationErrorsUseWebService"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "1.99 (L1) Ensure 'Enable security warnings for command-line flags' is set to 'Enabled'"
+      info        : "This policy setting prevents Microsoft Edge from showing security warnings that potentially dangerous command-line flags are in use at its' launch.
+
+The recommended state of this setting is: Enabled
+
+If Microsoft Edge is being launched with potentially dangerous flags this information should be exposed to the user as a warning, if not the user may unintentionally be using non-secure settings and be exposed to security flaws."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to Enabled :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge\Enable security warnings for command-line flags
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+None - this is the default behavior."
+      reference   : "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\Edge"
+      reg_item    : "CommandLineFlagSecurityWarningsEnabled"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "3.1.1 (L1) Ensure 'Update policy override default' is set to 'Enabled: Always allow updates (recommended)'"
+      info        : "This policy settings sets the default behavior for all channels concerning the way Microsoft Edge Update handles available updates for Microsoft Edge.
+
+The recommended state for this setting is: Enabled: Always allow updates (recommended)
+
+Note: This setting can be overridden for individual channels by specifying the
+
+Update policy override
+
+policy for those specific channels.
+
+Note #2: This policy is available only on Windows instances that are joined to a Microsoft(R) Active Directory(R) domain.
+
+Applying software updates as soon as they become available can ensure that systems will always have the most recent critical updates installed."
+      solution    : "To establish the recommended configuration via Group Policy, set the following UI path to Enabled: Always allow updates (recommended) or Enabled: Automatic silent updates only :
+
+Computer Configuration\Polices\Administrative Templates\Microsoft Edge Update\Applications\Update policy override default
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+The latest Microsoft Edge updates are automatically installed. Enterprises that use other means of patching systems will need to exclude this recommendation from the benchmark."
+      reference   : "800-171|3.11.2,800-171|3.11.3,800-171|3.14.1,800-53|RA-5,800-53|SI-2,800-53|SI-2(2),800-53r5|RA-5,800-53r5|RA-7,800-53r5|SI-2,800-53r5|SI-2(2),CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSCv7|3.5,CSCv8|7.4,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,CSF2.0|GV.SC-10,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-01,CSF2.0|ID.RA-08,CSF2.0|PR.PS-02,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.1,ITSG-33|RA-5,ITSG-33|SI-2,ITSG-33|SI-2(2),LEVEL|1A,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.6.2,NESA|T7.7.1,NIAv2|PR9,PCI-DSSv3.2.1|6.1,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,PCI-DSSv4.0|6.3.3,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.2,SWIFT-CSCv1|2.7"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "1"
+      reg_key     : "HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate"
+      reg_item    : "UpdateDefault"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+
+    <custom_item>
+      type        : REGISTRY_SETTING
+      description : "3.3.1 (L1) Ensure 'Auto-update check period override' is set to any value except '0'"
+      info        : "This policy setting configures the minimum number of minutes between automatic update checks.
+
+The recommended state for this setting is: any value except 0
+
+Automatic updates can help ensure that the computers in the environment will always have the most recent critical updates and can decrease the amount of time the system will remain vulnerable between updates and patches."
+      solution    : "To establish the recommended configuration via GP, set the following UI path to any value except 0 :
+
+Computer Configuration\Policies\Administrative Templates\Microsoft Edge Update\Preferences\Auto-update check period override
+
+Note: This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:
+
+Download Microsoft Edge for Business - Microsoft
+
+.
+
+Impact:
+
+If using a third-party for patching, an exception to this recommendation will be needed."
+      reference   : "800-171|3.14.1,800-53|SI-2c.,800-53r5|SI-2c.,CN-L3|8.1.4.4(e),CN-L3|8.1.10.5(a),CN-L3|8.1.10.5(b),CN-L3|8.5.4.1(b),CN-L3|8.5.4.1(d),CN-L3|8.5.4.1(e),CSF|ID.RA-1,CSF|PR.IP-12,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-2,LEVEL|1A,NESA|T7.6.2,NESA|T7.7.1,NIAv2|AM38,NIAv2|AM39,NIAv2|SS14b,PCI-DSSv3.2.1|6.2,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.3,QCSC-v1|11.2,SWIFT-CSCv1|2.2"
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+      value_type  : POLICY_DWORD
+      value_data  : "[1..MAX]"
+      reg_key     : "HKLM\Software\Policies\Microsoft\EdgeUpdate"
+      reg_item    : "AutoUpdateCheckPeriodMinutes"
+      reg_option  : CAN_NOT_BE_NULL
+    </custom_item>
+  </then>
+
+  <else>
+    <report type:"WARNING">
+      description : "CIS_Microsoft_Edge_v3.0.0_L1.audit from CIS Microsoft Edge Benchmark v3.0.0"
+      info        : "NOTE: Nessus has not identified that the chosen audit applies to the target device."
+      see_also    : "https://workbench.cisecurity.org/benchmarks/18501"
+    </report>
+  </else>
+</if>
+
+</group_policy>
+</check_type>

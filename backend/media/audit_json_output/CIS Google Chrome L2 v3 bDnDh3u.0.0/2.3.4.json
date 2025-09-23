@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.3.4 (L2) Ensure 'Default third-party storage partitioning setting' Is Enabled and Blocked",
+  "info": "This setting will block any site from accessing the storage session from any other site. This will block third party trackers that are embedded on multiple sites from tracking a user across the sites they visit. Blocking third party access to the user agent will not allow sites to infer data about the user from the data from another site.\n\nIt can be configured to either:\n\n - Enabled (1): Allow third-party storage partitioning to be enabled.\n - Disabled (2): Block third-party storage partitioning from being enabled.\n\nSetting this requires that user agent state needs to be keyed by more than a single origin or site. It can also defend against timing attacks on web privacy.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled: Block third-party storage partitioning from being enabled. :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Content settings\\Default third-party storage partitioning setting",
+  "Impact": "Enforcing this may cause users to experience issues with sites they regularly visit that already grant access to third-parties.\"",
+  "reference": "800-171|3.1.1,800-171r3|03.01.01,800-53|AC-2,800-53r5|AT-2,CN-L3|7.1.3.2(d),CSCv7|3.3,CSCv8|14.6,CSF|DE.CM-1,CSF|DE.CM-3,CSF|PR.AC-1,CSF|PR.AC-4,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|PR.AA-01,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.18,ISO-27001-2022|A.8.2,ISO/IEC-27001|A.9.2.1,ITSG-33|AC-2,LEVEL|2A,NIAv2|AM28,NIAv2|NS5j,NIAv2|SS14e,QCSC-v1|5.2.2,QCSC-v1|8.2.1,QCSC-v1|13.2,QCSC-v1|15.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "2",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "DefaultThirdPartyStoragePartitioningSetting",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

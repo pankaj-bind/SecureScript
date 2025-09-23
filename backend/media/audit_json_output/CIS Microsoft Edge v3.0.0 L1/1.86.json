@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.86 (L1) Ensure 'Enable browser legacy extension point blocking' is set to 'Enabled'",
+  "info": "\"This policy setting sets the\n\nProcessExtensionPointDisablePolicy\n\non Microsoft Edge's browser process to block code injection from legacy third party applications.\n\nThe recommended state for this setting is: Enabled",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Enable browser legacy extension point blocking",
+  "Impact": "Compatibility issues with third-party software can occur.\"",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "BrowserLegacyExtensionPointsBlockingEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

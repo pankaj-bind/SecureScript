@@ -1,0 +1,16 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.21.1 (L1) Ensure 'Specifies whether to allow websites to make requests to more-private network endpoints' is set to 'Disabled'",
+  "info": "\"This policy setting controls whether insecure websites are allowed to make requests to more private network endpoints.\n\nA network endpoint is more private than another if:\n\n - Its IP address is localhost and the other is not.\n - Its IP address is private and the other is public.\n\nIn the future, depending on spec evolution, this policy might apply to all cross-origin requests directed at private IPs or localhost.\n\nA website is deemed secure if it meets the definition of a secure context in",
+  "https": "//wicg.github.io/private-network-access/\n\nfor more details.\n\nNote #2: If this policy is not configured or set to\n\nDisabled\n\n, the default behavior for requests from insecure contexts to more-private network endpoints will depend on the user's personal configuration for the\n\nBlockInsecurePrivateNetworkRequests\n\nfeature, which may be set by a field trial or on the command line.\n\nAllowing public internet sites to 'peek' behind your firewall by using the user's browser to mix intranet resources into internet-delivered pages represents a dangerous attack surface. The baseline requires enforcement of the new browser restriction that any such intranet requests are blocked if the internet page was delivered over insecure HTTP.",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Private Network Request Settings\\Specifies whether to allow websites to make requests to more-private network endpoints",
+  "Impact": "Users will be unable to allow non-secure public contexts to request resources from private addresses.\"",
+  "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "InsecurePrivateNetworkRequestsAllowed",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

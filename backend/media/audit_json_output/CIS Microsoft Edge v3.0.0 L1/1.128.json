@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.128 (L1) Ensure 'Standalone Sidebar Enabled' is set to 'Disabled'",
+  "info": "This policy setting controls whether users will have the ability to activate the standalone sidebar. The standalone sidebar is an optional mode for the sidebar in Microsoft Edge and uses Bing AI. When this mode is activated by a user, the sidebar appears in a fixed position on the Microsoft Windows desktop and is hidden from the browser application frame.\n\nThe recommended state for this setting is: Disabled\n\nMicrosoft Edge determines what data to send to Bing AI based on the user's query and their consent to share data with Microsoft. This could allow data to be transmitted to a third-party cloud service. This could lead to sensitive data being exposed.\n\nBing AI offers various features, such as summarizing financial reports, comparing financials of different companies, and aiding users in creating and editing content which could also lead to sensitive data being exposed.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Standalone Sidebar Enabled",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "Impact": "Users will not be able to access the\n\nHubsSidebarEnabled\n\n(Show Hubs Sidebar) and it will also prevent them from accessing standalone sidebar and using the Bing AI feature.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "StandaloneHubsSidebarEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

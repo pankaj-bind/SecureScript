@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.3.6 (L2) Ensure 'Control Manifest v2 extension availability' Is Set to Forced Only",
+  "info": "This policy setting controls extension management settings for Google Chrome, specifically v2 extensions. This policy setting is being sunsetted as Google develops the Manifest v3, but that rollout is currently postponed.\n\nThe policy can be configured to:\n\n - Default (0): Default browser behavior\n - Disabled (1): Manifest v2 is disabled\n - Enabled (2): Manifest v2 is enabled\n - Forced Only (3): Manifest v2 is enabled for forced extensions only\n\nSetting this to Forced Only will not allow users to install any additional v2 extensions, and all existing, non-forced, v2 extensions will be disabled.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled: Manifest v2 is enabled for forced extensions only :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Extensions\\Control Manifest v2 extension availability",
+  "Impact": "Users that use extensions regularly will have a set of them blocked, which will change their user experience.\"",
+  "reference": "800-171|3.11.2,800-171|3.11.3,800-171r3|03.11.02,800-53|RA-5,800-53r5|RA-5,CSCv7|9.4,CSCv8|7.2,CSF|DE.CM-8,CSF|DE.DP-4,CSF|DE.DP-5,CSF|ID.RA-1,CSF|PR.IP-12,CSF|RS.CO-3,CSF|RS.MI-3,CSF2.0|GV.SC-10,CSF2.0|ID.IM-01,CSF2.0|ID.IM-02,CSF2.0|ID.IM-03,CSF2.0|ID.RA-01,CSF2.0|ID.RA-08,GDPR|32.1.b,GDPR|32.1.d,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.8,ISO/IEC-27001|A.12.6.1,ITSG-33|RA-5,LEVEL|2A,NESA|M1.2.2,NESA|M5.4.1,NESA|T7.7.1,PCI-DSSv3.2.1|6.1,PCI-DSSv4.0|6.3,PCI-DSSv4.0|6.3.1,QCSC-v1|3.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,SWIFT-CSCv1|2.7",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "3",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "ExtensionManifestV2Availability",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

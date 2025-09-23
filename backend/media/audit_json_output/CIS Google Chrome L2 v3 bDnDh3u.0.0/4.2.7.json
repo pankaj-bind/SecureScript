@@ -1,0 +1,12 @@
+{
+  "type": "REG_CHECK",
+  "description": "4.2.7 (L2) Ensure 'Allow Window Management permission on these sites' Is Configured",
+  "info": "This setting can automatically allow access to the window management permissions for specific sites.\n\nIf the value for WindowManagementAllowedForUrls is not changed from the default, it will follow the configuration of DefaultWindowManagementSetting\n\nAllowing only specific sites to have access to Window Management will only allow permitted sites to see information about the device's screens, open additional browser windows specifying location, and size of the window.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled and set Show to the approved URLs:\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Content settings\\Allow Window Management permission on these sites",
+  "Impact": "Enforcing this recommendation can cause visited sites to not display as intended.\"",
+  "reference": "800-171|3.1.1,800-171r3|03.01.02,800-53|AC-3,800-53r5|AC-3,CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSF|PR.AC-4,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,LEVEL|2M,NESA|T4.2.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM3,NIAv2|SS29,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|13.2,TBA-FIISB|31.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_TEXT",
+  "value_data": "HKLM\\Software\\Policies\\Google\\Chrome\\WindowManagementAllowedForUrls",
+  "reg_option": "MUST_EXIST"
+}

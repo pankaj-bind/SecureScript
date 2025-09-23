@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "4.8 (L2) Ensure 'Enable AutoFill for addresses' is set to 'Disabled'",
+  "info": "Chrome allows users to auto-complete web forms with saved information such as address or phone number. Disabling this feature will prompt a user to enter all information manually.\n\nThe recommended state for this setting is: Disabled (0)\n\nIf an attacker gains access to a user's machine where the user has stored address AutoFill data, information could be harvested.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Administrative Templates\\Google\\Google Chrome\\Enable AutoFill for addresses",
+  "Impact": "If this setting is disabled, AutoFill will be inaccessible to users.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|2A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "AutofillAddressEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

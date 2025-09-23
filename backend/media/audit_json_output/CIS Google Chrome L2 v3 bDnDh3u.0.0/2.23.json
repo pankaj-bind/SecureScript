@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.23 (L2) Ensure 'Determines whether the built-in certificate verifier will enforce constraints encoded into trust anchors loaded from the platform trust store' Is Enabled",
+  "info": "This setting controls constraints encoded into trust anchors loaded from the platform trust store. It can be configured to either:\n\n - Disabled (0): Do not enforce constraints in locally added trust anchors\n - Enabled (1): Enforce constraints in locally added trust anchors\n\nIf the value for EnforceLocalAnchorConstraintsEnabled is not changed from the default, it will behave as if it is enabled.\n\nSetting this policy will not allow access to any sites that do not enforce constraints.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Determines whether the built-in certificate verifier will enforce constraints encoded into trust anchors loaded from the platform trust store.",
+  "Impact": "Enabling this might cause certain internal sites to not properly load until they are updated.\"",
+  "reference": "800-171|3.13.10,800-171r3|03.13.10,800-53|SC-12,800-53r5|SC-12,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,GDPR|32.1.a,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.24,ISO/IEC-27001|A.10.1.2,ITSG-33|SC-12,ITSG-33|SC-12a.,LEVEL|2A,NESA|T7.4.1,NESA|T7.4.2,NIAv2|CY2,NIAv2|CY8,NIAv2|CY9,QCSC-v1|5.2.2,QCSC-v1|6.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "EnforceLocalAnchorConstraintsEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

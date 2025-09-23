@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "4.2.1 (L2) Ensure 'Control use of the Serial API' is set to 'Enabled: Do not allow any site to request access to serial ports via the Serial API'",
+  "info": "\"This setting controls website access and use of the system serial port.\n\n - Do not allow any site to request access to serial ports via the Serial API (2)\n - Allow sites to ask the user to grant access to a serial port (3)\n\nThe recommended state for this setting is: Do not allow any site to request access to serial ports via the Serial API (2)",
+  "NOTE": "If more granular control is needed (per website) then this setting can be used in combination with the\n\nSerialAllowAllPortsForUrls\n\n,\n\nSerialAskForUrls\n\nand\n\nSerialBlockedForUrls\n\nsettings. For example,\n\nSerialAllowAllPortsForUrls\n\ncan be used to allow serial port access to specific sites. Please see the references below for more information.\n\nPreventing access to system serial ports may prevent malicious sites from using these ports and accessing the devices attached.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled: Do not allow any site to request access to serial ports via the Serial API :\n\nComputer Configuration\\Administrative Templates\\Google\\Google Chrome\\Content settings\\Control use of the Serial API",
+  "Impact": "This setting would also prevent legitimate sites from accessing it as well.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "2",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "DefaultSerialGuardSetting",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

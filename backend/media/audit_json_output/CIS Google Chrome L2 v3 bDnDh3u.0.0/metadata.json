@@ -1,0 +1,12 @@
+{
+  "ui_metadata": {
+    "display_name": "CIS Google Chrome L2 v3.0.0",
+    "spec": {
+      "type": "CIS",
+      "name": "Google Chrome",
+      "profile": "L2",
+      "version": "3.0.0",
+      "link": "https://workbench.cisecurity.org/benchmarks/8691"
+    }
+  }
+}

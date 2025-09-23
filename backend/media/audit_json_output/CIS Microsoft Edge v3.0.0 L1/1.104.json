@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.104 (L1) Ensure 'Enable upload files from mobile in Microsoft Edge desktop' is set to 'Disabled'",
+  "info": "This policy settings allows the configuration of the Edge 'Upload from mobile' feature. The 'Upload from mobile' feature allows users to select file(s) from a mobile device and upload to a via a webpage in Microsoft Edge.\n\nThe recommended state for this setting is: Disabled\n\nAllowing users the ability to use the file upload from mobile feature in Microsoft Edge could lead to data leakage or intellectual property being exposed.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Enable upload files from mobile in Microsoft Edge desktop",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from Microsoft from\n\nDownload Edge for Business\n\n.",
+  "Impact": "The file upload from mobile feature in Microsoft Edge will not function.\"",
+  "reference": "800-171|3.4.9,800-171|3.13.13,800-53|CM-10,800-53|CM-11,800-53|SC-18,800-53r5|CM-10,800-53r5|CM-11,800-53r5|SC-18,CSCv7|7.2,CSCv8|9.4,CSF|DE.CM-3,CSF|DE.CM-5,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|SC-18,LEVEL|1A,NIAv2|SU3,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|5.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "UploadFromPhoneEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

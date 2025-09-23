@@ -119,6 +119,13 @@ export const getProductDetails = async (id: string): Promise<ProductDetails> => 
   return response.data;
 };
 
+// --- ADD THIS FUNCTION ---
+export const updateProductScripts = async (productId: number, scripts: object): Promise<void> => {
+  // The payload needs to be wrapped in a 'script_content' key to match the backend serializer
+  await apiClient.put(`/products/${productId}/update-script/`, { script_content: scripts });
+};
+// --- END ADDITION ---
+
 
 // --- Audit Parser functions ---
 export const getAuditParsers = async (): Promise<AuditParser[]> => {
@@ -138,8 +145,6 @@ export const uploadAuditParser = async (name: string, file: File) => {
   });
   return response.data;
 };
-
-
 // --- Profile API functions ---
 export const getUserProfile = async () => {
   const response = await apiClient.get('/profile/');

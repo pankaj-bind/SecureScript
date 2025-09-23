@@ -1,0 +1,16 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.8.2 (L2) Ensure 'Configure extension management settings' is set to 'Enabled: *'",
+  "info": "\"This policy setting controls extension management settings for Microsoft Edge, including any controlled by existing extension-related policies. This policy supersedes any legacy policies that might be set.\n\nThe recommended state for this setting is: Enabled: *",
+  "NOTE": "This policy maps an extension ID or an update URL to its specific setting only. A default configuration can be set for the special ID '*'LEVEL|2A, which applies to all extensions without a custom configuration in this policy. With an update URL, configuration applies to extensions with the exact update URL stated in the extension manifest. If the\n\noverride_update_url\n\nflag is set to true, the extension is installed and updated using the update URL specified in the\n\nExtensionInstallForcelist (Control which extensions are installed silently)\n\npolicy or in\n\nupdate_url\n\nfield in this policy. The flag\n\noverride_update_url\n\nis ignored if the\n\nupdate_url\n\nis the Edge Add-ons website update URL.\n\nNote #2: For more granular control the\n\nExtensionInstallForcelist\n\nand\n\nExtensionInstallAllowlist (Allow specific extensions to be installed)\n\nto allow or force install of specific extensions even if the store is blocked using the JSON in the example. {'update_url:https://clients2.google.com/service/update2/crx': {'installation_mode': 'blocked'}}\n\nFor more details, check out the detailed guide to\n\nExtensionSettings\n\npolicy available from Microsoft at\n\nDetailed guide to the ExtensionSettings policy | Microsoft Learn\n\n.\n\nBlocking extensions that could potentially allow remote control of the system through the browser is a good security practice. If extensions are needed for securing the browser, or for enterprise use, these can be enabled by configuring the setting\n\nAllow specific extensions to be installed\n\n.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Enabled: * :\n\nComputer Configuration\\Polices\\Administrative Templates\\Microsoft Edge\\Extensions\\Configure extension management settings",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "Impact": "Any installed extension will be removed unless it is specified on the extension allowlist, if an organization is using any approved password managers ensure that the extension is added to the allowlist.\"",
+  "reference": "800-171|3.4.9,800-171|3.13.13,800-53|CM-10,800-53|CM-11,800-53|SC-18,800-53r5|CM-10,800-53r5|CM-11,800-53r5|SC-18,CSCv7|7.2,CSCv8|9.4,CSF|DE.CM-3,CSF|DE.CM-5,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,CSF2.0|PR.PS-02,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO/IEC-27001|A.12.6.2,ITSG-33|SC-18,LEVEL|2A,NIAv2|SU3,QCSC-v1|3.2,QCSC-v1|8.2.1,SWIFT-CSCv1|5.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_TEXT",
+  "value_data": "*",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "ExtensionSettings",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

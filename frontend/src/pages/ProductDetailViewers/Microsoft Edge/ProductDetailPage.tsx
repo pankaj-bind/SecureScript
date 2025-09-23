@@ -2,58 +2,59 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getProductDetails, ProductDetails, createTemplate } from '../../../services/authService';
+import { getProductDetails, ProductDetails, createTemplate, updateProductScripts } from '../../../services/authService';
 import axios from 'axios';
-import customScripts from './scripts.json'; // Import the viewer's specific scripts
 
 // --- Type Interfaces ---
 interface AuditFile {
-  name: string;
-  url: string;
+    name: string;
+    url: string;
 }
 
 interface Policy {
-  description: string;
-  info?: string;
-  Impact?: string;
-  reg_key?: string;
-  reg_item?: string;
-  value_data?: string;
-  value_type?: string;
-  reg_option?: string;
-  type?: string;
-  [key: string]: any; 
+    description: string;
+    info?: string;
+    Impact?: string;
+    reg_key?: string;
+    reg_item?: string;
+    value_data?: string;
+    value_type?: string;
+    reg_option?: string;
+    type?: string;
+    [key: string]: any;
+}
+
+interface PolicyDetailViewProps {
+    policy: Policy | null;
+    customScripts: Record<string, any> | null;
+    onSave: (policyId: string, scripts: { hardeningScript: string; auditScript: string; revertHardeningScript: string; }) => Promise<void>;
 }
 
 // --- Helper Components ---
-
-const PolicyDetailView: React.FC<{ policy: Policy | null }> = ({ policy }) => {
+const PolicyDetailView: React.FC<PolicyDetailViewProps> = ({ policy, customScripts, onSave }) => {
     const [hardenScript, setHardenScript] = useState('');
     const [checkScript, setCheckScript] = useState('');
     const [revertScript, setRevertScript] = useState('');
     const [executionResult, setExecutionResult] = useState<string | null>(null);
     const [executionError, setExecutionError] = useState<string | null>(null);
     const [isExecuting, setIsExecuting] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         if (policy) {
             setExecutionResult(null);
             setExecutionError(null);
-
-            // Extract policy number from description
             const policyIdMatch = policy.description.match(/^(\d+(\.\d+)*)/);
             const policyId = policyIdMatch ? policyIdMatch[0] : null;
 
-            // Check if a custom script exists for this policy ID
-            if (policyId && (customScripts as any)[policyId]) {
-                const scripts = (customScripts as any)[policyId];
+            if (policyId && customScripts && customScripts[policyId]) {
+                const scripts = customScripts[policyId];
                 setHardenScript(scripts.hardeningScript || '# No custom hardening script provided.');
                 setCheckScript(scripts.auditScript || '# No custom audit script provided.');
                 setRevertScript(scripts.revertHardeningScript || '# No custom revert script provided.');
-                return; // Exit early
+                return;
             }
             
-            // Fallback to dynamic script generation
             const { reg_key, reg_item, value_data, value_type, reg_option } = policy;
 
             if (reg_option === 'MUST_NOT_EXIST' && value_data) {
@@ -80,22 +81,18 @@ const PolicyDetailView: React.FC<{ policy: Policy | null }> = ({ policy }) => {
             setCheckScript(`reg query "${reg_key}" /v "${reg_item}"`);
             setRevertScript(`reg delete "${reg_key}" /v "${reg_item}" /f`);
         }
-    }, [policy]);
+    }, [policy, customScripts]);
 
     const handleExecute = async (action: 'apply' | 'check' | 'revert') => {
         setIsExecuting(true);
         setExecutionResult(null);
         setExecutionError(null);
-
+        const scriptToRun = action === 'apply' ? hardenScript : action === 'check' ? checkScript : revertScript;
         try {
             let result;
-            if (action === 'apply') {
-                result = await window.electron.applyHarden(hardenScript);
-            } else if (action === 'check') {
-                result = await window.electron.checkStatus(checkScript);
-            } else {
-                result = await window.electron.revertHardening(revertScript);
-            }
+            if (action === 'apply') result = await window.electron.applyHarden(scriptToRun);
+            else if (action === 'check') result = await window.electron.checkStatus(scriptToRun);
+            else result = await window.electron.revertHardening(scriptToRun);
             setExecutionResult(`Success: ${result || 'The operation completed successfully.'}`);
         } catch (error: any) {
             setExecutionError(`Error: ${error.toString()}`);
@@ -103,6 +100,25 @@ const PolicyDetailView: React.FC<{ policy: Policy | null }> = ({ policy }) => {
             setIsExecuting(false);
         }
     };
+
+    const handleSave = async () => {
+        if (!policy) return;
+        const policyIdMatch = policy.description.match(/^(\d+(\.\d+)*)/);
+        if (!policyIdMatch) {
+            setExecutionError("Cannot save: Policy description does not contain a valid ID.");
+            return;
+        }
+        const policyId = policyIdMatch[0];
+
+        setIsSaving(true);
+        await onSave(policyId, {
+            hardeningScript: hardenScript,
+            auditScript: checkScript,
+            revertHardeningScript: revertScript,
+        });
+        setIsSaving(false);
+    };
+
 
     if (!policy) {
         return <div className="p-6 text-gray-500">Select a policy to see the details.</div>;
@@ -119,10 +135,7 @@ const PolicyDetailView: React.FC<{ policy: Policy | null }> = ({ policy }) => {
             });
         };
         return (
-            <button
-                onClick={handleCopy}
-                className="absolute top-2 right-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-xs font-semibold py-1 px-2 rounded"
-            >
+            <button onClick={handleCopy} className="absolute top-2 right-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-xs font-semibold py-1 px-2 rounded">
                 {copied ? 'Copied!' : 'Copy'}
             </button>
         );
@@ -141,25 +154,13 @@ const PolicyDetailView: React.FC<{ policy: Policy | null }> = ({ policy }) => {
             </div>
 
             <div className="flex space-x-2 mb-4">
-                 <button 
-                    onClick={() => handleExecute('apply')}
-                    disabled={isExecuting}
-                    className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                 <button onClick={() => handleExecute('apply')} disabled={isExecuting} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                     {isExecuting ? 'Working...' : 'Apply Hardening'}
                 </button>
-                <button 
-                    onClick={() => handleExecute('check')}
-                    disabled={isExecuting}
-                    className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                <button onClick={() => handleExecute('check')} disabled={isExecuting} className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                     {isExecuting ? 'Working...' : 'Check Status'}
                 </button>
-                <button 
-                    onClick={() => handleExecute('revert')}
-                    disabled={isExecuting}
-                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                <button onClick={() => handleExecute('revert')} disabled={isExecuting} className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
                     {isExecuting ? 'Working...' : 'Revert Hardening'}
                 </button>
             </div>
@@ -171,74 +172,35 @@ const PolicyDetailView: React.FC<{ policy: Policy | null }> = ({ policy }) => {
                 <div>
                     <h3 className="font-semibold mb-1">Hardening Script</h3>
                     <div className="relative">
-                        <textarea readOnly value={hardenScript} className="w-full h-24 p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-none"></textarea>
+                        <textarea value={hardenScript} onChange={e => setHardenScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
                         <CopyButton textToCopy={hardenScript} />
                     </div>
                 </div>
                 <div>
-                    <h3 className="font-semibold mb-1">Check Status Script</h3>
+                    <h3 className="font-semibold mb-1">Audit Script</h3>
                     <div className="relative">
-                        <textarea readOnly value={checkScript} className="w-full h-24 p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-none"></textarea>
+                        <textarea value={checkScript} onChange={e => setCheckScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
                         <CopyButton textToCopy={checkScript} />
                     </div>
                 </div>
                 <div>
-                    <h3 className="font-semibold mb-1">Revert Hardening Script</h3>
+                    <h3 className="font-semibold mb-1">Revert Script</h3>
                     <div className="relative">
-                        <textarea readOnly value={revertScript} className="w-full h-24 p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-none"></textarea>
+                        <textarea value={revertScript} onChange={e => setRevertScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
                         <CopyButton textToCopy={revertScript} />
                     </div>
                 </div>
+            </div>
+             <div className="mt-6 flex justify-end">
+                <button onClick={handleSave} disabled={isSaving} className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed">
+                    {isSaving ? "Saving..." : "Save Scripts for this Policy"}
+                </button>
             </div>
         </div>
     );
 };
 
 // --- Main Page Component ---
-
-const generateScriptForPolicies = (policies: Policy[], scriptType: 'hardeningScript' | 'auditScript' | 'revertHardeningScript'): string => {
-    const scriptParts: string[] = [];
-    
-    for (const policy of policies) {
-        let scriptPart = '';
-        const policyIdMatch = policy.description.match(/^(\d+(\.\d+)*)/);
-        const policyId = policyIdMatch ? policyIdMatch[0] : null;
-
-        if (policyId && (customScripts as any)[policyId]) {
-            scriptPart = (customScripts as any)[policyId][scriptType] || '';
-        } 
-        else {
-            const { reg_key, reg_item, value_data, value_type, reg_option } = policy;
-            if (scriptType === 'hardeningScript') {
-                 if (reg_option === 'MUST_NOT_EXIST' && value_data) {
-                    scriptPart = `reg delete "${value_data}" /f`;
-                } else if (reg_key && reg_item) {
-                    const regType = value_type === 'POLICY_DWORD' ? 'REG_DWORD' : 'REG_SZ';
-                    scriptPart = `reg add "${reg_key}" /v "${reg_item}" /t ${regType} /d "${value_data}" /f`;
-                }
-            } else if (scriptType === 'auditScript') {
-                if (reg_option === 'MUST_NOT_EXIST' && value_data) {
-                    scriptPart = `reg query "${value_data}"`;
-                } else if (reg_key && reg_item) {
-                    scriptPart = `reg query "${reg_key}" /v "${reg_item}"`;
-                }
-            } else if (scriptType === 'revertHardeningScript') {
-                 if (reg_option === 'MUST_NOT_EXIST' && value_data) {
-                    scriptPart = `# No automatic revert for MUST_NOT_EXIST policy: ${policy.description}`;
-                } else if (reg_key && reg_item) {
-                    scriptPart = `reg delete "${reg_key}" /v "${reg_item}" /f`;
-                }
-            }
-        }
-        
-        if (scriptPart) {
-            scriptParts.push(`# Policy: ${policy.description}\n${scriptPart}`);
-        }
-    }
-
-    return scriptParts.join('\n\n');
-};
-
 const ProductDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [product, setProduct] = useState<ProductDetails | null>(null);
@@ -249,55 +211,51 @@ const ProductDetailPage: React.FC = () => {
     const [templateMessage, setTemplateMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [customScripts, setCustomScripts] = useState<Record<string, any> | null>(null);
 
     const naturalSort = useCallback((a: Policy, b: Policy) => {
         const regex = /^(\d+(\.\d+)*)/;
         const aMatch = a.description.match(regex);
         const bMatch = b.description.match(regex);
-
-        if (!aMatch || !bMatch) {
-            return a.description.localeCompare(b.description);
-        }
-
+        if (!aMatch || !bMatch) return a.description.localeCompare(b.description);
         const aParts = aMatch[0].split('.').map(Number);
         const bParts = bMatch[0].split('.').map(Number);
         const maxLength = Math.max(aParts.length, bParts.length);
-
         for (let i = 0; i < maxLength; i++) {
             const aVal = aParts[i] || 0;
             const bVal = bParts[i] || 0;
             if (aVal < bVal) return -1;
             if (aVal > bVal) return 1;
         }
-
         return aParts.length - bParts.length;
     }, []);
 
     useEffect(() => {
-        if (!id) {
-            setError('No product ID provided.');
-            setIsLoading(false);
-            return;
-        }
-
+        if (!id) { setError('No product ID provided.'); setIsLoading(false); return; }
         const fetchProductData = async () => {
             try {
                 const productData = await getProductDetails(id);
                 setProduct(productData);
-
+                if (productData.script_json_url) {
+                    try {
+                        const scriptResponse = await axios.get(productData.script_json_url);
+                        setCustomScripts(scriptResponse.data);
+                    } catch (scriptError) {
+                        console.warn("Could not load remote script.json, using local fallback.", scriptError);
+                        setCustomScripts(customScripts);
+                    }
+                } else {
+                     setCustomScripts(customScripts);
+                }
                 if (productData.audit_files && productData.audit_files.length > 0) {
                     const filePromises = productData.audit_files
                         .filter((file: AuditFile) => file.name !== 'metadata.json')
                         .map((file: AuditFile) => axios.get(file.url).then(res => res.data));
-                    
                     const policyContents = await Promise.all(filePromises);
                     const validPolicies = policyContents.filter(p => p && p.description);
                     validPolicies.sort(naturalSort);
                     setPolicies(validPolicies);
-
-                    if (validPolicies.length > 0) {
-                        setSelectedPolicy(validPolicies[0]);
-                    }
+                    if (validPolicies.length > 0) setSelectedPolicy(validPolicies[0]);
                 }
             } catch (err) {
                 setError('Could not fetch product data.');
@@ -305,25 +263,18 @@ const ProductDetailPage: React.FC = () => {
                 setIsLoading(false);
             }
         };
-
         fetchProductData();
     }, [id, naturalSort]);
 
     const filteredPolicies = useMemo(() => {
         if (!searchQuery.trim()) return policies;
-        return policies.filter(policy =>
-            policy.description.toLowerCase().includes(searchQuery.toLowerCase())
-        );
+        return policies.filter(policy => policy.description.toLowerCase().includes(searchQuery.toLowerCase()));
     }, [searchQuery, policies]);
 
     const handlePolicySelection = (description: string) => {
         setSelectedPolicies(prev => {
             const newSelection = new Set(prev);
-            if (newSelection.has(description)) {
-                newSelection.delete(description);
-            } else {
-                newSelection.add(description);
-            }
+            newSelection.has(description) ? newSelection.delete(description) : newSelection.add(description);
             return newSelection;
         });
     };
@@ -340,119 +291,99 @@ const ProductDetailPage: React.FC = () => {
             });
         }
     };
-
-    const isAllFilteredSelected = filteredPolicies.length > 0 && filteredPolicies.every(p => selectedPolicies.has(p.description));
-
+    
     const handleCreateTemplate = async () => {
-    if (selectedPolicies.size === 0) {
-        setTemplateMessage("Please select at least one policy to create a template.");
-        return;
-    }
-
-    const policiesToSave = policies.filter(p => selectedPolicies.has(p.description));
-    try {
-        // Corrected payload to match the CreateTemplatePayload interface
-        await createTemplate({
-            product: product!.id,
-            policies: policiesToSave,
+        if (selectedPolicies.size === 0) {
+            setTemplateMessage("Please select at least one policy to create a template.");
+            setTimeout(() => setTemplateMessage(null), 3000);
+            return;
+        }
+        const selectedPolicyObjects = policies.filter(p => selectedPolicies.has(p.description));
+        const policiesToSave = selectedPolicyObjects.map(policy => {
+            const policyIdMatch = policy.description.match(/^(\d+(\.\d+)*)/);
+            const policyId = policyIdMatch ? policyIdMatch[0] : null;
+            let scripts = { hardeningScript: '', auditScript: '', revertHardeningScript: '' };
+            if (policyId && customScripts && customScripts[policyId]) {
+                scripts = customScripts[policyId];
+            }
+            return { ...policy, ...scripts };
         });
-        setTemplateMessage("Template created successfully!");
-        setSelectedPolicies(new Set());
-    } catch (error) {
-        setTemplateMessage("Failed to create template.");
-    }
-};
+        try {
+            await createTemplate({ product: product!.id, policies: policiesToSave });
+            setTemplateMessage("Template created successfully!");
+            setSelectedPolicies(new Set());
+        } catch (error) {
+            console.error("Template creation failed:", error);
+            setTemplateMessage("Failed to create template.");
+        } finally {
+            setTimeout(() => setTemplateMessage(null), 3000);
+        }
+    };
 
-    if (isLoading) {
-        return <div className="text-center p-10">Loading product details...</div>;
-    }
+    const handleSavePolicyScripts = async (policyId: string, newScripts: { hardeningScript: string; auditScript: string; revertHardeningScript: string; }) => {
+        if (!product || !customScripts) return;
+        
+        setTemplateMessage(null);
+        setError(null);
 
-    if (!product) {
-        return (
-            <div className="text-center p-10">
-                <p className="text-red-500">{error || 'Product not found.'}</p>
-                <Link to="/" className="text-blue-500">Back to Directory</Link>
-            </div>
-        );
-    }
+        const updatedCustomScripts = {
+            ...customScripts,
+            [policyId]: newScripts
+        };
+
+        try {
+            await updateProductScripts(product.id, updatedCustomScripts);
+            setCustomScripts(updatedCustomScripts);
+            setTemplateMessage("Scripts saved successfully!");
+        } catch (err) {
+            setError("Failed to save updated scripts to the server.");
+            console.error("Failed to save scripts:", err);
+        } finally {
+            setTimeout(() => setTemplateMessage(null), 3000);
+        }
+    };
+    
+    if (isLoading) return <div className="text-center p-10">Loading product details...</div>;
+    if (!product) return <div className="text-center p-10"><p className="text-red-500">{error || 'Product not found.'}</p><Link to="/" className="text-blue-500">Back to Directory</Link></div>;
+    const isAllFilteredSelected = filteredPolicies.length > 0 && filteredPolicies.every(p => selectedPolicies.has(p.description));
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <header className="mb-8">
-                {product.organization_id && (
-                    <Link to={`/organization/${product.organization_id}`} className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
-                        ← Back to Organization
-                    </Link>
-                )}
+                {product.organization_id && <Link to={`/organization/${product.organization_id}`} className="text-blue-600 dark:text-blue-400 hover:underline text-sm">← Back to Organization</Link>}
                 <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">{product.name}</h1>
                 <p className="text-lg text-gray-600 dark:text-gray-400">Security Policies</p>
             </header>
-
             <div className="flex flex-col md:flex-row gap-8">
                 <aside className="md:w-1/3 lg:w-1/4">
-                    <div className="mb-4">
-                        <input
-                            type="search"
-                            placeholder="Search policies..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full py-2 px-3 text-gray-700 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-200"
-                        />
-                    </div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                        Showing {filteredPolicies.length} of {policies.length} policies.
-                    </p>
+                    <input type="search" placeholder="Search policies..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full py-2 px-3 text-gray-700 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-200 mb-4" />
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Showing {filteredPolicies.length} of {policies.length} policies.</p>
                     <div className="space-y-2">
-                        <button
-                            onClick={handleCreateTemplate}
-                            className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700"
-                        >
-                            Create Template ({selectedPolicies.size})
-                        </button>
-                        {templateMessage && <p className="text-sm text-center">{templateMessage}</p>}
+                        <button onClick={handleCreateTemplate} className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">Create Template ({selectedPolicies.size})</button>
+                        {templateMessage && <p className={`text-sm text-center mt-2 ${error ? 'text-red-500' : 'text-green-500'}`}>{templateMessage || error}</p>}
                     </div>
                     <div className="border-t border-gray-200 dark:border-gray-700 mt-4 pt-4">
                         <div className="flex items-center">
-                            <input
-                                id="select-all-checkbox"
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                checked={isAllFilteredSelected}
-                                onChange={handleSelectAllChange}
-                                disabled={filteredPolicies.length === 0}
-                            />
-                            <label htmlFor="select-all-checkbox" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Select All ({filteredPolicies.length} visible)
-                            </label>
+                            <input id="select-all-checkbox" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={isAllFilteredSelected} onChange={handleSelectAllChange} disabled={filteredPolicies.length === 0} />
+                            <label htmlFor="select-all-checkbox" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">Select All ({filteredPolicies.length} visible)</label>
                         </div>
                     </div>
                     <ul className="space-y-1 overflow-y-auto max-h-[65vh] pr-2 rounded-md mt-2">
                         {filteredPolicies.map(policy => (
                             <li key={policy.description} className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedPolicies.has(policy.description)}
-                                    onChange={() => handlePolicySelection(policy.description)}
-                                    className="mr-2"
-                                />
-                                <button
-                                    onClick={() => setSelectedPolicy(policy)}
-                                    className={`w-full text-left px-3 py-2 rounded-md transition-colors duration-200 text-sm ${
-                                        selectedPolicy?.description === policy.description
-                                            ? 'bg-blue-600 text-white font-semibold'
-                                            : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                    }`}
-                                >
-                                    {policy.description}
-                                </button>
+                                <input type="checkbox" checked={selectedPolicies.has(policy.description)} onChange={() => handlePolicySelection(policy.description)} className="mr-2" />
+                                <button onClick={() => setSelectedPolicy(policy)} className={`w-full text-left px-3 py-2 rounded-md transition-colors duration-200 text-sm ${selectedPolicy?.description === policy.description ? 'bg-blue-600 text-white font-semibold' : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'}`}>{policy.description}</button>
                             </li>
                         ))}
                     </ul>
                 </aside>
-
                 <main className="md:w-2/3 lg:w-3/4">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md min-h-[70vh]">
-                        <PolicyDetailView policy={selectedPolicy} />
+                        <PolicyDetailView 
+                            policy={selectedPolicy} 
+                            customScripts={customScripts}
+                            onSave={handleSavePolicyScripts}
+                         />
                     </div>
                 </main>
             </div>

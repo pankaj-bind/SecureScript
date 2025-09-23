@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.118 (L1) Ensure 'Restrict exposure of local IP address by WebRTC' is set to 'Enabled: Allow public interface over http default route. This doesn't expose the local IP address'",
+  "info": "This policy setting specifies whether the local IP address will be exposed by WebRTC.\n\nThe recommended state for this setting is: Enabled: Allow public interface over http default route. This doesn't expose the local IP address\n\nAllowing the exposure of IP addresses allows the attacker to gather information on the internal network that could potentially be utilized to breach and traverse the network.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Allow public interface over http default route. This doesn't expose the local IP address :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Restrict exposure of local IP address by WebRTC",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "Impact": "The local IP address will not be exposed.\"",
+  "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|1A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_TEXT",
+  "value_data": "default_public_interface_only",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "WebRtcLocalhostIpHandling",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

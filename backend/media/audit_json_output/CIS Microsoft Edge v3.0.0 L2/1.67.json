@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.67 (L2) Ensure 'Configure Speech Recognition' is set to 'Disabled'",
+  "info": "This policy setting specifies whether websites can use the W3C Web speech API to recognize speech from the user. The Microsoft Edge implementation of the Web speech API uses Azure Cognitive Services, so voice data will leave the machine.\n\nThe recommended state for this setting is: Disabled\n\nAllowing speech recognition to use the Web speech API in Azure Cognitive permits voice data to leave the machine, potentially allowing sensitive data to be collected from a non-secured third-party source.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Configure Speech Recognition",
+  "Note": "An exception to this recommendation might be needed as this is an accessibility feature that is legitimately needed by some users. Take this into consideration when applying this setting.\"",
+  "Impact": "Users will be unable to use speech recognition for voice typing. Users that use speech recognition for accessibility will need other tools implemented for voice typing.",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "SpeechRecognitionEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

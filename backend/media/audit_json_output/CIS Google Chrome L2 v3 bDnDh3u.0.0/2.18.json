@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.18 (L2) Ensure 'Require online OCSP/CRL checks for local trust anchors' is set to 'Enabled'",
+  "info": "\"Google Chrome performs revocation checking for server certificates that successfully validate and are signed by locally-installed CA certificates. If Google Chrome is unable to obtain revocation status information, such certificates will be treated as revoked ('hard-fail').",
+  "Disabled": "Google Chrome uses existing online revocation-checking settings.\n\nThe recommended state for this setting is: Enabled (1)\n\nCertificates shall always be validated.\"",
+  "solution": "\"To establish the recommended configuration via Group Policy, set thefollowing UI path to Enabled :\n\nComputer Configuration\\Polices\\Administrative Templates\\Google\\Google Chrome\\Require online OCSP/CRL checks for local trust anchors",
+  "Impact": "A revocation check will be performed for server certificates that successfully validate and are signed by locally-installed CA certificates. if the OCSP server goes down, then this will hard-fail and prevent browsing to those sites.\"",
+  "reference": "800-171|3.13.15,800-171r3|03.13.15,800-53|SC-23(5),800-53r5|SC-23(5),GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SC-23,ITSG-33|SC-23a.,LEVEL|2A,NESA|T4.5.1,QCSC-v1|5.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "RequireOnlineRevocationChecksForLocalAnchors",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

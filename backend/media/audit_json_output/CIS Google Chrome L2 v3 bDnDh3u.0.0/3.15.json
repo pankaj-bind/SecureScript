@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "3.15 (L2) Ensure 'Enable Translate' is set to 'Disabled'",
+  "info": "This setting enables Google translation services on Google Chrome.\n\nThe recommended state for this setting is: Disabled (0)\n\nContent of internal web pages may be leaked to Google's translation service.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Administrative Templates\\Google\\Google Chrome\\Enable Translate",
+  "Impact": "After disabling this feature, the contents of a web page are no longer sent to Google for translation.\"",
+  "reference": "800-53|SI-8,800-53r5|SI-8,CSCv7|4.8,CSCv8|9.2,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-8,LEVEL|2A,QCSC-v1|3.2,QCSC-v1|8.2.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "TranslateEnabled",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

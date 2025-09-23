@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getProductDetails, ProductDetails, createTemplate } from '../../../services/authService';
+import { getProductDetails, ProductDetails, createTemplate, updateProductScripts } from '../../../services/authService';
 import axios from 'axios';
 
 // --- Type Interfaces ---
@@ -24,14 +24,21 @@ interface Policy {
     [key: string]: any;
 }
 
+interface PolicyDetailViewProps {
+    policy: Policy | null;
+    customScripts: Record<string, any> | null;
+    onSave: (policyId: string, scripts: { hardeningScript: string; auditScript: string; revertHardeningScript: string; }) => Promise<void>;
+}
+
 // --- Helper Components ---
-const PolicyDetailView: React.FC<{ policy: Policy | null; customScripts: Record<string, any> | null }> = ({ policy, customScripts }) => {
+const PolicyDetailView: React.FC<PolicyDetailViewProps> = ({ policy, customScripts, onSave }) => {
     const [hardenScript, setHardenScript] = useState('');
     const [checkScript, setCheckScript] = useState('');
     const [revertScript, setRevertScript] = useState('');
     const [executionResult, setExecutionResult] = useState<string | null>(null);
     const [executionError, setExecutionError] = useState<string | null>(null);
     const [isExecuting, setIsExecuting] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         if (policy) {
@@ -39,6 +46,7 @@ const PolicyDetailView: React.FC<{ policy: Policy | null; customScripts: Record<
             setExecutionError(null);
             const policyIdMatch = policy.description.match(/^(\d+(\.\d+)*)/);
             const policyId = policyIdMatch ? policyIdMatch[0] : null;
+
             if (policyId && customScripts && customScripts[policyId]) {
                 const scripts = customScripts[policyId];
                 setHardenScript(scripts.hardeningScript || '# No custom hardening script provided.');
@@ -46,7 +54,9 @@ const PolicyDetailView: React.FC<{ policy: Policy | null; customScripts: Record<
                 setRevertScript(scripts.revertHardeningScript || '# No custom revert script provided.');
                 return;
             }
+            
             const { reg_key, reg_item, value_data, value_type, reg_option } = policy;
+
             if (reg_option === 'MUST_NOT_EXIST' && value_data) {
                 const keyToDelete = value_data;
                 setHardenScript(`reg delete "${keyToDelete}" /f`);
@@ -54,35 +64,35 @@ const PolicyDetailView: React.FC<{ policy: Policy | null; customScripts: Record<
                 setRevertScript(`# There is no automatic revert script for this policy.\n# This policy requires a registry key to be absent.`);
                 return;
             }
+            
             if (!reg_key || !reg_item) {
                 setHardenScript('# Invalid policy data: Missing registry key or item.');
                 setCheckScript('# Invalid policy data');
                 setRevertScript('# Invalid policy data');
                 return;
             }
-            let regType = value_type === 'POLICY_DWORD' ? 'REG_DWORD' : 'REG_SZ';
+
+            let regType = 'REG_SZ';
+            if (value_type === 'POLICY_DWORD') {
+                regType = 'REG_DWORD';
+            }
+
             setHardenScript(`reg add "${reg_key}" /v "${reg_item}" /t ${regType} /d "${value_data}" /f`);
             setCheckScript(`reg query "${reg_key}" /v "${reg_item}"`);
             setRevertScript(`reg delete "${reg_key}" /v "${reg_item}" /f`);
         }
     }, [policy, customScripts]);
 
-    const handleScriptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        if (name === 'hardenScript') setHardenScript(value);
-        else if (name === 'checkScript') setCheckScript(value);
-        else if (name === 'revertScript') setRevertScript(value);
-    };
-
     const handleExecute = async (action: 'apply' | 'check' | 'revert') => {
         setIsExecuting(true);
         setExecutionResult(null);
         setExecutionError(null);
+        const scriptToRun = action === 'apply' ? hardenScript : action === 'check' ? checkScript : revertScript;
         try {
             let result;
-            if (action === 'apply') result = await window.electron.applyHarden(hardenScript);
-            else if (action === 'check') result = await window.electron.checkStatus(checkScript);
-            else result = await window.electron.revertHardening(revertScript);
+            if (action === 'apply') result = await window.electron.applyHarden(scriptToRun);
+            else if (action === 'check') result = await window.electron.checkStatus(scriptToRun);
+            else result = await window.electron.revertHardening(scriptToRun);
             setExecutionResult(`Success: ${result || 'The operation completed successfully.'}`);
         } catch (error: any) {
             setExecutionError(`Error: ${error.toString()}`);
@@ -91,7 +101,29 @@ const PolicyDetailView: React.FC<{ policy: Policy | null; customScripts: Record<
         }
     };
 
-    if (!policy) return <div className="p-6 text-gray-500">Select a policy to see the details.</div>;
+    const handleSave = async () => {
+        if (!policy) return;
+        const policyIdMatch = policy.description.match(/^(\d+(\.\d+)*)/);
+        if (!policyIdMatch) {
+            setExecutionError("Cannot save: Policy description does not contain a valid ID.");
+            return;
+        }
+        const policyId = policyIdMatch[0];
+
+        setIsSaving(true);
+        await onSave(policyId, {
+            hardeningScript: hardenScript,
+            auditScript: checkScript,
+            revertHardeningScript: revertScript,
+        });
+        setIsSaving(false);
+    };
+
+
+    if (!policy) {
+        return <div className="p-6 text-gray-500">Select a policy to see the details.</div>;
+    }
+
     const { description, info, Impact, reg_key, reg_item, value_data, value_type } = policy;
 
     const CopyButton: React.FC<{ textToCopy: string }> = ({ textToCopy }) => {
@@ -102,12 +134,17 @@ const PolicyDetailView: React.FC<{ policy: Policy | null; customScripts: Record<
                 setTimeout(() => setCopied(false), 2000);
             });
         };
-        return <button onClick={handleCopy} className="absolute top-2 right-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-xs font-semibold py-1 px-2 rounded">{copied ? 'Copied!' : 'Copy'}</button>;
+        return (
+            <button onClick={handleCopy} className="absolute top-2 right-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-xs font-semibold py-1 px-2 rounded">
+                {copied ? 'Copied!' : 'Copy'}
+            </button>
+        );
     };
 
     return (
         <div className="p-6">
             <h2 className="text-xl font-bold mb-4 pb-2 border-b dark:border-gray-600">{description}</h2>
+            
             <div className="space-y-3 text-sm mb-6">
                 <p><strong>Details:</strong> <span className="text-gray-600 dark:text-gray-300" dangerouslySetInnerHTML={{ __html: info?.replace(/\\n/g, '<br>') || 'N/A' }}></span></p>
                 {Impact && <p><strong>Impact:</strong> <span className="text-gray-600 dark:text-gray-300">{Impact}</span></p>}
@@ -115,27 +152,54 @@ const PolicyDetailView: React.FC<{ policy: Policy | null; customScripts: Record<
                 {reg_item && <p><strong>Registry Item:</strong> <code className="bg-gray-100 dark:bg-gray-700 p-1 rounded text-xs">{reg_item}</code></p>}
                 {value_data && <p><strong>Value:</strong> <code className="bg-gray-100 dark:bg-gray-700 p-1 rounded text-xs">{value_data} {value_type ? `(${value_type})` : ''}</code></p>}
             </div>
+
             <div className="flex space-x-2 mb-4">
-                <button onClick={() => handleExecute('apply')} disabled={isExecuting} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">{isExecuting ? 'Working...' : 'Apply Hardening'}</button>
-                <button onClick={() => handleExecute('check')} disabled={isExecuting} className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">{isExecuting ? 'Working...' : 'Check Status'}</button>
-                <button onClick={() => handleExecute('revert')} disabled={isExecuting} className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">{isExecuting ? 'Working...' : 'Revert Hardening'}</button>
+                 <button onClick={() => handleExecute('apply')} disabled={isExecuting} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    {isExecuting ? 'Working...' : 'Apply Hardening'}
+                </button>
+                <button onClick={() => handleExecute('check')} disabled={isExecuting} className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    {isExecuting ? 'Working...' : 'Check Status'}
+                </button>
+                <button onClick={() => handleExecute('revert')} disabled={isExecuting} className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    {isExecuting ? 'Working...' : 'Revert Hardening'}
+                </button>
             </div>
+
             {executionResult && <div className="mb-4 p-3 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 rounded-md text-xs font-mono whitespace-pre-wrap">{executionResult}</div>}
             {executionError && <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded-md text-xs font-mono whitespace-pre-wrap">{executionError}</div>}
+            
             <div className="space-y-4">
-                {['harden', 'check', 'revert'].map(type => (
-                    <div key={type}>
-                        <h3 className="font-semibold mb-1">{`${type.charAt(0).toUpperCase() + type.slice(1)} Script`}</h3>
-                        <div className="relative">
-                            <textarea name={`${type}Script`} value={{ harden: hardenScript, check: checkScript, revert: revertScript }[type]} onChange={handleScriptChange} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y"></textarea>
-                            <CopyButton textToCopy={{ harden: hardenScript, check: checkScript, revert: revertScript }[type] || ''} />
-                        </div>
+                 <div>
+                    <h3 className="font-semibold mb-1">Hardening Script</h3>
+                    <div className="relative">
+                        <textarea value={hardenScript} onChange={e => setHardenScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
+                        <CopyButton textToCopy={hardenScript} />
                     </div>
-                ))}
+                </div>
+                <div>
+                    <h3 className="font-semibold mb-1">Check Status Script</h3>
+                    <div className="relative">
+                        <textarea value={checkScript} onChange={e => setCheckScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
+                        <CopyButton textToCopy={checkScript} />
+                    </div>
+                </div>
+                <div>
+                    <h3 className="font-semibold mb-1">Revert Hardening Script</h3>
+                    <div className="relative">
+                        <textarea value={revertScript} onChange={e => setRevertScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
+                        <CopyButton textToCopy={revertScript} />
+                    </div>
+                </div>
+            </div>
+            <div className="mt-6 flex justify-end">
+                <button onClick={handleSave} disabled={isSaving} className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed">
+                    {isSaving ? "Saving..." : "Save Scripts for this Policy"}
+                </button>
             </div>
         </div>
     );
 };
+
 
 // --- Main Page Component ---
 const ProductDetailPage: React.FC = () => {
@@ -232,7 +296,7 @@ const ProductDetailPage: React.FC = () => {
             });
         }
     };
-
+    
     const handleCreateTemplate = async () => {
         if (selectedPolicies.size === 0) {
             setTemplateMessage("Please select at least one policy to create a template.");
@@ -261,6 +325,29 @@ const ProductDetailPage: React.FC = () => {
         }
     };
 
+    const handleSavePolicyScripts = async (policyId: string, newScripts: { hardeningScript: string; auditScript: string; revertHardeningScript: string; }) => {
+        if (!product || !customScripts) return;
+        
+        setTemplateMessage(null);
+        setError(null);
+
+        const updatedCustomScripts = {
+            ...customScripts,
+            [policyId]: newScripts
+        };
+
+        try {
+            await updateProductScripts(product.id, updatedCustomScripts);
+            setCustomScripts(updatedCustomScripts); // Update parent state
+            setTemplateMessage("Scripts saved successfully!");
+        } catch (err) {
+            setError("Failed to save updated scripts to the server.");
+            console.error("Failed to save scripts:", err);
+        } finally {
+            setTimeout(() => setTemplateMessage(null), 3000);
+        }
+    };
+    
     if (isLoading) return <div className="text-center p-10">Loading product details...</div>;
     if (!product) return <div className="text-center p-10"><p className="text-red-500">{error || 'Product not found.'}</p><Link to="/" className="text-blue-500">Back to Directory</Link></div>;
     const isAllFilteredSelected = filteredPolicies.length > 0 && filteredPolicies.every(p => selectedPolicies.has(p.description));
@@ -278,7 +365,7 @@ const ProductDetailPage: React.FC = () => {
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Showing {filteredPolicies.length} of {policies.length} policies.</p>
                     <div className="space-y-2">
                         <button onClick={handleCreateTemplate} className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">Create Template ({selectedPolicies.size})</button>
-                        {templateMessage && <p className="text-sm text-center">{templateMessage}</p>}
+                        {templateMessage && <p className={`text-sm text-center mt-2 ${error ? 'text-red-500' : 'text-green-500'}`}>{templateMessage || error}</p>}
                     </div>
                     <div className="border-t border-gray-200 dark:border-gray-700 mt-4 pt-4">
                         <div className="flex items-center">
@@ -297,7 +384,11 @@ const ProductDetailPage: React.FC = () => {
                 </aside>
                 <main className="md:w-2/3 lg:w-3/4">
                     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md min-h-[70vh]">
-                        <PolicyDetailView policy={selectedPolicy} customScripts={customScripts} />
+                        <PolicyDetailView 
+                            policy={selectedPolicy} 
+                            customScripts={customScripts}
+                            onSave={handleSavePolicyScripts}
+                         />
                     </div>
                 </main>
             </div>

@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.100 (L1) Ensure 'Enable site isolation for every site' is set to 'Enabled'",
+  "info": "This policy setting ensures that each website runs in its own process so that a site will not be able to utilize or take data from another running site.\n\nThe recommended state for this setting is: Enabled\n\nEnabling site isolation can help stop sites from inadvertently sharing data with other running sites. This will help protect data from untrusted sources.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Microsoft Edge\\Enable site isolation for every site",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "Impact": "None - this is the default behavior.\"",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "SitePerProcess",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

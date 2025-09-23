@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.130 (L1) Ensure 'Suppress the unsupported OS warning' is set to 'Disabled'",
+  "info": "This policy setting suppresses the warning that appears when Microsoft Edge is running on a computer or operating system that is no longer supported. If this policy is disabled or unset, the warnings will appear on such unsupported computers or operating systems.\n\nThe recommended state for this setting is: Disabled\n\nUsers will be notified if the Operating System software is no longer supported.",
+  "solution": "\"To establish the recommended configuration via Group Policy, set the following UI path to Disabled :\n\nComputer Configuration\\Polices\\Administrative Templates\\Microsoft Edge\\Suppress the unsupported OS warning",
+  "Note": "This Group Policy path may not exist by default. It is provided by the Group Policy template MSEdge.admx/adml that can be downloaded from:\n\nDownload Microsoft Edge for Business - Microsoft\n\n.",
+  "Impact": "None - this is the default behavior.\"",
+  "reference": "800-53|SA-22,800-53r5|SA-22,CSCv7|2.2,CSCv8|2.2,CSF2.0|ID.AM-08,GDPR|32.1.b,HIPAA|164.306(a)(1),LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18501",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\SOFTWARE\\Policies\\Microsoft\\Edge",
+  "reg_item": "SuppressUnsupportedOSWarning",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

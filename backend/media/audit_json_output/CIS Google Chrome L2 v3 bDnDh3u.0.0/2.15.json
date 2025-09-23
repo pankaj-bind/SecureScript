@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "2.15 (L2) Ensure 'Force Google SafeSearch' is set to 'Enabled'",
+  "info": "This setting ensures that web search results with Google are performed with SafeSearch set to always active. Disabled means SafeSearch in Google Search is not enforced.\n\nThe recommended state for this setting is: Enabled (1)\n\nAllowing search results to present sites that may have malicious content should be prohibited to help ensure users do not accidentally visit sites that are more prone to malicious content including spyware, adware, and viruses.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Google\\Google Chrome\\Force Google SafeSearch",
+  "Impact": "Users search results will be filtered and content such as adult text, videos and images will not be shown.\"",
+  "reference": "800-171|3.13.1,800-171r3|03.13.01,800-53|SC-7(3),800-53|SC-7(4),800-53r5|SC-7(3),800-53r5|SC-7(4),CN-L3|8.1.10.6(j),CSCv7|7.4,CSCv8|9.3,CSF|PR.AC-5,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.8.16,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7(3),ITSG-33|SC-7(4),LEVEL|2A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|1.1,TBA-FIISB|43.1,TBA-FIISB|44.1.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/8691",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Google\\Chrome",
+  "reg_item": "ForceGoogleSafeSearch",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

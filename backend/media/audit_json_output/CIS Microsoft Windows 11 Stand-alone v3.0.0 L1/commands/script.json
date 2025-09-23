@@ -1,6 +1,6 @@
 {
     "1.1.1": {
-        "hardeningScript": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name PasswordHistorySize -Value 24 -Type DWord",
+        "hardeningScript": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name PasswordHistorySize -Value 24 -Type DWord pankajbind",
         "auditScript": "Get-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name PasswordHistorySize",
         "revertHardeningScript": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name PasswordHistorySize -Value 0 -Type DWord"
     }
