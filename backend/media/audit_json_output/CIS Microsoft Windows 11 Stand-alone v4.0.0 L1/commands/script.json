@@ -1,0 +1,282 @@
+{
+    "1.1.1": {
+        "hardeningScript": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name PasswordHistorySize -Value 24 -Type DWord",
+        "auditScript": "Get-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name PasswordHistorySize",
+        "revertHardeningScript": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name PasswordHistorySize -Value 0 -Type DWord"
+    },
+    "1.1.2": {
+        "hardeningScript": "net accounts /maxpwage:365",
+        "auditScript": "net accounts | findstr \"Maximum password age\"\n",
+        "revertHardeningScript": "net accounts /maxpwage:42"
+    },
+    "1.1.3": {
+        "hardeningScript": "net accounts /minpwage:1",
+        "auditScript": "net accounts | findstr \\\"Minimum password age\\\"",
+        "revertHardeningScript": "net accounts /minpwage:0"
+    },
+    "1.1.4": {
+        "hardeningScript": "net accounts /minpwlen:14",
+        "auditScript": "net accounts | findstr \\\"Minimum password length\\\"",
+        "revertHardeningScript": "net accounts /minpwlen:0"
+    },
+    "1.1.5": {
+        "hardeningScript": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name PasswordComplexity -Value 1 -Type DWord",
+        "auditScript": "Get-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name PasswordComplexity",
+        "revertHardeningScript": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name PasswordComplexity -Value 0 -Type DWord"
+    },
+    "1.1.7": {
+        "hardeningScript": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name ClearTextPassword -Value 0 -Type DWord",
+        "auditScript": "Get-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name ClearTextPassword",
+        "revertHardeningScript": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name ClearTextPassword -Value 1 -Type DWord"
+    },
+    "1.2.1": {
+        "hardeningScript": "net accounts /lockoutduration:15",
+        "auditScript": "net accounts | findstr /I \"Lockout duration\"",
+        "revertHardeningScript": "net accounts /lockoutduration:10"
+    },
+    "1.2.2": {
+        "hardeningScript": "net accounts /lockoutthreshold:5",
+        "auditScript": "net accounts | findstr /I \"Lockout threshold\"",
+        "revertHardeningScript": "net accounts /lockoutthreshold:10"
+    },
+    "1.2.3": {
+        "hardeningScript": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name AllowAdministratorLockout -Value 1 -Type DWord",
+        "auditScript": "Get-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name AllowAdministratorLockout",
+        "revertHardeningScript": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" -Name AllowAdministratorLockout -Value 0 -Type DWord"
+    },
+    "1.2.4": {
+        "hardeningScript": "net accounts /lockoutwindow:15",
+        "auditScript": "net accounts | findstr /I \"Lockout observation window\"",
+        "revertHardeningScript": "net accounts /lockoutwindow:10"
+    },
+    "2.2.1": {
+        "hardeningScript": "ntrights -u * /r SeTrustedCredManAccessPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeTrustedCredManAccessPrivilege\"",
+        "revertHardeningScript": "REM No default accounts assigned, so nothing to revert"
+    },
+    "2.2.10": {
+        "hardeningScript": "ntrights -u Administrators +r SeCreatePagefilePrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeCreatePagefilePrivilege\"",
+        "revertHardeningScript": "ntrights -u * /r SeCreatePagefilePrivilege"
+    },
+    "2.2.11": {
+        "hardeningScript": "ntrights -u * /r SeCreateTokenPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeCreateTokenPrivilege\"",
+        "revertHardeningScript": "REM No default accounts assigned, so nothing to revert"
+    },
+    "2.2.12": {
+        "hardeningScript": "ntrights -u Administrators +r SeCreateGlobalPrivilege & ntrights -u \"LOCAL SERVICE\" +r SeCreateGlobalPrivilege & ntrights -u \"NETWORK SERVICE\" +r SeCreateGlobalPrivilege & ntrights -u SERVICE +r SeCreateGlobalPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeCreateGlobalPrivilege\"",
+        "revertHardeningScript": "ntrights -u * /r SeCreateGlobalPrivilege"
+    },
+    "2.2.13": {
+        "hardeningScript": "ntrights -u * /r SeCreatePermanentPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeCreatePermanentPrivilege\"",
+        "revertHardeningScript": "REM No default accounts assigned, so nothing to revert"
+    },
+    "2.2.14": {
+        "hardeningScript": "ntrights -u Administrators +r SeCreateSymbolicLinkPrivilege & ntrights -u \"NT VIRTUAL MACHINE\\Virtual Machines\" +r SeCreateSymbolicLinkPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeCreateSymbolicLinkPrivilege\"",
+        "revertHardeningScript": "ntrights -u * /r SeCreateSymbolicLinkPrivilege"
+    },
+    "2.2.15": {
+        "hardeningScript": "ntrights -u Administrators +r SeDebugPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeDebugPrivilege\"",
+        "revertHardeningScript": "REM Default accounts already have this right; no revert required"
+    },
+    "2.2.16": {
+        "hardeningScript": "ntrights -u Guests -r SeDenyNetworkLogonRight",
+        "auditScript": "whoami /priv | findstr /I \"SeDenyNetworkLogonRight\"",
+        "revertHardeningScript": "REM Remove Guests from SeDenyNetworkLogonRight if needed"
+    },
+    "2.2.17": {
+        "hardeningScript": "ntrights -u Guests -r SeDenyBatchLogonRight",
+        "auditScript": "whoami /priv | findstr /I \"SeDenyBatchLogonRight\"",
+        "revertHardeningScript": "REM Remove Guests from SeDenyBatchLogonRight if needed"
+    },
+    "2.2.18": {
+        "hardeningScript": "ntrights -u Guests -r SeDenyServiceLogonRight",
+        "auditScript": "whoami /priv | findstr /I \"SeDenyServiceLogonRight\"",
+        "revertHardeningScript": "REM Remove Guests from SeDenyServiceLogonRight if needed"
+    },
+    "2.2.19": {
+        "hardeningScript": "ntrights -u Guests -r SeDenyInteractiveLogonRight",
+        "auditScript": "whoami /priv | findstr /I \"SeDenyInteractiveLogonRight\"",
+        "revertHardeningScript": "REM Remove Guests from SeDenyInteractiveLogonRight if needed"
+    },
+    "2.2.2": {
+        "hardeningScript": "ntrights -u Administrators +r SeNetworkLogonRight & ntrights -u \"Remote Desktop Users\" +r SeNetworkLogonRight",
+        "auditScript": "whoami /priv | findstr /I \"SeNetworkLogonRight\"",
+        "revertHardeningScript": "REM Remove Administrators or Remote Desktop Users from SeNetworkLogonRight if needed"
+    },
+    "2.2.20": {
+        "hardeningScript": "ntrights -u Guests -r SeDenyRemoteInteractiveLogonRight",
+        "auditScript": "whoami /priv | findstr /I \"SeDenyRemoteInteractiveLogonRight\"",
+        "revertHardeningScript": "REM Remove Guests from SeDenyRemoteInteractiveLogonRight if needed"
+    },
+    "2.2.21": {
+        "hardeningScript": "REM No action needed as default is 'No One' for SeEnableDelegationPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeEnableDelegationPrivilege\"",
+        "revertHardeningScript": "REM This is default behavior; no revert required"
+    },
+    "2.2.22": {
+        "hardeningScript": "ntrights -u Administrators +r SeRemoteShutdownPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeRemoteShutdownPrivilege\"",
+        "revertHardeningScript": "REM Remove Administrators from SeRemoteShutdownPrivilege if needed"
+    },
+    "2.2.23": {
+        "hardeningScript": "ntrights -u \"LOCAL SERVICE\" +r SeAuditPrivilege & ntrights -u \"NETWORK SERVICE\" +r SeAuditPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeAuditPrivilege\"",
+        "revertHardeningScript": "REM Remove LOCAL SERVICE and NETWORK SERVICE from SeAuditPrivilege if needed"
+    },
+    "2.2.24": {
+        "hardeningScript": "ntrights -u Administrators +r SeImpersonatePrivilege & ntrights -u \"LOCAL SERVICE\" +r SeImpersonatePrivilege & ntrights -u \"NETWORK SERVICE\" +r SeImpersonatePrivilege & ntrights -u SERVICE +r SeImpersonatePrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeImpersonatePrivilege\"",
+        "revertHardeningScript": "REM Remove users from SeImpersonatePrivilege if needed"
+    },
+    "2.2.25": {
+        "hardeningScript": "ntrights -u Administrators +r SeIncreaseBasePriorityPrivilege & ntrights -u \"Window Manager\\Window Manager Group\" +r SeIncreaseBasePriorityPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeIncreaseBasePriorityPrivilege\"",
+        "revertHardeningScript": "REM Remove users from SeIncreaseBasePriorityPrivilege if needed"
+    },
+    "2.2.26": {
+        "hardeningScript": "ntrights -u Administrators +r SeLoadDriverPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeLoadDriverPrivilege\"",
+        "revertHardeningScript": "REM Remove Administrators from SeLoadDriverPrivilege if needed"
+    },
+    "2.2.27": {
+        "hardeningScript": "ntrights -u Users -r SeRemoteInteractiveLogonRight",
+        "auditScript": "whoami /priv | findstr /I \"SeRemoteInteractiveLogonRight\"",
+        "revertHardeningScript": "REM Restore Users to SeRemoteInteractiveLogonRight if needed"
+    },
+    "2.2.28": {
+        "hardeningScript": "ntrights -u Administrators +r SeBackupPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeBackupPrivilege\"",
+        "revertHardeningScript": "REM Remove Administrators from SeBackupPrivilege if needed"
+    },
+    "2.2.29": {
+        "hardeningScript": "ntrights -u Administrators +r SeRestorePrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeRestorePrivilege\"",
+        "revertHardeningScript": "REM Remove Administrators from SeRestorePrivilege if needed"
+    },
+    "2.2.3": {
+        "hardeningScript": "ntrights -u Administrators -r SeTcbPrivilege && ntrights -u Users -r SeTcbPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeTcbPrivilege\"",
+        "revertHardeningScript": "REM Reverting this setting should be done manually if required, as default usually grants this right only to SYSTEM"
+    },
+    "2.2.30": {
+        "hardeningScript": "ntrights -u Users -r SeChangeNotifyPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeChangeNotifyPrivilege\"",
+        "revertHardeningScript": "REM Restore Users to SeChangeNotifyPrivilege if needed"
+    },
+    "2.2.31": {
+        "hardeningScript": "ntrights -u No_One +r SeReLabelPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeReLabelPrivilege\"",
+        "revertHardeningScript": "REM Restore default assignment for SeReLabelPrivilege if needed"
+    },
+    "2.2.32": {
+        "hardeningScript": "ntrights -u Administrators +r SeSystemEnvironmentPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeSystemEnvironmentPrivilege\"",
+        "revertHardeningScript": "REM Remove Administrators from SeSystemEnvironmentPrivilege if needed"
+    },
+    "2.2.33": {
+        "hardeningScript": "ntrights -u Administrators +r SeManageVolumePrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeManageVolumePrivilege\"",
+        "revertHardeningScript": "REM Remove Administrators from SeManageVolumePrivilege if needed"
+    },
+    "2.2.34": {
+        "hardeningScript": "ntrights -u Administrators +r SeProfileSingleProcessPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeProfileSingleProcessPrivilege\"",
+        "revertHardeningScript": "ntrights -u Administrators -r SeProfileSingleProcessPrivilege"
+    },
+    "2.2.35": {
+        "hardeningScript": "ntrights -u Administrators +r SeSystemProfilePrivilege && ntrights -u \"NT SERVICE\\WdiServiceHost\" +r SeSystemProfilePrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeSystemProfilePrivilege\"",
+        "revertHardeningScript": "ntrights -u Administrators -r SeSystemProfilePrivilege && ntrights -u \"NT SERVICE\\WdiServiceHost\" -r SeSystemProfilePrivilege"
+    },
+    "2.2.36": {
+        "hardeningScript": "ntrights -u \"LOCAL SERVICE\" +r SeAssignPrimaryTokenPrivilege && ntrights -u \"NETWORK SERVICE\" +r SeAssignPrimaryTokenPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeAssignPrimaryTokenPrivilege\"",
+        "revertHardeningScript": "ntrights -u \"LOCAL SERVICE\" -r SeAssignPrimaryTokenPrivilege && ntrights -u \"NETWORK SERVICE\" -r SeAssignPrimaryTokenPrivilege"
+    },
+    "2.2.37": {
+        "hardeningScript": "ntrights -u Administrators +r SeRestorePrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeRestorePrivilege\"",
+        "revertHardeningScript": "ntrights -u Administrators -r SeRestorePrivilege"
+    },
+    "2.2.38": {
+        "hardeningScript": "ntrights -u Administrators +r SeShutdownPrivilege && ntrights -u Users +r SeShutdownPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeShutdownPrivilege\"",
+        "revertHardeningScript": "ntrights -u Administrators -r SeShutdownPrivilege && ntrights -u Users -r SeShutdownPrivilege"
+    },
+    "2.2.39": {
+        "hardeningScript": "ntrights -u Administrators +r SeTakeOwnershipPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeTakeOwnershipPrivilege\"",
+        "revertHardeningScript": "ntrights -u Administrators -r SeTakeOwnershipPrivilege"
+    },
+    "2.2.4": {
+        "hardeningScript": "ntrights -u Administrators +r SeIncreaseQuotaPrivilege && ntrights -u \"LOCAL SERVICE\" +r SeIncreaseQuotaPrivilege && ntrights -u \"NETWORK SERVICE\" +r SeIncreaseQuotaPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeIncreaseQuotaPrivilege\"",
+        "revertHardeningScript": "ntrights -u Administrators -r SeIncreaseQuotaPrivilege && ntrights -u \"LOCAL SERVICE\" -r SeIncreaseQuotaPrivilege && ntrights -u \"NETWORK SERVICE\" -r SeIncreaseQuotaPrivilege"
+    },
+    "2.2.5": {
+        "hardeningScript": "ntrights -u Administrators +r SeInteractiveLogonRight && ntrights -u Users +r SeInteractiveLogonRight",
+        "auditScript": "whoami /priv | findstr /I \"SeInteractiveLogonRight\"",
+        "revertHardeningScript": "ntrights -u Administrators -r SeInteractiveLogonRight && ntrights -u Users -r SeInteractiveLogonRight"
+    },
+    "2.2.6": {
+        "hardeningScript": "ntrights -u Administrators +r SeRemoteInteractiveLogonRight && ntrights -u \"Remote Desktop Users\" +r SeRemoteInteractiveLogonRight",
+        "auditScript": "whoami /priv | findstr /I \"SeRemoteInteractiveLogonRight\"",
+        "revertHardeningScript": "ntrights -u Administrators -r SeRemoteInteractiveLogonRight && ntrights -u \"Remote Desktop Users\" -r SeRemoteInteractiveLogonRight"
+    },
+    "2.2.7": {
+        "hardeningScript": "ntrights -u Administrators +r SeBackupPrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeBackupPrivilege\"",
+        "revertHardeningScript": "ntrights -u Administrators -r SeBackupPrivilege"
+    },
+    "2.2.8": {
+        "hardeningScript": "ntrights -u Administrators +r SeSystemTimePrivilege && ntrights -u \"LOCAL SERVICE\" +r SeSystemTimePrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeSystemTimePrivilege\"",
+        "revertHardeningScript": "ntrights -u Administrators -r SeSystemTimePrivilege && ntrights -u \"LOCAL SERVICE\" -r SeSystemTimePrivilege"
+    },
+    "2.2.9": {
+        "hardeningScript": "ntrights -u Administrators +r SeTimeZonePrivilege && ntrights -u \"LOCAL SERVICE\" +r SeTimeZonePrivilege && ntrights -u Users +r SeTimeZonePrivilege",
+        "auditScript": "whoami /priv | findstr /I \"SeTimeZonePrivilege\"",
+        "revertHardeningScript": "ntrights -u Administrators -r SeTimeZonePrivilege && ntrights -u \"LOCAL SERVICE\" -r SeTimeZonePrivilege && ntrights -u Users -r SeTimeZonePrivilege"
+    },
+    "2.3.10.1": {
+        "hardeningScript": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" /v \"RestrictAnonymousSAM\" /t REG_DWORD /d 1 /f",
+        "auditScript": "reg query \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" /v \"RestrictAnonymousSAM\" | findstr /R /C:\"0x1\"",
+        "revertHardeningScript": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" /v \"RestrictAnonymousSAM\" /t REG_DWORD /d 0 /f"
+    },
+    "2.3.1.1": {
+        "hardeningScript": "net user Guest /active:no",
+        "auditScript": "net user Guest | findstr /I \"Account active\"",
+        "revertHardeningScript": "net user Guest /active:yes"
+    },
+    "2.3.11.6": {
+        "hardeningScript": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" /v \"ForceLogoffWhenHourExpire\" /t REG_DWORD /d 1 /f",
+        "auditScript": "reg query \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" /v \"ForceLogoffWhenHourExpire\" | findstr /R /C:\"0x1\"",
+        "revertHardeningScript": "reg add \"HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa\" /v \"ForceLogoffWhenHourExpire\" /t REG_DWORD /d 0 /f"
+    },
+    "2.3.1.3": {
+        "hardeningScript": "wmic useraccount where name='Administrator' rename 'NewAdminName'",
+        "auditScript": "wmic useraccount where name='Administrator' get name",
+        "revertHardeningScript": "wmic useraccount where name='NewAdminName' rename 'Administrator'"
+    },
+    "2.3.1.4": {
+        "hardeningScript": "wmic useraccount where name='Guest' rename 'NewGuestName'",
+        "auditScript": "wmic useraccount where name='Guest' get name",
+        "revertHardeningScript": "wmic useraccount where name='NewGuestName' rename 'Guest'"
+    },
+    "2.3.7.5": {
+        "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v LegalNoticeText /t REG_SZ /d \"All activities performed on this system will be monitored.\" /f",
+        "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v LegalNoticeText | findstr /C:\"All activities performed on this system will be monitored.\"",
+        "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\" /v LegalNoticeText /f"
+    },
+    "2.3.7.7": {
+        "hardeningScript": "reg add \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v PasswordExpiryWarning /t REG_DWORD /d 7 /f",
+        "auditScript": "reg query \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v PasswordExpiryWarning | findstr /C:\"7\"",
+        "revertHardeningScript": "reg delete \"HKLM\\Software\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" /v PasswordExpiryWarning /f"
+    }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.10.92.2.1 (L1) Ensure 'Prevent users from modifying settings' is set to 'Enabled'",
+  "info": "This policy setting prevent users from making changes to the Exploit protection settings area in the Windows Security settings.\n\nThe recommended state for this setting is: Enabled\n\nOnly authorized IT staff should be able to make changes to the exploit protection settings in order to ensure the organizations specific configuration is not modified.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Security\\App and browser protection\\Prevent users from modifying settings",
+  "Note": "This Group Policy path is provided by the Group Policy template WindowsDefenderSecurityCenter.admx/adml that is included with the Microsoft Windows 10 Release 1709 Administrative Templates (or newer).",
+  "Impact": "Local users cannot make changes in the Exploit protection settings area.\"",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv7|8.3,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/22007",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows Defender Security Center\\App and Browser protection",
+  "reg_item": "DisallowExploitProtectionOverride",
+  "reg_option": "CAN_NOT_BE_NULL"
+}
