@@ -252,10 +252,17 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     def get_script_json_url(self, obj):
         if not obj.audit_json_output_path:
             return None
-        script_path_fragment = os.path.join(obj.audit_json_output_path, 'commands', 'script.json')
+        
+        # FIX: Normalize the path here as well
+        normalized_path = obj.audit_json_output_path.replace('\\', os.sep).replace('/', os.sep)
+
+        # Use the normalized path
+        script_path_fragment = os.path.join(normalized_path, 'commands', 'script.json')
         full_system_path = os.path.join(settings.MEDIA_ROOT, script_path_fragment)
+        
         if os.path.exists(full_system_path):
             request = self.context.get('request')
+            # Always use forward slashes for the final URL
             url = os.path.join(settings.MEDIA_URL, script_path_fragment).replace('\\', '/')
             try:
                 mod_time = os.path.getmtime(full_system_path)
@@ -280,25 +287,31 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     def get_audit_files(self, obj):
         files_list = []
         if obj.audit_json_output_path:
+            # FIX: Normalize the path to use the correct OS separator
+            normalized_path = obj.audit_json_output_path.replace('\\', os.sep).replace('/', os.sep)
+            
             request = self.context.get('request')
-            directory_path = os.path.join(settings.MEDIA_ROOT, obj.audit_json_output_path)
+            # Use the normalized path
+            directory_path = os.path.join(settings.MEDIA_ROOT, normalized_path)
             try:
                 if os.path.isdir(directory_path):
-                    files = sorted(os.listdir(directory_path))
+                    files = sorted(os.listdir(directory_path)) 
                     if 'metadata.json' in files:
                         files.insert(0, files.pop(files.index('metadata.json')))
                     for filename in files:
                         if filename.endswith('.json'):
-                            file_path_fragment = os.path.join(obj.audit_json_output_path, filename)
+                            # Also use the normalized path for URL construction
+                            file_path_fragment = os.path.join(normalized_path, filename)
                             full_file_path = os.path.join(settings.MEDIA_ROOT, file_path_fragment)
+                            # Always use forward slashes for URLs
                             file_url = os.path.join(settings.MEDIA_URL, file_path_fragment).replace('\\', '/')
                             try:
-                                mod_time = os.path.getmtime(full_file_path)
+                                mod_time = os.path.getmtime(full_file_path) 
                                 url_with_version = f"{file_url}?v={int(mod_time)}"
                             except OSError:
-                                url_with_version = f"{file_url}?v={int(time.time())}"
+                                url_with_version = f"{file_url}?v={int(time.time())}" 
                             absolute_url = request.build_absolute_uri(url_with_version) if request else url_with_version
-                            files_list.append({'name': filename, 'url': absolute_url})
+                            files_list.append({'name': filename, 'url': absolute_url}) 
             except FileNotFoundError:
                 return []
         return files_list
