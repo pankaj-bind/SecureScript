@@ -1,0 +1,25 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "AND",
+    "rules": [
+      {
+        "type": "FILE_CHECK",
+        "description": "/etc/issue.net exist",
+        "file": "/etc/issue.net"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "1.6.3 Ensure remote login warning banner is configured properly",
+      "info": "The contents of the /etc/issue.net file are displayed to users prior to login for remote connections from configured services.\n\nUnix-based systems have typically displayed information about the OS release and patch level upon logging in to the system. This information can be useful to developers who are developing software for a particular OS platform. If mingetty(8) supports the following options, they display operating system information: \\m - machine architecture \\r - operating system release \\s - operating system name \\v - operating system version\n\nWarning messages inform users who are attempting to login to the system of their legal status regarding the system and must include the name of the organization that owns the system and any monitoring policies that are in place. Displaying OS and patch level information in login banners also has the side effect of providing detailed system information to attackers attempting to target specific exploits of a system. Authorized users can easily get this information by running the \\\" uname -a \\\" command once they have logged in.",
+      "solution": "\"Edit the /etc/issue.net file with the appropriate contents according to your site policy, remove any instances of \\m \\r \\s \\v or references to the OS platform",
+      "Example": "# echo \\\"Authorized users only. All activity may be monitored and reported.\\\" > /etc/issue.net\"",
+      "reference": "800-171|3.1.9,800-171r3|03.01.09,800-53|AC-8,800-53r5|AC-8,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.5,ITSG-33|AC-8,LEVEL|1A,NESA|M1.3.6,TBA-FIISB|45.2.4",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "FILE_CONTENT_CHECK_NOT",
+  "description": "5.2.5 Ensure re-authentication for privilege escalation is not disabled globally",
+  "info": "The operating system must be configured so that users must re-authenticate for privilege escalation.\n\nWithout re-authentication, users may access resources or perform tasks for which they do not have authorization.\n\nWhen operating systems provide the capability to escalate a functional capability, it is critical the user re-authenticate.",
+  "solution": "Configure the operating system to require users to reauthenticate for privilege escalation.\n\nBased on the outcome of the audit procedure, use visudo -f <PATH TO FILE> to edit the relevant sudoers file.\n\nRemove any occurrences of !authenticate tags in the file(s).",
+  "reference": "800-171|3.1.5,800-171|3.1.6,800-171r3|03.01.06a.,800-171r3|03.01.06b.,800-53|AC-6(2),800-53|AC-6(5),800-53r5|AC-6(2),800-53r5|AC-6(5),CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.10.6(a),CSCv7|4.3,CSCv8|5.4,CSF|PR.AC-4,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.15,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.18,ISO/IEC-27001|A.9.2.3,ITSG-33|AC-6(2),ITSG-33|AC-6(5),LEVEL|1A,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.6.1,NIAv2|AM1,NIAv2|AM23f,NIAv2|AM32,NIAv2|AM33,NIAv2|SS13c,NIAv2|SS15c,NIAv2|VL3a,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|5.2.2,QCSC-v1|6.2,SWIFT-CSCv1|1.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+  "file": "/etc/sudoers /etc/sudoers.d/*",
+  "regex": "^[^#].*\\!authenticate",
+  "expect": "^[^#].*\\!authenticate"
+}

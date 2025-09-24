@@ -1,0 +1,12 @@
+{
+  "type": "FILE_CHECK",
+  "description": "7.1.8 Ensure permissions on /etc/gshadow- are configured",
+  "info": "The /etc/gshadow- file is used to store backup information about groups that is critical to the security of those accounts, such as the hashed password and other security information.\n\nIt is critical to ensure that the /etc/gshadow- file is protected from unauthorized access. Although it is protected by default, the file permissions could be changed either inadvertently or through malicious actions.",
+  "solution": "Run one of the following commands to set ownership of /etc/gshadow- to root and group to either root or shadow :\n\n# chown root:shadow /etc/gshadow-\n  -OR-\n# chown root:root /etc/gshadow-\n\nRun the following command to remove excess permissions form /etc/gshadow- :\n\n# chmod u-x,g-wx,o-rwx /etc/gshadow-",
+  "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+  "file": "/etc/gshadow-",
+  "owner": "root",
+  "mask": "137",
+  "group": "root\" || \"shadow"
+}

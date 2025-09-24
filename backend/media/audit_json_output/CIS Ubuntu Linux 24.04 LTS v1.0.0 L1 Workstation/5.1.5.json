@@ -1,0 +1,27 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "dpkg check openssh-server",
+        "cmd": "/bin/dpkg -s openssh-server 2>&1 | /bin/grep -E '(Status:|not installed)'",
+        "expect": "^Status: install ok"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "5.1.5 Ensure sshd Banner is configured",
+      "info": "The Banner parameter specifies a file whose contents must be sent to the remote user before authentication is permitted. By default, no banner is displayed.\n\nBanners are used to warn connecting users of the particular site's policy regarding connection. Presenting a warning message prior to the normal user login may assist the prosecution of trespassers on the computer system.",
+      "solution": "\"Edit the /etc/ssh/sshd_config file to set the Banner parameter above any Include and Match entries as follows:\n\nBanner /etc/issue.net",
+      "Note": "First occurrence of a option takes precedence, Match set statements withstanding. If Include locations are enabled, used, and order of precedence is understood in your environment, the entry may be created in a file in Include location.\n\nEdit the file being called by the Banner argument with the appropriate contents according to your site policy, remove any instances of \\m \\r \\s \\v or references to the OS platform",
+      "Example": "# printf '%s\\n' \\\"Authorized users only. All activity may be monitored and reported.\\\" > \\\"$(sshd -T | awk '$1 == \\\"banner\\\" {print $2}')\\\"\"",
+      "reference": "800-171|3.1.9,800-171r3|03.01.09,800-53|AC-8,800-53r5|AC-8,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.5,ITSG-33|AC-8,LEVEL|1A,NESA|M1.3.6,TBA-FIISB|45.2.4",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

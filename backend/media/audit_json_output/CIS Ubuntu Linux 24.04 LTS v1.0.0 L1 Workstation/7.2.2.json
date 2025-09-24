@@ -1,0 +1,10 @@
+{
+  "type": "CMD_EXEC",
+  "description": "7.2.2 Ensure /etc/shadow password fields are not empty",
+  "info": "An account with an empty password field means that anybody may log in as that user without providing a password.\n\nAll accounts must have passwords or be locked to prevent the account from being used by an unauthorized user.",
+  "solution": "If any accounts in the /etc/shadow file do not have a password, run the following command to lock the account until it can be determined why it does not have a password:\n\n# passwd -l <username>\n\nAlso, check to see if the account is logged in and investigate what it is being used for to determine if it needs to be forced off.",
+  "reference": "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+  "cmd": "/bin/awk -F : \\'($2 == \\\"\\\") { print $1 \\\" does not have a password.\\\"}\\' /etc/shadow | /bin/awk '{print} END {if (NR == 0) print \\\"none\\\"}'",
+  "expect": "^none$"
+}

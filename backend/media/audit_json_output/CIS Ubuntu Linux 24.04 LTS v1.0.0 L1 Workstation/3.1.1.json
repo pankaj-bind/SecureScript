@@ -1,0 +1,14 @@
+{
+  "type": "CMD_EXEC",
+  "description": "3.1.1 Ensure IPv6 status is identified",
+  "info": "\"Internet Protocol Version 6 (IPv6) is the most recent version of Internet Protocol (IP). It's designed to supply IP addressing and additional security to support the predicted growth of connected devices. IPv6 is based on 128-bit addressing and can support 340 undecillion, which is 340,282,366,920,938,463,463,374,607,431,768,211,456 unique addresses.\n\nFeatures of IPv6\n\n - Hierarchical addressing and routing infrastructure\n - Statefull and Stateless configuration\n - Support for quality of service (QoS)\n - An ideal protocol for neighboring node interaction\n\nIETF RFC 4038 recommends that applications are built with an assumption of dual stack. It is recommended that IPv6 be enabled and configured in accordance with Benchmark recommendations.\n\n- IF - dual stack and IPv6 are not used in your environment, IPv6 may be disabled to reduce the attack surface of the system, and recommendations pertaining to IPv6 can be skipped.",
+  "Note": "It is recommended that IPv6 be enabled and configured unless this is against local site policy",
+  "NOTE": "Nessus has provided the target output to assist in reviewing the benchmark to ensure target compliance.\"",
+  "solution": "\"Enable or disable IPv6 in accordance with system requirements and local site policy",
+  "Impact": "IETF RFC 4038 recommends that applications are built with an assumption of dual stack.\n\nWhen enabled, IPv6 will require additional configuration to reduce risk to the system.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1M,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+  "cmd": "/bin/grep -Pqs '^\\\\h*0\\\\b' /sys/module/ipv6/parameters/disable && echo -e \\\"\\\\n - IPv6 is enabled\\\\n\\\" || echo -e \\\"\\\\n - IPv6 is not enabled\\\\n\\\"",
+  "expect": "Manual Review Required",
+  "severity": "MEDIUM"
+}

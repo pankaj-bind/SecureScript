@@ -1,0 +1,26 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "dpkg check openssh-server",
+        "cmd": "/bin/dpkg -s openssh-server 2>&1 | /bin/grep -E '(Status:|not installed)'",
+        "expect": "^Status: install ok"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "5.1.17 Ensure sshd MaxSessions is configured",
+      "info": "The MaxSessions parameter specifies the maximum number of open sessions permitted from a given connection.\n\nTo protect a system from denial of service due to a large number of concurrent sessions, use the rate limiting function of MaxSessions to protect availability of sshd logins and prevent overwhelming the daemon.",
+      "solution": "\"Edit the /etc/ssh/sshd_config file to set the MaxSessions parameter to 10 or less above any Include and Match entries as follows:\n\nMaxSessions 10",
+      "Note": "First occurrence of an option takes precedence, Match set statements withstanding. If Include locations are enabled, used, and order of precedence is understood in your environment, the entry may be created in a file in Include location.\"",
+      "reference": "800-53|AC-10,800-53r5|AC-10,CSF2.0|PR.AA-05,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|AC-10,LEVEL|1A,NESA|T5.5.1,QCSC-v1|5.2.1,QCSC-v1|5.2.2",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

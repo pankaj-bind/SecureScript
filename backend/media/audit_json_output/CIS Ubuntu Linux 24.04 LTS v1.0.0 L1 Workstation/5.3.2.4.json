@@ -1,0 +1,20 @@
+{
+  "type": "FILE_CONTENT_CHECK",
+  "description": "5.3.2.4 Ensure pam_pwhistory module is enabled",
+  "info": "The pam_pwhistory.so module saves the last passwords for each user in order to force password change history and keep the user from alternating between the same password too frequently.\n\nThis module does not work together with kerberos. In general, it does not make much sense to use this module in conjunction with NIS or LDAP since the old passwords are stored on the local machine and are not available on another machine for password history checking.\n\nUse of a unique, complex passwords helps to increase the time and resources required to compromise the password.",
+  "solution": "\"Run the following script to verify the pam_pwquality.so line exists in a pam-auth-update profile:\n\n# grep -P -- '\\bpam_pwhistory\\.so\\b' /usr/share/pam-configs/*\n\nOutput should be similar to:",
+  "/usr/share/pam-configs/pwhistory": "requisite pam_pwhistory.so remember=24 enforce_for_root try_first_pass use_authtok\n\n- IF - similar output is returned:\n\nRun the following command to update /etc/pam.d/common-password with the returned profile:\n\n# pam-auth-update --enable {PROFILE_NAME}",
+  "Example": "# pam-auth-update pwhistory\n\n- IF - similar output is NOT returned:\n\nCreate a pwhistory profile in /usr/share/pam-configs/ with the following lines:",
+  "Name": "pwhistory password history checking",
+  "Default": "yes",
+  "Priority": "1024",
+  "Password-Type": "Primary",
+  "Password": "requisite pam_pwhistory.so remember=24 enforce_for_root try_first_pass use_authtok\n\nExample Script:\n\n#!/usr/bin/env bash\n\n{",
+  "arr=('Name": "pwhistory password history checking' 'Default: yes' 'Priority: 1024' 'Password-Type: Primary' 'Password:' ' requisite pam_pwhistory.so remember=24 enforce_for_root try_first_pass use_authtok')\n   printf '%s\\n' \\\"${arr[@]}\\\" > /usr/share/pam-configs/pwhistory\n}\n\nRun the following command to update /etc/pam.d/common-password with the pwhistory profile:\n\n# pam-auth-update --enable pwhistory",
+  "Note": "- The name used for the file must be used in the pam-auth-update --enable command\n - The Name: line should be easily recognizable and understood\n - The Priority: Line is important as it effects the order of the lines in the /etc/pam.d/ files\n - If a site specific custom profile is being used in your environment to configure PAM that includes the configuration for the pam_pwhistory module, enable that module instead\"",
+  "reference": "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+  "file": "/etc/pam.d/common-password",
+  "regex": "(?i)^\\\\h*password\\\\h+(requisite|required)\\\\h+pam_pwhistory\\\\.so\\\\b",
+  "expect": "(?i)^\\\\h*password\\\\h+(requisite|required)\\\\h+pam_pwhistory\\\\.so\\\\b"
+}

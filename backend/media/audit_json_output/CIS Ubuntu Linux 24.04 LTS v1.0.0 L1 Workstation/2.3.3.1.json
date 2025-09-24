@@ -1,0 +1,20 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "enabled",
+        "cmd": "/bin/systemctl is-enabled chrony",
+        "expect": "^[\\\\s]*enabled[\\\\s]*$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "active",
+        "cmd": "/bin/systemctl is-active chrony",
+        "expect": "^[\\\\s]*active[\\\\s]*$"
+      }
+    ]
+  }
+}

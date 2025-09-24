@@ -1,0 +1,33 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "OR",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "nginx package installed",
+        "cmd": "/bin/dpkg -s nginx 2>&1 | /bin/grep -E '(^Status:|not installed)'",
+        "expect": "^Status: install ok"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "apache2 package installed",
+        "cmd": "/bin/dpkg -s apache2 2>&1 | /bin/grep -E '(^Status:|not installed)'",
+        "expect": "^Status: install ok"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "2.1.18 Ensure web server services are not in use",
+      "info": "Web servers provide the ability to host web site content.\n\nUnless there is a local site approved requirement to run a web server service on the system, web server packages should be removed to reduce the potential attack surface.",
+      "solution": "\"Run the following commands to stop httpd.socket httpd.service and nginx.service and remove apache2 and nginx packages:\n\n# systemctl stop apache2.socket apache2.service nginx.service\n# apt purge apache2 nginx\n\n- OR -\n\n- IF - a package is installed and is required for dependencies:\n\nRun the following commands to stop and mask apache2.socket apache2.service and nginx.service :\n\n# systemctl stop apache2.socket apache2.service nginx.service\n# systemctl mask apache2.socket apache2.service nginx.service",
+      "Note": "If the remediation steps to mask a service are followed and that package is not installed on the system, the service and/or socket will still be masked. If the package is installed due to an approved requirement to host a web server, the associated service and/or socket would need to be unmasked before it could be enabled and/or started.\"",
+      "Impact": "Removal of web server packages will remove that ability for the server to host web services.\n\n- IF - the web server package is required for a dependency, any related service or socket should be stopped and masked.",
+      "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

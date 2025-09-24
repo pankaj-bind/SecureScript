@@ -1,0 +1,14 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "check if ufw is active",
+        "cmd": "/bin/systemctl is-active ufw",
+        "expect": "^active$"
+      }
+    ]
+  }
+}

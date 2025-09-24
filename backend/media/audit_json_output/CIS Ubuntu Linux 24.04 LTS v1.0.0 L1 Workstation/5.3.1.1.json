@@ -1,0 +1,10 @@
+{
+  "type": "CMD_EXEC",
+  "description": "5.3.1.1 Ensure latest version of pam is installed",
+  "info": "Updated versions of PAM include additional functionality\n\nTo ensure the system has full functionality and access to the options covered by this Benchmark the latest version of libpam-runtime should be installed on the system",
+  "solution": "- IF - the version of libpam-runtime on the system is less than version 1.5.3-5 :\n\nRun the following command to update to the latest version of PAM :\n\n# apt upgrade libpam-runtime",
+  "reference": "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+  "cmd": "/bin/dpkg -s libpam-runtime | /bin/grep -E '(Status:|Version)'",
+  "expect": "^Version: ([1-9]|[1-9][0-9])\\\\.([5-9]|[1-9][0-9])\\\\.([3-9]|[1-9][0-9])-([5-9]|[1-9][0-9])"
+}

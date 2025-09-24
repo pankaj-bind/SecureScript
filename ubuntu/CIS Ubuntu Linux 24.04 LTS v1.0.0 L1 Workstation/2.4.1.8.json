@@ -1,0 +1,32 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "OR",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "cron installed",
+        "cmd": "/bin/dpkg -s cron 2>&1 | /bin/grep -E '(^Status:|not installed)'",
+        "expect": "^Status: install ok"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "cronie installed",
+        "cmd": "/bin/dpkg -s cronie 2>&1 | /bin/grep -E '(^Status:|not installed)'",
+        "expect": "^Status: install ok"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "2.4.1.8 Ensure crontab is restricted to authorized users",
+      "info": "\"crontab is the program used to install, deinstall, or list the tables used to drive the cron daemon. Each user can have their own crontab, and though these are files in /var/spool/cron/crontabs they are not intended to be edited directly.\n\nIf the /etc/cron.allow file exists, then you must be listed (one user per line) therein in order to be allowed to use this command. If the /etc/cron.allow file does not exist but the /etc/cron.deny file does exist, then you must not be listed in the /etc/cron.deny file in order to use this command.\n\nIf neither of these files exists, then depending on site-dependent configuration parameters, only the super user will be allowed to use this command, or all users will be able to use this command.\n\nIf both files exist then /etc/cron.allow takes precedence. Which means that /etc/cron.deny is not considered and your user must be listed in /etc/cron.allow in order to be able to use the crontab.\n\nRegardless of the existence of any of these files, the root administrative user is always allowed to setup a crontab.\n\nThe files /etc/cron.allow and /etc/cron.deny if they exist, must be either world-readable, or readable by group crontab If they are not, then cron will deny access to all users until the permissions are fixed.\n\nThere is one file for each user's crontab under the /var/spool/cron/crontabs directory. Users are not allowed to edit the files under that directory directly to ensure that only users allowed by the system to run periodic tasks can add them, and only syntactically correct crontabs will be written there. This is enforced by having the directory writable only by the crontab group and configuring crontab command with the setgid bid set for that specific group.",
+      "Note": "On systems where cron is configured to use the group crontab if the group crontab is not set as the owner of cron.allow then cron will deny access to all users and you will see an error similar to:\n\nYou (<USERNAME>) are not allowed to use this program (crontab)\nSee crontab(1) for more information\"",
+      "solution": "\"- IF - cron is installed on the system:\n\nRun the following script to:\n\n - Create /etc/cron.allow if it doesn't exist\n - Change owner to user root\n - Change group owner to group root - OR - group crontab if it exists\n - Change mode to 640 or more restrictive\n\n#!/usr/bin/env bash\n\n{\n   [ ! -e \\\"/etc/cron.deny\\\" ] && touch /etc/cron.allow\n   chmod u-x,g-wx,o-rwx /etc/cron.allow\n   if grep -Pq -- '^\\h*crontab\\:' /etc/group; then\n      chown root:crontab /etc/cron.allow\n   else\n      chown root:root /etc/cron.allow\n   fi\n}\n\n- IF - /etc/cron.deny exists, run the following script to:\n\n - Change owner to user root\n - Change group owner to group root - OR - group crontab if it exists\n - Change mode to 640 or more restrictive\n\n#!/usr/bin/env bash\n\n{\n   if [ -e \\\"/etc/cron.deny\\\" ]; then\n      chmod u-x,g-wx,o-rwx /etc/cron.deny\n      if grep -Pq -- '^\\h*crontab\\:' /etc/group; then\n         chown root:crontab /etc/cron.deny\n      else\n         chown root:root /etc/cron.deny\n      fi\n   fi\n}",
+      "reference": "800-171|3.1.1,800-171|3.1.4,800-171|3.1.5,800-171|3.8.1,800-171|3.8.2,800-171|3.8.3,800-171r3|03.01.02,800-171r3|03.01.04,800-171r3|03.01.05a.,800-171r3|03.08.02,800-53|AC-3,800-53|AC-5,800-53|AC-6,800-53|MP-2,800-53r5|AC-3,800-53r5|AC-5,800-53r5|AC-6,800-53r5|MP-2,CN-L3|7.1.3.2(b),CN-L3|7.1.3.2(g),CN-L3|8.1.4.2(d),CN-L3|8.1.4.2(f),CN-L3|8.1.4.11(b),CN-L3|8.1.10.2(c),CN-L3|8.1.10.6(a),CN-L3|8.5.3.1,CN-L3|8.5.4.1(a),CSCv7|14.6,CSCv8|3.3,CSF|PR.AC-4,CSF|PR.DS-5,CSF|PR.PT-2,CSF|PR.PT-3,CSF2.0|PR.AA-05,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO-27001-2022|A.5.3,ISO-27001-2022|A.5.10,ISO-27001-2022|A.5.15,ISO-27001-2022|A.5.33,ISO-27001-2022|A.7.7,ISO-27001-2022|A.7.10,ISO-27001-2022|A.8.2,ISO-27001-2022|A.8.3,ISO-27001-2022|A.8.18,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.6.1.2,ISO/IEC-27001|A.9.4.1,ISO/IEC-27001|A.9.4.5,ITSG-33|AC-3,ITSG-33|AC-5,ITSG-33|AC-6,ITSG-33|MP-2,ITSG-33|MP-2a.,LEVEL|1A,NESA|T1.3.2,NESA|T1.3.3,NESA|T1.4.1,NESA|T4.2.1,NESA|T5.1.1,NESA|T5.2.2,NESA|T5.4.1,NESA|T5.4.4,NESA|T5.4.5,NESA|T5.5.4,NESA|T5.6.1,NESA|T7.5.2,NESA|T7.5.3,NIAv2|AM1,NIAv2|AM3,NIAv2|AM23f,NIAv2|SS13c,NIAv2|SS15c,NIAv2|SS29,PCI-DSSv3.2.1|7.1.2,PCI-DSSv4.0|7.2.1,PCI-DSSv4.0|7.2.2,QCSC-v1|3.2,QCSC-v1|5.2.2,QCSC-v1|6.2,QCSC-v1|13.2,SWIFT-CSCv1|5.1,TBA-FIISB|31.1,TBA-FIISB|31.4.2,TBA-FIISB|31.4.3",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

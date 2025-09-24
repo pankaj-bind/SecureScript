@@ -1,0 +1,39 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "FILE_CONTENT_CHECK",
+        "description": "/etc/pam.d/common-password",
+        "file": "/etc/pam.d/common-password",
+        "regex": "^\\\\h*password\\\\h+(requisite|required|sufficient)\\\\h+pam_pwquality\\\\.so\\\\h+([^#\\\\r]+\\\\h+)?minlen\\\\h*=",
+        "expect": "^\\\\h*password\\\\h+(requisite|required|sufficient)\\\\h+pam_pwquality\\\\.so\\\\h+([^#\\\\r]+\\\\h+)?minlen\\\\h*=\\\\h*@PASSWORD_MINIMUM_LENGTH@\\\\b",
+        "string_required": false
+      },
+      {
+        "type": "FILE_CONTENT_CHECK",
+        "description": "pwquality - minlen",
+        "file": "/etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf",
+        "regex": "(?i)^\\\\h*minlen\\\\h*=",
+        "expect": "(?i)^\\\\h*minlen\\\\h*=\\\\h*@PASSWORD_MINIMUM_LENGTH@\\\\b",
+        "min_occurrences": "1",
+        "string_required": false
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "5.3.3.2.2 Ensure minimum password length is configured",
+      "info": "The minimum password length setting determines the lowers number of characters that make up a password for a user account. There are many different theories about how to determine the best password length for an organization, but perhaps \\\"passphrase\\\" is a better term than \\\"password\\\".\n\nThe minlen option sets the minimum acceptable size for the new password (plus one if credits are not disabled which is the default). Cannot be set to lower value than 6.\n\nStrong passwords help protect systems from password attacks. Types of password attacks include dictionary attacks, which attempt to use common words and phrases, and brute force attacks, which try every possible combination of characters. Also attackers may try to obtain the account database so they can use tools to discover the accounts and passwords.",
+      "solution": "\"Create or modify a file ending inconf in the /etc/security/pwquality.conf.d/ directory or the file /etc/security/pwquality.conf and add or modify the following line to set password length of 14 or more characters. Ensure that password length conforms to local site policy:",
+      "Example": "#!/usr/bin/env bash\n\n{\n   sed -ri 's/^\\s*minlen\\s*=/# &/' /etc/security/pwquality.conf\n   [ ! -d /etc/security/pwquality.conf.d/ ] && mkdir /etc/security/pwquality.conf.d/\n   printf '\\n%s' \\\"minlen = 14\\\" > /etc/security/pwquality.conf.d/50-pwlength.conf\n}\n\nRun the following command:\n\n# grep -Pl -- '\\bpam_pwquality\\.so\\h+([^#\\n\\r]+\\h+)?minlen\\b' /usr/share/pam-configs/*\n\nEdit any returned files and remove the minlen argument from the pam_pwquality.so line(s):",
+      "Impact": "In general, it is true that longer passwords are better (harder to crack), but it is also true that forced password length requirements can cause user behavior that is predictable and undesirable. For example, requiring users to have a minimum 16-character password may cause them to choose repeating patterns like fourfourfourfour or passwordpassword that meet the requirement but aren't hard to guess. Additionally, length requirements increase the chances that users will adopt other insecure practices, like writing them down, re-using them or storing them unencrypted in their documents.\n\nHaving a reasonable minimum length with no maximum character limit increases the resultingaverage password length used (and therefore the strength).6\"",
+      "reference": "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

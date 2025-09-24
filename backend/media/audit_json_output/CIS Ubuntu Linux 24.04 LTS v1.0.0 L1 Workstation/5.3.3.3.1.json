@@ -1,0 +1,18 @@
+{
+  "type": "FILE_CONTENT_CHECK",
+  "description": "5.3.3.3.1 Ensure password history remember is configured",
+  "info": "\"The /etc/security/opasswd file stores the users' old passwords and can be checked to ensure that users are not recycling recent passwords. The number of passwords remembered is set via the remember argument value in set for the pam_pwhistory module.\n\n - remember=<N> - <N> is the number of old passwords to remember\n\nRequiring users not to reuse their passwords make it less likely that an attacker will be able to guess the password or use a compromised password.",
+  "Note": "These change only apply to accounts configured on the local system.\"",
+  "solution": "\"Run the following command:\n\n# awk '/Password-Type:/{ f = 1;next } /-Type:/{ f = 0 } f {if (/pam_pwhistory\\.so/) print FILENAME}' /usr/share/pam-configs/*\n\nEdit any returned files and edit or add the remember= argument, with a value of 24 or more, that meets local site policy to the pam_pwhistory line in the Password section:\n\nExample File:",
+  "Name": "pwhistory password history checking",
+  "Default": "yes",
+  "Priority": "1024",
+  "Password-Type": "Primary",
+  "Password": "requisite pam_pwhistory.so remember=24 enforce_for_root try_first_pass use_authtok # <- **ensure line includes remember=<N>**\n\nRun the following command to update the files in the /etc/pam.d/ directory:\n\n# pam-auth-update --enable <MODIFIED_PROFILE_NAME>",
+  "Example": "# pam-auth-update --enable pwhistory\"",
+  "reference": "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+  "file": "/etc/pam.d/common-password",
+  "regex": "(?i)^\\\\h*password\\\\h+(requisite|required|sufficient)\\\\h+pam_pwhistory\\\\.so\\\\h+([^#\\\\r]+\\\\h+)?remember=",
+  "expect": "(?i)^\\\\h*password\\\\h+(requisite|required|sufficient)\\\\h+pam_pwhistory\\\\.so\\\\h+([^#\\\\r]+\\\\h+)?remember=@PASSWORD_HISTORY_REMEMBER@\\\\b"
+}

@@ -1,0 +1,17 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "AND",
+    "rules": [
+      {
+        "type": "FILE_CONTENT_CHECK",
+        "description": "minclass",
+        "file": "/etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf",
+        "regex": "^[\\\\s]*minclass[\\\\s]*=",
+        "expect": "^[\\\\s]*minclass[\\\\s]*=[\\\\s]*@PASSWORD_MINCLASS@[\\\\s]*$",
+        "min_occurrences": "1",
+        "string_required": false
+      }
+    ]
+  }
+}

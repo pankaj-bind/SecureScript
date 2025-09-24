@@ -1,0 +1,35 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "FILE_CONTENT_CHECK_NOT",
+        "description": "pwquality - dictcheck",
+        "file": "/etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf",
+        "regex": "(?i)^\\\\h*dictcheck\\\\h*=\\\\h*0\\\\b",
+        "expect": "(?i)^\\\\h*dictcheck\\\\h*=\\\\h*0\\\\b"
+      },
+      {
+        "type": "FILE_CONTENT_CHECK_NOT",
+        "description": "/etc/pam.d/common-password",
+        "file": "/etc/pam.d/common-password",
+        "regex": "(?i)^\\\\h*password\\\\h+(requisite|required|sufficient)\\\\h+pam_pwquality\\\\.so\\\\h+([^#\\\\r]+\\\\h+)?dictcheck\\\\h*=\\\\h*0\\\\b",
+        "expect": "(?i)^\\\\h*password\\\\h+(requisite|required|sufficient)\\\\h+pam_pwquality\\\\.so\\\\h+([^#\\\\r]+\\\\h+)?dictcheck\\\\h*=\\\\h*0\\\\b"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "5.3.3.2.6 Ensure password dictionary check is enabled",
+      "info": "The pwquality dictcheck option sets whether to check for the words from the cracklib dictionary.\n\nIf the operating system allows the user to select passwords based on dictionary words, this increases the chances of password compromise by increasing the opportunity for successful guesses, and brute-force attacks.",
+      "solution": "\"Edit any file ending inconf in the /etc/security/pwquality.conf.d/ directory and/or the file /etc/security/pwquality.conf and comment out or remove any instance of dictcheck = 0 :",
+      "Example": "# sed -ri 's/^\\s*dictcheck\\s*=/# &/' /etc/security/pwquality.conf /etc/security/pwquality.conf.d/*.conf\n\nRun the following command:\n\n# grep -Pl -- '\\bpam_pwquality\\.so\\h+([^#\\n\\r]+\\h+)?dictcheck\\b' /usr/share/pam-configs/*\n\nEdit any returned files and remove the dictcheck argument from the pam_pwquality.so line(s)\"",
+      "reference": "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

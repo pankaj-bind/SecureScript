@@ -1,0 +1,38 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "dailyaidecheck.timer enabled",
+        "cmd": "/bin/systemctl list-unit-files | /bin/awk '$1~/^dailyaidecheck\\\\.(timer|service)\\$/{print $1 \\\"\\\\t\\\" $2}'",
+        "expect": "^[\\\\s]*dailyaidecheck.timer[\\\\s]*enabled[\\\\s]*$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "dailyaidecheck.service static",
+        "cmd": "/bin/systemctl list-unit-files | /bin/awk '$1~/^dailyaidecheck\\\\.(timer|service)\\$/{print $1 \\\"\\\\t\\\" $2}'",
+        "expect": "^[\\\\s]*dailyaidecheck.service[\\\\s]*static[\\\\s]*$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "aidecheck active",
+        "cmd": "/bin/systemctl is-active dailyaidecheck.timer",
+        "expect": "^active$"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "6.3.2 Ensure filesystem integrity is regularly checked",
+      "info": "Periodic checking of the filesystem integrity is needed to detect changes to the filesystem.\n\nPeriodic file checking allows the system administrator to determine on a regular basis if critical files have been changed in an unauthorized fashion.",
+      "solution": "Run the following command to unmask dailyaidecheck.timer and dailyaidecheck.service :\n\n# systemctl unmask dailyaidecheck.timer dailyaidecheck.service\n\nRun the following command to enable and start dailyaidecheck.timer :\n\n# systemctl --now enable dailyaidecheck.timer",
+      "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-171r3|03.03.02a.,800-171r3|03.03.02b.,800-171r3|03.03.03,800-171r3|03.03.06a.,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|14.9,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ISO-27001-2022|A.5.28,ISO-27001-2022|A.8.15,ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|1A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

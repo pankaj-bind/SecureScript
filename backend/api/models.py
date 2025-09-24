@@ -94,6 +94,7 @@ class Product(models.Model):
         ('Google Chrome', 'Google Chrome Viewer'),
         ('Windows 11 Standalone', 'Windows 11 Standalone Viewer'),
         ('Windows 11 Enterprise', 'Windows 11 Enterprise Viewer'),
+        ('Ubuntu Linux Workstation', 'Ubuntu Linux Workstation Viewer'),
     ]
 
     name = models.CharField(

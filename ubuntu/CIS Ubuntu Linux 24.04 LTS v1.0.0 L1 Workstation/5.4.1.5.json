@@ -1,0 +1,33 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "shadow password inactive days",
+        "cmd": "/bin/awk -F: '($2~/^\\\\$.+\\\\$/) {if($7 > @INACTIVE_PASSWORD_LOCK@ || $7 < 0)print \\\"User: \\\" $1 \\\" INACTIVE: \\\" $7}' /etc/shadow | /bin/awk '{print} END {if (NR == 0) print \\\"pass\\\"; else print \\\"fail\\\"}'",
+        "expect": "^pass$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "useradd - INACTIVE",
+        "cmd": "/sbin/useradd -D | /bin/grep 'INACTIVE'",
+        "expect": "^[\\\\s]*INACTIVE[\\\\s]*=[\\\\s]*@INACTIVE_PASSWORD_LOCK@[\\\\s]*$"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "5.4.1.5 Ensure inactive password lock is configured",
+      "info": "User accounts that have been inactive for over a given period of time can be automatically disabled.\n\nINACTIVE - Defines the number of days after the password exceeded its maximum age where the user is expected to replace this password.\n\nThe value is stored in the shadow password file. An input of 0 will disable an expired password with no delay. An input of -1 will blank the respective field in the shadow password file.\n\nInactive accounts pose a threat to system security since the users are not logging in to notice failed login attempts or other anomalies.",
+      "solution": "\"Run the following command to set the default password inactivity period to 45 days or less that meets local site policy:\n\n# useradd -D -f <N>",
+      "Example": "# awk -F: '($2~/^\\$.+\\$/) {if($7 > 45 || $7 < 0)system (\\\"chage --inactive 45 \\\" $1)}' /etc/shadow\"",
+      "reference": "800-171|3.5.2,800-171r3|03.05.07,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ISO-27001-2022|A.5.16,ISO-27001-2022|A.5.17,ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

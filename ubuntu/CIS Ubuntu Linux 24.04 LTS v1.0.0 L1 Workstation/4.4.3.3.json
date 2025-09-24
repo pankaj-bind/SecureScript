@@ -1,0 +1,20 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "check if ufw is not active",
+        "cmd": "/bin/systemctl is-active ufw | /bin/awk '{print} END {if(NR==0) print \\\"inactive\\\" }'",
+        "expect": "^(inactive|unknown|failed)$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "check if nftables is not active",
+        "cmd": "/bin/systemctl is-active nftables | /bin/awk '{print} END {if(NR==0) print \\\"inactive\\\" }'",
+        "expect": "^(inactive|unknown|failed)$"
+      }
+    ]
+  }
+}

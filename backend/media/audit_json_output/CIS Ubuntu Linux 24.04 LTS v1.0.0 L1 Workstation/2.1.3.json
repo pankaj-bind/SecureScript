@@ -1,0 +1,11 @@
+{
+  "type": "CMD_EXEC",
+  "description": "2.1.3 Ensure dhcp server services are not in use",
+  "info": "The Dynamic Host Configuration Protocol (DHCP) is a service that allows machines to be dynamically assigned IP addresses. There are two versions of the DHCP protocol DHCPv4 and DHCPv6 At startup the server may be started for one or the other via the -4 or -6 arguments.\n\nUnless a system is specifically set up to act as a DHCP server, it is recommended that this package be removed to reduce the potential attack surface.",
+  "solution": "\"Run the following commands to stop isc-dhcp-server.service and isc-dhcp-server6.service and remove the isc-dhcp-server package:\n\n# systemctl stop isc-dhcp-server.service isc-dhcp-server6.service\n# apt purge isc-dhcp-server\n\n- OR -\n\n- IF - the isc-dhcp-server package is required as a dependency:\n\nRun the following commands to stop and mask isc-dhcp-server.service and isc-dhcp-server6.service :\n\n# systemctl stop isc-dhcp-server.service isc-dhcp-server6.service\n# systemctl mask isc-dhcp-server isc-dhcp-server6.service",
+  "Impact": "There may be packages that are dependent on the isc-dhcp-server package. If the isc-dhcp-server package is removed, these dependent packages will be removed as well. Before removing the isc-dhcp-server package, review any dependent packages to determine if they are required on the system.\n\n- IF - a dependent package is required: stop and mask the isc-dhcp-server.service and isc-dhcp-server6.service leaving the isc-dhcp-server package installed.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+  "cmd": "/bin/dpkg -s isc-dhcp-server 2>&1 | /bin/grep -E '(^Status:|not installed)'",
+  "expect": "(^Status: deinstall ok|not installed)"
+}

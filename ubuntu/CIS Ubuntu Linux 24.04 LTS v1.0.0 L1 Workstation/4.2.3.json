@@ -1,0 +1,27 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "check if ufw is active",
+        "cmd": "/bin/systemctl is-active ufw",
+        "expect": "^active$"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "4.2.3 Ensure ufw service is enabled",
+      "info": "\"UncomplicatedFirewall (ufw) is a frontend for iptables. ufw provides a framework for managing netfilter, as well as a command-line and available graphical user interface for manipulating the firewall.",
+      "Note": "- When running ufw enable or starting ufw via its initscript, ufw will flush its chains. This is required so ufw can maintain a consistent state, but it may drop existing connections (eg ssh). ufw does support adding rules before enabling the firewall.\n - Run the following command before running ufw enable\n\n# ufw allow proto tcp from any to any port 22\n - The rules will still be flushed, but the ssh port will be open after enabling the firewall. Please note that once ufw is 'enabled', ufw will not flush the chains when adding or removing rules (but will when modifying a rule or changing the default policy)\n - By default, ufw will prompt when enabling the firewall while running under ssh. This can be disabled by using ufw --force enable\n\nThe ufw service must be enabled and running in order for ufw to protect the system\"",
+      "solution": "\"Run the following command to unmask the ufw daemon:\n\n# systemctl unmask ufw.service\n\nRun the following command to enable and start the ufw daemon:\n\n# systemctl --now enable ufw.service\n\nactive\n\nRun the following command to enable ufw:\n\n# ufw enable",
+      "Impact": "Changing firewall settings while connected over network can result in being locked out of the system.\"",
+      "reference": "800-171|3.13.1,800-171|3.13.5,800-171|3.13.6,800-171r3|03.13.01,800-171r3|03.13.06,800-53|CA-9,800-53|SC-7,800-53|SC-7(5),800-53r5|CA-9,800-53r5|SC-7,800-53r5|SC-7(5),CN-L3|7.1.2.2(c),CN-L3|8.1.10.6(j),CSCv7|9.4,CSCv8|4.4,CSCv8|4.5,CSF|DE.CM-1,CSF|ID.AM-3,CSF|PR.AC-5,CSF|PR.DS-5,CSF|PR.PT-4,CSF2.0|DE.CM-01,CSF2.0|ID.AM-03,CSF2.0|PR.DS-01,CSF2.0|PR.DS-02,CSF2.0|PR.DS-10,CSF2.0|PR.IR-01,GDPR|32.1.b,GDPR|32.1.d,GDPR|32.2,HIPAA|164.306(a)(1),ISO-27001-2022|A.5.14,ISO-27001-2022|A.8.16,ISO-27001-2022|A.8.20,ISO/IEC-27001|A.13.1.3,ITSG-33|SC-7,ITSG-33|SC-7(5),LEVEL|1A,NESA|T4.5.4,NIAv2|GS1,NIAv2|GS2a,NIAv2|GS2b,NIAv2|GS7b,NIAv2|NS25,PCI-DSSv3.2.1|1.1,PCI-DSSv3.2.1|1.2,PCI-DSSv3.2.1|1.2.1,PCI-DSSv3.2.1|1.3,PCI-DSSv4.0|1.2.1,PCI-DSSv4.0|1.4.1,QCSC-v1|4.2,QCSC-v1|5.2.1,QCSC-v1|5.2.2,QCSC-v1|5.2.3,QCSC-v1|6.2,QCSC-v1|8.2.1,SWIFT-CSCv1|2.1,TBA-FIISB|43.1",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

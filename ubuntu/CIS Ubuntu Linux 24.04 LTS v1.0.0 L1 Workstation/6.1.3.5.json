@@ -1,0 +1,20 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "OR",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "journald check - active",
+        "cmd": "/bin/systemctl is-active systemd-journald",
+        "expect": "^active$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "active",
+        "cmd": "/bin/systemctl is-active rsyslog",
+        "expect": "^active$"
+      }
+    ]
+  }
+}
