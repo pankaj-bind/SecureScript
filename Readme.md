@@ -12,6 +12,14 @@ Before you begin, ensure you have the following installed on your system:
   * **Node.js** and **npm**
 
 -----
+## Clone from GitHub
+
+To get started, first clone the SecureScript repository to your local machine using Git:
+
+```bash
+git clone https://github.com/pankaj-bind/SecureScript.git
+cd SecureScript
+```
 
 ## Backend Setup (Django)
 
@@ -31,15 +39,7 @@ Follow these steps to get the backend server up and running.
     pip install -r requirements.txt
     ```
 
-3.  **Run Database Migrations**
-    These commands will create the necessary database tables based on your models.
-
-    ```bash
-    python manage.py makemigrations
-    python manage.py migrate
-    ```
-
-4.  **Start the Backend Server**
+3.  **Start the Backend Server**
     This will start the Django development server, typically on `http://localhost:8000`.
 
     ```bash
