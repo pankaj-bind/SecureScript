@@ -1,0 +1,11 @@
+{
+  "type": "CMD_EXEC",
+  "description": "2.2.1 Ensure X Window System is not installed",
+  "info": "The X Window System provides a Graphical User Interface (GUI) where users can have multiple windows in which to run programs and various add on. The X Windows system is typically used on workstations where users login, but not on servers where users typically do not login.\n\nUnless your organization specifically requires graphical login access via X Windows, remove it to reduce the potential attack surface.",
+  "solution": "\"Remove the X Windows System packages:\n\napt purge xserver-xorg*",
+  "Impact": "Many Linux systems run applications which require a Java runtime. Some Linux Java packages have a dependency on specific X Windows xorg-x11-fonts. One workaround to avoid this dependency is to use the \\\"headless\\\" Java packages for your specific Java runtime, if provided by your distribution.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|2.6,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/13775",
+  "cmd": "/bin/dpkg -l | /bin/grep -E \\\"ii[\\\\s]+xserver-xorg\\\" | /bin/awk \\'{print} END {if(NR==0) print \\\"none\\\" }\\'",
+  "expect": "^none$"
+}

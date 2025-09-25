@@ -1,0 +1,49 @@
+{
+  "ui_metadata": {
+    "display_name": "CIS Ubuntu Linux 24.04 LTS v1.0.0 L2 Workstation",
+    "spec": {
+      "type": "CIS",
+      "name": "Ubuntu Linux 24.04 LTS",
+      "profile": "L2 Workstation",
+      "version": "1.0.0",
+      "link": "https://workbench.cisecurity.org/benchmarks/18959"
+    },
+    "variables": [
+      {
+        "name": "PLATFORM_VERSION",
+        "default": "24.04",
+        "description": "Ubuntu Version",
+        "info": "Ubuntu Version",
+        "value_type": "STRING"
+      },
+      {
+        "name": "PASSWORD_ROOT_UNLOCK_TIME",
+        "default": "([6-9][0-9]{1,})",
+        "description": "Root password lockout time setting",
+        "info": "Amount of time in seconds access will be blocked after a lock out.",
+        "value_type": "STRING"
+      },
+      {
+        "name": "PASSWORD_MIN_DAYS",
+        "default": "1",
+        "description": "Password minimum days",
+        "info": "Minimum days between password changes parameter found in /etc/login.defs",
+        "value_type": "INTEGER"
+      },
+      {
+        "name": "FIND_TIMEOUT",
+        "default": "7200",
+        "description": "Timeout for checks that search for files",
+        "info": "Timeout, in seconds, for checks that search for files. Range of 1-7200.",
+        "value_type": "INTEGER"
+      },
+      {
+        "name": "MAX_AUDIT_LOG_FILE_SIZE",
+        "default": "32",
+        "description": "Log file size",
+        "info": "The max size, in MBs, each audit log can be before log file rotation.",
+        "value_type": "INTEGER"
+      }
+    ]
+  }
+}

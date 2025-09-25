@@ -1,0 +1,34 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "FILE_CONTENT_CHECK_NOT",
+        "description": "sshd_config GSSAPIAuthentication",
+        "file": "/etc/ssh/sshd_config /etc/ssh/sshd_config.d/*.conf",
+        "regex": "(?i)^\\\\h*GSSAPIAuthentication\\\\h+\\\"?yes\\\\b",
+        "expect": "(?i)^\\\\h*GSSAPIAuthentication\\\\h+\\\"?yes\\\\b"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "sshd -T GSSAPIAuthentication",
+        "cmd": "#!/bin/bash\n  {\n  ports=$(/bin/grep -s -P \\\"^(Port|Match)\\\" /etc/ssh/sshd_config /etc/ssh/sshd_config.d/*.conf | /bin/grep -P -o \\\"(Port|LocalPort)[\\\\s]+[\\\\d]+\\\" | /bin/awk '{print $2}; END {if (NR == 0) print \\\"22\\\"}' | /bin/uniq); for port in ${ports[@]}; do /sbin/sshd -T -C user=root -C host=\\\"$(hostname)\\\" -C addr=\\\"$(/bin/grep $(hostname) /etc/hosts | /bin/awk '{print $1}')\\\" -C lport=$port | echo \\\"port $port: $(/bin/grep -i ^GSSAPIAuthentication)\\\"; done | /bin/awk 'BEGIN {f=0} /GSSAPIAuthentication/i { if ($NF != \\\"no\\\") f++; print $0} END {if (NR == 0) print \\\"Fail: no results returned\\\"; else if (f > 0) print \\\"Fail\\\"; else print \\\"Pass\\\" }'\n  }",
+        "expect": "^Pass$"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "5.1.9 Ensure sshd GSSAPIAuthentication is disabled",
+      "info": "The GSSAPIAuthentication parameter specifies whether user authentication based on GSSAPI is allowed\n\nAllowing GSSAPI authentication through SSH exposes the system's GSSAPI to remote hosts, and should be disabled to reduce the attack surface of the system",
+      "solution": "\"Edit the /etc/ssh/sshd_config file to set the GSSAPIAuthentication parameter to no above any Include and Match entries as follows:\n\nGSSAPIAuthentication no",
+      "Note": "First occurrence of an option takes precedence, Match set statements withstanding. If Include locations are enabled, used, and order of precedence is understood in your environment, the entry may be created in a file in Include location.\"",
+      "reference": "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|2A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/17074",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

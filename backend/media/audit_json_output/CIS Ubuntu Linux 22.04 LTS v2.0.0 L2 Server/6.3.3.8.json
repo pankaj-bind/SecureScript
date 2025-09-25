@@ -1,0 +1,117 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "/etc/shadow",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/shadow/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl /etc/nsswitch.cnof",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/nsswitch\\\\.conf/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "on disk /etc/pam.conf",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/pam\\\\.conf/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "/etc/gshadow",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/gshadow/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl /etc/security/opasswd",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/security\\\\/opasswd/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "/etc/group",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/group/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "/etc/passwd",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/passwd/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl /etc/pam.d",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/pam\\\\.d/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl /etc/shadow",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/shadow/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl /etc/gshadow",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/gshadow/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "on disk /etc/nsswitch.conf",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/nsswitch\\\\.conf/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl /etc/passwd",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/passwd/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "/etc/security/opasswd",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/security\\\\/opasswd/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "on disk /etc/pam.d",
+        "cmd": "/bin/awk '/^ *-w/ &&/\\\\/etc\\\\/pam\\\\.d/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl /etc/group",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/group/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl /etc/pam.conf",
+        "cmd": "/sbin/auditctl -l | /bin/awk '/^ *-w/ &&/\\\\/etc\\\\/pam\\\\.conf/ &&/ +-p *wa/  &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)' | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "6.3.3.8 Ensure events that modify user/group information are collected",
+      "info": "Record events affecting the modification of user or group information, including that of passwords and old passwords if in use.\n\n - /etc/group - system groups\n - /etc/passwd - system users\n - /etc/gshadow - encrypted password for each group\n - /etc/shadow - system user passwords\n - /etc/security/opasswd - storage of old passwords if the relevant PAM module is in use\n - /etc/nsswitch.conf - file configures how the system uses various databases and name resolution mechanisms\n - /etc/pam.conf - file determines the authentication services to be used, and the order in which the services are used.\n - /etc/pam.d - directory contains the PAM configuration files for each PAM-aware application.\n\nThe parameters in this section will watch the files to see if they have been opened for write or have had attribute changes (e.g. permissions) and tag them with the identifier \\\"identity\\\" in the audit log file.\n\nUnexpected changes to these files could be an indication that the system has been compromised and that an unauthorized user is attempting to hide their activities or compromise additional accounts.",
+      "solution": "\"Edit or create a file in the /etc/audit/rules.d/ directory, ending inrules extension, with the relevant rules to monitor events that modify user/group information.",
+      "Example": "# printf \\\"\n-w /etc/group -p wa -k identity\n-w /etc/passwd -p wa -k identity\n-w /etc/gshadow -p wa -k identity\n-w /etc/shadow -p wa -k identity\n-w /etc/security/opasswd -p wa -k identity\n-w /etc/nsswitch.conf -p wa -k identity\n-w /etc/pam.conf -p wa -k identity\n-w /etc/pam.d -p wa -k identity\n\\\" >> /etc/audit/rules.d/50-identity.rules\n\nMerge and load the rules into active configuration:\n\n# augenrules --load\n\nCheck if reboot is required.\n\n# if [[ $(auditctl -s | grep \\\"enabled\\\") =~ \\\"2\\\" ]]; then printf \\\"Reboot required to load rules\\n\\\"; fi\"",
+      "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|4.8,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/17074",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "GDM is installed",
+        "cmd": "/bin/dpkg -s gdm3 2>&1 | /bin/grep -E '(^Status:|not installed)'",
+        "expect": "^Status: install ok"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "1.7.6 Ensure GDM automatic mounting of removable media is disabled",
+      "info": "By default GNOME automatically mounts removable media when inserted as a convenience to the user.\n\nWith automounting enabled anyone with physical access could attach a USB drive or disc and have its contents available in system even if they lacked permissions to mount it themselves.",
+      "solution": "\"- IF - A user profile exists run the following commands to ensure automatic mounting is disabled:\n\n# gsettings set org.gnome.desktop.media-handling automount false\n# gsettings set org.gnome.desktop.media-handling automount-open false",
+      "Note": "Users must log out and back in again before the system-wide settings take effect.",
+      "Impact": "The use of portable hard drives is very common for workstation users. If your organization allows the use of portable storage or media on workstations and physical access controls to workstations is considered adequate there is little value add in turning off automounting.\"",
+      "reference": "800-171|3.8.7,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSCv7|8.5,CSCv8|10.3,CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,LEVEL|2A,NESA|T1.4.1",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

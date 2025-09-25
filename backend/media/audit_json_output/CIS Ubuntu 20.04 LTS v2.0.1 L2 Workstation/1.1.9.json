@@ -1,0 +1,11 @@
+{
+  "type": "CMD_EXEC",
+  "description": "1.1.9 Disable Automounting",
+  "info": "autofs allows automatic mounting of devices, typically including CD/DVDs and USB drives.\n\nWith automounting enabled anyone with physical access could attach a USB drive or disc and have its contents available in the filesystem even if they lacked permissions to mount it themselves.",
+  "solution": "\"If there are no other packages that depends on autofs remove the package with:\n\n# apt purge autofs\n\n-OR-\n\nif there are dependencies on the autofs package:\n\nRun the following commands to mask autofs :\n\n# systemctl stop autofs\n# systemctl mask autofs",
+  "Impact": "The use of portable hard drives is very common for workstation users. If your organization allows the use of portable storage or media on workstations and physical access controls to workstations are considered adequate there is little value add in turning off automounting.\"",
+  "reference": "800-171|3.8.7,800-53|MP-7,800-53r5|MP-7,CN-L3|8.5.4.1(c),CSCv7|8.5,CSCv8|10.3,CSF|PR.PT-2,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(1),ISO/IEC-27001|A.8.3.1,ISO/IEC-27001|A.8.3.3,LEVEL|2A,NESA|T1.4.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/13775",
+  "cmd": "/bin/systemctl is-enabled autofs | /bin/awk '{print} END {if(NR==0) print \\\"disabled\\\" }'",
+  "expect": "^(disabled|masked|static)$"
+}

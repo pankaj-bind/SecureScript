@@ -1,0 +1,11 @@
+{
+  "type": "CMD_EXEC",
+  "description": "1.1.6.1 Ensure separate partition exists for /var/log/audit",
+  "info": "The auditing daemon, auditd stores log data in the /var/log/audit directory.\n\nThe reasoning for mounting /var/log/audit on a separate partition is as follows.\n\nProtection from resource exhaustion\n\nThe default installation only creates a single / partition. Since the /var/log/audit directory contains the audit.log file which can grow quite large, there is a risk of resource exhaustion. It will essentially have the whole disk available to fill up and impact the system as a whole. In addition, other operations on the system could fill up the disk unrelated to /var/log/audit and cause auditd to trigger it's space_left_action as the disk is full. See man auditd.conf for details.\n\nFine grained control over the mount\n\nConfiguring /var/log/audit as its own file system allows an administrator to set additional mount options such as noexec/nosuid/nodev These options limits an attackers ability to create exploits on the system. Other options allow for specific behavior. See man mount for exact details regarding filesystem-independent and filesystem-specific options.\n\nProtection of audit data\n\nAs /var/log/audit contains audit logs, care should be taken to ensure the security and integrity of the data and mount point.",
+  "solution": "\"For new installations, during installation create a custom partition setup and specify a separate partition for /var/log/audit\n\nFor systems that were previously installed, create a new partition and configure /etc/fstab as appropriate.",
+  "Impact": "Resizing filesystems is a common activity in cloud-hosted servers. Separate filesystem partitions may prevent successful resizing, or may require the installation of additional tools solely for the purpose of resizing operations. The use of these additional tools may introduce their own security considerations.\"",
+  "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|6.4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|2A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/13775",
+  "cmd": "/bin/findmnt --kernel /var/log/audit",
+  "expect": "^[\\\\s]*/var/log/audit[\\\\s]+.+[\\\\s]+.+"
+}

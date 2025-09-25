@@ -1,0 +1,33 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl sudo log file",
+        "cmd": "#!/bin/bash\n      {\n        SUDO_LOG_FILE=$(grep -r logfile /etc/sudoers* | sed -e 's/.*logfile=//;s/,? .*//' -e 's/\\\"//g' -e 's|/|\\\\\\\\/|g')\n        [ -n \\\"${SUDO_LOG_FILE}\\\" ] && auditctl -l | awk \\\"/^ *-w/ \\\\\n        &&/\\\"${SUDO_LOG_FILE}\\\"/ \\\\\n        &&/ +-p *wa/ \\\\\n        &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\\\" \\\\\n        || printf \\\"ERROR: Variable 'SUDO_LOG_FILE' is unset.\\\\n\\\"\n      } | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "^pass$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "on disk sudo log file",
+        "cmd": "#!/bin/bash\n      {\n        SUDO_LOG_FILE=$(grep -r logfile /etc/sudoers* | sed -e 's/.*logfile=//;s/,? .*//' -e 's/\\\"//g' -e 's|/|\\\\\\\\/|g')\n        [ -n \\\"${SUDO_LOG_FILE}\\\" ] && awk \\\"/^ *-w/ \\\\\n        &&/\\\"${SUDO_LOG_FILE}\\\"/ \\\\\n        &&/ +-p *wa/ \\\\\n        &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\\\" /etc/audit/rules.d/*.rules \\\\\n        || printf \\\"ERROR: Variable 'SUDO_LOG_FILE' is unset.\\\\n\\\"\n      } | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}'",
+        "expect": "^pass$"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "6.3.3.3 Ensure events that modify the sudo log file are collected",
+      "info": "Monitor the sudo log file. If the system has been properly configured to disable the use of the su command and force all administrators to have to log in first and then use sudo to execute privileged commands, then all administrator commands will be logged to /var/log/sudo.log Any time a command is executed, an audit event will be triggered as the /var/log/sudo.log file will be opened for write and the executed administration command will be written to the log.\n\nChanges in /var/log/sudo.log indicate that an administrator has executed a command or the log file itself has been tampered with. Administrators will want to correlate the events written to the audit trail with the records written to /var/log/sudo.log to verify if unauthorized commands have been executed.",
+      "solution": "\"Note: This recommendation requires that the sudo logfile is configured. See guidance provided in the recommendation \\\"Ensure sudo log file exists\\\"\n\nEdit or create a file in the /etc/audit/rules.d/ directory, ending inrules extension, with the relevant rules to monitor events that modify the sudo log file.",
+      "Example": "# {\nSUDO_LOG_FILE=$(grep -r logfile /etc/sudoers* | sed -e 's/.*logfile=//;s/,? .*//' -e 's/\\\"//g')\n[ -n \\\"${SUDO_LOG_FILE}\\\" ] && printf \\\"\n-w ${SUDO_LOG_FILE} -p wa -k sudo_log_file\n\\\" >> /etc/audit/rules.d/50-sudo.rules || printf \\\"ERROR: Variable 'SUDO_LOG_FILE' is unset.\\n\\\"\n}\n\nMerge and load the rules into active configuration:\n\n# augenrules --load\n\nCheck if reboot is required.\n\n# if [[ $(auditctl -s | grep \\\"enabled\\\") =~ \\\"2\\\" ]]; then printf \\\"Reboot required to load rules\\n\\\"; fi\"",
+      "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|4.9,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/17074",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

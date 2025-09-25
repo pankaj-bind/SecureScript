@@ -1,0 +1,37 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "FILE_CONTENT_CHECK",
+        "description": "shadow - password min days",
+        "file": "/etc/shadow",
+        "regex": "^[^:]+:[^!*]",
+        "expect": "^([^:]*:){3}@PASSWORD_MIN_DAYS@:",
+        "string_required": false
+      },
+      {
+        "type": "FILE_CONTENT_CHECK",
+        "description": "login.defs PASS_MIN_DAYS",
+        "file": "/etc/login.defs",
+        "regex": "(?i)^[\\\\s]*PASS_MIN_DAYS[\\\\s]+",
+        "expect": "(?i)PASS_MIN_DAYS[\\\\s]+@PASSWORD_MIN_DAYS@[\\\\s]*$"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "5.4.1.2 Ensure minimum password age is configured",
+      "info": "The minimum password age determines the number of days that you must use a password before you can change it.\n\nPASS_MIN_DAYS <\n\nN\n\n> - The minimum number of days allowed between password changes. Any password changes attempted sooner than this will be rejected. If not specified, 0 will be assumed (which disables the restriction).\n\nUsers may have favorite passwords that they like to use because they are easy to remember and they believe that their password choice is secure from compromise. Unfortunately, passwords are compromised and if an attacker is targeting a specific individual user account, with foreknowledge of data about that user, reuse of old, potentially compromised passwords, may cause a security breach.\n\nBy restricting the frequency of password changes, an administrator can prevent users from repeatedly changing their password in an attempt to circumvent password reuse controls",
+      "solution": "\"Edit /etc/login.defs and set PASS_MIN_DAYS to a value greater than 0 that follows local site policy:",
+      "Example": "# awk -F: '($2~/^\\$.+\\$/) {if($4 < 1)system (\\\"chage --mindays 1 \\\" $1)}' /etc/shadow",
+      "Impact": "By enforcing a minimum password age, a user will be unable to change their password if they observe a potential compromise of their password, e.g. \\\"shoulder surfing\\\", during the time defined by minimum password age. In this event the user should follow local site policy to report a compromised password.\n\nIf a users password is set by other personnel as a procedure in dealing with a lost or expired password, the user should be forced to update this \\\"set\\\" password with their own password. e.g. force \\\"change at next logon\\\".\n\nIf it is not possible to have a user set their own password immediately, and this recommendation or local site procedure may cause a user to continue using a third party generated password, PASS_MIN_DAYS for the effected user should be temporally changed to 0 to allow a user to change their password immediately.\n\nFor applications where the user is not using the password at console, the ability to \\\"change at next logon\\\" may be limited. This may cause a user to continue to use a password created by other personnel.\"",
+      "reference": "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|4.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|2M,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/17074",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

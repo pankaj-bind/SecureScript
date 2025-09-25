@@ -1,7 +1,0 @@
-{
-    "1.1.1.1": {
-        "hardeningScript": "#!/bin/sh\n# Disables the 'cramfs' kernel module.\n\n# Blacklist the module to prevent loading\n(echo \"install cramfs /bin/false\" >> /etc/modprobe.d/cramfs.conf)\n(echo \"blacklist cramfs\" >> /etc/modprobe.d/cramfs.conf)\n\n# Unload the module if it is currently loaded\nrmmod cramfs",
-        "auditScript": "#!/bin/sh\n# Checks if 'cramfs' is disabled.\n\nlsmod | grep \"cramfs\" || echo \"Module not loaded\"\n! grep -P -- '^(install|blacklist)\\s+cramfs\\b' /etc/modprobe.d/* && echo \"Module not configured to be disabled\"",
-        "revertHardeningScript": "#!/bin/sh\n# Enables the 'cramfs' kernel module.\n\nrm -f /etc/modprobe.d/cramfs.conf\nmodprobe cramfs"
-    }
-}
