@@ -1,0 +1,11 @@
+{
+  "type": "CMD_EXEC",
+  "description": "2.1.20 Ensure X window server services are not in use",
+  "info": "The X Window System provides a Graphical User Interface (GUI) where users can have multiple windows in which to run programs and various add on. The X Windows system is typically used on workstations where users login, but not on servers where users typically do not login.\n\nUnless your organization specifically requires graphical login access via X Windows, remove it to reduce the potential attack surface.",
+  "solution": "\"- IF - a Graphical Desktop Manager or X-Windows server is not required and approved by local site policy:\n\nRun the following command to remove the X Windows Server package:\n\n# apt purge xserver-common",
+  "Impact": "If a Graphical Desktop Manager (GDM) is in use on the system, there may be a dependency on the xorg-x11-server-common package. If the GDM is required and approved by local site policy, the package should not be removed.\n\nMany Linux systems run applications which require a Java runtime. Some Linux Java packages have a dependency on specific X Windows xorg-x11-fonts. One workaround to avoid this dependency is to use the \\\"headless\\\" Java packages for your specific Java runtime.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|2.6,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+  "cmd": "/bin/dpkg -s xserver-common 2>&1 | /bin/grep -E '(^Status:|not installed)'",
+  "expect": "(^Status: deinstall ok|not installed)"
+}

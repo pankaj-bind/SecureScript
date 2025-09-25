@@ -4,20 +4,10 @@ import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getTemplates, deleteTemplate, importTemplate, createReport, getReportsForTemplate, Template, Report, ReportPayload, deleteReport } from '../services/authService';
 
-// --- Interface for the Electron API exposed on the window object
-interface ElectronApi {
-    applyHarden: (script: string) => Promise<string>;
-    checkStatus: (script: string, reg_option?: string) => Promise<string>; // Modified to accept optional parameter
-    revertHardening: (script: string) => Promise<string>;
-    getSystemInfo: () => Promise<{ serialNumber: string; username: string }>;
-}
-
-// --- Extend the global Window interface
-declare global {
-    interface Window {
-        electron: ElectronApi;
-    }
-}
+// --- DELETED THIS SECTION ---
+// The incorrect, duplicate interface that was here has been removed.
+// Your project will now correctly use the global definition from `src/electron-api.d.ts`.
+// --- END DELETED SECTION ---
 
 // --- Component to display reports for a template ---
 const TemplateReports: React.FC<{ reports: Report[], onDelete: (reportId: number) => void }> = ({ reports, onDelete }) => {
@@ -108,7 +98,7 @@ const DashboardPage: React.FC = () => {
         setFeedback(null);
 
         let script: string | undefined;
-        let electronAction: keyof Omit<ElectronApi, 'getSystemInfo' | 'checkStatus'> | 'checkStatus';
+        let electronAction: keyof Omit<Window['electron'], 'getSystemInfo' | 'checkStatus'> | 'checkStatus';
 
         const reportTypeMapping = {
             'Harden': 'Hardening-Report',
@@ -146,12 +136,18 @@ const DashboardPage: React.FC = () => {
 
                 if (command) {
                     try {
-                        // MODIFIED: Pass policy.reg_option for checkStatus action
+                        // Pass policy.reg_option for checkStatus action
                         if (electronAction === 'checkStatus') {
                             await window.electron.checkStatus(command, policy.reg_option);
                         } else {
-                            // applyHarden and revertHardening don't need the extra parameter
-                            await (window.electron[electronAction] as any)(command);
+                            // applyHarden and revertHardening now expect a password.
+                            // Since this is a template-wide action, we prompt here.
+                            // In a real-world scenario, you might handle this differently (e.g., store credentials securely).
+                            const password = prompt(`Enter admin password to run ${action} for template ${template.id}`);
+                            if (password === null) {
+                                throw new Error('Password entry cancelled.');
+                            }
+                            await window.electron[electronAction](command, password);
                         }
                         results.push({ name: policy.description, status: 'Passed' });
                     } catch (execError) {
@@ -318,9 +314,7 @@ const DashboardPage: React.FC = () => {
                                                         {template.id}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{template.organization_name}</td>
-                                                    {/* MODIFICATION START */}
                                                     <td className="px-6 py-4 max-w-xs whitespace-normal break-words text-sm text-gray-500 dark:text-gray-300">{template.benchmark_name}</td>
-                                                    {/* MODIFICATION END */}
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500 dark:text-gray-300">{template.policy_count}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-center space-x-2">
                                                         <button onClick={() => handleGenerateReport(template, 'Harden')} disabled={executingTemplateId === template.id} className="px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50">Harden</button>

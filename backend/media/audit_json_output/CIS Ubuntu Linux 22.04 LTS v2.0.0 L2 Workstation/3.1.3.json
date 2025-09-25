@@ -1,0 +1,14 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "bluez",
+        "cmd": "/bin/dpkg -s bluez 2>&1 | /bin/grep -E '(^Status:|not installed)'",
+        "expect": "(^Status: deinstall ok|not installed)"
+      }
+    ]
+  }
+}

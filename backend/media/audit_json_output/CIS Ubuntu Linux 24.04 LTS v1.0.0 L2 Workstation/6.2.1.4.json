@@ -1,0 +1,12 @@
+{
+  "type": "CMD_EXEC",
+  "description": "6.2.1.4 Ensure audit_backlog_limit is sufficient",
+  "info": "In the kernel-level audit subsystem, a socket buffer queue is used to hold audit events. Whenever a new audit event is received, it is logged and prepared to be added to this queue.\n\nThe kernel boot parameter audit_backlog_limit=N with N representing the amount of messages, will ensure that a queue cannot grow beyond a certain size. If an audit event is logged which would grow the queue beyond this limit, then a failure occurs and is handled according to the system configuration\n\nIf an audit event is logged which would grow the queue beyond the audit_backlog_limit then a failure occurs, auditd records will be lost, and potential malicious activity could go undetected.",
+  "solution": "\"Edit /etc/default/grub and add audit_backlog_limit=N to GRUB_CMDLINE_LINUX. The recommended size for N is 8192 or larger.",
+  "Example": "GRUB_CMDLINE_LINUX=\\\"audit_backlog_limit=8192\\\"\n\nRun the following command to update the grub2 configuration:\n\n# update-grub\"",
+  "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-2,800-53|AU-7,800-53|AU-12,800-53r5|AU-2,800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(c),CN-L3|8.1.4.3(a),CSCv7|6.2,CSCv7|6.3,CSCv8|8.2,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-2,ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|M1.2.2,NESA|M5.5.1,NIAv2|AM7,NIAv2|AM11a,NIAv2|AM11b,NIAv2|AM11c,NIAv2|AM11d,NIAv2|AM11e,NIAv2|SS30,NIAv2|VL8,PCI-DSSv3.2.1|10.1,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+  "cmd": "/bin/find /boot -type f -name 'grub.cfg' -exec /bin/grep -Ph -- '^\\\\h*linux' {} + | /bin/grep -Pv 'audit_backlog_limit=\\\\d+\\\\b' | /bin/awk '{print} END { if (NR==0) print \\\"pass\\\" }'",
+  "expect": "^pass$",
+  "timeout": "@FIND_TIMEOUT@"
+}

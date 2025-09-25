@@ -7,19 +7,25 @@ const { exec } = require('child_process');
 const os = require('os');
 
 // Helper function to execute shell commands
-const executeScript = (script, reg_option) => { // MODIFIED: Accept reg_option
+const executeScript = (script, options = {}) => {
+  const { password } = options;
   return new Promise((resolve, reject) => {
-    // Execute with powershell on Windows for better compatibility
-    const shell = process.platform === 'win32' ? 'powershell.exe' : '/bin/sh';
-    exec(script, { 'shell': shell }, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Execution Error: ${stderr || error.message}`);
-        
-        // **THE FIX**: Only resolve on "not found" error if it's a 'MUST_NOT_EXIST' policy.
-        if (reg_option === 'MUST_NOT_EXIST' && script.startsWith('reg query') && /ERROR: The system was unable to find the specified registry key or value./.test(stderr)) {
-          return resolve('Not found. This is the desired state.');
-        }
+    const isWindows = process.platform === 'win32';
+    const shell = isWindows ? 'powershell.exe' : '/bin/sh';
 
+    let command = script;
+    // If a password is provided on a non-Windows OS, use sudo.
+    if (password && !isWindows) {
+      const escapedScript = script.replace(/'/g, "'\\''");
+      command = `echo '${password}' | sudo -S -p '' sh -c '${escapedScript}'`;
+    }
+
+    exec(command, { shell }, (error, stdout, stderr) => {
+      if (error) {
+        // Handle incorrect password error specifically
+        if (stderr.toLowerCase().includes('incorrect password')) {
+          return reject('sudo: incorrect password');
+        }
         return reject(stderr || error.message);
       }
       resolve(stdout);
@@ -64,11 +70,10 @@ const getSerialNumber = () => {
 
 
 // Handle IPC messages from the renderer
-ipcMain.handle('apply-harden', async (event, script) => executeScript(script));
+ipcMain.handle('apply-harden', async (event, script, password) => executeScript(script, { password }));
 // MODIFIED: Pass reg_option from IPC to executeScript
 ipcMain.handle('check-status', async (event, script, reg_option) => executeScript(script, reg_option));
-ipcMain.handle('revert-hardening', async (event, script) => executeScript(script));
-
+ipcMain.handle('revert-hardening', async (event, script, password) => executeScript(script, { password }));
 // --- ADD THIS NEW HANDLER ---
 ipcMain.handle('get-system-info', async () => {
   return {

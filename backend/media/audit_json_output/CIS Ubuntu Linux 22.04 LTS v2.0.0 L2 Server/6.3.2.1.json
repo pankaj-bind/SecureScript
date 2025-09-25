@@ -1,0 +1,11 @@
+{
+  "type": "FILE_CONTENT_CHECK",
+  "description": "6.3.2.1 Ensure audit log storage size is configured",
+  "info": "Configure the maximum size of the audit log file. Once the log reaches the maximum size, it will be rotated and a new log file will be started.\n\nIt is important that an appropriate size is determined for log files so that they do not impact the system and audit data is not lost.",
+  "solution": "Set the following parameter in /etc/audit/auditd.conf in accordance with site policy:\n\nmax_log_file = <MB>",
+  "reference": "800-53|AU-4,800-53r5|AU-4,CSCv7|6.4,CSCv8|8.3,CSF|PR.DS-4,CSF|PR.PT-1,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-4,LEVEL|2A,NESA|T3.3.1,NESA|T3.6.2,QCSC-v1|8.2.1,QCSC-v1|13.2",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17074",
+  "file": "/etc/audit/auditd.conf",
+  "regex": "^[\\\\s]*max_log_file[\\\\s]*=",
+  "expect": "^[\\\\s]*max_log_file[\\\\s]*=[\\\\s]*@MAX_AUDIT_LOG_FILE_SIZE@[\\\\s]*$"
+}

@@ -1,0 +1,11 @@
+{
+  "type": "CMD_EXEC",
+  "description": "6.3.3.21 Ensure the running and on disk configuration is the same",
+  "info": "\"The Audit system have both on disk and running configuration. It is possible for these configuration settings to differ.",
+  "Note": "Due to the limitations of augenrules and auditctl it is not absolutely guaranteed that loading the rule sets via augenrules --load will result in all rules being loaded or even that the user will be informed if there was a problem loading the rules.\n\nConfiguration differences between what is currently running and what is on disk could cause unexpected problems or may give a false impression of compliance requirements.\"",
+  "solution": "If the rules are not aligned across all three () areas, run the following command to merge and load all rules:\n\n# augenrules --load\n\nCheck if reboot is required.\n\nif [[ $(auditctl -s | grep \\\"enabled\\\") =~ \\\"2\\\" ]]; then echo \\\"Reboot required to load rules\\\"; fi",
+  "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|6.3,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2M,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17074",
+  "cmd": "/sbin/augenrules --check",
+  "expect": "^[\\\\s]*/sbin/augenrules:[\\\\s]*No change[\\\\s]*$"
+}

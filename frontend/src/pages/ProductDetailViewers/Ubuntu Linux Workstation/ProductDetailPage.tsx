@@ -26,7 +26,70 @@ interface PolicyDetailViewProps {
     onSave: (policyId: string, scripts: { hardeningScript: string; auditScript: string; revertHardeningScript: string; }) => Promise<void>;
 }
 
-// --- Helper Components ---
+// --- NEW COMPONENT: Password Prompt Modal ---
+interface PasswordPromptModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (password: string) => void;
+}
+
+const PasswordPromptModal: React.FC<PasswordPromptModalProps> = ({ isOpen, onClose, onSubmit }) => {
+    const [password, setPassword] = useState('');
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (password) {
+            onSubmit(password);
+            setPassword(''); // Clear password after submit
+        }
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Admin Privileges Required</h2>
+                <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                    This action requires sudo permissions. Please enter your administrator password to continue.
+                </p>
+                <form onSubmit={handleSubmit}>
+                    <div className="mt-4">
+                        <label htmlFor="admin-password" className="sr-only">Password</label>
+                        <input
+                            id="admin-password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Sudo Password"
+                            autoFocus
+                        />
+                    </div>
+                    <div className="mt-6 flex justify-end space-x-3">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                            disabled={!password}
+                        >
+                            Execute
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+
+// --- Helper Components (PolicyDetailView is MODIFIED) ---
 const PolicyDetailView: React.FC<PolicyDetailViewProps> = ({ policy, customScripts, onSave }) => {
     const [hardenScript, setHardenScript] = useState('');
     const [checkScript, setCheckScript] = useState('');
@@ -35,6 +98,11 @@ const PolicyDetailView: React.FC<PolicyDetailViewProps> = ({ policy, customScrip
     const [executionError, setExecutionError] = useState<string | null>(null);
     const [isExecuting, setIsExecuting] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    
+    // --- State for the password modal ---
+    const [isPromptOpen, setIsPromptOpen] = useState(false);
+    const [actionToExecute, setActionToExecute] = useState<'apply' | 'revert' | null>(null);
+
 
     useEffect(() => {
         if (policy) {
@@ -80,23 +148,61 @@ const PolicyDetailView: React.FC<PolicyDetailViewProps> = ({ policy, customScrip
         }
     }, [policy, customScripts]);
     
-    const handleExecute = async (action: 'apply' | 'check' | 'revert') => {
+    // --- Updated execution logic ---
+    const handlePasswordSubmit = async (password: string) => {
+        setIsPromptOpen(false);
+        if (!actionToExecute) return;
+
         setIsExecuting(true);
         setExecutionResult(null);
         setExecutionError(null);
-        const scriptToRun = action === 'apply' ? hardenScript : action === 'check' ? checkScript : revertScript;
+
+        const scriptToRun = actionToExecute === 'apply' ? hardenScript : revertScript;
+        
         try {
             let result;
-            if (action === 'apply') result = await window.electron.applyHarden(scriptToRun);
-            else if (action === 'check') result = await window.electron.checkStatus(scriptToRun);
-            else result = await window.electron.revertHardening(scriptToRun);
+            if (actionToExecute === 'apply') {
+                // MODIFICATION: Added `as any` to bypass the stale type error
+                result = await (window.electron.applyHarden as any)(scriptToRun, password);
+            } else { // 'revert'
+                 // MODIFICATION: Added `as any` to bypass the stale type error
+                result = await (window.electron.revertHardening as any)(scriptToRun, password);
+            }
             setExecutionResult(`Success:\n${result || 'The operation completed successfully.'}`);
         } catch (error: any) {
-            setExecutionError(`Error:\n${error.toString()}`);
+            if (error.toString().toLowerCase().includes('incorrect password')) {
+                setExecutionError('Error: Incorrect password provided for sudo.');
+            } else {
+                setExecutionError(`Error:\n${error.toString()}`);
+            }
         } finally {
             setIsExecuting(false);
+            setActionToExecute(null);
         }
     };
+
+    const handleExecute = async (action: 'apply' | 'check' | 'revert') => {
+        const needsSudo = action === 'apply' || action === 'revert';
+
+        if (needsSudo) {
+            setActionToExecute(action);
+            setIsPromptOpen(true);
+        } else {
+            // Directly execute 'check' action without a password
+            setIsExecuting(true);
+            setExecutionResult(null);
+            setExecutionError(null);
+            try {
+                const result = await window.electron.checkStatus(checkScript);
+                setExecutionResult(`Success:\n${result || 'The operation completed successfully.'}`);
+            } catch (error: any) {
+                setExecutionError(`Error:\n${error.toString()}`);
+            } finally {
+                setIsExecuting(false);
+            }
+        }
+    };
+
 
     const handleSave = async () => {
         if (!policy) return;
@@ -135,63 +241,72 @@ const PolicyDetailView: React.FC<PolicyDetailViewProps> = ({ policy, customScrip
     };
 
     return (
-        <div className="p-6">
-            <h2 className="text-xl font-bold mb-4 pb-2 border-b dark:border-gray-600">{description}</h2>
-            
-            <div className="space-y-3 text-sm mb-6">
-                <p><strong>Details:</strong> <span className="text-gray-600 dark:text-gray-300" dangerouslySetInnerHTML={{ __html: info?.replace(/\\n/g, '<br>') || 'N/A' }}></span></p>
-                {Impact && <p><strong>Impact:</strong> <span className="text-gray-600 dark:text-gray-300">{Impact}</span></p>}
-                {solution && <p><strong>Suggested Solution:</strong> <span className="text-gray-600 dark:text-gray-300" dangerouslySetInnerHTML={{ __html: solution?.replace(/\\n/g, '<br>') }}></span></p>}
-            </div>
+        <>
+            {/* Render the modal */}
+            <PasswordPromptModal
+                isOpen={isPromptOpen}
+                onClose={() => setIsPromptOpen(false)}
+                onSubmit={handlePasswordSubmit}
+            />
 
-            <div className="flex space-x-2 mb-4">
-                 <button onClick={() => handleExecute('apply')} disabled={isExecuting} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isExecuting ? 'Working...' : 'Apply Hardening'}
-                </button>
-                <button onClick={() => handleExecute('check')} disabled={isExecuting} className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isExecuting ? 'Working...' : 'Check Status'}
-                </button>
-                <button onClick={() => handleExecute('revert')} disabled={isExecuting} className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isExecuting ? 'Working...' : 'Revert Hardening'}
-                </button>
-            </div>
+            <div className="p-6">
+                <h2 className="text-xl font-bold mb-4 pb-2 border-b dark:border-gray-600">{description}</h2>
+                
+                <div className="space-y-3 text-sm mb-6">
+                    <p><strong>Details:</strong> <span className="text-gray-600 dark:text-gray-300" dangerouslySetInnerHTML={{ __html: info?.replace(/\\n/g, '<br>') || 'N/A' }}></span></p>
+                    {Impact && <p><strong>Impact:</strong> <span className="text-gray-600 dark:text-gray-300">{Impact}</span></p>}
+                    {solution && <p><strong>Suggested Solution:</strong> <span className="text-gray-600 dark:text-gray-300" dangerouslySetInnerHTML={{ __html: solution?.replace(/\\n/g, '<br>') }}></span></p>}
+                </div>
 
-            {executionResult && <div className="mb-4 p-3 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 rounded-md text-xs font-mono whitespace-pre-wrap">{executionResult}</div>}
-            {executionError && <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded-md text-xs font-mono whitespace-pre-wrap">{executionError}</div>}
-            
-            <div className="space-y-4">
-                <div>
-                    <h3 className="font-semibold mb-1">Hardening Script</h3>
-                    <div className="relative">
-                        <textarea value={hardenScript} onChange={e => setHardenScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
-                        <CopyButton textToCopy={hardenScript} />
+                <div className="flex space-x-2 mb-4">
+                     <button onClick={() => handleExecute('apply')} disabled={isExecuting} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                        {isExecuting ? 'Working...' : 'Apply Hardening'}
+                    </button>
+                    <button onClick={() => handleExecute('check')} disabled={isExecuting} className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                        {isExecuting ? 'Working...' : 'Check Status'}
+                    </button>
+                    <button onClick={() => handleExecute('revert')} disabled={isExecuting} className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                        {isExecuting ? 'Working...' : 'Revert Hardening'}
+                    </button>
+                </div>
+
+                {executionResult && <div className="mb-4 p-3 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 rounded-md text-xs font-mono whitespace-pre-wrap">{executionResult}</div>}
+                {executionError && <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded-md text-xs font-mono whitespace-pre-wrap">{executionError}</div>}
+                
+                <div className="space-y-4">
+                    <div>
+                        <h3 className="font-semibold mb-1">Hardening Script</h3>
+                        <div className="relative">
+                            <textarea value={hardenScript} onChange={e => setHardenScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
+                            <CopyButton textToCopy={hardenScript} />
+                        </div>
+                    </div>
+                    <div>
+                        <h3 className="font-semibold mb-1">Audit Script</h3>
+                        <div className="relative">
+                            <textarea value={checkScript} onChange={e => setCheckScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
+                            <CopyButton textToCopy={checkScript} />
+                        </div>
+                    </div>
+                    <div>
+                        <h3 className="font-semibold mb-1">Revert Script</h3>
+                        <div className="relative">
+                            <textarea value={revertScript} onChange={e => setRevertScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
+                            <CopyButton textToCopy={revertScript} />
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <h3 className="font-semibold mb-1">Audit Script</h3>
-                    <div className="relative">
-                        <textarea value={checkScript} onChange={e => setCheckScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
-                        <CopyButton textToCopy={checkScript} />
-                    </div>
-                </div>
-                <div>
-                    <h3 className="font-semibold mb-1">Revert Script</h3>
-                    <div className="relative">
-                        <textarea value={revertScript} onChange={e => setRevertScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
-                        <CopyButton textToCopy={revertScript} />
-                    </div>
-                </div>
+                 <div className="mt-6 flex justify-end">
+                    <button onClick={handleSave} disabled={isSaving} className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed">
+                        {isSaving ? "Saving..." : "Save Scripts for this Policy"}
+                    </button>
+                 </div>
             </div>
-             <div className="mt-6 flex justify-end">
-                <button onClick={handleSave} disabled={isSaving} className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed">
-                    {isSaving ? "Saving..." : "Save Scripts for this Policy"}
-                </button>
-            </div>
-        </div>
+        </>
     );
 };
 
-// --- Main Page Component ---
+// --- Main Page Component (No changes needed here) ---
 const ProductDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [product, setProduct] = useState<ProductDetails | null>(null);
@@ -374,7 +489,7 @@ const ProductDetailPage: React.FC = () => {
                             policy={selectedPolicy} 
                             customScripts={customScripts}
                             onSave={handleSavePolicyScripts}
-                         />
+                        />
                     </div>
                 </main>
             </div>

@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "1.1.6 (L1) Ensure 'Relax minimum password length limits' is set to 'Enabled'",
+  "info": "\"This policy setting determines whether the minimum password length setting can be increased beyond the legacy limit of 14 characters. For more information, please see the following\n\nMicrosoft Security Blog\n\n.\n\nThe recommended state for this setting is: Enabled",
+  "Note": "This setting is only available within the built-in OS security template of Windows 10 Release 2004 and Server 2022 (or newer), and is not available via older versions of the OS, or via downloadable Administrative Templates (ADMX/ADML). Therefore, you\n\nmust\n\nuse a Windows 10 Release 2004 or Server 2022 system (or newer) to view or edit this setting with the Group Policy Management Console (GPMC) or Group Policy Management Editor (GPME).",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled :\n\nComputer Configuration\\Policies\\Windows Settings\\Security Settings\\Account Policies\\Password Policy\\Relax minimum password length limits",
+  "Impact": "The\n\nMinimum password length\n\nsetting may be configured higher than 14 characters.\n\nIf very long passwords are required, mistyped passwords could cause account lockouts and increase the volume of help desk calls. If your organization has issues with forgotten passwords due to password length requirements, consider teaching your users about passphrases, which are often easier to remember and, due to the larger number of character combinations, much harder to discover.\"",
+  "reference": "800-171|3.5.2,800-53|IA-5(1),800-53r5|IA-5(1),CSCv7|16.4,CSCv8|5.2,CSF|PR.AC-1,CSF2.0|PR.AA-01,CSF2.0|PR.AA-03,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(a)(2)(i),HIPAA|164.312(d),ITSG-33|IA-5(1),LEVEL|1A,NESA|T5.2.3,QCSC-v1|5.2.2,QCSC-v1|13.2,SWIFT-CSCv1|4.1",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/17129",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\System\\CurrentControlSet\\Control\\SAM",
+  "reg_item": "RelaxMinimumPasswordLengthLimits",
+  "reg_option": "CAN_NOT_BE_NULL"
+}

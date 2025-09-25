@@ -1,0 +1,35 @@
+{
+  "ui_metadata": {
+    "display_name": "CIS Ubuntu Linux 20.04 LTS Workstation L2 v2.0.1",
+    "spec": {
+      "type": "CIS",
+      "name": "Ubuntu Linux 20.04 LTS",
+      "profile": "L2 Workstation",
+      "version": "2.0.1",
+      "link": "https://workbench.cisecurity.org/benchmarks/13775"
+    },
+    "variables": [
+      {
+        "name": "MAX_AUDIT_LOG_FILE_SIZE",
+        "default": "32",
+        "description": "Log file size",
+        "info": "The max size, in MBs, each audit log can be before log file rotation.",
+        "value_type": "STRING"
+      },
+      {
+        "name": "PLATFORM_VERSION",
+        "default": "20.04",
+        "description": "Ubuntu Version",
+        "info": "Ubuntu Version",
+        "value_type": "STRING"
+      },
+      {
+        "name": "FIND_TIMEOUT",
+        "default": "7200",
+        "description": "Timeout for checks that search for files",
+        "info": "Timeout, in seconds, for checks that search for files. Range of 1-7200.",
+        "value_type": "INTEGER"
+      }
+    ]
+  }
+}

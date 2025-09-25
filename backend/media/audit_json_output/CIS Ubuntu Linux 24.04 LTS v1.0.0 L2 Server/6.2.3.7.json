@@ -1,0 +1,45 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl b32 EPERM",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \\\"${UID_MIN}\\\" ] && auditctl -l | awk \\\"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EPERM/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\\\" | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}' || printf \\\"ERROR: Variable 'UID_MIN' is unset.\\\\n\\\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl b32 EACCES",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \\\"${UID_MIN}\\\" ] && auditctl -l | awk \\\"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EACCES/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\\\" | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}' || printf \\\"ERROR: Variable 'UID_MIN' is unset.\\\\n\\\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "b32 EACCES",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \\\"${UID_MIN}\\\" ] && awk \\\"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EACCES/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\\\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}' || printf \\\"ERROR: Variable 'UID_MIN' is unset.\\\\n\\\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "b32 EPERM",
+        "cmd": "UID_MIN=$(awk '/^\\\\s*UID_MIN/{print $2}' /etc/login.defs); [ -n \\\"${UID_MIN}\\\" ] && awk \\\"(/^ *-a *always,exit/||/^ *-a *exit,always/) &&/ -F *arch=b32/ &&(/ -F *auid!=unset/||/ -F *auid!=-1/||/ -F *auid!=4294967295/) &&/ -F *auid>=${UID_MIN}/ &&/ -F *exit=-EPERM/ &&/ -S/ &&/creat/ &&/open/ &&/truncate/ &&(/ key= *[!-~]* *$/||/ -k *[!-~]* *$/)\\\" /etc/audit/rules.d/*.rules | /bin/awk '{print} END {if (NR != 0) print \\\"pass\\\" ; else print \\\"fail\\\"}' || printf \\\"ERROR: Variable 'UID_MIN' is unset.\\\\n\\\"",
+        "expect": "(?i)^[\\\\s]*\\\\**[\\\\s]*pass:?[\\\\s]*\\\\**$"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "6.2.3.7 Ensure unsuccessful file access attempts are collected",
+      "info": "Monitor for unsuccessful attempts to access files. The following parameters are associated with system calls that control files:\n\n - creation - creat\n - opening - open openat\n - truncation - truncate ftruncate\n\nAn audit log record will only be written if all of the following criteria is met for the user when trying to access a file:\n\n - a non-privileged user (auid>=UID_MIN)\n - is not a Daemon event (auid=4294967295/unset/-1)\n - if the system call returned EACCES (permission denied) or EPERM (some other permanent error associated with the specific system call)\n\nFailed attempts to open, create or truncate files could be an indication that an individual or process is trying to gain unauthorized access to the system.",
+      "solution": "\"Create audit rules\n\nEdit or create a file in the /etc/audit/rules.d/ directory, ending inrules extension, with the relevant rules to monitor unsuccessful file access attempts.",
+      "Example": "# {\nUID_MIN=$(awk '/^\\s*UID_MIN/{print $2}' /etc/login.defs)\n[ -n \\\"${UID_MIN}\\\" ] && printf \\\"\n-a always,exit -F arch=b64 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>=${UID_MIN} -F auid!=unset -k access\n-a always,exit -F arch=b64 -S creat,open,openat,truncate,ftruncate -F exit=-EPERM -F auid>=${UID_MIN} -F auid!=unset -k access\n-a always,exit -F arch=b32 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>=${UID_MIN} -F auid!=unset -k access\n-a always,exit -F arch=b32 -S creat,open,openat,truncate,ftruncate -F exit=-EPERM -F auid>=${UID_MIN} -F auid!=unset -k access\n\\\" >> /etc/audit/rules.d/50-access.rules || printf \\\"ERROR: Variable 'UID_MIN' is unset.\\n\\\"\n}\n\nLoad audit rules\n\nMerge and load the rules into active configuration:\n\n# augenrules --load\n\nCheck if reboot is required.\n\n# if [[ $(auditctl -s | grep \\\"enabled\\\") =~ \\\"2\\\" ]]; then printf \\\"Reboot required to load rules\\n\\\"; fi\"",
+      "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|14.9,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

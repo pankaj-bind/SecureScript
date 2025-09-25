@@ -1,0 +1,36 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "CMD_EXEC",
+        "description": "auditctl",
+        "cmd": "RUNNING=$(/sbin/auditctl -l); [ -n \\\"${RUNNING}\\\" ] && for PARTITION in $(/bin/findmnt -n -l -k -it $(/bin/awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | /bin/grep -Pv \\\"noexec|nosuid\\\" | /bin/awk '{print $1}'); do for PRIVILEGED in $(/bin/find \\\"${PARTITION}\\\" -xdev -perm /6000 -type f); do printf -- \\\"${RUNNING}\\\" | /bin/grep -q \\\"${PRIVILEGED}\\\" && printf \\\"OK: '${PRIVILEGED}' found in auditing rules.\\\\n\\\" || printf \\\"Warning: '${PRIVILEGED}' not found in running configuration.\\\\n\\\"; done; done | /bin/awk '{print} END { if ($1 ~ \\\"Warning\\\") print \\\"Fail - Warnings found\\\"; else print \\\"Pass - No warning entries found\\\" }'",
+        "expect": "^Pass - No warning entries found$",
+        "timeout": "@FIND_TIMEOUT@"
+      },
+      {
+        "type": "CMD_EXEC",
+        "description": "/etc/audit/rules.d",
+        "cmd": "for PARTITION in $(/bin/findmnt -n -l -k -it $(/bin/awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | /bin/grep -Pv \\\"noexec|nosuid\\\" | /bin/awk '{print $1}'); do for PRIVILEGED in $(/bin/find \\\"${PARTITION}\\\" -xdev -perm /6000 -type f); do /bin/grep -qr \\\"${PRIVILEGED}\\\" /etc/audit/rules.d && printf \\\"OK: '${PRIVILEGED}' found in auditing rules.\\\\n\\\" || printf \\\"Warning: '${PRIVILEGED}' not found in on disk configuration.\\\\n\\\"; done; done | /bin/awk '{print} END { if ($1 ~ \\\"Warning\\\") print \\\"Fail - Warnings found\\\"; else print \\\"Pass - No warning entries found\\\" }'",
+        "expect": "^Pass - No warning entries found$",
+        "timeout": "@FIND_TIMEOUT@"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "5.2.3.6 Ensure use of privileged commands are collected",
+      "info": "Monitor privileged programs, those that have the setuid and/or setgid bit set on execution, to determine if unprivileged users are running these commands.\n\nExecution of privileged commands by non-privileged users could be an indication of someone trying to gain unauthorized access to the system.",
+      "solution": "\"Edit or create a file in the /etc/audit/rules.d/ directory, ending inrules extension, with the relevant rules to monitor the use of privileged commands.",
+      "Example": "# {\n  UID_MIN=$(awk '/^\\s*UID_MIN/{print $2}' /etc/login.defs)\n  AUDIT_RULE_FILE=\\\"/etc/audit/rules.d/50-privileged.rules\\\"\n  NEW_DATA=()\n  for PARTITION in $(findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | grep -Pv \\\"noexec|nosuid\\\" | awk '{print $1}'); do\n    readarray -t DATA < <(find \\\"${PARTITION}\\\" -xdev -perm /6000 -type f | awk -v UID_MIN=${UID_MIN} '{print \\\"-a always,exit -F path=\\\" $1 \\\" -F perm=x -F auid>=\\\"UID_MIN\\\" -F auid!=unset -k privileged\\\" }')\n      for ENTRY in \\\"${DATA[@]}\\\"; do\n        NEW_DATA+=(\\\"${ENTRY}\\\")\n      done\n  done\n  readarray &> /dev/null -t OLD_DATA < \\\"${AUDIT_RULE_FILE}\\\"\n  COMBINED_DATA=( \\\"${OLD_DATA[@]}\\\" \\\"${NEW_DATA[@]}\\\" )\n  printf '%s\\n' \\\"${COMBINED_DATA[@]}\\\" | sort -u > \\\"${AUDIT_RULE_FILE}\\\"\n}\n\nMerge and load the rules into active configuration:\n\n# augenrules --load\n\nCheck if reboot is required.\n\n# if [[ $(auditctl -s | grep \\\"enabled\\\") =~ \\\"2\\\" ]]; then printf \\\"Reboot required to load rules\\n\\\"; fi\n\nSpecial mount points\n\nIf there are any special mount points that are not visible by default from just scanning / change the PARTITION variable to the appropriate partition and re-run the remediation.",
+      "Impact": "Both the audit and remediation section of this recommendation will traverse all mounted file systems that is not mounted with either noexec or nosuid mount options. If there are large file systems without these mount options, such traversal will be significantly detrimental to the performance of the system.\n\nBefore running either the audit or remediation section, inspect the output of the following command to determine exactly which file systems will be traversed:\n\n# findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | grep -Pv \\\"noexec|nosuid\\\"\n\nTo exclude a particular file system due to adverse performance impacts, update the audit and remediation sections by adding a sufficiently unique string to the grep statement. The above command can be used to test the modified exclusions.\"",
+      "reference": "800-171|3.3.1,800-171|3.3.2,800-171|3.3.6,800-53|AU-3,800-53|AU-3(1),800-53|AU-7,800-53|AU-12,800-53r5|AU-3,800-53r5|AU-3(1),800-53r5|AU-7,800-53r5|AU-12,CN-L3|7.1.2.3(a),CN-L3|7.1.2.3(b),CN-L3|7.1.2.3(c),CN-L3|7.1.3.3(a),CN-L3|7.1.3.3(b),CN-L3|8.1.4.3(b),CSCv7|6.2,CSCv8|8.5,CSF|DE.CM-1,CSF|DE.CM-3,CSF|DE.CM-7,CSF|PR.PT-1,CSF|RS.AN-3,CSF2.0|DE.CM-01,CSF2.0|DE.CM-03,CSF2.0|DE.CM-09,CSF2.0|PR.PS-04,CSF2.0|RS.AN-03,CSF2.0|RS.AN-06,CSF2.0|RS.AN-07,GDPR|32.1.b,HIPAA|164.306(a)(1),HIPAA|164.312(b),ITSG-33|AU-3,ITSG-33|AU-3(1),ITSG-33|AU-7,ITSG-33|AU-12,LEVEL|2A,NESA|T3.6.2,NIAv2|AM34a,NIAv2|AM34b,NIAv2|AM34c,NIAv2|AM34d,NIAv2|AM34e,NIAv2|AM34f,NIAv2|AM34g,PCI-DSSv3.2.1|10.1,PCI-DSSv3.2.1|10.3,PCI-DSSv3.2.1|10.3.1,PCI-DSSv3.2.1|10.3.2,PCI-DSSv3.2.1|10.3.3,PCI-DSSv3.2.1|10.3.4,PCI-DSSv3.2.1|10.3.5,PCI-DSSv3.2.1|10.3.6,PCI-DSSv4.0|10.2.2,QCSC-v1|3.2,QCSC-v1|6.2,QCSC-v1|8.2.1,QCSC-v1|10.2.1,QCSC-v1|11.2,QCSC-v1|13.2,SWIFT-CSCv1|6.4",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/13775",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

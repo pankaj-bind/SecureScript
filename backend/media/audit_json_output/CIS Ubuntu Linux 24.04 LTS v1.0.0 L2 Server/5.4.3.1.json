@@ -1,0 +1,11 @@
+{
+  "type": "FILE_CONTENT_CHECK_NOT",
+  "description": "5.4.3.1 Ensure nologin is not listed in /etc/shells",
+  "info": "/etc/shells is a text file which contains the full pathnames of valid login shells. This file is consulted by chsh and available to be queried by other programs.\n\nBe aware that there are programs which consult this file to find out if a user is a normal user; for example, FTP daemons traditionally disallow access to users with shells not included in this file.\n\nA user can use chsh to change their configured shell.\n\nIf a user has a shell configured that isn't in in /etc/shells then the system assumes that they're somehow restricted. In the case of chsh it means that the user cannot change that value.\n\nOther programs might query that list and apply similar restrictions.\n\nBy putting nologin in /etc/shells any user that has nologin as its shell is considered a full, unrestricted user. This is not the expected behavior for nologin",
+  "solution": "Edit /etc/shells and remove any lines that include nologin",
+  "reference": "800-171|3.4.2,800-53|CM-6b.,800-53r5|CM-6b.,CN-L3|8.1.10.6(d),CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|CM-6b.,LEVEL|2A,NESA|T3.2.1,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/18959",
+  "file": "/etc/shells",
+  "regex": "^\\\\h*([^#\\\\n\\\\r]+)?\\\\/nologin\\\\b",
+  "expect": "^\\\\h*([^#\\\\n\\\\r]+)?\\\\/nologin\\\\b"
+}
