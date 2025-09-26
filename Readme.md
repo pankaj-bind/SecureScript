@@ -2,6 +2,10 @@
 
 SecureScript is a full-stack application designed to automate system hardening based on CIS (Center for Internet Security) guidelines. It features a Django backend and a React frontend packaged within an Electron desktop application.
 
+Testing credentials
+username: ``pankaj``
+password: ```Pankaj30@```
+
 -----
 
 ## Prerequisites
