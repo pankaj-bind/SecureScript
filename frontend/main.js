@@ -12,11 +12,8 @@ const exec = util.promisify(execCallback);
 const isDev = !app.isPackaged;
 const lgpoPath = path.join(__dirname, 'LGPO.exe');
 
-// --- FIX START ---
 // Correctly resolve the absolute path to the backend's media directory.
-// path.resolve is more robust for creating an absolute path from relative segments.
 const mediaRoot = path.resolve(__dirname, '..', 'backend', 'media');
-// --- FIX END ---
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -167,34 +164,116 @@ async function applyAuditPolicy(subcategory, valueData) {
   }
 }
 
-// --- CONSOLIDATED: PASSWORD & LOCKOUT POLICY LOGIC ---
-async function applyAccountPolicy(policyName, value) {
-    const commandMap = {
-        // Password Policies
-        'ENFORCE_PASSWORD_HISTORY': `/uniquepw:${value}`,
-        'MAXIMUM_PASSWORD_AGE': `/maxpwage:${value}`,
-        'MINIMUM_PASSWORD_AGE': `/minpwage:${value}`,
-        'MINIMUM_PASSWORD_LENGTH': `/minpwlen:${value}`,
-        // Lockout Policies
-        'LOCKOUT_DURATION': `/lockoutduration:${value}`,
-        'LOCKOUT_THRESHOLD': `/lockoutthreshold:${value}`,
-        'LOCKOUT_RESET': `/lockoutwindow:${value}`,
+// --- Helper for Secedit-based policies ---
+async function applySeceditSystemAccessPolicy(settingName, value, friendlyName) {
+    const tempDir = os.tmpdir();
+    const infPath = path.join(tempDir, `policy-${settingName}.inf`);
+    const sdbPath = path.join(tempDir, `policy-${settingName}.sdb`);
+    const logPath = path.join(tempDir, `secedit-${settingName}.log`);
+
+    const cleanupFiles = async () => {
+        for (const file of [infPath, sdbPath, logPath]) {
+            try {
+                if (fs.existsSync(file)) await fs.promises.unlink(file);
+            } catch (e) { console.error(`Failed to delete temp file ${file}:`, e); }
+        }
     };
 
-    const policySwitch = commandMap[policyName];
-    if (!policySwitch) {
-        return { success: false, message: `Policy '${policyName}' is not supported via 'net accounts'.` };
-    }
-    
-    const command = `net accounts ${policySwitch}`;
-
     try {
-        await exec(command);
-        return { success: true, message: `Account policy '${policyName}' was set successfully.` };
+        const infContent = [
+            '[Unicode]', 'Unicode=yes', '[Version]', 'signature="$CHICAGO$"', 'Revision=1',
+            '[System Access]', `${settingName} = ${value}`,
+        ].join('\r\n');
+        await fs.promises.writeFile(infPath, infContent, 'utf16le');
+        await exec(`secedit /import /db "${sdbPath}" /cfg "${infPath}" /log "${logPath}"`);
+        await exec(`secedit /configure /db "${sdbPath}" /log "${logPath}"`);
+        await exec('gpupdate /force');
+        return { success: true, message: `${friendlyName} was set successfully.` };
     } catch (error) {
-        return { success: false, message: `Failed to apply account policy. Error: ${error.stderr || error.message}` };
+        let logContent = 'No log file available.';
+        try {
+            if (fs.existsSync(logPath)) {
+                logContent = await fs.promises.readFile(logPath, 'utf-8');
+            }
+        } catch (logError) { logContent = `Could not read log file: ${logError.message}`; }
+        const errorMessage = `Failed to apply policy ${friendlyName}. Log: [${logContent.trim()}] Error: ${error.stderr || error.message}`;
+        return { success: false, message: errorMessage };
+    } finally {
+        await cleanupFiles();
     }
 }
+
+// --- UNIFIED AND FIXED: PASSWORD & LOCKOUT POLICY LOGIC ---
+async function applyAccountPolicy(policyName, value) {
+    // A unified map of all account policies to their corresponding 'secedit' setting names and value transformations.
+    const policySettingMap = {
+        // --- Password Policies ---
+        'COMPLEXITY_REQUIREMENTS': {
+            setting: 'PasswordComplexity',
+            transform: val => String(val).toLowerCase() === 'enabled' ? '1' : '0',
+            friendlyName: 'Password complexity policy'
+        },
+        'REVERSIBLE_ENCRYPTION': {
+            setting: 'ClearTextPassword',
+            transform: val => String(val).toLowerCase() === 'enabled' ? '1' : '0',
+            friendlyName: 'Reversible encryption policy'
+        },
+        'ENFORCE_PASSWORD_HISTORY': {
+            setting: 'PasswordHistorySize',
+            transform: val => String(val), // Use value directly
+            friendlyName: 'Enforce password history'
+        },
+        'MAXIMUM_PASSWORD_AGE': {
+            setting: 'MaximumPasswordAge',
+            transform: val => String(val), // Use value directly
+            friendlyName: 'Maximum password age'
+        },
+        'MINIMUM_PASSWORD_AGE': {
+            setting: 'MinimumPasswordAge',
+            transform: val => String(val), // Use value directly
+            friendlyName: 'Minimum password age'
+        },
+        'MINIMUM_PASSWORD_LENGTH': {
+            setting: 'MinimumPasswordLength',
+            transform: val => String(val), // Use value directly
+            friendlyName: 'Minimum password length'
+        },
+        // --- Lockout Policies ---
+        'LOCKOUT_ADMINS': {
+            setting: 'EnableAdminAccountLockout',
+            transform: val => String(val).toLowerCase() === 'enabled' ? '1' : '0',
+            friendlyName: 'Administrator account lockout policy'
+        },
+        'LOCKOUT_DURATION': {
+            setting: 'AccountLockoutDuration',
+            transform: val => String(val), // Use value directly
+            friendlyName: 'Lockout duration'
+        },
+        'LOCKOUT_THRESHOLD': {
+            setting: 'AccountLockoutThreshold',
+            transform: val => String(val), // Use value directly
+            friendlyName: 'Lockout threshold'
+        },
+        'LOCKOUT_RESET': {
+            setting: 'ResetLockoutCount',
+            transform: val => String(val), // Use value directly
+            friendlyName: 'Reset lockout counter after'
+        },
+    };
+
+    const config = policySettingMap[policyName];
+
+    // Check if the policy is supported by this unified handler
+    if (config) {
+        const seceditValue = config.transform(value);
+        // All policies in the map will be applied using the secedit helper function
+        return applySeceditSystemAccessPolicy(config.setting, seceditValue, config.friendlyName);
+    }
+
+    // If the policy name is not found in our map, it's unsupported.
+    return { success: false, message: `Policy '${policyName}' is not supported.` };
+}
+
 
 // --- CHECK ACCOUNT POLICY LOGIC ---
 async function applyCheckAccountPolicy(policy, newValue) {
@@ -392,7 +471,7 @@ ipcMain.handle('get-policy-counts', async (event, basePath) => {
            policyType = policy.condition?.rules?.[0]?.type;
         }
         if (policyType) {
-          counts[policyType] = (counts[policyType] || 0) + 1;
+           counts[policyType] = (counts[policyType] || 0) + 1;
         }
       } catch (e) {
         console.warn(`Could not parse or process file ${filePath}: ${e.message}`);
