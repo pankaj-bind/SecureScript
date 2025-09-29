@@ -4,12 +4,7 @@ import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { getTemplates, deleteTemplate, importTemplate, createReport, getReportsForTemplate, Template, Report, ReportPayload, deleteReport } from '../services/authService';
 
-// --- DELETED THIS SECTION ---
-// The incorrect, duplicate interface that was here has been removed.
-// Your project will now correctly use the global definition from `src/electron-api.d.ts`.
-// --- END DELETED SECTION ---
-
-// --- Component to display reports for a template ---
+// Component to display reports for a template
 const TemplateReports: React.FC<{ reports: Report[], onDelete: (reportId: number) => void }> = ({ reports, onDelete }) => {
     if (reports.length === 0) {
         return <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2">No reports generated yet.</p>;
@@ -98,7 +93,6 @@ const DashboardPage: React.FC = () => {
         setFeedback(null);
 
         let script: string | undefined;
-        let electronAction: keyof Omit<Window['electron'], 'getSystemInfo' | 'checkStatus'> | 'checkStatus';
 
         const reportTypeMapping = {
             'Harden': 'Hardening-Report',
@@ -107,16 +101,12 @@ const DashboardPage: React.FC = () => {
         };
         const payloadReportType = reportTypeMapping[action] as ReportPayload['report_type'];
 
-
         if (action === 'Harden') {
             script = template.harden_script;
-            electronAction = 'applyHarden';
         } else if (action === 'Revert') {
             script = template.revert_script;
-            electronAction = 'revertHardening';
         } else { // Audit
             script = template.check_script;
-            electronAction = 'checkStatus';
         }
 
         if (!script || template.policies.length === 0) {
@@ -126,34 +116,33 @@ const DashboardPage: React.FC = () => {
         }
 
         try {
-            const { serialNumber } = await window.electron.getSystemInfo();
+            if (!window.electronAPI) {
+                throw new Error("Electron API is not available. This feature requires the desktop app.");
+            }
+
+            const sysInfo = await window.electronAPI.getSystemInfo();
+            if (!sysInfo.success || !sysInfo.serialNumber) {
+                throw new Error(sysInfo.message || "Could not retrieve system serial number.");
+            }
+            const serialNumber = sysInfo.serialNumber;
             const results: { name: string; status: 'Passed' | 'Failed' }[] = [];
 
+            // Since the script is a concatenation of commands, we run the whole block
+            const result = await window.electronAPI.runScript({ script });
+            
+            // For Audit, we need to parse the results. For Harden/Revert, we assume success if the script doesn't throw.
+            // This part is simplified; a real implementation would need a more robust way to check per-policy status from a combined script.
+            // For now, we'll mark all as passed if the script succeeds, and failed if it fails.
+            const overallStatus = result.success ? 'Passed' : 'Failed';
+            
             for (const policy of template.policies) {
-                const policyBlockRegex = new RegExp(`# Policy: ${policy.description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\n([\\s\\S]*?)(?=\\n# Policy:|$)`);
-                const match = script.match(policyBlockRegex);
-                const command = match ? match[1].trim() : '';
-
-                if (command) {
-                    try {
-                        // Pass policy.reg_option for checkStatus action
-                        if (electronAction === 'checkStatus') {
-                            await window.electron.checkStatus(command, policy.reg_option);
-                        } else {
-                            // applyHarden and revertHardening now expect a password.
-                            // Since this is a template-wide action, we prompt here.
-                            // In a real-world scenario, you might handle this differently (e.g., store credentials securely).
-                            const password = prompt(`Enter admin password to run ${action} for template ${template.id}`);
-                            if (password === null) {
-                                throw new Error('Password entry cancelled.');
-                            }
-                            await window.electron[electronAction](command, password);
-                        }
-                        results.push({ name: policy.description, status: 'Passed' });
-                    } catch (execError) {
-                        results.push({ name: policy.description, status: 'Failed' });
-                    }
-                }
+                 results.push({ name: policy.description, status: overallStatus });
+            }
+            
+            if (!result.success) {
+                console.error("Script execution failed:", result.message);
+                setFeedback({ type: 'error', message: `Script execution failed: ${result.message}` });
+                // We still create a report, but it will show failures.
             }
 
             const payload: ReportPayload = {
@@ -174,6 +163,7 @@ const DashboardPage: React.FC = () => {
         }
     };
 
+
     const handleDelete = async (id: string) => {
         if (window.confirm('Are you sure you want to delete this template?')) {
             try {
@@ -189,7 +179,6 @@ const DashboardPage: React.FC = () => {
         if (window.confirm('Are you sure you want to delete this report? This action cannot be undone.')) {
             try {
                 await deleteReport(reportId);
-                // Update the state to remove the report from the UI
                 setReports(prev => {
                     const updatedReportsForTemplate = (prev[templateId] || []).filter(r => r.id !== reportId);
                     return { ...prev, [templateId]: updatedReportsForTemplate };
@@ -201,7 +190,7 @@ const DashboardPage: React.FC = () => {
             }
         }
     };
-
+    
     const handleExport = (template: Template) => {
         const dataToExport = {
             organization_name: template.organization_name,

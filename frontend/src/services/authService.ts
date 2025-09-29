@@ -21,6 +21,7 @@ export interface ProductDetails {
   audit_files: AuditFile[];
   page_viewer: string;
   script_json_url: string | null;
+  audit_json_output_path?: string | null;
 }
 
 export interface Template {

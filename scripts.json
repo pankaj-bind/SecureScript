@@ -1,0 +1,82 @@
+{
+  "4.2.7": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Google\\Chrome\\WindowManagementAllowedForUrls\" /v \"1\" /t REG_SZ /d \"<URL_1>\" /f\nreg add \"HKLM\\Software\\Policies\\Google\\Chrome\\WindowManagementAllowedForUrls\" /v \"2\" /t REG_SZ /d \"<URL_2>\" /f\n:: Note: Replace <URL_1>, <URL_2>, etc., with the specific, approved URLs that should be allowed window management permissions.",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\\WindowManagementAllowedForUrls\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\\WindowManagementAllowedForUrls\" /f"
+  },
+  "4.2.8": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Google\\Chrome\\WindowManagementBlockedForUrls\" /v \"1\" /t REG_SZ /d \"<URL_1>\" /f\nreg add \"HKLM\\Software\\Policies\\Google\\Chrome\\WindowManagementBlockedForUrls\" /v \"2\" /t REG_SZ /d \"<URL_2>\" /f\n:: Note: Replace <URL_1>, <URL_2>, etc., with the specific URLs that should be blocked from using window management permissions.",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\\WindowManagementBlockedForUrls\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\\WindowManagementBlockedForUrls\" /f"
+  },
+    "1.10": {
+    "hardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"CertificateTransparencyEnforcementDisabledForLegacyCas\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"CertificateTransparencyEnforcementDisabledForLegacyCas\"",
+    "revertHardeningScript": ":: This is the default state, so no action is needed to revert."
+  },
+  "1.11": {
+    "hardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"CertificateTransparencyEnforcementDisabledForCas\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"CertificateTransparencyEnforcementDisabledForCas\"",
+    "revertHardeningScript": ":: This is the default state, so no action is needed to revert."
+  },
+  "1.12": {
+    "hardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"CertificateTransparencyEnforcementDisabledForUrls\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"CertificateTransparencyEnforcementDisabledForUrls\"",
+    "revertHardeningScript": ":: This is the default state, so no action is needed to revert."
+  },
+  "1.2.1": {
+    "hardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"SafeBrowseAllowlistDomains\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"SafeBrowseAllowlistDomains\"",
+    "revertHardeningScript": ":: This is the default state, so no action is needed to revert."
+  },
+  "1.25": {
+    "hardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"HSTSPolicyBypassList\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"HSTSPolicyBypassList\"",
+    "revertHardeningScript": ":: This is the default state, so no action is needed to revert."
+  },
+  "1.26": {
+    "hardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"OverrideSecurityRestrictionsOnInsecureOrigin\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"OverrideSecurityRestrictionsOnInsecureOrigin\"",
+    "revertHardeningScript": ":: This is the default state, so no action is needed to revert."
+  },
+  "1.27": {
+    "hardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"LookalikeWarningAllowlistDomains\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"LookalikeWarningAllowlistDomains\"",
+    "revertHardeningScript": ":: This is the default state, so no action is needed to revert."
+  },
+  "1.29": {
+    "hardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"WebRtcLocalIpsAllowedUrls\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"WebRtcLocalIpsAllowedUrls\"",
+    "revertHardeningScript": ":: This is the default state, so no action is needed to revert."
+  },
+  "2.2.5": {
+    "hardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"PdfLocalFileAccessAllowedForDomains\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"PdfLocalFileAccessAllowedForDomains\"",
+    "revertHardeningScript": ":: This is the default state, so no action is needed to revert."
+  },
+  "2.3.5": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Google\\Chrome\\ThirdPartyStoragePartitioningBlockedForOrigins\" /v \"1\" /t REG_SZ /d \"<URL_1>\" /f\nreg add \"HKLM\\Software\\Policies\\Google\\Chrome\\ThirdPartyStoragePartitioningBlockedForOrigins\" /v \"2\" /t REG_SZ /d \"<URL_2>\" /f\n:: Note: Replace <URL_1>, <URL_2>, etc., with the specific sites to block.",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\\ThirdPartyStoragePartitioningBlockedForOrigins\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\\ThirdPartyStoragePartitioningBlockedForOrigins\" /f"
+  },
+  "2.25": {
+    "hardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"FileOrDirectoryPickerWithoutGestureAllowedForOrigins\" /f",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\" /v \"FileOrDirectoryPickerWithoutGestureAllowedForOrigins\"",
+    "revertHardeningScript": ":: This is the default state, so no action is needed to revert."
+  },
+  "2.27": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Google\\Chrome\\HttpAllowlist\" /v \"1\" /t REG_SZ /d \"<URL_1>\" /f\nreg add \"HKLM\\Software\\Policies\\Google\\Chrome\\HttpAllowlist\" /v \"2\" /t REG_SZ /d \"<URL_2>\" /f\n:: Note: Replace <URL_1>, <URL_2>, etc., with the specific URLs to allow.",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\\HttpAllowlist\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\\HttpAllowlist\" /f"
+  },
+  "4.2.3": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Google\\Chrome\\ClipboardAllowedForUrls\" /v \"1\" /t REG_SZ /d \"<URL_1>\" /f\nreg add \"HKLM\\Software\\Policies\\Google\\Chrome\\ClipboardAllowedForUrls\" /v \"2\" /t REG_SZ /d \"<URL_2>\" /f\n:: Note: Replace <URL_1>, <URL_2>, etc., with the specific, approved URLs that should be allowed clipboard permissions.",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\\ClipboardAllowedForUrls\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\\ClipboardAllowedForUrls\" /f"
+  },
+  "4.2.4": {
+    "hardeningScript": "reg add \"HKLM\\Software\\Policies\\Google\\Chrome\\ClipboardBlockedForUrls\" /v \"1\" /t REG_SZ /d \"<URL_1>\" /f\nreg add \"HKLM\\Software\\Policies\\Google\\Chrome\\ClipboardBlockedForUrls\" /v \"2\" /t REG_SZ /d \"<URL_2>\" /f\n:: Note: Replace <URL_1>, <URL_2>, etc., with the specific URLs that should be blocked from using clipboard permissions.",
+    "auditScript": "reg query \"HKLM\\Software\\Policies\\Google\\Chrome\\ClipboardBlockedForUrls\"",
+    "revertHardeningScript": "reg delete \"HKLM\\Software\\Policies\\Google\\Chrome\\ClipboardBlockedForUrls\" /f"
+  }
+}

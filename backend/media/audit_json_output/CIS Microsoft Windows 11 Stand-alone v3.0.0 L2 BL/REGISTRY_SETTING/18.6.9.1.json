@@ -1,0 +1,58 @@
+{
+  "check_type": "CONDITIONAL",
+  "condition": {
+    "auto_status": "FAILED",
+    "type": "AND",
+    "rules": [
+      {
+        "type": "REGISTRY_SETTING",
+        "description": "Ensure 'AllowLLTDIOOnDomain' is 'Windows: Registry Value' to '0'",
+        "value_type": "POLICY_DWORD",
+        "value_data": "0",
+        "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\LLTD",
+        "reg_item": "AllowLLTDIOOnDomain",
+        "reg_option": "CAN_NOT_BE_NULL"
+      },
+      {
+        "type": "REGISTRY_SETTING",
+        "description": "Ensure 'AllowLLTDIOOnPublicNet' is 'Windows: Registry Value' to '0'",
+        "value_type": "POLICY_DWORD",
+        "value_data": "0",
+        "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\LLTD",
+        "reg_item": "AllowLLTDIOOnPublicNet",
+        "reg_option": "CAN_NOT_BE_NULL"
+      },
+      {
+        "type": "REGISTRY_SETTING",
+        "description": "Ensure 'EnableLLTDIO' is 'Windows: Registry Value' to '0'",
+        "value_type": "POLICY_DWORD",
+        "value_data": "0",
+        "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\LLTD",
+        "reg_item": "EnableLLTDIO",
+        "reg_option": "CAN_NOT_BE_NULL"
+      },
+      {
+        "type": "REGISTRY_SETTING",
+        "description": "Ensure 'ProhibitLLTDIOOnPrivateNet' is 'Windows: Registry Value' to '0'",
+        "value_type": "POLICY_DWORD",
+        "value_data": "0",
+        "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\LLTD",
+        "reg_item": "ProhibitLLTDIOOnPrivateNet",
+        "reg_option": "CAN_NOT_BE_NULL"
+      }
+    ]
+  },
+  "then": {
+    "report": {
+      "description": "18.6.9.1 (L2) Ensure 'Turn on Mapper I/O (LLTDIO) driver' is set to 'Disabled'",
+      "info": "This policy setting changes the operational behavior of the Mapper I/O network protocol driver.\n\nLLTDIO allows a computer to discover the topology of a network it's connected to. It also allows a computer to initiate Quality-of-Service requests such as bandwidth estimation and network health analysis.\n\nThe recommended state for this setting is: Disabled\n\nTo help protect from potentially discovering and connecting to unauthorized devices, this setting should be disabled to prevent responding to network traffic for network topology discovery.",
+      "solution": "\"To establish the recommended configuration via GP, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Network\\Link-Layer Topology Discovery\\Turn on Mapper I/O (LLTDIO) driver",
+      "Note": "This Group Policy path is provided by the Group Policy template LinkLayerTopologyDiscovery.admx/adml that is included with all versions of the Microsoft Windows Administrative Templates.",
+      "Impact": "None - this is the default behavior.\"",
+      "reference": "800-171|3.4.2,800-53|CM-6,800-53r5|CM-6,CSCv7|5.1,CSF|PR.IP-1,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,LEVEL|2A,SWIFT-CSCv1|2.3",
+      "see_also": "https://workbench.cisecurity.org/benchmarks/17603",
+      "show_output": true,
+      "type": "PASSED"
+    }
+  }
+}

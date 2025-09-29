@@ -246,7 +246,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'organization_id', 'audit_parser', 'page_viewer',
             'cis_benchmark_pdf_url', 'tenable_audit_file_url', 'audit_files',
-            'script_json_url'
+            'script_json_url', 'audit_json_output_path'
          ]
 
     def get_script_json_url(self, obj):

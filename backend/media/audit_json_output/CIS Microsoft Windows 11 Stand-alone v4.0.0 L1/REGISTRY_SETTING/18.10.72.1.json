@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.10.72.1 (L1) Ensure 'Allow widgets' is set to 'Disabled'",
+  "info": "This policy setting specifies whether the Widgets feature is allowed on the device. The Widgets feature provides information such as, weather, news, sports, stocks, traffic, and entertainment (not an inclusive list).\n\nThe recommended state for this setting is: Disabled\n\nDue to privacy concerns, apps and features such as Widgets on the Windows taskbar should be treated as a possible security risk due to the potential of data being sent back to third-parties, such as Microsoft.",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Disabled :\n\nComputer Configuration\\Policies\\Administrative Templates\\Windows Components\\Widgets\\Allow widgets",
+  "Note": "This Group Policy path is provided by the Group Policy template NewsAndInterests.admx/adml that is included with the Microsoft Windows 11 Release 21H2 Administrative Templates (or newer).",
+  "Impact": "The Widgets feature on the Windows taskbar will not be available on the device.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|1A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/22007",
+  "value_type": "POLICY_DWORD",
+  "value_data": "0",
+  "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Dsh",
+  "reg_item": "AllowNewsAndInterests",
+  "reg_option": "CAN_NOT_BE_NULL"
+}
