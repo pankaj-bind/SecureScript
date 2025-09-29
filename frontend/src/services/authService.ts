@@ -24,6 +24,7 @@ export interface ProductDetails {
   audit_json_output_path?: string | null;
 }
 
+// *** FIXED TEMPLATE INTERFACE ***
 export interface Template {
     id: string;
     organization_name: string;
@@ -33,6 +34,11 @@ export interface Template {
     check_script?: string;
     revert_script?: string;
     policy_count?: number;
+    // FIXED: Added the nested product structure which is required by the wrapper.
+    product: { 
+        id: number;
+        name: string;
+    }; 
 }
 
 export interface CreateTemplatePayload {
@@ -94,12 +100,12 @@ export const requestPasswordResetOTP = async (email: string) => {
 };
 
 export const verifyPasswordResetOTP = async (email: string, otp: string) => {
-  const response = await axios.post(`${API_URL}password-reset/verify-otp/`, { email, otp });
+  const response = await apiClient.post('/password-reset/verify-otp/', { email, otp });
   return response.data;
 };
 
 export const setNewPasswordWithOTP = async (email: string, otp: string, password: string) => {
-  const response = await axios.post(`${API_URL}password-reset/set-new-password/`, { email, otp, password });
+  const response = await apiClient.post('/password-reset/set-new-password/', { email, otp, password });
   return response.data;
 };
 
@@ -174,6 +180,7 @@ export const getTemplates = async (): Promise<Template[]> => {
 
 export const getTemplateDetails = async (id: string): Promise<Template> => {
     const response = await apiClient.get(`/templates/${id}/`);
+    // The TemplateListSerializer is used for detail view, which now includes the 'product' field.
     return response.data;
 };
 

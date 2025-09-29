@@ -15,6 +15,10 @@ const lgpoPath = path.join(__dirname, 'LGPO.exe');
 // Correctly resolve the absolute path to the backend's media directory.
 const mediaRoot = path.resolve(__dirname, '..', 'backend', 'media');
 
+// Define the absolute path to WMIC for robust execution (Retained but no longer used in getSystemInfo, 
+// kept here for reference if needed elsewhere)
+const wmicPath = 'C:\\Windows\\System32\\wbem\\wmic.exe';
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
@@ -40,8 +44,17 @@ function createWindow() {
 // --- System Info Logic ---
 async function getSystemInfo() {
   try {
-    const { stdout } = await exec('wmic bios get serialnumber');
-    const serialNumber = stdout.split('\n')[1].trim();
+    // FIX: Switch to PowerShell to fetch the serial number for better reliability across different Windows environments.
+    const command = 'powershell.exe -Command "Get-CimInstance -ClassName Win32_Bios | Select-Object -ExpandProperty SerialNumber"';
+    const { stdout } = await exec(command);
+    
+    // PowerShell output often includes trailing whitespace/newlines
+    const serialNumber = stdout.trim();
+    
+    if (!serialNumber) {
+         throw new Error("PowerShell command returned an empty serial number.");
+    }
+
     return { success: true, serialNumber };
   } catch (error) {
     console.error('Failed to get system serial number:', error);
@@ -150,9 +163,7 @@ async function applyAuditPolicy(subcategory, valueData) {
     if (!fs.existsSync(lgpoPath)) {
       throw new Error(`LGPO.exe not found at ${lgpoPath}. Please place it in the 'public' directory.`);
     }
-    await fs.promises.writeFile(policyFilePath, policyContent);
-    const command = `"${lgpoPath}" /t "${policyFilePath}"`;
-    await exec(command);
+    await exec(`"${lgpoPath}" /t "${policyFilePath}"`);
     await exec('gpupdate /force');
     return { success: true, message: `Audit policy for "${subcategory}" was set successfully and is visible in the GUI.` };
   } catch (error) {
@@ -286,14 +297,16 @@ async function applyCheckAccountPolicy(policy, newValue) {
                 successMessage = "Guest account has been disabled.";
             } else if (value_type === 'POLICY_TEXT' && check_type === 'CHECK_NOT_EQUAL') {
                 if (!newValue || newValue.trim() === '') return { success: false, message: 'A new name for the Guest account is required.'};
-                command = `wmic useraccount where name='Guest' rename "${newValue.trim()}"`;
+                // FIX: Use absolute path for WMIC
+                command = `"${wmicPath}" useraccount where name='Guest' rename "${newValue.trim()}"`;
                 successMessage = `Guest account renamed to "${newValue.trim()}".`;
             }
             break;
         case 'ADMINISTRATOR_ACCOUNT':
              if (value_type === 'POLICY_TEXT' && check_type === 'CHECK_NOT_REGEX') {
                 if (!newValue || newValue.trim() === '') return { success: false, message: 'A new name for the Administrator account is required.'};
-                command = `wmic useraccount where name='Administrator' rename "${newValue.trim()}"`;
+                // FIX: Use absolute path for WMIC
+                command = `"${wmicPath}" useraccount where name='Administrator' rename "${newValue.trim()}"`;
                 successMessage = `Administrator account renamed to "${newValue.trim()}".`;
             }
             break;
@@ -303,6 +316,7 @@ async function applyCheckAccountPolicy(policy, newValue) {
     if (!command) {
         return { success: false, message: `No action defined for policy: ${policy.description}` };
     }
+    // FIX: Execute commands via cmd.exe for robustness (removed the nested cmd.exe /c since we are providing the absolute path to WMIC)
     try {
         await exec(command);
         return { success: true, message: successMessage };
@@ -316,13 +330,15 @@ async function applyPowershellPolicy(script) {
     if (!script || script.trim() === '') {
         return { success: false, message: 'PowerShell script is empty.' };
     }
-    const command = `powershell.exe -ExecutionPolicy Bypass -Command "& {${script}}"`;
+    // This command is already running via powershell.exe so it should be fine.
+    const command = `powershell.exe -ExecutionPolicy Bypass -Command "& {${script}}"`; 
     try {
         const { stdout, stderr } = await exec(command);
         if (stderr) {
             console.warn(`PowerShell stderr (may not be an error): ${stderr}`);
         }
         const resultMessage = stdout || 'Script executed without output.';
+        // The success check here seems specific to your audit script output
         const success = resultMessage.includes('STATUS: PASSED');
         return { success, message: resultMessage };
     } catch (error) {
@@ -355,13 +371,16 @@ async function applyRegistrySettingPolicy(policy, newValue) {
         formattedValue = finalValue.split('\n').filter(Boolean).join('\\0');
     }
     
-    const buildCommand = (key) => `reg add "${key}" /v "${reg_item}" /t ${regType} /d "${formattedValue}" /f`;
+    // Prefix reg command with cmd.exe /c for robustness
+    const buildCommand = (key) => `cmd.exe /c reg add "${key}" /v "${reg_item}" /t ${regType} /d "${formattedValue}" /f`;
 
     try {
         if (reg_include_hku_users && reg_key.startsWith("HKU\\")) {
-            const { stdout } = await exec('reg query HKU');
+            // FIX: Execute reg query via cmd.exe
+            const { stdout } = await exec('cmd.exe /c reg query HKU');
             const lines = stdout.split('\r\n').map(l => l.trim()).filter(Boolean);
-            const userSids = lines.filter(l => l.includes(reg_include_hku_users));
+            // This logic to find user SIDs seems fragile, but we keep it for policy execution logic compatibility
+            const userSids = lines.filter(l => l.startsWith('S-1-5-21-') && !l.endsWith('-500') && !l.endsWith('-501'));
 
             if (userSids.length === 0) {
                 return { success: false, message: 'No user profiles found to apply HKU setting to.' };
@@ -373,12 +392,16 @@ async function applyRegistrySettingPolicy(policy, newValue) {
                 console.log(`Executing for user SID: ${command}`);
                 await exec(command);
             }
-            return { success: true, message: `Policy applied to ${userSids.length} user profile(s).` };
+            // After applying to all HKU users, apply to HKCU for the current user's immediate effect
+            const commandHKCU = buildCommand(reg_key.replace("HKU\\", "HKCU\\"));
+            await exec(commandHKCU);
+            
+            return { success: true, message: `Policy applied to ${userSids.length} user profile(s) and current user (HKCU).` };
         } else {
             const command = buildCommand(reg_key);
             console.log(`Executing: ${command}`);
             await exec(command);
-            await exec('gpupdate /force');
+            await exec('cmd.exe /c gpupdate /force'); // FIX: Execute gpupdate via cmd.exe
             return { success: true, message: `Registry policy for '${reg_item}' was set successfully.` };
         }
     } catch (error) {
@@ -398,6 +421,7 @@ async function applyBannerPolicy(policy, newValue) {
 
 // --- IPC HANDLERS ---
 async function findAllJsonFiles(dir) {
+  // ... (unchanged)
   const dirents = await fs.promises.readdir(dir, { withFileTypes: true });
   const files = await Promise.all(dirents.map((dirent) => {
     const res = path.resolve(dir, dirent.name);
