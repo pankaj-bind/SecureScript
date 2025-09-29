@@ -3,12 +3,15 @@
 import re
 import os
 import time
+import json
 from django.conf import settings
 from django.contrib.auth.models import User
-from rest_framework import serializers
+from django.utils.text import slugify
+from rest_framework import generics, status, serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from allauth.account.adapter import get_adapter
 from .models import TechnologyType, Organization, Product, UserProfile, AuditParser, Template, Report
+
 
 # --- Script Update Serializer ---
 class ScriptUpdateSerializer(serializers.Serializer):
@@ -88,34 +91,85 @@ class TemplateCreateSerializer(serializers.ModelSerializer):
         harden_script_parts = []
         check_script_parts = []
         revert_script_parts = []
+        
+        # 1. Create a placeholder template instance to generate the ID and set the directory path
+        template = Template.objects.create(
+            user=self.context['request'].user,
+            product=validated_data.get('product'),
+            policies=policies, # Save the policies list to the DB field first
+        )
 
-        for policy in policies:
-            description = policy.get('description', 'Unknown Policy')
+        # 2. Define absolute path for policy files and ensure the directory exists
+        relative_policy_dir = template.policy_files_dir
+        # Convert to absolute path: media/template_policies/<template_id>
+        abs_policy_dir = os.path.join(settings.MEDIA_ROOT, relative_policy_dir)
+        
+        # Create the directory structure, including intermediate directories
+        os.makedirs(abs_policy_dir, exist_ok=True) 
+
+        # 3. Process policies and create individual JSON files
+        updated_policies = [] # List to hold policies with final scripts
+
+        for i, policy in enumerate(policies):
+            # Create a mutable copy of the policy to safely update it
+            policy = dict(policy)
+            description = policy.get('description', f'Policy {i+1}')
             
-            # Prioritize scripts sent from the frontend
+            # --- Check for custom value and inject it ---
+            custom_value = policy.pop('custom_value', None) 
+            if custom_value is not None:
+                policy['passed_value'] = custom_value # Inject as 'passed_value' as requested
+                
+                # Update the policy's value_data to use the actual custom value for script generation
+                if policy.get('variable') and policy['variable'].get('name'):
+                    variable_name = policy['variable']['name']
+                    # Replace the variable placeholder with the actual custom value
+                    policy['value_data'] = policy['value_data'].replace(f'@{variable_name}@', custom_value)
+                else:
+                    # For non-variable policies, directly set the main value_data field
+                    policy['value_data'] = custom_value
+                    
+            updated_policies.append(policy) # Store the updated policy for later DB save
+
+            # --- Script Generation (re-evaluate with potentially updated value_data) ---
             harden = policy.get('hardeningScript')
             check = policy.get('auditScript')
             revert = policy.get('revertHardeningScript')
             
-            # If any script is missing, use the fallback generator
             if not all([harden, check, revert]):
+                # Fallback script generation now uses potentially updated policy['value_data']
                 generated_scripts = get_scripts_for_policy(policy)
                 harden = harden or generated_scripts['harden']
                 check = check or generated_scripts['check']
                 revert = revert or generated_scripts['revert']
 
+            # Append script parts for the combined script stored in the database
             harden_script_parts.append(f"# Policy: {description}\n{harden}")
             check_script_parts.append(f"# Policy: {description}\n{check}")
             revert_script_parts.append(f"# Policy: {description}\n{revert}")
+            
+            # --- Save Individual Policy JSON File ---
+            # Extract only the rule number for the filename (e.g., '1.1.1' from '1.1.1 (L1) Ensure...')
+            match = re.match(r'^\d+(\.\d+)+', description)
+            policy_filename = f'{match.group(0)}.json' if match else slugify(description)[:60].strip('-') + f'-{i}.json'
+            file_path = os.path.join(abs_policy_dir, policy_filename)
 
-        template = Template.objects.create(
-            user=self.context['request'].user,
-            product=validated_data.get('product'),
-            policies=policies,
-            harden_script="\n\n".join(harden_script_parts),
-            check_script="\n\n".join(check_script_parts),
-            revert_script="\n\n".join(revert_script_parts)
-        )
+            # Write the policy object (with 'passed_value' injected) to the file
+            try:
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    json.dump(policy, f, indent=4)
+            except IOError as e:
+                print(f"Error saving policy file {file_path}: {e}")
+            # --- End Save Individual Policy JSON File ---
+
+
+        # 4. Finalize the database record
+        template.policies = updated_policies # Save policies with injected custom values/passed_value
+        template.harden_script = "\n\n".join(harden_script_parts)
+        template.check_script = "\n\n".join(check_script_parts)
+        template.revert_script = "\n\n".join(revert_script_parts)
+        template.save(update_fields=['policies', 'harden_script', 'check_script', 'revert_script']) 
+
         return template
 
 class TemplateDetailSerializer(serializers.ModelSerializer):
@@ -238,6 +292,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     audit_files = serializers.SerializerMethodField()
     script_json_url = serializers.SerializerMethodField()
     organization_id = serializers.PrimaryKeyRelatedField(source='organization', read_only=True)
+
     audit_parser = serializers.PrimaryKeyRelatedField(queryset=AuditParser.objects.all(), allow_null=True, required=False)
     page_viewer = serializers.CharField(read_only=True)
 
@@ -266,7 +321,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             url = os.path.join(settings.MEDIA_URL, script_path_fragment).replace('\\', '/')
             try:
                 mod_time = os.path.getmtime(full_system_path)
-                url_with_version = f"{url}?v={int(mod_time)}"
+                url_with_version = f"{url}?v={int(mod_time)}" 
             except OSError:
                 url_with_version = f"{url}?v={int(time.time())}"
             return request.build_absolute_uri(url_with_version) if request else url_with_version
@@ -293,14 +348,17 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             request = self.context.get('request')
             # Use the normalized path
             directory_path = os.path.join(settings.MEDIA_ROOT, normalized_path)
+            
             try:
                 if os.path.isdir(directory_path):
                     files = sorted(os.listdir(directory_path)) 
                     if 'metadata.json' in files:
                         files.insert(0, files.pop(files.index('metadata.json')))
+            
                     for filename in files:
                         if filename.endswith('.json'):
                             # Also use the normalized path for URL construction
+                            
                             file_path_fragment = os.path.join(normalized_path, filename)
                             full_file_path = os.path.join(settings.MEDIA_ROOT, file_path_fragment)
                             # Always use forward slashes for URLs
@@ -311,6 +369,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
                             except OSError:
                                 url_with_version = f"{file_url}?v={int(time.time())}" 
                             absolute_url = request.build_absolute_uri(url_with_version) if request else url_with_version
+                            
                             files_list.append({'name': filename, 'url': absolute_url}) 
             except FileNotFoundError:
                 return []
@@ -336,6 +395,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
     profile_picture_url = serializers.SerializerMethodField()
     class Meta:
+        
         model = UserProfile
         fields = [
             'id', 'username', 'email', 'first_name', 'last_name',

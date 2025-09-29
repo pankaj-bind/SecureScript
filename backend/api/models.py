@@ -13,6 +13,8 @@ from django.db.models.signals import post_save, pre_save, pre_delete
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
+from django.db.models import F
+
 
 # --- Model for Audit Parsers ---
 def get_audit_parser_upload_path(instance, filename):
@@ -21,7 +23,8 @@ def get_audit_parser_upload_path(instance, filename):
     into a directory named after the parser instance.
     """
     # Sanitize the instance name to create a valid directory name
-    dir_name = "".join(x for x in instance.name if x.isalnum() or x in " .-_").rstrip()
+    dir_name = "".join(x for x in instance.name 
+ if x.isalnum() or x in " .-_").rstrip()
     return os.path.join('audit_parsers', dir_name, filename)
 
 
@@ -189,21 +192,43 @@ class UserProfile(models.Model):
         verbose_name = "User Profile"
         verbose_name_plural = "User Profiles"
 
+# --- Helper for template policy directory ---
+def get_template_policy_dir(instance):
+    """
+    Determines the base directory for a template's policy files.
+    Uses the template ID as the unique folder name.
+    """
+    return os.path.join('template_policies', str(instance.id))
+
+
 # Template Model
 class Template(models.Model):
     id = models.CharField(max_length=14, primary_key=True, unique=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='templates')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='templates')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='products')
     policies = models.JSONField(default=list)
     # Store generated scripts
     harden_script = models.TextField(blank=True)
     check_script = models.TextField(blank=True)
     revert_script = models.TextField(blank=True)
+    
+    # NEW FIELD: Store relative path to the saved policy files
+    policy_files_dir = models.CharField(
+        max_length=512,
+        blank=True,
+        null=True,
+        editable=False,
+        help_text="Relative path to the saved individual policy JSON files."
+    )
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if not self.id:
             self.id = timezone.now().strftime('%d%m%Y%H%M%S')
+        # Set the directory path using the generated ID
+        if not self.policy_files_dir:
+            self.policy_files_dir = get_template_policy_dir(self)
         super(Template, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -255,7 +280,8 @@ def create_user_profile(sender, instance, created, **kwargs):
         UserProfile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
+def save_user_profile(sender, 
+ instance, **kwargs):
     if hasattr(instance, 'userprofile'):
         instance.userprofile.save()
 
@@ -340,10 +366,13 @@ def process_audit_file_receiver(sender, instance, created, **kwargs):
                     print(f"Warning: Could not read or parse metadata.json: {e}. Using fallback name.")
 
                 relative_output_path = os.path.relpath(generated_folder_path, settings.MEDIA_ROOT)
+                # Use F() expression for atomic update
                 Product.objects.filter(pk=instance.pk).update(
                     name=product_name,
-                    audit_json_output_path=relative_output_path
+                    audit_json_output_path=relative_output_path,
+                    updated_at=F('updated_at')
                 )
+
             # --- MODIFICATION END ---
         except Exception as e:
             print(f"Error processing audit file with parser {instance.audit_parser.name}: {e}")
