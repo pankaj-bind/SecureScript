@@ -4,7 +4,7 @@ import shutil
 from django.conf import settings
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
-from .models import Product, Report
+from .models import Product, Report, Template # Ensure Template is imported
 
 @receiver(pre_delete, sender=Product)
 def delete_product_files(sender, instance, **kwargs):
@@ -52,3 +52,18 @@ def delete_report_pdf_file(sender, instance, **kwargs):
                 os.remove(instance.pdf_file.path)
             except OSError as e:
                 print(f"Error deleting report file {instance.pdf_file.path}: {e}")
+
+@receiver(pre_delete, sender=Template)
+def delete_template_policy_files(sender, instance, **kwargs):
+    """
+    Deletes the template's policy files directory when a Template instance is deleted.
+    """
+    # Use the new field to determine the directory to delete
+    if instance.policy_files_dir:
+        dir_path = os.path.join(settings.MEDIA_ROOT, instance.policy_files_dir)
+        print(f"--- Deleting template policy directory: {dir_path} ---")
+        if os.path.isdir(dir_path):
+            shutil.rmtree(dir_path)
+            print("Template policy directory deleted successfully.")
+        else:
+            print("Template policy directory not found, skipping.")
