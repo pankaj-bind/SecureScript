@@ -65,7 +65,14 @@ def get_scripts_for_policy(policy):
 
 
 # --- Template Serializers ---
+class SimpleProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name']
+
+# MODIFIED: Included 'product' field
 class TemplateListSerializer(serializers.ModelSerializer):
+    product = SimpleProductSerializer(read_only=True) # ADDED
     organization_name = serializers.CharField(source='product.organization.name', read_only=True)
     benchmark_name = serializers.CharField(source='product.name', read_only=True)
     policy_count = serializers.SerializerMethodField()
@@ -74,7 +81,8 @@ class TemplateListSerializer(serializers.ModelSerializer):
         model = Template
         fields = [
             'id', 'organization_name', 'benchmark_name', 'policies',
-            'harden_script', 'check_script', 'revert_script', 'policy_count'
+            'harden_script', 'check_script', 'revert_script', 'policy_count',
+            'product' # ADDED 'product'
          ]
 
     def get_policy_count(self, obj):
@@ -172,15 +180,16 @@ class TemplateCreateSerializer(serializers.ModelSerializer):
 
         return template
 
-class TemplateDetailSerializer(serializers.ModelSerializer):
+# MODIFIED: TemplateDetailSerializer now inherits from TemplateListSerializer to include the 'product' field.
+class TemplateDetailSerializer(TemplateListSerializer):
     class Meta:
         model = Template
-        fields = ['harden_script', 'check_script', 'revert_script']
+        fields = TemplateListSerializer.Meta.fields # Inherit all fields, including 'product'
+    
+# --- Original TemplateDetailSerializer was removed here. ---
 
-
-# --- Serializers for the Report model ---
 class ReportListSerializer(serializers.ModelSerializer):
-    """Serializer for listing reports, includes the PDF URL."""
+# ... (rest of the ReportListSerializer is assumed to be the same)
     pdf_url = serializers.SerializerMethodField()
     filename = serializers.SerializerMethodField()
 
@@ -281,10 +290,11 @@ class SetNewPasswordSerializer(serializers.Serializer):
         # Password validation logic here
         return value
 
-class SimpleProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = ['id', 'name']
+# Original SimpleProductSerializer kept, needed for nested field in TemplateListSerializer
+# class SimpleProductSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Product
+#         fields = ['id', 'name']
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     cis_benchmark_pdf_url = serializers.SerializerMethodField()
