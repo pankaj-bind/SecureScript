@@ -1,399 +1,472 @@
 // src/pages/ProductDetailViewers/Windows 11 Standalone/ProductDetailPage.tsx
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { getProductDetails, ProductDetails, createTemplate, updateProductScripts } from '../../../services/authService';
-import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+import { Policy } from '../../../electron-api.d';
+import { createTemplate } from '../../../services/authService';
+import { ViewerPageProps } from '../../../pages/ProductDetailPage';
 
-// --- Type Interfaces ---
-interface AuditFile {
-    name: string;
-    url: string;
+const policyTypeConfigs: { [key: string]: any } = {
+  USER_RIGHTS_POLICY: {
+    apiCall: (policy: Policy, value: string) => window.electronAPI.setUserRight({ privilege: policy.right_type!, value_data: value, policyName: policy.description }),
+    getRecommendedText: (policy: Policy) => `Should be set to: "${(policy.value_data || 'No users assigned').replace(/"/g, '')}"`,
+    needsInput: (policy: Policy) => !policy.value_data || policy.value_data.includes('&&'),
+    inputType: 'textarea',
+  },
+  AUDIT_POLICY_SUBCATEGORY: {
+    apiCall: (policy: Policy) => window.electronAPI.setAuditPolicy({ subcategory: `"${policy.audit_policy_subcategory!}"`, value_data: policy.value_data }),
+    getRecommendedText: (policy: Policy) => `Should be set to: "${policy.value_data}"`,
+    needsInput: () => false,
+  },
+  PASSWORD_POLICY: {
+    apiCall: (policy: Policy, value: string) => window.electronAPI.setAccountPolicy({ policyName: policy.password_policy!, value }),
+    getRecommendedText: (policy: Policy) => `Recommended value is between ${policy.value_data?.replace(/"/g, '')}`,
+    needsInput: () => true,
+    inputType: 'number',
+  },
+  LOCKOUT_POLICY: {
+    apiCall: (policy: Policy, value: string) => window.electronAPI.setAccountPolicy({ policyName: policy.lockout_policy!, value }),
+    getRecommendedText: (policy: Policy) => `Recommended value is between ${policy.value_data?.replace(/"/g, '')}`,
+    needsInput: () => true,
+    inputType: 'number',
+  },
+  CHECK_ACCOUNT: {
+    apiCall: (policy: Policy, value: string) => window.electronAPI.setCheckAccount({ policy, newValue: value }),
+    getRecommendedText: (policy: Policy) => {
+        if (policy.value_data === 'Disabled') return 'Account should be disabled.';
+        if (policy.check_type === 'CHECK_NOT_EQUAL') return `Account name should not be "${policy.value_data}".`;
+        if (policy.check_type === 'CHECK_NOT_REGEX') return `Account name should not match regex "${policy.value_data}".`;
+        return 'Check account status or name.';
+    },
+    needsInput: (policy: Policy) => policy.check_type !== 'CHECK_EQUAL',
+    inputType: 'text',
+  },
+  AUDIT_POWERSHELL: {
+    apiCall: (policy: Policy) => window.electronAPI.setPowershellPolicy({ script: policy.powershell_args! }),
+    getRecommendedText: () => 'A PowerShell script must be run for this audit.',
+    needsInput: () => false,
+  },
+  ANONYMOUS_SID_SETTING: {
+    apiCall: (policy: Policy) => window.electronAPI.setSecurityOption({ policy }),
+    getRecommendedText: (policy: Policy) => `Should be set to: "${policy.value_data}"`,
+    needsInput: () => false,
+  },
+  BANNER_CHECK: {
+    apiCall: (policy: Policy, value: string) => window.electronAPI.setBannerPolicy({ policy, newValue: value }),
+    getRecommendedText: () => 'An appropriate legal banner should be configured.',
+    needsInput: () => true,
+    inputType: 'textarea',
+  },
+  REGISTRY_SETTING: {
+    apiCall: (policy: Policy, value: string) => window.electronAPI.setRegistrySetting({ policy, newValue: value }),
+    getRecommendedText: (policy: Policy) => `Value should be: ${policy.value_data}.`,
+    needsInput: (policy: Policy) => !!policy.variable,
+    inputType: (policy: Policy) => (policy.value_type === 'POLICY_MULTI_TEXT' ? 'textarea' : 'text'),
+  },
+};
+
+interface Status {
+  isLoading: boolean;
+  feedback: { type: 'success' | 'error'; message: string } | null;
 }
 
-interface Policy {
-    description: string;
-    info?: string;
-    Impact?: string;
-    reg_key?: string;
-    reg_item?: string;
-    value_data?: string;
-    value_type?: string;
-    reg_option?: string;
-    type?: string;
-    [key: string]: any;
-}
+const getPolicyKey = (policy: Policy): string => {
+  const displayPolicy = policy.check_type === 'CONDITIONAL' ? policy.then.report : policy;
+  return displayPolicy?.description || `policy-${Math.random()}`;
+};
 
-interface PolicyDetailViewProps {
-    policy: Policy | null;
-    customScripts: Record<string, any> | null;
-    onSave: (policyId: string, scripts: { hardeningScript: string; auditScript: string; revertHardeningScript: string; }) => Promise<void>;
-}
+// Helper component to render policy details
+const PolicyDetails: React.FC<{ policyData: any }> = ({ policyData }) => {
+    // Define the keys to display and their titles in a specific order
+    const displayKeys: { key: keyof Policy; title: string }[] = [
+        { key: 'info', title: 'Info' },
+        { key: 'Note', title: 'Note' },
+        { key: 'solution', title: 'Solution' },
+        { key: 'Impact', title: 'Impact' },
+        { key: 'reference', title: 'Reference' },
+        { key: 'see_also', title: 'See Also' },
+    ];
 
-// --- Helper Components ---
-const PolicyDetailView: React.FC<PolicyDetailViewProps> = ({ policy, customScripts, onSave }) => {
-    const [hardenScript, setHardenScript] = useState('');
-    const [checkScript, setCheckScript] = useState('');
-    const [revertScript, setRevertScript] = useState('');
-    const [executionResult, setExecutionResult] = useState<string | null>(null);
-    const [executionError, setExecutionError] = useState<string | null>(null);
-    const [isExecuting, setIsExecuting] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
-
-    useEffect(() => {
-        if (policy) {
-            setExecutionResult(null);
-            setExecutionError(null);
-            const policyIdMatch = policy.description.match(/^(\d+(\.\d+)*)/);
-            const policyId = policyIdMatch ? policyIdMatch[0] : null;
-
-            if (policyId && customScripts && customScripts[policyId]) {
-                const scripts = customScripts[policyId];
-                setHardenScript(scripts.hardeningScript || '# No custom hardening script provided.');
-                setCheckScript(scripts.auditScript || '# No custom audit script provided.');
-                setRevertScript(scripts.revertHardeningScript || '# No custom revert script provided.');
-                return;
-            }
-            
-            const { reg_key, reg_item, value_data, value_type, reg_option } = policy;
-
-            if (reg_option === 'MUST_NOT_EXIST' && value_data) {
-                const keyToDelete = value_data;
-                setHardenScript(`reg delete "${keyToDelete}" /f`);
-                setCheckScript(`reg query "${keyToDelete}"\n\n# This check PASSES if it returns an error (key not found).`);
-                setRevertScript(`# There is no automatic revert script for this policy.\n# This policy requires a registry key to be absent.`);
-                return;
-            }
-            
-            if (!reg_key || !reg_item) {
-                setHardenScript('# Invalid policy data: Missing registry key or item.');
-                setCheckScript('# Invalid policy data');
-                setRevertScript('# Invalid policy data');
-                return;
-            }
-
-            let regType = 'REG_SZ';
-            if (value_type === 'POLICY_DWORD') {
-                regType = 'REG_DWORD';
-            }
-
-            setHardenScript(`reg add "${reg_key}" /v "${reg_item}" /t ${regType} /d "${value_data}" /f`);
-            setCheckScript(`reg query "${reg_key}" /v "${reg_item}"`);
-            setRevertScript(`reg delete "${reg_key}" /v "${reg_item}" /f`);
-        }
-    }, [policy, customScripts]);
-
-    const handleExecute = async (action: 'apply' | 'check' | 'revert') => {
-        setIsExecuting(true);
-        setExecutionResult(null);
-        setExecutionError(null);
-        const scriptToRun = action === 'apply' ? hardenScript : action === 'check' ? checkScript : revertScript;
-        try {
-            let result;
-            if (action === 'apply') result = await window.electron.applyHarden(scriptToRun);
-            else if (action === 'check') result = await window.electron.checkStatus(scriptToRun);
-            else result = await window.electron.revertHardening(scriptToRun);
-            setExecutionResult(`Success: ${result || 'The operation completed successfully.'}`);
-        } catch (error: any) {
-            setExecutionError(`Error: ${error.toString()}`);
-        } finally {
-            setIsExecuting(false);
-        }
-    };
-
-    const handleSave = async () => {
-        if (!policy) return;
-        const policyIdMatch = policy.description.match(/^(\d+(\.\d+)*)/);
-        if (!policyIdMatch) {
-            setExecutionError("Cannot save: Policy description does not contain a valid ID.");
-            return;
-        }
-        const policyId = policyIdMatch[0];
-
-        setIsSaving(true);
-        await onSave(policyId, {
-            hardeningScript: hardenScript,
-            auditScript: checkScript,
-            revertHardeningScript: revertScript,
-        });
-        setIsSaving(false);
-    };
-
-
-    if (!policy) {
-        return <div className="p-6 text-gray-500">Select a policy to see the details.</div>;
-    }
-
-    const { description, info, Impact, reg_key, reg_item, value_data, value_type } = policy;
-
-    const CopyButton: React.FC<{ textToCopy: string }> = ({ textToCopy }) => {
-        const [copied, setCopied] = useState(false);
-        const handleCopy = () => {
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                setCopied(true);
-                setTimeout(() => setCopied(false), 2000);
-            });
-        };
-        return (
-            <button onClick={handleCopy} className="absolute top-2 right-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-xs font-semibold py-1 px-2 rounded">
-                {copied ? 'Copied!' : 'Copy'}
-            </button>
-        );
-    };
+    if (!policyData) return null;
 
     return (
-        <div className="p-6">
-            <h2 className="text-xl font-bold mb-4 pb-2 border-b dark:border-gray-600">{description}</h2>
-            
-            <div className="space-y-3 text-sm mb-6">
-                <p><strong>Details:</strong> <span className="text-gray-600 dark:text-gray-300" dangerouslySetInnerHTML={{ __html: info?.replace(/\\n/g, '<br>') || 'N/A' }}></span></p>
-                {Impact && <p><strong>Impact:</strong> <span className="text-gray-600 dark:text-gray-300">{Impact}</span></p>}
-                {reg_key && <p><strong>Registry Key:</strong> <code className="bg-gray-100 dark:bg-gray-700 p-1 rounded text-xs">{reg_key}</code></p>}
-                {reg_item && <p><strong>Registry Item:</strong> <code className="bg-gray-100 dark:bg-gray-700 p-1 rounded text-xs">{reg_item}</code></p>}
-                {value_data && <p><strong>Value:</strong> <code className="bg-gray-100 dark:bg-gray-700 p-1 rounded text-xs">{value_data} {value_type ? `(${value_type})` : ''}</code></p>}
-            </div>
-
-            <div className="flex space-x-2 mb-4">
-                 <button onClick={() => handleExecute('apply')} disabled={isExecuting} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isExecuting ? 'Working...' : 'Apply Hardening'}
-                </button>
-                <button onClick={() => handleExecute('check')} disabled={isExecuting} className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isExecuting ? 'Working...' : 'Check Status'}
-                </button>
-                <button onClick={() => handleExecute('revert')} disabled={isExecuting} className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg shadow-md transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isExecuting ? 'Working...' : 'Revert Hardening'}
-                </button>
-            </div>
-
-            {executionResult && <div className="mb-4 p-3 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 rounded-md text-xs font-mono whitespace-pre-wrap">{executionResult}</div>}
-            {executionError && <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded-md text-xs font-mono whitespace-pre-wrap">{executionError}</div>}
-            
-            <div className="space-y-4">
-                 <div>
-                    <h3 className="font-semibold mb-1">Hardening Script</h3>
-                    <div className="relative">
-                        <textarea value={hardenScript} onChange={e => setHardenScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
-                        <CopyButton textToCopy={hardenScript} />
+        <>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{policyData.description}</h2>
+            {displayKeys.map(({ key, title }) => (
+                policyData[key] && (
+                    <div key={key}>
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mt-4">{title}</h3>
+                        <p className="mt-1 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words">
+                            {String(policyData[key])}
+                        </p>
                     </div>
-                </div>
-                <div>
-                    <h3 className="font-semibold mb-1">Check Status Script</h3>
-                    <div className="relative">
-                        <textarea value={checkScript} onChange={e => setCheckScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
-                        <CopyButton textToCopy={checkScript} />
-                    </div>
-                </div>
-                <div>
-                    <h3 className="font-semibold mb-1">Revert Hardening Script</h3>
-                    <div className="relative">
-                        <textarea value={revertScript} onChange={e => setRevertScript(e.target.value)} rows={6} className="w-full p-2 font-mono text-xs bg-gray-100 dark:bg-gray-900 rounded-md resize-y border border-gray-300 dark:border-gray-600"></textarea>
-                        <CopyButton textToCopy={revertScript} />
-                    </div>
-                </div>
-            </div>
-            <div className="mt-6 flex justify-end">
-                <button onClick={handleSave} disabled={isSaving} className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed">
-                    {isSaving ? "Saving..." : "Save Scripts for this Policy"}
-                </button>
-            </div>
-        </div>
+                )
+            ))}
+        </>
     );
 };
 
 
-// --- Main Page Component ---
-const ProductDetailPage: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const [product, setProduct] = useState<ProductDetails | null>(null);
-    const [policies, setPolicies] = useState<Policy[]>([]);
-    const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(null);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedPolicies, setSelectedPolicies] = useState<Set<string>>(new Set());
-    const [templateMessage, setTemplateMessage] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [customScripts, setCustomScripts] = useState<Record<string, any> | null>(null);
+const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
+  const [policies, setPolicies] = useState<Policy[]>([]);
+  const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(null);
+  const [statuses, setStatuses] = useState<{ [key: string]: Status }>({});
+  const [policyValues, setPolicyValues] = useState<{ [key: string]: string }>({});
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [initialError, setInitialError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-    const naturalSort = useCallback((a: Policy, b: Policy) => {
-        const regex = /^(\d+(\.\d+)*)/;
-        const aMatch = a.description.match(regex);
-        const bMatch = b.description.match(regex);
-        if (!aMatch || !bMatch) return a.description.localeCompare(b.description);
-        const aParts = aMatch[0].split('.').map(Number);
-        const bParts = bMatch[0].split('.').map(Number);
-        const maxLength = Math.max(aParts.length, bParts.length);
-        for (let i = 0; i < maxLength; i++) {
-            const aVal = aParts[i] || 0;
-            const bVal = bParts[i] || 0;
-            if (aVal < bVal) return -1;
-            if (aVal > bVal) return 1;
-        }
-        return aParts.length - bParts.length;
-    }, []);
+  const [selectedForTemplate, setSelectedForTemplate] = useState<Set<string>>(new Set());
+  const [isCreatingTemplate, setIsCreatingTemplate] = useState(false);
+  const [templateFeedback, setTemplateFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
-    useEffect(() => {
-        if (!id) { setError('No product ID provided.'); setIsLoading(false); return; }
-        const fetchProductData = async () => {
-            try {
-                const productData = await getProductDetails(id);
-                setProduct(productData);
-                if (productData.script_json_url) {
-                    try {
-                        const scriptResponse = await axios.get(productData.script_json_url);
-                        setCustomScripts(scriptResponse.data);
-                    } catch (scriptError) {
-                        console.warn("Could not load remote script.json, dynamic scripts will be used.", scriptError);
-                        setCustomScripts({});
-                    }
-                } else {
-                     setCustomScripts({});
-                }
-                if (productData.audit_files && productData.audit_files.length > 0) {
-                    const filePromises = productData.audit_files
-                        .filter((file: AuditFile) => file.name !== 'metadata.json')
-                        .map((file: AuditFile) => axios.get(file.url).then(res => res.data));
-                    const policyContents = await Promise.all(filePromises);
-                    const validPolicies = policyContents.reduce((acc: Policy[], data) => {
-                        if (data && data.check_type === 'CONDITIONAL' && data.then && data.then.report) acc.push(data.then.report);
-                        else if (data && data.description) acc.push(data);
-                        return acc;
-                    }, []);
-                    validPolicies.sort(naturalSort);
-                    setPolicies(validPolicies);
-                    if (validPolicies.length > 0) setSelectedPolicy(validPolicies[0]);
-                }
-            } catch (err) {
-                setError('Could not fetch product data.');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchProductData();
-    }, [id, naturalSort]);
+  useEffect(() => {
+    const fetchAndSetupPolicies = async () => {
+        setInitialLoading(true);
+        setInitialError(null);
 
-    const filteredPolicies = useMemo(() => {
-        if (!searchQuery.trim()) return policies;
-        return policies.filter(policy => policy.description.toLowerCase().includes(searchQuery.toLowerCase()));
-    }, [searchQuery, policies]);
+        // **FIX:** Use the dynamic path from the product prop instead of a hardcoded one.
+        const policyDirectoryPath = product.audit_json_output_path;
 
-    const handlePolicySelection = (description: string) => {
-        setSelectedPolicies(prev => {
-            const newSelection = new Set(prev);
-            newSelection.has(description) ? newSelection.delete(description) : newSelection.add(description);
-            return newSelection;
-        });
-    };
-
-    const handleSelectAllChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const filteredDescriptions = filteredPolicies.map(p => p.description);
-        if (e.target.checked) {
-            setSelectedPolicies(prev => new Set([...prev, ...filteredDescriptions]));
-        } else {
-            setSelectedPolicies(prev => {
-                const newSet = new Set(prev);
-                filteredDescriptions.forEach(desc => newSet.delete(desc));
-                return newSet;
-            });
-        }
-    };
-    
-    const handleCreateTemplate = async () => {
-        if (selectedPolicies.size === 0) {
-            setTemplateMessage("Please select at least one policy to create a template.");
-            setTimeout(() => setTemplateMessage(null), 3000);
+        if (!policyDirectoryPath) {
+            setInitialError("Audit file path is not configured for this product.");
+            setInitialLoading(false);
             return;
         }
-        const selectedPolicyObjects = policies.filter(p => selectedPolicies.has(p.description));
-        const policiesToSave = selectedPolicyObjects.map(policy => {
-            const policyIdMatch = policy.description.match(/^(\d+(\.\d+)*)/);
-            const policyId = policyIdMatch ? policyIdMatch[0] : null;
-            let scripts = { hardeningScript: '', auditScript: '', revertHardeningScript: '' };
-            if (policyId && customScripts && customScripts[policyId]) {
-                scripts = customScripts[policyId];
+
+        if (!window.electronAPI) {
+            setInitialError('Electron API is not available.');
+            setInitialLoading(false);
+            return;
+        }
+
+        try {
+            const result = await window.electronAPI.getPolicyFiles(policyDirectoryPath);
+            if (result.success && result.data) {
+                const filteredPolicies = result.data.filter(p => {
+                    if (!p || !p.description) {
+                        const rawJson = JSON.stringify(p).toLowerCase();
+                        return !rawJson.includes('metadata.json') && !rawJson.includes('script.json');
+                    }
+                    const description = p.description.toLowerCase();
+                    return description !== 'metadata.json' && description !== 'script.json';
+                });
+
+                setPolicies(filteredPolicies);
+
+                if (filteredPolicies.length > 0) {
+                  setSelectedPolicy(filteredPolicies[0]);
+                }
+
+                const initialValues: { [key: string]: string } = {};
+                const initialStatuses: { [key: string]: Status } = {};
+
+                filteredPolicies.forEach(policy => {
+                    const key = getPolicyKey(policy);
+                    initialStatuses[key] = { isLoading: false, feedback: null };
+                    const policyType = (policy.check_type === 'CONDITIONAL') ? policy.condition?.rules?.[0]?.type : policy.type;
+                    const config = policyType ? policyTypeConfigs[policyType] : null;
+                    const targetPolicy = policy.check_type === 'CONDITIONAL' ? (policy.condition?.rules?.[0] || {}) : policy;
+
+                    if (config?.needsInput?.(targetPolicy)) {
+                        let defaultValue = '';
+                        if (targetPolicy.variable?.default) {
+                          defaultValue = targetPolicy.variable.default.replace(/\[|\]/g, '').split('..')[0];
+                        } else if ((targetPolicy.value_data || "").includes('..')) {
+                          defaultValue = targetPolicy.value_data!.match(/\[(\d+)\.\./)?.[1] || targetPolicy.value_data!.split('..')[0];
+                        } else if (targetPolicy.value_type === 'POLICY_MULTI_TEXT') {
+                          defaultValue = (targetPolicy.value_data || "").split('&&').map(s => s.trim().replace(/"/g, '')).join('\n');
+                        } else if (targetPolicy.account_type === 'ADMINISTRATOR_ACCOUNT') {
+                          defaultValue = 'LclAdmin';
+                        } else if (targetPolicy.account_type === 'GUEST_ACCOUNT') {
+                          defaultValue = 'LclGuest';
+                        } else if (targetPolicy.value_data) {
+                          defaultValue = targetPolicy.value_data.split('||')[0].replace(/"/g, '').trim();
+                        }
+                      initialValues[key] = defaultValue;
+                    }
+                });
+                setPolicyValues(initialValues);
+                setStatuses(initialStatuses);
+
+            } else {
+                setInitialError(result.message || 'Failed to load policies.');
             }
-            return { ...policy, ...scripts };
-        });
-        try {
-            await createTemplate({ product: product!.id, policies: policiesToSave });
-            setTemplateMessage("Template created successfully!");
-            setSelectedPolicies(new Set());
-        } catch (error) {
-            console.error("Template creation failed:", error);
-            setTemplateMessage("Failed to create template.");
+        } catch (err: any) {
+            setInitialError(`An error occurred while fetching policies: ${err.message}`);
         } finally {
-            setTimeout(() => setTemplateMessage(null), 3000);
+            setInitialLoading(false);
         }
     };
+    fetchAndSetupPolicies();
+  }, [product.audit_json_output_path]); // Depend on the path from the product prop
 
-    const handleSavePolicyScripts = async (policyId: string, newScripts: { hardeningScript: string; auditScript: string; revertHardeningScript: string; }) => {
-        if (!product || !customScripts) return;
+  const filteredPolicies = useMemo(() => {
+    if (!searchQuery.trim()) {
+        return policies;
+    }
+    const lowercasedQuery = searchQuery.toLowerCase();
+    return policies.filter(policy => {
+        const displayPolicy = policy.check_type === 'CONDITIONAL' ? policy.then.report : policy;
+        return displayPolicy.description.toLowerCase().includes(lowercasedQuery);
+    });
+  }, [searchQuery, policies]);
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+        const allFilteredKeys = new Set(filteredPolicies.map(getPolicyKey));
+        setSelectedForTemplate(allFilteredKeys);
+    } else {
+        setSelectedForTemplate(new Set());
+    }
+  };
+
+  const isAllSelected = filteredPolicies.length > 0 && filteredPolicies.every(p => selectedForTemplate.has(getPolicyKey(p)));
+
+
+  const handleTemplateSelection = (policyKey: string, isChecked: boolean) => {
+    setSelectedForTemplate(prev => {
+        const newSet = new Set(prev);
+        if (isChecked) {
+            newSet.add(policyKey);
+        } else {
+            newSet.delete(policyKey);
+        }
+        return newSet;
+    });
+  };
+
+  const handleCreateTemplate = async () => {
+    if (selectedForTemplate.size === 0) {
+        setTemplateFeedback({ type: 'error', message: 'Please select at least one policy.' });
+        return;
+    }
+    setIsCreatingTemplate(true);
+    setTemplateFeedback(null);
+    try {
+        const policiesToSubmit = policies.filter(p => selectedForTemplate.has(getPolicyKey(p)));
         
-        setTemplateMessage(null);
-        setError(null);
+        await createTemplate({
+            product: product.id,
+            policies: policiesToSubmit,
+        });
 
-        const updatedCustomScripts = {
-            ...customScripts,
-            [policyId]: newScripts
-        };
+        setTemplateFeedback({ type: 'success', message: 'Template created successfully! Redirecting...' });
+        setTimeout(() => navigate('/dashboard'), 2000);
 
-        try {
-            await updateProductScripts(product.id, updatedCustomScripts);
-            setCustomScripts(updatedCustomScripts); // Update parent state
-            setTemplateMessage("Scripts saved successfully!");
-        } catch (err) {
-            setError("Failed to save updated scripts to the server.");
-            console.error("Failed to save scripts:", err);
-        } finally {
-            setTimeout(() => setTemplateMessage(null), 3000);
-        }
-    };
+    } catch (err: any) {
+        setTemplateFeedback({ type: 'error', message: err.response?.data?.error || 'Failed to create template.' });
+    } finally {
+        setIsCreatingTemplate(false);
+    }
+  };
+
+  const handlePolicySubmit = async (policy: Policy) => {
+    const key = getPolicyKey(policy);
+    const policyType = (policy.check_type === 'CONDITIONAL') ? policy.condition?.rules?.[0]?.type : policy.type;
+    const config = policyType ? policyTypeConfigs[policyType] : null;
+    const policyToApply = policy.check_type === 'CONDITIONAL' ? (policy.condition?.rules?.[0] || null) : policy;
     
-    if (isLoading) return <div className="text-center p-10">Loading product details...</div>;
-    if (!product) return <div className="text-center p-10"><p className="text-red-500">{error || 'Product not found.'}</p><Link to="/" className="text-blue-500">Back to Directory</Link></div>;
-    const isAllFilteredSelected = filteredPolicies.length > 0 && filteredPolicies.every(p => selectedPolicies.has(p.description));
+    if (!config || !policyToApply || !key) {
+      setStatuses(prev => ({ ...prev, [key]: { isLoading: false, feedback: { type: 'error', message: 'Invalid policy configuration.' } } }));
+      return;
+    }
 
+    setStatuses(prev => ({ ...prev, [key]: { isLoading: true, feedback: null } }));
+
+    try {
+      const result = await config.apiCall(policyToApply, policyValues[key]);
+      setStatuses(prev => ({ ...prev, [key]: { isLoading: false, feedback: { type: result.success ? 'success' : 'error', message: result.message } } }));
+    } catch (err: any) {
+      setStatuses(prev => ({ ...prev, [key]: { isLoading: false, feedback: { type: 'error', message: `An IPC error occurred: ${err.message}` } } }));
+    }
+  };
+  
+  const selectedPolicyConfig = useMemo(() => {
+    if (!selectedPolicy) return null;
+    const policyType = (selectedPolicy.check_type === 'CONDITIONAL') ? selectedPolicy.condition?.rules?.[0]?.type : selectedPolicy.type;
+    return policyType ? policyTypeConfigs[policyType] : null;
+  }, [selectedPolicy]);
+
+  const renderPolicyInput = (policy: Policy) => {
+    const key = getPolicyKey(policy);
+    const config = selectedPolicyConfig;
+    const targetPolicy = policy.check_type === 'CONDITIONAL' ? (policy.condition?.rules?.[0] || {}) : policy;
+
+    if (!config || !config.needsInput?.(targetPolicy)) return null;
+
+    const inputType = typeof config.inputType === 'function' ? config.inputType(targetPolicy) : config.inputType;
+    const InputComponent = inputType === 'textarea' ? 'textarea' : 'input';
+    
     return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <header className="mb-8">
-                {product.organization_id && <Link to={`/organization/${product.organization_id}`} className="text-blue-600 dark:text-blue-400 hover:underline text-sm">← Back to Organization</Link>}
-                <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mt-2">{product.name}</h1>
-                <p className="text-lg text-gray-600 dark:text-gray-400">Security Policies</p>
-            </header>
-            <div className="flex flex-col md:flex-row gap-8">
-                <aside className="md:w-1/3 lg:w-1/4">
-                    <input type="search" placeholder="Search policies..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full py-2 px-3 text-gray-700 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-200 mb-4" />
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Showing {filteredPolicies.length} of {policies.length} policies.</p>
-                    <div className="space-y-2">
-                        <button onClick={handleCreateTemplate} className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700">Create Template ({selectedPolicies.size})</button>
-                        {templateMessage && <p className={`text-sm text-center mt-2 ${error ? 'text-red-500' : 'text-green-500'}`}>{templateMessage || error}</p>}
+      <InputComponent
+        type={inputType === 'textarea' ? undefined : inputType}
+        value={policyValues[key] || ''}
+        rows={inputType === 'textarea' ? 5 : undefined}
+        onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setPolicyValues(prev => ({ ...prev, [key]: e.target.value }))}
+        className="block w-full max-w-xs rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition px-4 py-2"
+        placeholder="Enter required value..."
+      />
+    );
+  };
+
+  if (initialLoading) return <div className="text-center p-10 dark:text-white">Loading policies...</div>;
+  if (initialError) return <div className="text-center p-10 text-red-500">{initialError}</div>;
+
+  return (
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-4">
+            {product.organization_id && (
+            <Link to={`/organization/${product.organization_id}`} className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
+                ← Back to Organization
+            </Link>
+            )}
+      </div>
+      
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6" title={product.name}>
+        {product.name}
+      </h1>
+
+        <div className="flex h-[calc(100vh-12rem)] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
+            {/* Left Sidebar */}
+            <aside className="w-[450px] flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+                <div className="p-4 border-b border-gray-200 dark:border-gray-600">
+                    <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300">Security Policies</h2>
+                    
+                    <div className="relative mt-4">
+                        <input
+                            type="text"
+                            placeholder="Search policies..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full p-2 pl-4 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm"
+                        />
                     </div>
-                    <div className="border-t border-gray-200 dark:border-gray-700 mt-4 pt-4">
-                        <div className="flex items-center">
-                            <input id="select-all-checkbox" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={isAllFilteredSelected} onChange={handleSelectAllChange} disabled={filteredPolicies.length === 0} />
-                            <label htmlFor="select-all-checkbox" className="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">Select All ({filteredPolicies.length} visible)</label>
+                    
+                    <div className="flex justify-between items-center mt-3 text-sm text-gray-500 dark:text-gray-400">
+                        <span>Showing {filteredPolicies.length} of {policies.length} policies</span>
+                    </div>
+                </div>
+
+                <div className="p-4 border-b border-gray-200 dark:border-gray-600 space-y-3">
+                    {templateFeedback && (
+                        <div className={`p-2 rounded-md text-sm text-center ${templateFeedback.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                            {templateFeedback.message}
+                        </div>
+                    )}
+                    <button
+                        onClick={handleCreateTemplate}
+                        disabled={selectedForTemplate.size === 0 || isCreatingTemplate}
+                        className="w-full h-10 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                    >
+                        {isCreatingTemplate ? 'Creating...' : `Create Template (${selectedForTemplate.size})`}
+                    </button>
+
+                    <div className="flex items-center">
+                        <input
+                            id="select-all"
+                            type="checkbox"
+                            className="h-4 w-4 rounded border-gray-300 dark:border-gray-500 text-blue-600 focus:ring-blue-500 bg-gray-100 dark:bg-gray-900"
+                            checked={isAllSelected}
+                            onChange={handleSelectAll}
+                            disabled={filteredPolicies.length === 0}
+                        />
+                        <label htmlFor="select-all" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+                            Select All ({filteredPolicies.length} visible)
+                        </label>
+                    </div>
+                </div>
+
+                <ul className="overflow-y-auto flex-grow">
+                    {filteredPolicies.map((policy) => {
+                        const displayPolicy = policy.check_type === 'CONDITIONAL' ? policy.then.report : policy;
+                        const key = getPolicyKey(policy);
+                        const isSelectedForTemplate = selectedForTemplate.has(key);
+                        const isSelectedForView = selectedPolicy && getPolicyKey(selectedPolicy) === key;
+                        return (
+                            <li key={key} className={`flex items-center transition-colors border-b border-gray-200 dark:border-gray-700 relative ${
+                                isSelectedForView ? 'bg-blue-50 dark:bg-blue-900/30' : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                            }`}>
+                                {isSelectedForView && <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600 rounded-r-full"></div>}
+                                <div className="pl-4">
+                                    <input
+                                        type="checkbox"
+                                        aria-label={`Select policy ${displayPolicy.description}`}
+                                        className="h-4 w-4 rounded border-gray-300 dark:border-gray-500 text-blue-600 focus:ring-blue-500 bg-gray-100 dark:bg-gray-900"
+                                        checked={isSelectedForTemplate}
+                                        onChange={(e) => handleTemplateSelection(key, e.target.checked)}
+                                    />
+                                </div>
+                                <button
+                                onClick={() => setSelectedPolicy(policy)}
+                                className={`w-full text-left p-4 pl-3 text-sm font-medium ${
+                                    isSelectedForView ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'
+                                }`}
+                                >
+                                {displayPolicy.description}
+                                </button>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </aside>
+
+            {/* Right Panel */}
+            <main className="w-2/3 overflow-y-auto p-8">
+                {!selectedPolicy ? (
+                    <div className="flex items-center justify-center h-full">
+                        <div className="text-center">
+                        <p className="text-xl text-gray-500 dark:text-gray-400">Select a policy from the list to view its details.</p>
                         </div>
                     </div>
-                    <ul className="space-y-1 overflow-y-auto max-h-[65vh] pr-2 rounded-md mt-2">
-                        {filteredPolicies.map(policy => (
-                            <li key={policy.description} className="flex items-center">
-                                <input type="checkbox" checked={selectedPolicies.has(policy.description)} onChange={() => handlePolicySelection(policy.description)} className="mr-2" />
-                                <button onClick={() => setSelectedPolicy(policy)} className={`w-full text-left px-3 py-2 rounded-md transition-colors duration-200 text-sm ${selectedPolicy?.description === policy.description ? 'bg-blue-600 text-white font-semibold' : 'bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700'}`}>{policy.description}</button>
-                            </li>
-                        ))}
-                    </ul>
-                </aside>
-                <main className="md:w-2/3 lg:w-3/4">
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md min-h-[70vh]">
-                        <PolicyDetailView 
-                            policy={selectedPolicy} 
-                            customScripts={customScripts}
-                            onSave={handleSavePolicyScripts}
-                         />
-                    </div>
-                </main>
-            </div>
+                ) : (
+                (() => {
+                    const key = getPolicyKey(selectedPolicy);
+                    const status = statuses[key];
+                    const policyToDisplay = selectedPolicy.check_type === 'CONDITIONAL' && selectedPolicy.then?.report 
+                        ? selectedPolicy.then.report 
+                        : selectedPolicy;
+
+                    return (
+                        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 space-y-4">
+                            <PolicyDetails policyData={policyToDisplay} />
+
+                            <div className="mt-6">
+                                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Recommended State</h3>
+                                <p className="mt-1 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words">
+                                    {selectedPolicyConfig?.getRecommendedText(
+                                        selectedPolicy.check_type === 'CONDITIONAL' 
+                                            ? (selectedPolicy.condition?.rules?.[0] || {}) 
+                                            : selectedPolicy
+                                    )}
+                                </p>
+                            </div>
+
+                            {status?.feedback && (
+                                <div className={`p-4 mt-4 rounded-md text-sm break-words whitespace-pre-wrap ${status.feedback.type === 'success' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
+                                    {status.feedback.message}
+                                </div>
+                            )}
+                            
+                            <div className="flex flex-col sm:flex-row justify-end items-center gap-4 pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
+                                {renderPolicyInput(selectedPolicy)}
+                                <button
+                                    onClick={() => handlePolicySubmit(selectedPolicy)}
+                                    disabled={Object.values(statuses).some(s => s.isLoading)}
+                                    className="h-12 w-full sm:w-auto px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400 transition-colors"
+                                >
+                                    {status?.isLoading ? 'Applying...' : 'Apply Policy'}
+                                </button>
+                            </div>
+                        </div>
+                    );
+                })()
+                )}
+            </main>
         </div>
-    );
+    </div>
+  );
 };
 
 export default ProductDetailPage;

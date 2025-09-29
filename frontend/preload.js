@@ -1,15 +1,21 @@
-// preload.js
-
-console.log('--- PRELOAD SCRIPT LOADED ---');
+// frontend/preload.js
 
 const { contextBridge, ipcRenderer } = require('electron');
 
-// Expose protected methods that allow the renderer process to use the ipcRenderer without exposing the entire object
-contextBridge.exposeInMainWorld('electron', {
-  applyHarden: (script, password) => ipcRenderer.invoke('apply-harden', script, password),
-  // MODIFIED: Pass the second argument to the main process
-  checkStatus: (script, reg_option) => ipcRenderer.invoke('check-status', script, reg_option),
-  revertHardening: (script, password) => ipcRenderer.invoke('revert-hardening', script, password),
-  // --- ADD THIS LINE ---
+contextBridge.exposeInMainWorld('electronAPI', {
+  // NEW
   getSystemInfo: () => ipcRenderer.invoke('get-system-info'),
+  runScript: (data) => ipcRenderer.invoke('run-script', data),
+  
+  // Existing
+  getPolicyFiles: (dirPath) => ipcRenderer.invoke('get-policy-files', dirPath),
+  getPolicyCounts: (basePath) => ipcRenderer.invoke('get-policy-counts', basePath),
+  setUserRight: (policy) => ipcRenderer.invoke('set-user-right', policy),
+  setAuditPolicy: (policy) => ipcRenderer.invoke('set-audit-policy', policy),
+  setAccountPolicy: (policy) => ipcRenderer.invoke('set-account-policy', policy),
+  setCheckAccount: (data) => ipcRenderer.invoke('set-check-account', data),
+  setPowershellPolicy: (data) => ipcRenderer.invoke('set-powershell-policy', data),
+  setSecurityOption: (data) => ipcRenderer.invoke('set-security-option', data),
+  setBannerPolicy: (data) => ipcRenderer.invoke('set-banner-policy', data),
+  setRegistrySetting: (data) => ipcRenderer.invoke('set-registry-setting', data),
 });

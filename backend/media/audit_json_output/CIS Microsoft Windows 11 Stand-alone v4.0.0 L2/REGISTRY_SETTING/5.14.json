@@ -1,0 +1,14 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "5.14 (L2) Ensure 'Problem Reports and Solutions Control Panel Support (wercplsupport)' is set to 'Disabled'",
+  "info": "This service provides support for viewing, sending and deletion of system-level problem reports for the Problem Reports and Solutions control panel.\n\nThe recommended state for this setting is: Disabled\n\nThis service is involved in the process of displaying/reporting issues & solutions to/from Microsoft. In a high security environment, preventing this information from being sent can help reduce privacy concerns for sensitive corporate information.",
+  "solution": "\"To establish the recommended configuration, run the following PowerShell command:\n\nSet-Service -Name wercplsupport -StartupType Disabled",
+  "Impact": "Sending and viewing system-level problem reports and solutions to and from Microsoft may no longer function.\"",
+  "reference": "800-171|3.4.2,800-171|3.4.6,800-171|3.4.7,800-171r3|03.04.02,800-171r3|03.04.06,800-53|CM-6,800-53|CM-7,800-53r5|CM-6,800-53r5|CM-7,CSCv7|9.2,CSCv8|4.8,CSF|PR.IP-1,CSF|PR.PT-3,CSF2.0|DE.CM-09,CSF2.0|PR.PS-01,GDPR|32.1.b,HIPAA|164.306(a)(1),ISO-27001-2022|A.8.9,ITSG-33|CM-6,ITSG-33|CM-7,LEVEL|2A,NIAv2|SS15a,PCI-DSSv3.2.1|2.2.2,SWIFT-CSCv1|2.3",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/22007",
+  "value_type": "POLICY_DWORD",
+  "value_data": "4",
+  "reg_key": "HKLM\\System\\CurrentControlSet\\Services\\wercplsupport",
+  "reg_item": "Start",
+  "reg_option": "CAN_NOT_BE_NULL"
+}
