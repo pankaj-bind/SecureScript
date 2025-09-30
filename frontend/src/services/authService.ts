@@ -54,10 +54,17 @@ export interface Report {
     filename: string;
 }
 
+// **MODIFIED INTERFACE**
 export interface ReportPayload {
     report_type: 'Audit-Report' | 'Hardening-Report' | 'Revert-Hardening-Report';
     serial_number: string;
-    policies: { name: string; status: 'Passed' | 'Failed' }[];
+    policies: { 
+        name: string; 
+        status: 'Passed' | 'Failed';
+        // NEW FIELDS
+        previous_state: string;
+        current_state: string;
+    }[];
 }
 
 
