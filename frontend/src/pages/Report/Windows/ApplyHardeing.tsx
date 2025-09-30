@@ -18,11 +18,17 @@ const policyTypeConfigs: { [key: string]: any } = {
     getRecommendedText: (policy: Partial<Policy>) => `Should be set to: "${(policy.value_data || 'No users assigned').replace(/"/g, '')}"`,
     needsInput: (policy: Partial<Policy>) => !policy.value_data || (policy.value_data && policy.value_data.includes('&&')),
     inputType: 'textarea',
+    // NEW: Function to extract the applied/desired value for reporting (e.g., from the input/default)
+    getAppliedValue: (policy: Partial<Policy>, inputValue: string) => {
+        // For user rights, the value is typically a list of SIDs/users. We just report what was attempted to be set.
+        return inputValue || policy.value_data || 'No One';
+    },
   },
   AUDIT_POLICY_SUBCATEGORY: {
     apiCall: (policy: Policy) => window.electronAPI.setAuditPolicy({ subcategory: `"${policy.audit_policy_subcategory!}"`, value_data: policy.value_data }),
     getRecommendedText: (policy: Partial<Policy>) => `Should be set to: "${policy.value_data}"`,
     needsInput: () => false,
+    getAppliedValue: (policy: Partial<Policy>) => policy.value_data || 'None',
   },
   PASSWORD_POLICY: {
     apiCall: (policy: Policy, value: string) => window.electronAPI.setAccountPolicy({ policyName: policy.password_policy!, value }),
@@ -36,6 +42,7 @@ const policyTypeConfigs: { [key: string]: any } = {
         return !['COMPLEXITY_REQUIREMENTS', 'REVERSIBLE_ENCRYPTION', 'LOCKOUT_ADMINS'].includes(policy.password_policy!);
     },
     inputType: 'number',
+    getAppliedValue: (policy: Partial<Policy>, inputValue: string) => inputValue || policy.value_data,
   },
   LOCKOUT_POLICY: {
     apiCall: (policy: Policy, value: string) => window.electronAPI.setAccountPolicy({ 
@@ -50,6 +57,7 @@ const policyTypeConfigs: { [key: string]: any } = {
         return policy.lockout_policy !== 'LOCKOUT_ADMINS';
     },
     inputType: 'number',
+    getAppliedValue: (policy: Partial<Policy>, inputValue: string) => inputValue || policy.value_data,
   },
   CHECK_ACCOUNT: {
     apiCall: (policy: Policy, value: string) => window.electronAPI.setCheckAccount({ policy, newValue: value }),
@@ -61,29 +69,34 @@ const policyTypeConfigs: { [key: string]: any } = {
     },
     needsInput: (policy: Partial<Policy>) => policy.check_type !== 'CHECK_EQUAL',
     inputType: 'text',
+    getAppliedValue: (policy: Partial<Policy>, inputValue: string) => inputValue || policy.value_data || 'N/A',
   },
   AUDIT_POWERSHELL: {
     apiCall: (policy: 
  Policy) => window.electronAPI.setPowershellPolicy({ script: policy.powershell_args! }),
     getRecommendedText: () => 'A PowerShell script must be run for this audit.',
     needsInput: () => false,
+    getAppliedValue: () => 'Executed Script',
   },
   ANONYMOUS_SID_SETTING: {
     apiCall: (policy: Policy) => window.electronAPI.setSecurityOption({ policy }),
     getRecommendedText: (policy: Partial<Policy>) => `Should be set to: "${policy.value_data}"`,
     needsInput: () => false,
+    getAppliedValue: (policy: Partial<Policy>) => policy.value_data || 'None',
   },
   BANNER_CHECK: {
     apiCall: (policy: Policy, value: string) => window.electronAPI.setBannerPolicy({ policy, newValue: value }),
     getRecommendedText: () => 'An appropriate legal banner should be configured.',
     needsInput: () => true,
     inputType: 'textarea',
+    getAppliedValue: (policy: Partial<Policy>, inputValue: string) => inputValue || policy.value_data,
   },
   REGISTRY_SETTING: {
     apiCall: (policy: Policy, value: string) => window.electronAPI.setRegistrySetting({ policy, newValue: value }),
     getRecommendedText: (policy: Partial<Policy>) => `Value should be: ${policy.value_data}.`,
     inputType: (policy: Partial<Policy>) => (policy.value_type === 'POLICY_MULTI_TEXT' ? 'textarea' : 'text'),
     needsInput: (policy: Partial<Policy>) => !!policy.variable,
+    getAppliedValue: (policy: Partial<Policy>, inputValue: string) => inputValue || policy.value_data,
   },
 };
 // --- END Policy Configuration ---
@@ -299,12 +312,12 @@ const ApplyHardeingPage: React.FC<ViewerPageProps> = ({ product }) => {
     let allSucceeded = true;
     let successfulPolicies: string[] = [];
     let failedPolicies: string[] = [];
-    // NEW: Array to hold the final status for the report payload
-    const finalReportResults: { name: string; status: 'Passed' | 'Failed' }[] = [];
+    
+    // UPDATED: Array to hold the final status for the report payload, now including state details
+    const finalReportResults: (ReportPayload['policies'][0] & { previous_state: string; current_state: string })[] = [];
 
 
     // Reset all statuses before starting the batch application
-    // We set initial loading states here, but rely on the local array for final report payload
     setStatuses(Object.keys(statuses).reduce((acc, key) => ({ ...acc, [key]: { isLoading: false, feedback: null } }), {}));
 
 
@@ -317,10 +330,25 @@ const ApplyHardeingPage: React.FC<ViewerPageProps> = ({ product }) => {
         const config = policyType ? policyTypeConfigs[policyType] : null;
         const policyToSubmit = policy.check_type === 'CONDITIONAL' ? (policy.condition?.rules?.[0] || policy) : policy;
 
+        // Determine the value that was attempted to be set
+        const valueToSubmit = config?.needsInput?.(policyToSubmit) ? policyValues[key] : policyToSubmit.value_data;
+        const currentStateValue = config?.getAppliedValue?.(policyToSubmit, valueToSubmit) || 'N/A';
+        
+        // Placeholder for the actual system's "Previous State" before hardening
+        // Using the passed_value from the template as a proxy for the system's previous desired state, 
+        // or a simple placeholder string if unavailable.
+        // NOTE: For true previous state, a pre-hardening audit function is needed in main.js
+        const previousStateValue = policy.passed_value || 'Not Audited (Baseline)'; 
+        
         if (!config) {
             allSucceeded = false;
             failedPolicies.push(policy.description);
-            finalReportResults.push({ name: policy.description, status: 'Failed' }); // Collect failure
+            finalReportResults.push({ 
+                name: policy.description, 
+                status: 'Failed',
+                previous_state: previousStateValue,
+                current_state: currentStateValue
+            }); // Collect failure
             setStatuses(prev => ({ ...prev, [key]: { isLoading: false, feedback: { type: 'error', message: 'Invalid policy configuration.' } } }));
             continue;
         }
@@ -329,23 +357,37 @@ const ApplyHardeingPage: React.FC<ViewerPageProps> = ({ product }) => {
         setStatuses(prev => ({ ...prev, [key]: { isLoading: true, feedback: null } }));
 
         try {
-            const valueToSubmit = config.needsInput(policyToSubmit) ? policyValues[key] : policyToSubmit.value_data;
             const result = await config.apiCall(policyToSubmit, valueToSubmit);
 
             if (result.success) {
                 successfulPolicies.push(policy.description);
-                finalReportResults.push({ name: policy.description, status: 'Passed' }); // Collect success
+                finalReportResults.push({ 
+                    name: policy.description, 
+                    status: 'Passed',
+                    previous_state: previousStateValue,
+                    current_state: currentStateValue 
+                }); // Collect success
                 setStatuses(prev => ({ ...prev, [key]: { isLoading: false, feedback: { type: 'success', message: `Applied: ${result.message}` } } }));
             } else {
                 allSucceeded = false;
                 failedPolicies.push(policy.description);
-                finalReportResults.push({ name: policy.description, status: 'Failed' }); // Collect failure
+                finalReportResults.push({ 
+                    name: policy.description, 
+                    status: 'Failed',
+                    previous_state: previousStateValue,
+                    current_state: currentStateValue 
+                }); // Collect failure
                 setStatuses(prev => ({ ...prev, [key]: { isLoading: false, feedback: { type: 'error', message: `Failed: ${result.message}` } } }));
             }
         } catch (err: any) {
             allSucceeded = false;
             failedPolicies.push(policy.description);
-            finalReportResults.push({ name: policy.description, status: 'Failed' }); // Collect failure
+            finalReportResults.push({ 
+                name: policy.description, 
+                status: 'Failed',
+                previous_state: previousStateValue,
+                current_state: currentStateValue 
+            }); // Collect failure
             setStatuses(prev => ({ ...prev, [key]: { isLoading: false, feedback: { type: 'error', message: `IPC Error: ${err.message}` } } }));
         }
     }
@@ -354,19 +396,16 @@ const ApplyHardeingPage: React.FC<ViewerPageProps> = ({ product }) => {
     try {
         const sysInfo = await window.electronAPI.getSystemInfo(); 
         if (!sysInfo.success || !sysInfo.serialNumber) {
-            // Note: The previous logic failed here. With the PowerShell fix in main.js, this should succeed.
-            // If it still fails, the error is caught below, but we can't create a report without the serial number.
+            // Note: The previous logic failed here. This should now be fixed in main.js using PowerShell.
             throw new Error(sysInfo.message || "Could not retrieve system serial number for reporting. Report generation aborted.");
         }
         const serialNumber = sysInfo.serialNumber;
         
-        // OLD CODE: const results: { name: string; status: 'Passed' | 'Failed' }[] = policiesToApply.map(policy => { ... });
-        // NEW CODE: Use the locally collected `finalReportResults` which are definitive.
-
+        // Use the collected results array for the report payload
         const templatePayload: ReportPayload = {
             report_type: 'Hardening-Report',
             serial_number: serialNumber,
-            policies: finalReportResults, // Use the collected results
+            policies: finalReportResults, // Now contains status, previous_state, and current_state
         };
         
         await createReport(templateId!, templatePayload);
@@ -375,12 +414,10 @@ const ApplyHardeingPage: React.FC<ViewerPageProps> = ({ product }) => {
         if (failedPolicies.length === 0) {
             setApplyFeedback({ type: 'success', message: `Hardening applied successfully to ${successfulPolicies.length} policies! A Hardening Report was generated and saved to your dashboard.` });
         } else {
-            // Note: The image shows 'Hardening applied. Error during report generation...' which is now handled as an 'error' type message.
             setApplyFeedback({ type: 'error', message: `Hardening completed with ${failedPolicies.length} failure(s). A Hardening Report was generated and saved to your dashboard.` });
         }
 
     } catch (error: any) {
-        // This catch block mainly handles the failure to get SerialNumber or createReport API failure
         let finalMessage = `Hardening applied. Error during report generation: ${error.message}`;
         if (failedPolicies.length > 0) {
              finalMessage = `Hardening completed with failures. Error during report generation: ${error.message}`;
@@ -616,7 +653,7 @@ const ApplyHardeingPage: React.FC<ViewerPageProps> = ({ product }) => {
 
                   {status?.feedback && (
                     <div className={`p-4 mt-4 rounded-md text-sm break-words whitespace-pre-wrap ${status.feedback.type === 'success'
-                      ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
+                      ? 'bg-green-100 text-green-800 dark:bg-green-900/50' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
                       {status.feedback.message}
                     </div>
                   )}
