@@ -61,8 +61,8 @@ export interface ReportPayload {
     policies: { 
         name: string; 
         status: 'Passed' | 'Failed';
-        // NEW FIELDS
-        previous_state: string;
+        // MODIFIED: Made previous_state optional
+        previous_state?: string;
         current_state: string;
     }[];
 }

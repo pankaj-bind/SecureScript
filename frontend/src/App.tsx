@@ -1,8 +1,9 @@
-// src/App.tsx (Final Modified)
+// src/App.tsx
 
-import React, { lazy, Suspense } from 'react'; // ADD lazy, Suspense
-import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom'; // ADD useParams for the wrapper
-import { getTemplateDetails, getProductDetails, ProductDetails, Template } from './services/authService'; // ADD imports for fetching data
+import React, { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import { getTemplateDetails, getProductDetails, ProductDetails, Template } from './services/authService';
+import { ViewerPageProps as ProductViewerPageProps } from './pages/ProductDetailPage';
 
 // Import Context Providers
 import { ThemeProvider } from './contexts/ThemeContext';
@@ -22,27 +23,29 @@ import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import DashboardPage from './pages/DashboardPage';
 import OrganizationDetailPage from './pages/OrganizationDetailPage';
-import ProductDetailPageRouter from './pages/ProductDetailPage'; 
+import ProductDetailPageRouter from './pages/ProductDetailPage';
 import ProfilePage from './pages/ProfilePage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import AuditParserUploadPage from './pages/AuditParserUploadPage';
-import TemplateEditPage from './pages/TemplateEditPage'; 
+import TemplateEditPage from './pages/TemplateEditPage';
 import './App.css';
 
-// Lazy load the new component
-const ApplyHardeingPage = lazy(() => import('./pages/Report/Windows/ApplyHardeing')); 
+// Lazy load the new components
+const ApplyHardeingPage = lazy(() => import('./pages/Report/Windows/ApplyHardeing'));
+const SystemAuditPage = lazy(() => import('./pages/Report/Windows/SystemAudit'));
+const RevertHardeingPage = lazy(() => import('./pages/Report/Windows/RevertHardeing')); // NEW
 
 const LoadingComponent = () => (
     <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-300">Loading hardening page...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-300">Loading page...</p>
         </div>
     </div>
 );
 
-// NEW Wrapper component to fetch ProductDetails using Template ID
-const ApplyHardeingPageWrapper: React.FC = () => {
+// Generic Wrapper component to fetch ProductDetails using Template ID
+const PageWrapper: React.FC<{ Component: React.ComponentType<ProductViewerPageProps> }> = ({ Component }) => {
     const { id: templateId } = useParams<{ id: string }>();
     const [product, setProduct] = React.useState<ProductDetails | null>(null);
     const [error, setError] = React.useState<string | null>(null);
@@ -51,14 +54,20 @@ const ApplyHardeingPageWrapper: React.FC = () => {
         const fetchProduct = async () => {
             if (!templateId) return;
             try {
-                // Fetch the template first to get the associated product ID
-                const template: Template = await getTemplateDetails(templateId); 
+                // 1. Fetch template details to get the product ID and scripts
+                const template: Template = await getTemplateDetails(templateId);
+
+                const productId = template.product.id;
                 
-                // This line is now safe due to the fix in src/services/authService.ts and api/serializers.py
-                const productId = template.product.id; 
-                
-                // Fetch the ProductDetails which the viewer component expects
+                // 2. Fetch the full ProductDetails object
                 const productData = await getProductDetails(String(productId));
+                
+                // 3. Attach the scripts from the Template to the ProductDetails object
+                // This satisfies the ViewerPageProps interface expected by the component.
+                (productData as any).harden_script = template.harden_script;
+                (productData as any).check_script = template.check_script;
+                (productData as any).revert_script = template.revert_script;
+                
                 setProduct(productData);
             } catch (err) {
                 setError('Failed to load template or product data.');
@@ -68,11 +77,15 @@ const ApplyHardeingPageWrapper: React.FC = () => {
     }, [templateId]);
 
     if (error) return <div className="text-center p-10 text-red-500">{error}</div>;
-    // We check for `product.audit_json_output_path` existence as the component depends on it.
-    if (!product || !product.audit_json_output_path) return <LoadingComponent />; 
+    if (!product || !product.audit_json_output_path) return <LoadingComponent />;
 
-    return <ApplyHardeingPage product={product} />;
+    return <Component product={product} />;
 };
+
+// Define wrapper instances for specific pages
+const ApplyHardeingPageWrapper: React.FC = () => <PageWrapper Component={ApplyHardeingPage} />;
+const SystemAuditPageWrapper: React.FC = () => <PageWrapper Component={SystemAuditPage} />;
+const RevertHardeingPageWrapper: React.FC = () => <PageWrapper Component={RevertHardeingPage} />; // NEW
 
 const App: React.FC = () => {
   return (
@@ -97,12 +110,14 @@ const App: React.FC = () => {
                   <Route path="/product/:id" element={<ProductDetailPageRouter />} />
                   
                   {/* Protected Routes */}
-                  <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} /> 
-                  <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} /> 
+                  <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+                  <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                   <Route path="/template/edit/:id" element={<ProtectedRoute><TemplateEditPage /></ProtectedRoute>} />
                   
-                  {/* NEW ROUTE for Applying Hardening */}
+                  {/* Dedicated Pages for Report Actions */}
                   <Route path="/report/harden/:id" element={<ProtectedRoute><Suspense fallback={<LoadingComponent />}><ApplyHardeingPageWrapper /></Suspense></ProtectedRoute>} />
+                  <Route path="/report/audit/:id" element={<ProtectedRoute><Suspense fallback={<LoadingComponent />}><SystemAuditPageWrapper /></Suspense></ProtectedRoute>} />
+                  <Route path="/report/revert/:id" element={<ProtectedRoute><Suspense fallback={<LoadingComponent />}><RevertHardeingPageWrapper /></Suspense></ProtectedRoute>} /> {/* NEW REVERT ROUTE */}
                   
                   {/* Admin Route for uploading parsers */}
                   <Route path="/admin/upload-parser" element={<ProtectedRoute><AuditParserUploadPage /></ProtectedRoute>} />

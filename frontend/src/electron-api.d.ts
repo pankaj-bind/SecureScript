@@ -34,6 +34,9 @@ export interface Policy {
     [key: string]: any;
   };
   then?: any;
+  // NEW FIELDS ADDED for policy customization/tracking
+  passed_value?: string;
+  custom_value?: string;
 }
 
 export interface IElectronAPI {
