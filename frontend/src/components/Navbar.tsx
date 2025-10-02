@@ -5,7 +5,8 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useProfile } from '../contexts/ProfileContext'; // Add this import
 
 // SVG Icons for the theme toggle button
-const SunIcon = () => (
+const SunIcon 
+ = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
   </svg>
@@ -44,7 +45,8 @@ const Navbar: React.FC = () => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return 
+ () => document.removeEventListener("mousedown", handleClickOutside);
   }, [userDropdownRef]);
 
   return (
@@ -62,9 +64,18 @@ const Navbar: React.FC = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
             <div className="flex items-baseline space-x-4">
-              <Link to="/" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</Link>
-              {token && <Link to="/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</Link>}
-              <Link to="#" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">New Updates</Link>
+              <Link to="/" onClick={closeMenus} className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</Link>
+              {token && <Link to="/dashboard" onClick={closeMenus} className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</Link>}
+              <Link to="#" onClick={closeMenus} className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">New Updates</Link>
+              {/* NEW ADMIN LINK */}
+              {token && (
+                  <button 
+                      onClick={() => window.electronAPI.runScript({ script: 'open-admin' })} 
+                      className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                      Admin
+                  </button>
+              )}
             </div>
             
             <button onClick={toggleTheme} className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -73,7 +84,8 @@ const Navbar: React.FC = () => {
             
             {token ? (
               <div className="relative" ref={userDropdownRef}>
-                <button onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)} className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                <button onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)} className="max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none 
+ focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                   <img className="h-8 w-8 rounded-full" src={profilePicture || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="User profile" />
                 </button>
                 {isUserDropdownOpen && (
@@ -81,7 +93,8 @@ const Navbar: React.FC = () => {
                     <Link to="/dashboard" onClick={() => setIsUserDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Your Dashboard</Link>
                     <Link to="/profile" onClick={() => setIsUserDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Profile</Link>
                     <Link to="#" onClick={() => setIsUserDropdownOpen(false)} className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">Settings</Link>
-                    <button onClick={handleLogout} className="w-full text-left block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-600">Logout</button>
+                    <button onClick={handleLogout} className="w-full text-left 
+ block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-600">Logout</button>
                   </div>
                 )}
               </div>
@@ -95,7 +108,8 @@ const Navbar: React.FC = () => {
           
           {/* Mobile Menu Button & Theme Toggle */}
           <div className="md:hidden flex items-center">
-            <button onClick={toggleTheme} className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 mr-2">
+    
+         <button onClick={toggleTheme} className="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 mr-2">
               {theme === 'light' ? <MoonIcon /> : <SunIcon />}
             </button>
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -112,6 +126,18 @@ const Navbar: React.FC = () => {
             <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">Home</Link>
             {token && <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">Dashboard</Link>}
             <Link to="#" onClick={() => setIsMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium">New Updates</Link>
+            {/* NEW ADMIN LINK FOR MOBILE */}
+            {token && (
+                 <button 
+                    onClick={() => {
+                        setIsMobileMenuOpen(false); // Close mobile menu
+                        window.electronAPI.runScript({ script: 'open-admin' }); 
+                    }} 
+                    className="w-full text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 block px-3 py-2 rounded-md text-base font-medium"
+                 >
+                     Admin
+                 </button>
+            )}
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700">
             {token ? (
@@ -120,7 +146,8 @@ const Navbar: React.FC = () => {
                   <div className="flex-shrink-0">
                     <img className="h-10 w-10 rounded-full" src={profilePicture || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="" />
                   </div>
-                  <div className="ml-3">
+    
+               <div className="ml-3">
                     <div className="text-base font-medium text-gray-800 dark:text-white">Your Account</div>
                   </div>
                 </div>
@@ -128,7 +155,8 @@ const Navbar: React.FC = () => {
                   <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Your Dashboard</Link>
                   <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Profile</Link>
                   <Link to="#" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">Settings</Link>
-                  <button onClick={handleLogout} className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700">Logout</button>
+                  <button onClick={handleLogout} className="w-full text-left block px-3 py-2 rounded-md text-base 
+ font-medium text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700">Logout</button>
                 </div>
               </>
             ) : (

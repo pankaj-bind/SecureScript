@@ -12,7 +12,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getPolicyCounts: (basePath) => ipcRenderer.invoke('get-policy-counts', basePath),
   setUserRight: (policy) => ipcRenderer.invoke('set-user-right', policy),
   setAuditPolicy: (policy) => ipcRenderer.invoke('set-audit-policy', policy),
-  setAccountPolicy: (policy) => ipcRenderer.invoke('set-account-policy', policy),
+  setAccountPolicy: 
+ (policy) => ipcRenderer.invoke('set-account-policy', policy),
   setCheckAccount: (data) => ipcRenderer.invoke('set-check-account', data),
   setPowershellPolicy: (data) => ipcRenderer.invoke('set-powershell-policy', data),
   setSecurityOption: (data) => ipcRenderer.invoke('set-security-option', data),

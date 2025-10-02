@@ -62,11 +62,20 @@ async function getSystemInfo() {
   }
 }
 
-// --- Generic Script Runner ---
-async function runScript(script) {
+// --- Generic Script Runner (MODIFIED for Admin Link) ---
+async function runScript(script, win) {
   if (!script || script.trim() === '') {
     return { success: false, message: 'Script is empty.' };
   }
+  
+  // Special case: Open Django Admin
+  if (script === 'open-admin') {
+      // Assuming your Django is running on localhost:8000
+      win.loadURL('http://localhost:8000/admin/');
+      return { success: true, message: 'Navigated to Django Admin.' };
+  }
+  
+  // Original script execution logic
   try {
     const { stdout, stderr } = await exec(script);
     if (stderr) {
@@ -124,7 +133,7 @@ async function applyUserRightPolicy(privilege, valueData) {
     await exec(`secedit /import /db "${sdbPath}" /cfg "${infPath}" /log "${logPath}"`);
     await exec(`secedit /configure /db "${sdbPath}" /log "${logPath}"`);
     await exec('gpupdate /force');
-    return { success: true, message: `Policy for '${privilege}' was applied successfully.` };
+ return { success: true, message: `Policy for '${privilege}' was applied successfully.` };
   } catch (error) {
     let logContent = 'No log file available.';
     try {
@@ -161,7 +170,8 @@ async function applyAuditPolicy(subcategory, valueData) {
   ].join('\r\n');
   try {
     if (!fs.existsSync(lgpoPath)) {
-      throw new Error(`LGPO.exe not found at ${lgpoPath}. Please place it in the 'public' directory.`);
+      throw new Error(`LGPO.exe not found at ${lgpoPath}. Please place it 
+ in the 'public' directory.`);
     }
     await exec(`"${lgpoPath}" /t "${policyFilePath}"`);
     await exec('gpupdate /force');
@@ -193,7 +203,8 @@ async function applySeceditSystemAccessPolicy(settingName, value, friendlyName) 
     try {
         const infContent = [
             '[Unicode]', 'Unicode=yes', '[Version]', 'signature="$CHICAGO$"', 'Revision=1',
-            '[System Access]', `${settingName} = ${value}`,
+   
+          '[System Access]', `${settingName} = ${value}`,
         ].join('\r\n');
         await fs.promises.writeFile(infPath, infContent, 'utf16le');
         await exec(`secedit /import /db "${sdbPath}" /cfg "${infPath}" /log "${logPath}"`);
@@ -296,7 +307,8 @@ async function applyCheckAccountPolicy(policy, newValue) {
                 command = 'net user Guest /active:no';
                 successMessage = "Guest account has been disabled.";
             } else if (value_type === 'POLICY_TEXT' && check_type === 'CHECK_NOT_EQUAL') {
-                if (!newValue || newValue.trim() === '') return { success: false, message: 'A new name for the Guest account is required.'};
+                if (!newValue || newValue.trim() === '') return { success: 
+ false, message: 'A new name for the Guest account is required.'};
                 // FIX: Use absolute path for WMIC
                 command = `"${wmicPath}" useraccount where name='Guest' rename "${newValue.trim()}"`;
                 successMessage = `Guest account renamed to "${newValue.trim()}".`;
@@ -315,7 +327,7 @@ async function applyCheckAccountPolicy(policy, newValue) {
     }
     if (!command) {
         return { success: false, message: `No action defined for policy: ${policy.description}` };
-    }
+ }
     // FIX: Execute commands via cmd.exe for robustness (removed the nested cmd.exe /c since we are providing the absolute path to WMIC)
     try {
         await exec(command);
@@ -372,7 +384,8 @@ async function applyRegistrySettingPolicy(policy, newValue) {
     }
     
     // Prefix reg command with cmd.exe /c for robustness
-    const buildCommand = (key) => `cmd.exe /c reg add "${key}" /v "${reg_item}" /t ${regType} /d "${formattedValue}" /f`;
+    const buildCommand = (key) => `cmd.exe /c reg add "${key}" /v "${reg_item}" /t ${regType} /d "${formattedValue}" 
+ /f`;
 
     try {
         if (reg_include_hku_users && reg_key.startsWith("HKU\\")) {
@@ -393,7 +406,8 @@ async function applyRegistrySettingPolicy(policy, newValue) {
                 await exec(command);
             }
             // After applying to all HKU users, apply to HKCU for the current user's immediate effect
-            const commandHKCU = buildCommand(reg_key.replace("HKU\\", "HKCU\\"));
+      
+       const commandHKCU = buildCommand(reg_key.replace("HKU\\", "HKCU\\"));
             await exec(commandHKCU);
             
             return { success: true, message: `Policy applied to ${userSids.length} user profile(s) and current user (HKCU).` };
@@ -427,7 +441,8 @@ async function findAllJsonFiles(dir) {
     const res = path.resolve(dir, dirent.name);
     if (dirent.isDirectory()) {
       return findAllJsonFiles(res);
-    } else if (res.toLowerCase().endsWith('.json')) {
+    
+ } else if (res.toLowerCase().endsWith('.json')) {
       return res;
     }
     return [];
@@ -462,7 +477,8 @@ ipcMain.handle('get-policy-files', async (event, dirPath) => {
       const descA = getPolicyDescription(a);
       const descB = getPolicyDescription(b);
       const numA = parseFloat(descA);
-      const numB = parseFloat(descB);
+      const 
+ numB = parseFloat(descB);
       if (!isNaN(numA) && !isNaN(numB)) {
         return numA - numB;
       }
@@ -493,7 +509,8 @@ ipcMain.handle('get-policy-counts', async (event, basePath) => {
         let policyType = policy.type;
         if (!policyType && policy.check_type === 'CONDITIONAL') {
            policyType = policy.condition?.rules?.[0]?.type;
-        }
+    
+     }
         if (policyType) {
            counts[policyType] = (counts[policyType] || 0) + 1;
         }
@@ -511,7 +528,11 @@ ipcMain.handle('get-policy-counts', async (event, basePath) => {
 
 // Register all handlers
 ipcMain.handle('get-system-info', getSystemInfo);
-ipcMain.handle('run-script', async (event, { script }) => runScript(script));
+ipcMain.handle('run-script', async (event, { script }) => {
+    const webContents = event.sender;
+    const win = BrowserWindow.fromWebContents(webContents);
+    return runScript(script, win);
+});
 ipcMain.handle('set-user-right', async (event, { privilege, value_data }) => applyUserRightPolicy(privilege, value_data));
 ipcMain.handle('set-audit-policy', async (event, { subcategory, value_data }) => applyAuditPolicy(subcategory, value_data));
 ipcMain.handle('set-account-policy', async (event, { policyName, value }) => applyAccountPolicy(policyName, value));
@@ -524,4 +545,5 @@ ipcMain.handle('set-registry-setting', async (event, { policy, newValue }) => ap
 // --- APP LIFECYCLE ---
 app.whenReady().then(createWindow);
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
-app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
+app.on('activate', () => 
+ { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });

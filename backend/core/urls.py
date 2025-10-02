@@ -11,7 +11,8 @@ from api.views import (
     VerifyPasswordResetOTPView,
     SetNewPasswordView,
     TechnologyDataView,
-    OrganizationDetailView,
+    
+ OrganizationDetailView,
     ProductDetailView,
     UpdateProductScriptView,
     get_user_profile,
@@ -36,6 +37,7 @@ urlpatterns = [
     path('api/products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('api/products/<int:pk>/update-script/', UpdateProductScriptView.as_view(), name='product-update-script'),
 
+ 
     path('api/audit-parsers/', AuditParserListView.as_view(), name='audit-parser-list'),
     path('api/audit-parsers/upload/', AuditParserUploadView.as_view(), name='audit-parser-upload'),
 
@@ -58,7 +60,8 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += [
-        re_path(r'^media/(?P<path>.*)$', serve, {
+        re_path(r'^media/(?P<path>.*)$', 
+ serve, {
             'document_root': settings.MEDIA_ROOT,
         }),
     ]
