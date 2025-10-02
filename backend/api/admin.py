@@ -7,13 +7,33 @@ from django.contrib.auth.models import User
 from django import forms
 import os
 from django.conf import settings
-from .models import TechnologyType, Organization, Product, UserProfile, AuditParser, Template, Report, Script
+from .models import TechnologyType, Organization, Product, UserProfile, AuditParser, Template, Report, Script, FrontendLink
 from django.urls import path
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.urls import reverse
 import json
+
+# --- Admin for Switching to Frontend ---
+@admin.register(FrontendLink)
+class FrontendLinkAdmin(admin.ModelAdmin):
+    """
+    This provides a simple link in the admin panel to switch to the
+    frontend application running on localhost:3000.
+    """
+    def changelist_view(self, request, extra_context=None):
+        # Redirect directly to the frontend URL
+        return HttpResponseRedirect("http://localhost:3000")
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 # --- Admin for AuditParser ---
 @admin.register(AuditParser)
@@ -35,7 +55,7 @@ class AuditParserAdmin(admin.ModelAdmin):
 class ReportAdmin(admin.ModelAdmin):
     list_display = ('id', 'template', 'report_type', 'serial_number', 'created_at')
     list_filter = ('report_type', 'template__user', 'template__product__organization')
-    search_fields = ('serial_number', 'template__id')
+    search_fields = ('serial_number', 'template__id') 
     readonly_fields = ('id', 'created_at')
 
 # --- Admin for Script Editing (using a Proxy Model) ---
@@ -43,8 +63,8 @@ class ReportAdmin(admin.ModelAdmin):
 class ScriptAdmin(admin.ModelAdmin):
     """
     This admin interface provides a list of products and a link to a custom
-    editor for the 'script.json' file associated with each product.
-    """
+    editor for the 'script.json' file associated with each product. 
+    """ 
     list_display = ('name', 'organization', 'edit_script_link')
     list_filter = ('organization',)
     search_fields = ('name', 'organization__name')
@@ -56,7 +76,7 @@ class ScriptAdmin(admin.ModelAdmin):
 
     # Disable the default add, change, and delete actions for this proxy view
     def has_add_permission(self, request):
-        return False
+        return False 
 
     def has_change_permission(self, request, obj=None):
         return False
@@ -71,7 +91,7 @@ class ScriptAdmin(admin.ModelAdmin):
         return format_html('<a href="{}" class="button">Edit script.json</a>', url)
 
     def get_urls(self):
-        """Adds the custom URL for our script editor view."""
+        """Adds the custom URL for our script editor view.""" 
         urls = super().get_urls()
         custom_urls = [
             path('<path:object_id>/edit/', self.admin_site.admin_view(self.edit_script_view), name='api_script_edit'),
@@ -93,12 +113,12 @@ class ScriptAdmin(admin.ModelAdmin):
             return HttpResponseRedirect(reverse('admin:api_script_changelist'))
 
         # Handle form submission
-        if request.method == 'POST':
+        if request.method == 'POST': 
             script_content = request.POST.get('script_content', '')
             try:
                 # Validate that the submitted content is valid JSON
                 parsed_json = json.loads(script_content)
-                with open(script_path, 'w', encoding='utf-8') as f:
+                with open(script_path, 'w', encoding='utf-8') as f: 
                     json.dump(parsed_json, f, indent=4)
                 messages.success(request, "The 'script.json' file has been updated successfully.")
                 return HttpResponseRedirect(reverse('admin:api_script_changelist'))
@@ -109,7 +129,7 @@ class ScriptAdmin(admin.ModelAdmin):
                 return HttpResponseRedirect(reverse('admin:api_script_changelist'))
         
         # On initial page load (GET) or if the POST submission failed, show the editor
-        current_content = ""
+        current_content = "" 
         if request.method == 'GET':
             try:
                 with open(script_path, 'r', encoding='utf-8') as f:
@@ -123,33 +143,33 @@ class ScriptAdmin(admin.ModelAdmin):
         # Construct the HTML page with a form manually to avoid needing a separate template file
         html_page = f"""
         <!DOCTYPE html>
-        <html lang="en">
+        <html lang="en"> 
         <head>
             <title>Edit Script for {product.name}</title>
             <style>
-                body {{ font-family: sans-serif; margin: 2em; background-color: #f8f8f8; color: #333; }}
-                h1 {{ color: #555; }}
-                em {{ font-style: normal; font-weight: bold; color: #000; }}
-                form {{ background-color: white; padding: 2em; border: 1px solid #ddd; border-radius: 4px; }}
-                textarea {{ width: 95%; height: 65vh; font-family: monospace; border: 1px solid #ccc; padding: 10px; font-size: 14px; }}
-                .controls {{ margin-top: 1.5em; }}
-                .btn {{ padding: 10px 15px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }}
-                .btn-save {{ background-color: #417690; color: white; }}
-                .btn-cancel {{ background-color: #e0e0e0; color: #333; text-decoration: none; display: inline-block; }}
+                body {{ font-family: sans-serif; margin: 2em; background-color: #f8f8f8; color: #333; }} 
+                h1 {{ color: #555; }} 
+                em {{ font-style: normal; font-weight: bold; color: #000; }} 
+                form {{ background-color: white; padding: 2em; border: 1px solid #ddd; border-radius: 4px; }} 
+                textarea {{ width: 95%; height: 65vh; font-family: monospace; border: 1px solid #ccc; padding: 10px; font-size: 14px; }}  2179]
+                .controls {{ margin-top: 1.5em; }} 
+                .btn {{ padding: 10px 15px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }} 
+                .btn-save {{ background-color: #417690; color: white; }} 
+                .btn-cancel {{ background-color: #e0e0e0; color: #333; text-decoration: none; display: inline-block; }} 
             </style>
         </head>
         <body>
             <h1>Edit <code>script.json</code> for Product: <em>{product.name}</em></h1>
             <form method="post">
                 <input type="hidden" name="csrfmiddlewaretoken" value="{request.COOKIES.get('csrftoken', '')}">
-                <div><textarea name="script_content">{current_content}</textarea></div>
+                <div><textarea name="script_content">{current_content}</textarea></div> 
                 <div class="controls">
                     <button type="submit" class="btn btn-save">Save Changes</button>
                     <a href="{reverse('admin:api_script_changelist')}" class="btn btn-cancel">Cancel</a>
                 </div>
             </form>
         </body>
-        </html>
+        </html> 
         """
         return HttpResponse(html_page)
 
@@ -161,8 +181,8 @@ class ProductAdminForm(forms.ModelForm):
 
     def clean_tenable_audit_file(self):
         """
-        Validates that the uploaded tenable_audit_file has a unique name.
-        """
+        Validates that the uploaded tenable_audit_file has a unique name. 
+        """ 
         uploaded_file = self.cleaned_data.get('tenable_audit_file')
 
         if not uploaded_file or not uploaded_file.name:
@@ -176,7 +196,7 @@ class ProductAdminForm(forms.ModelForm):
         query = Product.objects.filter(tenable_audit_file__endswith=file_name)
 
         if self.instance.pk:
-            query = query.exclude(pk=self.instance.pk)
+            query = query.exclude(pk=self.instance.pk) 
 
         if query.exists():
             raise forms.ValidationError(
@@ -188,7 +208,7 @@ class ProductAdminForm(forms.ModelForm):
 class ProductInline(admin.TabularInline):
     model = Product
     extra = 1
-    fields = ('cis_benchmark_pdf', 'tenable_audit_file', 'audit_parser', 'page_viewer')
+    fields = ('cis_benchmark_pdf', 'tenable_audit_file', 'audit_parser', 'page_viewer') 
 
 
 @admin.register(TechnologyType)
@@ -208,7 +228,7 @@ class OrganizationAdmin(admin.ModelAdmin):
             'fields': ('name', 'technology_type')
         }),
         ('Logo', {
-            'description': "Paste the complete URL of the organization's logo image.",
+            'description': "Paste the complete URL of the organization's logo image.", 
             'fields': ('logo', 'logo_preview'),
         }),
     )
@@ -234,7 +254,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('organization', 'audit_parser', 'page_viewer')
+            'fields': ('organization', 'audit_parser', 'page_viewer') 
         }),
         ('Files', {
             'description': "Upload the benchmark and audit files for this product. The product name and audit JSON will be generated automatically from the Tenable audit file.",
@@ -243,7 +263,7 @@ class ProductAdmin(admin.ModelAdmin):
     )
     readonly_fields = ('audit_json_output_path', 'view_generated_output_link',)
 
-    @admin.display(description='View Output')
+    @admin.display(description='View Output') 
     def view_generated_output_link(self, obj):
         """Creates a clickable link to the generated JSON output directory."""
         if obj.audit_json_output_path:
@@ -255,7 +275,7 @@ class ProductAdmin(admin.ModelAdmin):
     def get_technology_type(self, obj):
         return obj.organization.technology_type
 
-    @admin.display(description='CIS PDF', boolean=True)
+    @admin.display(description='CIS PDF', boolean=True) 
     def has_cis_pdf(self, obj):
         return bool(obj.cis_benchmark_pdf)
 
@@ -271,7 +291,7 @@ class UserProfileAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('User Information', {
-            'fields': ('user', 'first_name', 'last_name', 'phone_number', 'company_name')
+            'fields': ('user', 'first_name', 'last_name', 'phone_number', 'company_name') 
         }),
         ('Profile Picture', {
             'fields': ('profile_picture', 'profile_picture_preview')
@@ -283,7 +303,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     )
     readonly_fields = ('profile_picture_preview', 'created_at', 'updated_at')
 
-    @admin.display(description='Profile Picture')
+    @admin.display(description='Profile Picture') 
     def profile_picture_preview(self, obj):
         if obj.profile_picture:
             return format_html(
@@ -298,7 +318,7 @@ class CustomUserAdmin(UserAdmin):
         if hasattr(obj, 'userprofile'):
             return format_html(
                 '<a href="/admin/api/userprofile/{}/change/">View Profile</a>',
-                obj.userprofile.id
+                obj.userprofile.id 
             )
         return "No Profile"
 

@@ -23,8 +23,7 @@ def get_audit_parser_upload_path(instance, filename):
     into a directory named after the parser instance.
     """
     # Sanitize the instance name to create a valid directory name
-    dir_name = "".join(x for x in instance.name 
- if x.isalnum() or x in " .-_").rstrip()
+    dir_name = "".join(x for x in instance.name if x.isalnum() or x in " .-_").rstrip()
     return os.path.join('audit_parsers', dir_name, filename)
 
 
@@ -280,8 +279,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         UserProfile.objects.create(user=instance)
 
 @receiver(post_save, sender=User)
-def save_user_profile(sender, 
- instance, **kwargs):
+def save_user_profile(sender, instance, **kwargs):
     if hasattr(instance, 'userprofile'):
         instance.userprofile.save()
 
@@ -387,3 +385,14 @@ class Script(Product):
         proxy = True
         verbose_name = "Script"
         verbose_name_plural = "Add Script"
+
+# --- Proxy Model for Frontend Link ---
+class FrontendLink(Product):
+    """
+    A proxy model to create a link in the admin panel to switch
+    to the frontend application.
+    """
+    class Meta:
+        proxy = True
+        verbose_name = "Switch to Frontend"
+        verbose_name_plural = "Switch to Frontend"
