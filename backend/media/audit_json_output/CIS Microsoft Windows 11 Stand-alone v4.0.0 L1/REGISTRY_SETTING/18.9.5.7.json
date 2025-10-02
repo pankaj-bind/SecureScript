@@ -1,0 +1,15 @@
+{
+  "type": "REGISTRY_SETTING",
+  "description": "18.9.5.7 (L1) Ensure 'Turn On Virtualization Based Security: Kernel-mode Hardware-enforced Stack Protection' is set to 'Enabled: Enabled in enforcement mode'",
+  "info": "\"This policy setting enables Hardware-enforced Stack Protection for kernel-mode code. Kernel-mode data stacks are hardened with hardware-based shadow stacks, which store intended return address targets to ensure that program control flow is not tampered.\n\nThe recommended state for this setting is: Enabled: Enabled in enforcement mode",
+  "Note": "This setting was moved from the Next Generation (NG) profile to the Level 1 (L1) profile for the Windows 11 Operating System only NG profile settings were isolated from the L1 profile due to potential hardware compatibility issues. The Windows 11 Operating System is dependent on the same hardware as the NG settings, so hardware compatibility is no longer an issue.\"",
+  "solution": "\"To establish the recommended configuration via GP, set the following UI path to Enabled: Enabled in enforcement mode\n\nComputer Configuration\\Policies\\Administrative Templates\\System\\Device Guard\\Turn On Virtualization Based Security: Kernel-mode Hardware-enforced Stack Protection",
+  "Impact": "This setting is dependent upon Virtualization Based Protection of Code Integrity (aka HVCI) first being enabled, in addition to CPU hardware support for shadow stacks. If either HVCI is not enabled or hardware-based shadow stacks are not supported, this setting will have no effect.\n\nIf this setting is successfully enabled, shadow stack violations will be fatal.",
+  "reference": "800-53|SI-16,800-53r5|SI-16,CSCv8|10.5,CSF2.0|PR.DS-10,GDPR|32.1.b,HIPAA|164.306(a)(1),ITSG-33|SI-16,LEVEL|1A",
+  "see_also": "https://workbench.cisecurity.org/benchmarks/22007",
+  "value_type": "POLICY_DWORD",
+  "value_data": "1",
+  "reg_key": "HKLM\\Software\\Policies\\Microsoft\\Windows\\DeviceGuard",
+  "reg_item": "ConfigureKernelShadowStacksLaunch",
+  "reg_option": "CAN_NOT_BE_NULL"
+}
