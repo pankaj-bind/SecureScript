@@ -1,0 +1,440 @@
+% Setting up the document class for a standard article
+\documentclass[12pt]{article}
+
+% Including essential packages for formatting and structure
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{parskip}
+\usepackage{sectsty}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+
+% Configuring page margins for consistent layout
+\geometry{a4paper, margin=1in}
+
+% Ensuring justified text alignment
+\usepackage{ragged2e}
+\justifying
+
+% Styling section headings to be bold
+\sectionfont{\bfseries}
+
+% Setting up hyperlink appearance
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+% Configuring font to Times New Roman for consistency
+\usepackage{mathptmx}
+
+\begin{document}
+
+
+% Introducing the first research paper
+\subsection*{Refactoring Object-Oriented Frameworks}
+\\
+\textbf{Author:} W. F. Opdyke \\
+\\
+\textbf{Year:} 1992 \\
+\\
+\textbf{Problem Addressed:} The problem of aiding the design, evolution, and reuse of object-oriented application frameworks via program restructuring, as current approaches often create duplicated code and ineffectiveness in maintaining applications. \\
+\\
+\textbf{Why Important:} Object-oriented application frameworks form the basis for reusable software components; poor evolution leads to technical debt, additional maintenance costs, or discarding code before realizing its full lifecycle potential, especially in large-scale systems. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Defining a set of behavior-preserving program restructuring operations called ``refactorings,'' which enable deliberate code structure changes while keeping the code immediately executable. These are novel as they offer the first formal basis for refactorings in object-oriented paradigms, grounded in the history and nature of changes rather than ad-hoc practices, fostering better developer techniques and engineering agreement across literature. \\
+\\
+\textbf{Evaluation and Fairness:} Assessed through theoretical discussion and case studies as part of a PhD thesis research project, ensuring applicability to real frameworks. This is fair and appropriate for early foundational research, focusing on conceptual proof rather than requiring large-scale empirical data. \\
+\\
+\textbf{Research Gap:} Need for automating tools for these refactorings and empirical research across a wider range of industrial applications. \\
+\\
+\textbf{Link:} \url{http://www.laputan.org/pub/papers/opdyke-thesis.pdf}
+\pagebreak
+
+
+% Introducing the second research paper
+\subsection*{A Metrics Suite for Object-Oriented Design}
+\\
+\textbf{Author:} S. Chidamber and C. F. Kemerer \\
+\\
+\textbf{Year:} 1994 \\
+\\
+\textbf{Problem Addressed:} Existing metrics for evaluating object-oriented design quality lack a theoretical foundation and do not sufficiently consider properties like inheritance or encapsulation. \\
+\\
+\textbf{Why Important:} Design quality in object-oriented systems influences defect rates, maintenance effort, and overall software reliability, especially during the rise of object-oriented programming where designing-in quality is critical. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Proposal of six software metrics (e.g., Weighted Methods per Class, Depth of Inheritance Tree) based on measurement theory, assessing complexity, coupling, and cohesion. Novel in rigorously bridging theory and practice for object-oriented programming, providing a predictable model of quality metrics. \\
+\\
+\textbf{Evaluation and Fairness:} Theoretical validation via Weyuker's properties and initial case studies. Fair and appropriate for metric development, offering a strong foundation, though limited by absence of wider empirical tests. \\
+\\
+\textbf{Research Gap:} Empirical studies on the predictive power of these metrics for software maintainability and fault-proneness. \\
+\\
+\textbf{Link:} \url{https://sites.pitt.edu/~ckemerer/CK%20research%20papers/ \\\
+MetricForOOD_ChidamberKemerer94.pdf}
+\pagebreak
+
+
+% Introducing the third research paper
+\subsection*{A Survey of Software Refactoring}
+\\
+\textbf{Author:} T. Mens and T. Tourwé \\
+\\
+\textbf{Year:} 2004 \\
+\\
+\textbf{Problem Addressed:} The fragmented field of software refactoring research, with many techniques but no unified overview, making it difficult for practitioners to apply in practice. \\
+\\
+\textbf{Why Important:} Refactoring manages code evolution, prevents software decay, and sustains maintainability over time and increasing complexity. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} A complete classification of refactoring activities, tools, and techniques based on criteria like languages supported and automation level. Novel in synthesizing disparate research into a comprehensive framework that highlights connections, not just differences. \\
+\\
+\textbf{Evaluation and Fairness:} Literature scan and comparison of existing studies. Fair as a survey, providing broad insights, though it could benefit from quantitative meta-analysis. \\
+\\
+\textbf{Research Gap:} Integrating formal methods with behavior preservation and expanding empirical studies on refactoring effects in contexts like legacy systems. \\
+\\
+\textbf{Link:} \url{https://drive.google.com/file/d/1P9W5T3n4lcYuEo-wC0fG1wlxqVAAhCG4/view?usp=sharing}
+\pagebreak
+
+% Introducing the fourth research paper
+\subsection*{Technical Debt: From Metaphor to Theory and Practice}
+\\
+\textbf{Author:} P. Kruchten, R. L. Nord, and I. Ozkaya \\
+\\
+\textbf{Year:} 2012 \\
+\\
+\textbf{Problem Addressed:} The dilution and misappropriation of the technical debt metaphor in software development, broadening beyond its original focus and making it harder to define and manage, especially invisible architectural choices. \\
+\\
+\textbf{Why Important:} Broadening weakens the metaphor, contributing to friction in development evolution, increased monetary costs for maintenance/upgrades, and degraded software quality impacting deployment, sales, and sustainability. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Disentangling technical debt into visible and invisible types (focusing on architectural debt); incorporating debt management in agile/scrum via color-coded tasks; using economic tools like net present value, opportunity costs, real option analysis (ROA), and total cost of ownership (TCO). Novel in aligning the metaphor with economic theories for refined, practical frameworks beyond rhetorical descriptions. \\
+\\
+\textbf{Evaluation and Fairness:} Referenced through workshops, articles (e.g., CAST Software, SQALE method), and industry studies without detailed outcomes. Appropriate for conceptual work, though lacking specific empirical results. \\
+\\
+\textbf{Research Gap:} Tools for identifying non-code debt, theoretical measurement models, addressing change interdependencies, and further financial applications to software. \\
+\\
+\textbf{Link:} \url{https://smallake.kr/wp-content/uploads/2015/09/2012_019_001_58818.pdf}
+\pagebreak
+
+% Introducing the fifth research paper
+\subsection*{An Empirical Study of Refactoring at Microsoft}
+\\
+\textbf{Author:} D. Kim et al. \\
+\\
+\textbf{Year:} 2014 \\
+\\
+\textbf{Problem Addressed:} Defining refactoring in a large organization like Microsoft, assessing its benefits/challenges, quantifiable impacts on defects, and justifying costs in resource-constrained environments. \\
+\\
+\textbf{Why Important:} Refactoring is frequent for maintainability and reducing technical debt, but inconclusive evidence makes it hard to justify costs. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Broad practical definition of refactoring (not strictly behavior-preserving), multi-faceted evaluation based on refactored modules, system-wide considerations, and tool recommendations. Novel in combining qualitative/quantitative methods in a large industrial context, contrasting academic definitions. \\
+\\
+\textbf{Evaluation and Fairness:} Mixed-methods: survey of 328 engineers, interviews with six, quantitative analysis of Windows 7 history using Wilcoxon/regression tests. Fair due to triangulation, though acknowledges correlation limits and generalizability issues. \\
+\\
+\textbf{Research Gap:} Tools for refactoring-aware reviews and cost-benefit estimation; studies establishing causation and extending to non-layered architectures. \\
+\\
+\textbf{Link:} \url{https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/kim-tse-2014.pdf}
+\pagebreak
+
+% Introducing the sixth research paper
+\subsection*{A Case Study on Refactoring Large-Scale Industrial Systems}
+\\
+\textbf{Author:} G. Szoke et al. \\
+\\
+\textbf{Year:} 2014 \\
+\\
+\textbf{Problem Addressed:} How developers refactor large-scale industrial systems with more time/resources, focusing on prioritizing, optimizing, and scheduling refactorings for better code quality. \\
+\\
+\textbf{Why Important:} Developers accumulate technical debt due to time/budget constraints; strategic re-engineering improves maintainability, robustness, and reduces lifecycle costs in million-line systems. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Guidelines from 1,000+ refactorings; priority and ROI-based scheduling using attributes (improvement, risk, time); focus on rule violations. Novel in data-driven optimization from industrial-scale projects, encouraging actionable insights. \\
+\\
+\textbf{Evaluation and Fairness:} Case study in five organizations, analyzing issues via tools like PMD, survey data, ROI calculations. Appropriate for industry focus, though sensitive to self-reporting bias; notes validity risks. \\
+\\
+\textbf{Research Gap:} Automated refactoring techniques; long-term quality effects; generalizability beyond Java and without unlimited resources. \\
+\\
+\textbf{Link:} \url{http://www.inf.u-szeged.hu/~ncsaba/research/pdfs/2014/Szoke-ICCSA2014.pdf}
+\pagebreak
+
+% Introducing the seventh research paper
+\subsection*{An Empirical Evaluation on the Impact of Refactoring on Code Quality}
+\\
+\textbf{Author:} M. A. F. de Sousa et al. \\
+\\
+\textbf{Year:} 2015 \\
+\\
+\textbf{Problem Addressed:} Evaluating refactoring’s influence on internal/external quality measures to substantiate claims of improved understandability, flexibility, and reusability. \\
+\\
+\textbf{Why Important:} Maintenance (quality issues) represents over 90\% of software costs; without evidence, managers can’t justify refactoring spend due to opportunity costs or performance risks. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Separating external/internal measures; selecting ten techniques with positive impacts; control/experimental groups. Novel in using ISO 9126 factors, more techniques than prior studies, addressing literature inconsistencies via systematic review. \\
+\\
+\textbf{Evaluation and Fairness:} Experiments with participants (t-tests for external, automated metrics for internal). Suitable for quantitative aims, but small student sample limits generalizability. \\
+\\
+\textbf{Research Gap:} Inconsistent prior conclusions needing further analysis; industry studies, comprehensive quality models, surveys on common techniques. \\
+\\
+\textbf{Link:} \url{https://arxiv.org/pdf/1502.03526}
+\pagebreak
+
+% Introducing the eighth research paper
+\subsection*{Empirical Evaluation of the Impact of Object-Oriented Code Refactoring on Quality Attributes}
+\\
+\textbf{Author:} M. Alshayeb \\
+\\
+\textbf{Year:} 2017 \\
+\\
+\textbf{Problem Addressed:} Uncertainty and contradictory evidence on whether refactoring positively impacts external quality attributes like adaptability, maintainability, and understandability. \\
+\\
+\textbf{Why Important:} Uncertainties lead to wasteful maintenance or poor software evolution on large scales. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Systematic synthesis of 76 studies categorizing impacts (e.g., positive on maintainability, neutral on performance). Novel as the only quantitative framework clarifying conflicting outcomes for evidence-based decisions. \\
+\\
+\textbf{Evaluation and Fairness:} Meta-analysis of methodologies/findings in 76 studies. Fair given sample size, though heterogeneous original studies. \\
+\\
+\textbf{Research Gap:} Consensus on specific refactorings’ effects; controlled experiments with consistent metrics considering contextual factors like project size/domain. \\
+\\
+\textbf{Link:} \url{https://www.researchgate.net/publication/312929617_Empirical_Evaluation_of_the_Impact_of_Object-Oriented_Code_Refactoring_on_Quality_Attributes_A_Systematic_Literature_Review}
+\pagebreak
+
+% Introducing the ninth research paper
+\subsection*{The Impact of Code Smells on Software Bugs}
+\\
+\textbf{Author:} F. Palomba et al. \\
+\\
+\textbf{Year:} 2018 \\
+\\
+\textbf{Problem Addressed:} Association between code smells (bad design indicators) and software bugs, aggregating empirical research. \\
+\\
+\textbf{Why Important:} Code smells impact quality, maintainability, defects, increasing costs, delays, and reliability issues. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Systematic review establishing relationships between specific smells (e.g., long methods, duplicated code) and bug-proneness. Novel in providing a thorough, up-to-date consolidated framework beyond isolated studies. \\
+\\
+\textbf{Evaluation and Fairness:} Systematic literature review (PRISMA) of papers, evaluating methods/datasets/results for patterns. Fair, reduces bias, dependent on primary study quality. \\
+\\
+\textbf{Research Gap:} Inconsistencies in smell detection tools; limited focus on smell types/languages; need for longitudinal studies and standardized metrics across ecosystems. \\
+\\
+\textbf{Link:} \url{https://research.unl.pt/ws/portalfiles/portal/11360612/information_09_00273.pdf}
+\pagebreak
+
+% Introducing the tenth research paper
+\subsection*{Are Refactorings to Blame?}
+\\
+\textbf{Author:} N. Tsantalis et al. \\
+\\
+\textbf{Year:} 2019 \\
+\\
+\textbf{Problem Addressed:} Whether refactoring operations cause merge conflicts in version control systems during collaborative development. \\
+\\
+\textbf{Why Important:} Merge conflicts disrupt flow, waste time, introduce bugs, impacting productivity in fast-paced or open-source environments. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Empirical analysis showing refactorings in 22\% of conflicts; specific types (e.g., method rename) more prone. Novel in quantifying link via large-scale data and automated tools, exploring under-focused dimensions. \\
+\\
+\textbf{Evaluation and Fairness:} Analysis of 3,000 Java open-source repos using RefactoringMiner. Fair due to scale and statistics, generalizable despite Java focus. \\
+\\
+\textbf{Research Gap:} Limited to Java/open-source; understanding experience mediation in proprietary systems; cross-language qualitative work. \\
+\\
+\textbf{Link:} \url{https://users.encs.concordia.ca/~nikolaos/publications/SANER_2019.pdf}
+\pagebreak
+
+% Introducing the eleventh research paper
+\subsection*{Using a Many-Objective Approach to Investigate Automated Refactoring}
+\\
+\textbf{Author:} M. Mohan and D. Greer \\
+\\
+\textbf{Year:} 2019 \\
+\\
+\textbf{Problem Addressed:} Optimizing automated refactoring for multiple software quality objectives to reduce maintenance costs. \\
+\\
+\textbf{Why Important:} Maintenance consumes up to 75\% of development time; effective automation alleviates evolution issues and costs. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Adapting NSGA-III in MultiRefactor with four objectives (quality metrics, priorities, coverage, recency); comparing to mono/multi-objective. Novel in extending to four objectives tied to code, supporting practical automated refactoring. \\
+\\
+\textbf{Evaluation and Fairness:} Experiments on six Java programs with repeated runs, metrics, statistical analysis. Fair for variability handling, limited to Java/small-medium sizes. \\
+\\
+\textbf{Research Gap:} Unexplained score variations; element tracking; extension to languages/larger programs; more refactorings; developer feedback; industrial validation; non-functional measures; alternative search methods. \\
+\\
+\textbf{Link:} \url{https://pureadmin.qub.ac.uk/ws/files/168357425/MohanGreerRefactoring.ISTR2.4.pdf}
+\pagebreak
+
+% Introducing the twelfth research paper
+\subsection*{Refactoring Practices in the Context of Modern Code Review}
+\\
+\textbf{Author:} Eman Abdullah AlOmar et al. \\
+\\
+\textbf{Year:} 2021 \\
+\\
+\textbf{Problem Addressed:} How refactoring occurs in modern code reviews, including types, motivations, documentation, and discussions in industrial pull requests. \\
+\\
+\textbf{Why Important:} Refactoring manages technical debt but risks bugs/delays in collaborative reviews, now standard in large-scale development. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Mixed-methods: automated detection and qualitative analysis showing refactorings common, often undocumented, motivated by quality (not bugs/features). Novel as first large-scale industrial study bridging academic research to practice. \\
+\\
+\textbf{Evaluation and Fairness:} Mining 1,030 Xerox pull requests with Refactoring Miner (5,000+ operations), manual classification, statistics. Fair with quantitative/qualitative mix, inter-rater agreement, though Xerox/Java-specific. \\
+\\
+\textbf{Research Gap:} Diverse industries; automated documentation tools; long-term maintainability impact. \\
+\\
+\textbf{Link:} \url{https://arxiv.org/pdf/2102.05201}
+\pagebreak
+
+% Introducing the thirteenth research paper
+\subsection*{Refactoring for Software Maintenance}
+\\
+\textbf{Author:} A. Al-Azzoni et al. \\
+\\
+\textbf{Year:} 2021 \\
+\\
+\textbf{Problem Addressed:} How refactoring affects software maintenance, summarizing impacts on quality attributes. \\
+\\
+\textbf{Why Important:} Maintenance is a large lifecycle cost portion; poor refactoring adds technical debt, hindering evolution and robustness. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Synthesis of 22 studies showing positive maintainability effects, mixed others. Novel in narrow focus on maintenance attributes, offering practical strategies for refactoring decisions. \\
+\\
+\textbf{Evaluation and Fairness:} Narrative review of methodologies/results. Appropriate for literature review, could improve with systematic meta-analysis; small sample risks bias. \\
+\\
+\textbf{Research Gap:} Limited to 22 studies, missing trends like automated tools; larger reviews with AI techniques for long-term maintenance outcomes. \\
+\\
+\textbf{Link:} \url{https://drive.google.com/file/d/1kvDWcb_gf8jX6QKR1YGLrzn04RTN0GWn/view?usp=sharing}
+\pagebreak
+
+% Introducing the fourteenth research paper
+\subsection*{An Empirical Study on the Impact of Refactoring in Android Applications}
+\\
+\textbf{Author:} O. Hamdi \\
+\\
+\textbf{Year:} 2021 \\
+\\
+\textbf{Problem Addressed:} Effects of refactoring on quality metrics and code smells in Android apps, facing unique issues like limited resources. \\
+\\
+\textbf{Why Important:} Poor refactoring leads to performance issues, defects, lower user satisfaction in the Android ecosystem. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Refactoring improves specific metrics (e.g., complexity) depending on smell/context. Novel in extending general research to Android-specific smells/patterns with empirical mobile data. \\
+\\
+\textbf{Evaluation and Fairness:} Assessment of 300 open-source apps pre/post-refactoring with statistics. Appropriate, large dataset, though open-source bias. \\
+\\
+\textbf{Research Gap:} Limited to Android; co-occurrence of smells; long-term impacts; cross-platform/proprietary comparisons. \\
+\\
+\textbf{Link:} \url{https://espace.etsmtl.ca/id/eprint/2888/1/HAMDI_Omayma.pdf}
+\pagebreak
+
+% Introducing the fifteenth research paper
+\subsection*{Behind the Scenes: On the Relationship Between Developer Experience and Refactoring}
+\\
+\textbf{Author:} Eman Abdullah Al Omar et al. \\
+\\
+\textbf{Year:} 2021 \\
+\\
+\textbf{Problem Addressed:} How developer experience impacts refactoring volume, motivations, and documentation. \\
+\\
+\textbf{Why Important:} Understanding developers’ roles in refactoring aids managing technical debt and quality issues costing trillions annually. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Using Developer Commit Ratio (DCR) across 800 projects; experience doesn’t elevate refactoring volume but affects documentation/motivations. Novel in large-scale empirical study beyond surveys, covering repositories. \\
+\\
+\textbf{Evaluation and Fairness:} Refactoring detection with Refactoring Miner (711,495 operations), machine learning classification, qualitative/statistical analysis. Fair with tools/validation/large data, though Java/DCR proxy limits. \\
+\\
+\textbf{Research Gap:} Multi-language analysis; deeper motivation contexts; experience impacts on safety/quality. \\
+\\
+\textbf{Link:} \url{https://repository.rit.edu/cgi/viewcontent.cgi?article=3103&context=article}
+\pagebreak
+
+% Introducing the sixteenth research paper
+\subsection*{A Refactoring Categorization Model for Software Quality Improvement}
+\\
+\textbf{Author:} Abdullah Almogahed et al. \\
+\\
+\textbf{Year:} 2023 \\
+\\
+\textbf{Problem Addressed:} Inconsistencies in the effects of refactoring on software quality, where techniques can have positive, negative, or neutral impacts on design goals. \\
+\\
+\textbf{Why Important:} Conflicting results lead to inefficient development practices, increased complexity in evolving systems, and lack of trust in refactoring, ultimately affecting maintenance costs. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} A color-coded model classifying ten refactoring techniques (e.g., Extract Method) as green (positive), yellow (neutral), or red (negative) relative to 11 quality attributes (e.g., cohesion), based on 42 experiments. Novel in providing an empirical, detailed, and practical classification with recommendations, more comprehensive than previous models. \\
+\\
+\textbf{Evaluation and Fairness:} Applied Eclipse Metrics for maintainability on five case studies, with 782 technique applications and pre/post-metric comparisons across all studies. Fair and appropriate using validated metrics, clear threats to validity, and comparisons, though primarily focused on Java. \\
+\\
+\textbf{Research Gap:} Expansion to other programming languages, integration into real-time IDE processes, and empirical testing with experts for broader suitability. \\
+\\
+\textbf{Link:} \url{https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0293742}
+\pagebreak
+
+% Introducing the seventeenth research paper
+\subsection*{An Empirical Study of Refactoring Engine Bugs}
+\\
+\textbf{Author:} Haibo Wang \\
+\\
+\textbf{Year:} 2024 \\
+\\
+\textbf{Problem Addressed:} Bugs in IDE refactoring engines (e.g., Eclipse, IntelliJ IDEA, NetBeans) that produce incorrect code, behavior, or crashes during automated refactoring. \\
+\\
+\textbf{Why Important:} Such bugs undermine refactoring’s benefits for code readability and maintainability, eroding software quality and developer trust. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Categorization of bugs by types, symptoms, causes, and triggers into 12 findings, plus a transferability study identifying 130 new bugs. Novel as the first systematic study offering guidelines for bug detection and debugging. \\
+\\
+\textbf{Evaluation and Fairness:} Characterization of bugs across engines, with transferability validated by submitting 21 bugs (10 confirmed, 7 fixed). Appropriate for real-world validation with developers, though methodology details are limited. \\
+\\
+\textbf{Research Gap:} Advanced automated bug detection methods, broader impacts across different engines and contexts, and in-depth debugging approaches. \\
+\\
+\textbf{Link:} \url{https://arxiv.org/pdf/2409.14610}
+\pagebreak
+
+% Introducing the eighteenth research paper
+\subsection*{AI-Driven Refactoring: A Pipeline for Identifying and Correcting Data Clumps}
+\\
+\textbf{Author:} Nils Baumgartner et al. \\
+\\
+\textbf{Year:} 2024 \\
+\\
+\textbf{Problem Addressed:} Data clumps—repeated sets of variables indicating poor design, which lead to maintenance, testing, and scalability issues in large projects. \\
+\\
+\textbf{Why Important:} Code smells like data clumps increase software costs (40-80\% of total), and AI can enhance productivity in response to economic pressures. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} An LLM-based pipeline (e.g., using ChatGPT) for detecting and refactoring data clumps in GitHub repositories, incorporating human-in-the-loop for EU-AI Act compliance, prioritization, and validation steps. Novel in integrating AI with human oversight and regulatory considerations specifically for data clumps. \\
+\\
+\textbf{Evaluation and Fairness:} Experiments on small and real-world projects (e.g., ArgoUML) with parameter variations (models, formats, temperatures), using sensitivity and specificity metrics. Appropriate for demonstrating value and validation, though limited by scalability, costs, and reproducibility concerns. \\
+\\
+\textbf{Research Gap:} Handling large projects and non-compilable outputs; adoption of newer LLMs or deterministic algorithms; development of comparative datasets. \\
+\\
+\textbf{Link:} \url{https://www.mdpi.com/2079-9292/13/9/1644}
+\pagebreak
+
+% Introducing the nineteenth research paper
+\subsection*{Revolutionizing Software Development: Enhancing Quality and Performance Through Code Refactoring}
+\\
+\textbf{Author:} Asmita Yadav et al. \\
+\\
+\textbf{Year:} 2024 \\
+\\
+\textbf{Problem Addressed:} Extending refactoring to optimize energy consumption alongside performance and readability in resource-constrained systems like embedded or mobile devices. \\
+\\
+\textbf{Why Important:} Energy efficiency supports sustainability by reducing emissions and e-waste, and enables better operation in power-limited environments. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Techniques such as using enums, removing duplicates, and simplifying logic in an employee management system example, with measurements of time and memory. Novel in incorporating energy as a key non-functional attribute, which traditional refactoring overlooks. \\
+\\
+\textbf{Evaluation and Fairness:} Refactored scripts evaluated pre/post for execution time, memory, and complexity using tools like radon or timeit. Fair for quantifiable metrics, but limited to small samples and without comprehensive energy assessments. \\
+\\
+\textbf{Research Gap:} Larger sets of techniques and scenarios; full energy metrics; refinements for maximum savings and generalizability. \\
+\\
+\textbf{Link:} \url{https://dl.acm.org/doi/pdf/10.1145/3675888.3676139}
+\pagebreak
+
+% Introducing the twentieth research paper
+\subsection*{Semantic Code Refactoring of Abstract Data Types}
+\\
+\textbf{Author:} Shankara Pailoor et al. \\
+\\
+\textbf{Year:} 2024 \\
+\\
+\textbf{Problem Addressed:} Refactoring abstract data types while preserving their semantic behaviors, as traditional syntactic refactorings are insufficient for complex transformations without introducing errors. \\
+\\
+\textbf{Why Important:} Abstract data types are central to modular software design, and semantics-violating refactorings can introduce bugs, particularly in frequently evolving systems. \\
+\\
+\textbf{Key Ideas Proposed and Novelty:} Semantic-safe refactoring techniques that go beyond syntax, leveraging formal methods for non-syntax-based transformations at higher abstractions. Novel in extending refactoring to safer, semantics-preserving changes for data structures. \\
+\\
+\textbf{Evaluation and Fairness:} Tool prototypes tested with refactoring engines like Eclipse and NetBeans, using automated testing. Fair and appropriate, though restricted to limited domains. \\
+\\
+\textbf{Research Gap:} Scaling techniques for very large codebases and integrating with modern AI-assisted tools. \\
+\\
+\textbf{Link:} \url{https://www.cs.utexas.edu/~isil/Revamp.pdf}
+
+\end{document}
