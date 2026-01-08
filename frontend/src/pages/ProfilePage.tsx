@@ -210,223 +210,232 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-win-bg-solid">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         {/* Page Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-semibold text-win-text-primary">Profile Settings</h1>
-          <p className="text-sm text-win-text-secondary mt-1">Manage your account information and preferences</p>
+        <div className="mb-4">
+          <h1 className="text-xl font-semibold text-win-text-primary">Profile Settings</h1>
+          <p className="text-xs text-win-text-secondary mt-0.5">Manage your account information and preferences</p>
         </div>
 
         {/* Feedback Messages */}
         {error && (
-          <div className="mb-4 p-3 rounded-win bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-2">
-            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <div className="mb-3 p-2 rounded-win bg-red-500/10 border border-red-500/20 text-red-500 text-xs flex items-center gap-2">
+            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             {error}
           </div>
         )}
         {success && (
-          <div className="mb-4 p-3 rounded-win bg-green-500/10 border border-green-500/20 text-green-400 text-sm flex items-center gap-2">
-            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+          <div className="mb-3 p-2 rounded-win bg-green-500/10 border border-green-500/20 text-green-500 text-xs flex items-center gap-2">
+            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
             {success}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Profile Picture Card */}
-          <div className="win-card">
-            <h2 className="text-sm font-medium text-win-text-primary mb-4">Profile Picture</h2>
-            <div className="flex items-center gap-6">
-              <div className="relative group">
-                <img
-                  src={currentProfileImage}
-                  alt="Profile"
-                  className="h-24 w-24 object-cover rounded-full ring-2 ring-win-border-subtle"
-                />
-                <label className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                  <CameraIcon />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                </label>
-              </div>
-              <div className="flex-1">
-                <p className="text-sm text-win-text-primary font-medium">{profile?.display_name || 'User'}</p>
-                <p className="text-xs text-win-text-tertiary mt-0.5">@{profile?.username}</p>
-                <label className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-win-accent bg-win-accent/10 rounded-win hover:bg-win-accent/20 transition-colors cursor-pointer">
-                  <CameraIcon />
-                  Change Photo
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                </label>
-                <p className="mt-2 text-xs text-win-text-tertiary">PNG, JPG, GIF or WebP. Max 5MB.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Account Information Card */}
-          <div className="win-card">
-            <h2 className="text-sm font-medium text-win-text-primary mb-4">Account Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Username */}
-              <div>
-                <label className="block text-xs font-medium text-win-text-secondary mb-1.5">
-                  Username <span className="text-red-400">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-win-text-tertiary">
-                    <UserIcon />
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            {/* Left Column */}
+            <div className="space-y-3">
+              {/* Profile Picture Card */}
+              <div className="win-card p-4">
+                <h2 className="text-xs font-medium text-win-text-primary mb-3">Profile Picture</h2>
+                <div className="flex items-center gap-4">
+                  <div className="relative group">
+                    <img
+                      src={currentProfileImage}
+                      alt="Profile"
+                      className="h-16 w-16 object-cover rounded-full ring-2 ring-win-border-subtle"
+                    />
+                    <label className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                      <CameraIcon />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
                   </div>
-                  <input
-                    type="text"
-                    name="username"
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    required
-                    className="win-input pl-10"
-                  />
-                </div>
-              </div>
-              {/* Gender */}
-              <div>
-                <label className="block text-xs font-medium text-win-text-secondary mb-1.5">Gender</label>
-                <div className="relative">
-                  <select
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleInputChange}
-                    className="win-input appearance-none pr-10"
-                  >
-                    <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                    <option value="prefer_not_to_say">Prefer not to say</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 pr-3 flex items-center text-win-text-tertiary">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                  <div className="flex-1">
+                    <p className="text-sm text-win-text-primary font-medium">{profile?.display_name || 'User'}</p>
+                    <p className="text-xs text-win-text-tertiary mt-0.5">@{profile?.username}</p>
+                    <label className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-win-accent bg-win-accent/10 rounded-win hover:bg-win-accent/20 transition-colors cursor-pointer">
+                      <CameraIcon />
+                      Change
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          {/* Personal Information Card */}
-          <div className="win-card">
-            <h2 className="text-sm font-medium text-win-text-primary mb-4">Personal Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* First Name */}
-              <div>
-                <label className="block text-xs font-medium text-win-text-secondary mb-1.5">First Name</label>
-                <input
-                  type="text"
-                  name="first_name"
-                  value={formData.first_name}
-                  onChange={handleInputChange}
-                  placeholder="Enter first name"
-                  className="win-input"
-                />
-              </div>
-              {/* Last Name */}
-              <div>
-                <label className="block text-xs font-medium text-win-text-secondary mb-1.5">Last Name</label>
-                <input
-                  type="text"
-                  name="last_name"
-                  value={formData.last_name}
-                  onChange={handleInputChange}
-                  placeholder="Enter last name"
-                  className="win-input"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Information Card */}
-          <div className="win-card">
-            <h2 className="text-sm font-medium text-win-text-primary mb-4">Contact Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Email */}
-              <div>
-                <label className="block text-xs font-medium text-win-text-secondary mb-1.5">
-                  Email <span className="text-red-400">*</span>
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-win-text-tertiary">
-                    <EmailIcon />
+              {/* Account Information Card */}
+              <div className="win-card p-4">
+                <h2 className="text-xs font-medium text-win-text-primary mb-3">Account Information</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Username */}
+                  <div>
+                    <label className="block text-xs font-medium text-win-text-secondary mb-1">
+                      Username <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-win-text-tertiary">
+                        <UserIcon />
+                      </div>
+                      <input
+                        type="text"
+                        name="username"
+                        value={formData.username}
+                        onChange={handleInputChange}
+                        required
+                        className="win-input pl-9 py-2 text-sm"
+                      />
+                    </div>
                   </div>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="win-input pl-10"
-                  />
+                  {/* Gender */}
+                  <div>
+                    <label className="block text-xs font-medium text-win-text-secondary mb-1">Gender</label>
+                    <div className="relative">
+                      <select
+                        name="gender"
+                        value={formData.gender}
+                        onChange={handleInputChange}
+                        className="win-input appearance-none pr-8 py-2 text-sm"
+                      >
+                        <option value="">Select</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                        <option value="prefer_not_to_say">Prefer not to say</option>
+                      </select>
+                      <div className="pointer-events-none absolute inset-y-0 right-0 pr-2.5 flex items-center text-win-text-tertiary">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              {/* Phone */}
-              <div>
-                <label className="block text-xs font-medium text-win-text-secondary mb-1.5">Phone Number</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-win-text-tertiary">
-                    <PhoneIcon />
+
+              {/* Personal Information Card */}
+              <div className="win-card p-4">
+                <h2 className="text-xs font-medium text-win-text-primary mb-3">Personal Information</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  {/* First Name */}
+                  <div>
+                    <label className="block text-xs font-medium text-win-text-secondary mb-1">First Name</label>
+                    <input
+                      type="text"
+                      name="first_name"
+                      value={formData.first_name}
+                      onChange={handleInputChange}
+                      placeholder="First name"
+                      className="win-input py-2 text-sm"
+                    />
                   </div>
-                  <input
-                    type="tel"
-                    name="phone_number"
-                    value={formData.phone_number}
-                    onChange={handleInputChange}
-                    placeholder="Enter phone number"
-                    className="win-input pl-10"
-                  />
+                  {/* Last Name */}
+                  <div>
+                    <label className="block text-xs font-medium text-win-text-secondary mb-1">Last Name</label>
+                    <input
+                      type="text"
+                      name="last_name"
+                      value={formData.last_name}
+                      onChange={handleInputChange}
+                      placeholder="Last name"
+                      className="win-input py-2 text-sm"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Company Information Card */}
-          <div className="win-card">
-            <h2 className="text-sm font-medium text-win-text-primary mb-4">Company Information</h2>
-            <div>
-              <label className="block text-xs font-medium text-win-text-secondary mb-1.5">Company Name</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-win-text-tertiary">
-                  <BuildingIcon />
+            {/* Right Column */}
+            <div className="space-y-3">
+
+              {/* Contact Information Card */}
+              <div className="win-card p-4">
+                <h2 className="text-xs font-medium text-win-text-primary mb-3">Contact Information</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  {/* Email */}
+                  <div>
+                    <label className="block text-xs font-medium text-win-text-secondary mb-1">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-win-text-tertiary">
+                        <EmailIcon />
+                      </div>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        className="win-input pl-9 py-2 text-sm"
+                      />
+                    </div>
+                  </div>
+                  {/* Phone */}
+                  <div>
+                    <label className="block text-xs font-medium text-win-text-secondary mb-1">Phone</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-win-text-tertiary">
+                        <PhoneIcon />
+                      </div>
+                      <input
+                        type="tel"
+                        name="phone_number"
+                        value={formData.phone_number}
+                        onChange={handleInputChange}
+                        placeholder="Phone number"
+                        className="win-input pl-9 py-2 text-sm"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <input
-                  type="text"
-                  name="company_name"
-                  value={formData.company_name}
-                  onChange={handleInputChange}
-                  placeholder="Enter company name"
-                  className="win-input pl-10"
-                />
+              </div>
+
+              {/* Company Information Card */}
+              <div className="win-card p-4">
+                <h2 className="text-xs font-medium text-win-text-primary mb-3">Company Information</h2>
+                <div>
+                  <label className="block text-xs font-medium text-win-text-secondary mb-1">Company Name</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-win-text-tertiary">
+                      <BuildingIcon />
+                    </div>
+                    <input
+                      type="text"
+                      name="company_name"
+                      value={formData.company_name}
+                      onChange={handleInputChange}
+                      placeholder="Company name"
+                      className="win-input pl-9 py-2 text-sm"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-end pt-2">
+          <div className="flex justify-end">
             <button
               type="submit"
               disabled={isSaving}
-              className="win-btn-primary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="win-btn-primary inline-flex items-center gap-2 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSaving ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                   Saving...
                 </>
               ) : (
                 <>
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                   Save Changes
