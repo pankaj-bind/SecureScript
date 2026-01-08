@@ -93,6 +93,11 @@ export const logout = () => {
   localStorage.removeItem('authToken');
 };
 
+export const deleteAccount = async (password: string) => {
+  const response = await apiClient.post('/delete-account/', { password });
+  return response.data;
+};
+
 export const checkUsername = async (username: string) => {
   if (!username) return { exists: false };
   const response = await axios.get(`${API_URL}check-username/?username=${username}`);

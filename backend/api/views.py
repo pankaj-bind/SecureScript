@@ -156,6 +156,42 @@ class ChangePasswordView(APIView):
 
         return Response({"message": "Password changed successfully."})
 
+
+class DeleteAccountView(APIView):
+    """Delete account for authenticated users"""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        password = request.data.get('password')
+
+        if not password:
+            return Response(
+                {"error": "Password is required to delete your account."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user = request.user
+
+        # Verify password
+        if not user.check_password(password):
+            return Response(
+                {"error": "Password is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Delete user profile if exists
+        try:
+            if hasattr(user, 'profile'):
+                user.profile.delete()
+        except:
+            pass
+
+        # Delete the user account
+        user.delete()
+
+        return Response({"message": "Account deleted successfully."})
+
+
 # --- Audit Parser Views ---
 class AuditParserListView(generics.ListAPIView):
     queryset = AuditParser.objects.all()

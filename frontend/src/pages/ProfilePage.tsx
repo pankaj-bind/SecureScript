@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { getUserProfile, updateUserProfile, checkUsername, changePassword } from "../services/authService";
+import { useNavigate } from "react-router-dom";
+import { getUserProfile, updateUserProfile, checkUsername, changePassword, deleteAccount } from "../services/authService";
 import { useProfile } from "../contexts/ProfileContext";
+import { useAuth } from "../contexts/AuthContext";
 
 // Icons
 const UserIcon = () => (
@@ -100,6 +101,13 @@ const ProfilePage: React.FC = () => {
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
+  // Delete account states
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const { logout: authLogout } = useAuth();
   const navigate = useNavigate();
 
   const fetchData = useCallback(async () => {
@@ -217,6 +225,29 @@ const ProfilePage: React.FC = () => {
       setPasswordError(errorMessage);
     } finally {
       setIsChangingPassword(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!deletePassword) {
+      setDeleteError("Please enter your password to confirm");
+      return;
+    }
+
+    setIsDeletingAccount(true);
+    setDeleteError(null);
+
+    try {
+      await deleteAccount(deletePassword);
+      // Logout and redirect to home
+      authLogout();
+      navigate("/");
+    } catch (err: any) {
+      console.error("Delete account error:", err);
+      const errorMessage = err.response?.data?.error || "Failed to delete account";
+      setDeleteError(errorMessage);
+    } finally {
+      setIsDeletingAccount(false);
     }
   };
 
@@ -555,12 +586,9 @@ const ProfilePage: React.FC = () => {
             </div>
 
             <div className="mt-4 flex items-center justify-between">
-              <Link 
-                to="/forgot-password" 
-                className="text-sm text-win-accent hover:underline transition-colors"
-              >
-                Forgot password?
-              </Link>
+              <span className="text-sm text-win-text-tertiary">
+                Enter your current password and new password above
+              </span>
               <button
                 type="button"
                 onClick={handlePasswordChange}
@@ -718,7 +746,112 @@ const ProfilePage: React.FC = () => {
             </button>
           </div>
         </form>
+
+        {/* Danger Zone - Delete Account */}
+        <div className="win-card p-6 border-red-500/30 mt-6">
+          <h3 className="text-base font-semibold text-red-400 mb-2 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+            Danger Zone
+          </h3>
+          <p className="text-sm text-win-text-tertiary mb-4">
+            Once you delete your account, there is no going back. Please be certain.
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowDeleteModal(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-win hover:bg-red-700 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            Delete Account
+          </button>
+        </div>
       </div>
+
+      {/* Delete Account Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="win-card p-6 max-w-md w-full">
+            <h3 className="text-lg font-semibold text-red-400 mb-2 flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+              </svg>
+              Delete Account
+            </h3>
+            <p className="text-sm text-win-text-secondary mb-4">
+              This action cannot be undone. This will permanently delete your account and remove all your data from our servers.
+            </p>
+            
+            {deleteError && (
+              <div className="mb-4 p-3 rounded-win bg-red-500/10 border border-red-500/30 text-red-400 text-sm flex items-center gap-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {deleteError}
+              </div>
+            )}
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-win-text-secondary mb-1.5">
+                Enter your password to confirm
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-win-text-tertiary">
+                  <LockIcon />
+                </div>
+                <input
+                  type="password"
+                  value={deletePassword}
+                  onChange={(e) => {
+                    setDeletePassword(e.target.value);
+                    setDeleteError(null);
+                  }}
+                  className="win-input pl-10 py-2.5"
+                  placeholder="Enter your password"
+                  autoFocus
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeletePassword("");
+                  setDeleteError(null);
+                }}
+                className="px-4 py-2 text-sm font-medium text-win-text-secondary bg-win-bg-subtle border border-win-border-default rounded-win hover:bg-win-bg-subtle/80 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteAccount}
+                disabled={isDeletingAccount || !deletePassword}
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-win hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isDeletingAccount ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete Account
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
