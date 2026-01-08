@@ -64,7 +64,7 @@ const Navbar: React.FC = () => {
             <div className="flex items-center">
               <Link to="/" className="px-3 py-1.5 rounded-win text-sm font-medium text-win-text-secondary hover:bg-win-bg-hover transition-colors duration-150">Home</Link>
               {token && <Link to="/dashboard" className="px-3 py-1.5 rounded-win text-sm font-medium text-win-text-secondary hover:bg-win-bg-hover transition-colors duration-150">Dashboard</Link>}
-              <Link to="#" className="px-3 py-1.5 rounded-win text-sm font-medium text-win-text-secondary hover:bg-win-bg-hover transition-colors duration-150">New Updates</Link>
+              <Link to="/updates" className="px-3 py-1.5 rounded-win text-sm font-medium text-win-text-secondary hover:bg-win-bg-hover transition-colors duration-150">New Updates</Link>
             </div>
             
             <div className="flex items-center ml-4 space-x-1">
@@ -141,7 +141,7 @@ const Navbar: React.FC = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-win-text-secondary hover:bg-win-bg-hover block px-3 py-2 rounded-win text-sm font-medium transition-colors duration-150">Home</Link>
             {token && <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="text-win-text-secondary hover:bg-win-bg-hover block px-3 py-2 rounded-win text-sm font-medium transition-colors duration-150">Dashboard</Link>}
-            <Link to="#" onClick={() => setIsMobileMenuOpen(false)} className="text-win-text-secondary hover:bg-win-bg-hover block px-3 py-2 rounded-win text-sm font-medium transition-colors duration-150">New Updates</Link>
+            <Link to="/updates" onClick={() => setIsMobileMenuOpen(false)} className="text-win-text-secondary hover:bg-win-bg-hover block px-3 py-2 rounded-win text-sm font-medium transition-colors duration-150">New Updates</Link>
           </div>
           <div className="pt-4 pb-3 border-t border-win-border-default">
             {token ? (

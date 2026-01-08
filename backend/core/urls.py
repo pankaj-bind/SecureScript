@@ -15,6 +15,7 @@ from api.views import (
     TechnologyDataView,
     OrganizationDetailView,
     ProductDetailView,
+    RecentProductsView,
     UpdateProductScriptView,
     get_user_profile,
     update_user_profile,
@@ -37,6 +38,7 @@ urlpatterns = [
     path('api/delete-account/', DeleteAccountView.as_view(), name='delete-account'),
     path('api/technologies/', TechnologyDataView.as_view(), name='technologies-list'),
     path('api/organizations/<int:pk>/', OrganizationDetailView.as_view(), name='organization-detail'),
+    path('api/products/recent/', RecentProductsView.as_view(), name='recent-products'),
     path('api/products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('api/products/<int:pk>/update-script/', UpdateProductScriptView.as_view(), name='product-update-script'),
 

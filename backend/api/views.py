@@ -80,7 +80,7 @@ class RequestPasswordResetOTPView(APIView):
                     <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
                         <!-- Header -->
                         <div style="text-align: center; padding: 30px 0;">
-                            <h1 style="color: #0078d4; margin: 0; font-size: 32px; font-weight: 600;">🛡️ SecureScript</h1>
+                            <h1 style="color: #0078d4; margin: 0; font-size: 32px; font-weight: 600;"> SecureScript</h1>
                             <p style="color: #666; margin: 10px 0 0 0; font-size: 14px;">Security Configuration Management</p>
                         </div>
                         
@@ -380,6 +380,23 @@ class ProductDetailView(generics.RetrieveAPIView):
 
     def get_serializer_context(self):
         return {"request": self.request}
+
+
+class RecentProductsView(generics.ListAPIView):
+    """
+    Returns recently added/updated products for the 'New Updates' section
+    """
+    serializer_class = ProductDetailSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        # Get products ordered by updated_at (most recent first)
+        # Limit to 20 most recent products
+        return Product.objects.select_related('organization', 'technology_type').order_by('-updated_at')[:20]
+
+    def get_serializer_context(self):
+        return {"request": self.request}
+
 
 # --- Template Views ---
 class TemplateListCreateView(generics.ListCreateAPIView):

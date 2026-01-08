@@ -28,6 +28,7 @@ import ProfilePage from './pages/ProfilePage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import AuditParserUploadPage from './pages/AuditParserUploadPage';
 import TemplateEditPage from './pages/TemplateEditPage';
+import NewUpdatesPage from './pages/NewUpdatesPage';
 import './App.css';
 
 // Lazy load the new components
@@ -108,6 +109,7 @@ const App: React.FC = () => {
                   {/* Organization and Product Detail Routes */}
                   <Route path="/organization/:id" element={<OrganizationDetailPage />} />
                   <Route path="/product/:id" element={<ProductDetailPageRouter />} />
+                  <Route path="/updates" element={<NewUpdatesPage />} />
                   
                   {/* Protected Routes */}
                   <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
