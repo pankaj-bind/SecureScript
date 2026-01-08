@@ -10,12 +10,7 @@ interface Product {
     name: string;
     logo_url: string | null;
   };
-  technology_type: {
-    id: number;
-    name: string;
-  };
   updated_at: string;
-  created_at: string;
 }
 
 const NewUpdatesPage: React.FC = () => {
@@ -116,7 +111,7 @@ const NewUpdatesPage: React.FC = () => {
                 <div className="flex items-center gap-3 mb-3">
                   {product.organization.logo_url ? (
                     <img
-                      src={`http://localhost:8000${product.organization.logo_url}`}
+                      src={product.organization.logo_url}
                       alt={product.organization.name}
                       className="w-12 h-12 rounded-lg object-cover"
                     />
@@ -131,9 +126,6 @@ const NewUpdatesPage: React.FC = () => {
                     <h3 className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-600'} truncate`}>
                       {product.organization.name}
                     </h3>
-                    <p className={`text-xs ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-                      {product.technology_type.name}
-                    </p>
                   </div>
                 </div>
 

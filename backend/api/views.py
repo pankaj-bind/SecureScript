@@ -23,6 +23,7 @@ from .serializers import (
     OTPRequestSerializer,
     OTPVerifySerializer,
     ProductDetailSerializer,
+    RecentProductSerializer,
     SetNewPasswordSerializer,
     TechnologyTypeSerializer,
     TemplateCreateSerializer,
@@ -386,13 +387,13 @@ class RecentProductsView(generics.ListAPIView):
     """
     Returns recently added/updated products for the 'New Updates' section
     """
-    serializer_class = ProductDetailSerializer
+    serializer_class = RecentProductSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
         # Get products ordered by updated_at (most recent first)
         # Limit to 20 most recent products
-        return Product.objects.select_related('organization', 'technology_type').order_by('-updated_at')[:20]
+        return Product.objects.select_related('organization', 'audit_parser').order_by('-updated_at')[:20]
 
     def get_serializer_context(self):
         return {"request": self.request}

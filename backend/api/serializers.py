@@ -385,6 +385,23 @@ class ProductDetailSerializer(serializers.ModelSerializer):
                 return []
         return files_list
 
+class RecentProductSerializer(serializers.ModelSerializer):
+    """
+    Serializer for recent products with organization details
+    """
+    organization = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'organization', 'updated_at']
+    
+    def get_organization(self, obj):
+        return {
+            'id': obj.organization.id,
+            'name': obj.organization.name,
+            'logo_url': obj.organization.logo  # logo is already a URL string
+        }
+
 class OrganizationSerializer(serializers.ModelSerializer):
     products = SimpleProductSerializer(many=True, read_only=True)
     class Meta:
