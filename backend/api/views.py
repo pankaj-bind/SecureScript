@@ -55,18 +55,26 @@ class RequestPasswordResetOTPView(APIView):
         serializer = OTPRequestSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data["email"]
-            user = User.objects.get(email__iexact=email)
+            try:
+                user = User.objects.get(email__iexact=email)
+            except User.DoesNotExist:
+                return Response({"error": "No user found with this email address."}, status=status.HTTP_404_NOT_FOUND)
+            
             PasswordResetOTP.objects.filter(user=user).delete()
             otp_code = PasswordResetOTP.generate_otp()
             PasswordResetOTP.objects.create(user=user, otp=otp_code)
-            send_mail(
-                subject="Your Password Reset OTP Code",
-                message=f"Your OTP for password reset is: {otp_code}. It is valid for 5 minutes.",
-                from_email="noreply@yourapp.com",
-                recipient_list=[email],
-                fail_silently=False,
-            )
-            return Response({"message": "An OTP has been sent to your email."})
+            
+            try:
+                send_mail(
+                    subject="Your Password Reset OTP Code",
+                    message=f"Your OTP for password reset is: {otp_code}. It is valid for 5 minutes.",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[email],
+                    fail_silently=False,
+                )
+                return Response({"message": "An OTP has been sent to your email."})
+            except Exception as e:
+                return Response({"error": f"Failed to send OTP. Please check email configuration: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
