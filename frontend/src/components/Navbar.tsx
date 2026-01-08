@@ -19,7 +19,7 @@ const MoonIcon = () => (
 const Navbar: React.FC = () => {
   const { token, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const { profilePicture } = useProfile(); // Add this to get DP from context
+  const { profilePicture, displayName } = useProfile(); // Add this to get DP from context
   const navigate = useNavigate();
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -84,7 +84,7 @@ const Navbar: React.FC = () => {
                   >
                     <img 
                       className="h-8 w-8 rounded-full border-2 border-transparent hover:border-win-accent transition-colors duration-150" 
-                      src={profilePicture || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} 
+                      src={profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&size=128&background=60cdff&color=fff`} 
                       alt="User profile" 
                     />
                   </button>
@@ -148,7 +148,7 @@ const Navbar: React.FC = () => {
               <>
                 <div className="flex items-center px-5">
                   <div className="flex-shrink-0">
-                    <img className="h-10 w-10 rounded-full" src={profilePicture || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"} alt="" />
+                    <img className="h-10 w-10 rounded-full" src={profilePicture || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&size=128&background=60cdff&color=fff`} alt="" />
                   </div>
                   <div className="ml-3">
                     <div className="text-sm font-medium text-win-text-primary">Your Account</div>

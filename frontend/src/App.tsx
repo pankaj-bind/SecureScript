@@ -102,8 +102,8 @@ const App: React.FC = () => {
                   <Route path="/" element={<HomePage />} />
                   <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
                   <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
-                  <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
-                  <Route path="/password/reset/:uid/:token" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
+                  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                  <Route path="/password/reset/:uid/:token" element={<ResetPasswordPage />} />
                   
                   {/* Organization and Product Detail Routes */}
                   <Route path="/organization/:id" element={<OrganizationDetailPage />} />

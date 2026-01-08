@@ -3,10 +3,6 @@ Django settings for the core project. """
 
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -105,19 +101,7 @@ REST_FRAMEWORK = {'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework.authenticat
 REST_AUTH = {'REGISTER_SERIALIZER': 'api.serializers.CustomRegisterSerializer'}
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-
-# --- Email Configuration ---
-# DEVELOPMENT MODE: Emails print to console (no real sending)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# PRODUCTION MODE: Use SMTP (uncomment below when you have valid credentials)
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')  # Your Gmail address
-# EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')  # Your Gmail App Password
-# DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER', 'noreply@securescript.com')
 
 # --- CORS Settings ---
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]

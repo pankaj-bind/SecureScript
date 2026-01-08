@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { getUserProfile, updateUserProfile, checkUsername, changePassword, deleteAccount } from "../services/authService";
 import { useProfile } from "../contexts/ProfileContext";
 import { useAuth } from "../contexts/AuthContext";
@@ -79,7 +79,7 @@ const ProfilePage: React.FC = () => {
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean | null>(null);
 
-  const { setProfilePicture: setGlobalProfilePicture } = useProfile();
+  const { setProfilePicture: setGlobalProfilePicture, setDisplayName: setGlobalDisplayName } = useProfile();
 
   // Form state
   const [formData, setFormData] = useState({
@@ -125,6 +125,7 @@ const ProfilePage: React.FC = () => {
         gender: profileData.gender || "",
       });
       setGlobalProfilePicture(profileData.profile_picture_url);
+      setGlobalDisplayName(profileData.display_name || profileData.username || 'User');
     } catch (err: any) {
       console.error("Profile fetch error:", err);
       if (err.response?.status === 404) {
@@ -135,7 +136,7 @@ const ProfilePage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [setGlobalProfilePicture]);
+  }, [setGlobalProfilePicture, setGlobalDisplayName]);
 
   useEffect(() => {
     fetchData();
@@ -284,6 +285,7 @@ const ProfilePage: React.FC = () => {
       setProfile(response);
       setOriginalUsername(response.username || formData.username);
       setGlobalProfilePicture(response.profile_picture_url);
+      setGlobalDisplayName(response.display_name || response.username || 'User');
       setProfilePicture(null);
       setPreviewUrl(null);
       setIsUsernameAvailable(null);
@@ -585,17 +587,18 @@ const ProfilePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  authLogout();
-                  navigate('/forgot-password');
-                }}
-                className="text-sm text-win-accent hover:underline transition-colors"
-              >
-                Forgot your current password?
-              </button>
+            <div className="mt-4 flex items-center justify-between flex-wrap gap-3">
+              <div className="flex flex-col gap-1">
+                <span className="text-sm text-win-text-tertiary">
+                  Enter your current password and new password above
+                </span>
+                <Link 
+                  to="/forgot-password" 
+                  className="text-sm text-win-accent hover:underline"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
               <button
                 type="button"
                 onClick={handlePasswordChange}
