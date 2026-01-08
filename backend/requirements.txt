@@ -5,9 +5,6 @@ dj-rest-auth[with_social]
 django-allauth
 django-cors-headers
 
-# Email
-resend
-
 # PDF Generation
 reportlab
 

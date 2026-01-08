@@ -65,34 +65,74 @@ class RequestPasswordResetOTPView(APIView):
             otp_code = PasswordResetOTP.generate_otp()
             PasswordResetOTP.objects.create(user=user, otp=otp_code)
             
-            # Send email using Resend
+            # Send email using Django's SMTP backend
             try:
-                import resend
-                resend.api_key = settings.RESEND_API_KEY
+                from django.core.mail import EmailMultiAlternatives
                 
                 html_content = f'''
-                <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
-                    <div style="text-align: center; margin-bottom: 30px;">
-                        <h1 style="color: #0078d4; margin: 0;">SecureScript</h1>
-                    </div>
-                    <div style="background: #f5f5f5; border-radius: 8px; padding: 30px; text-align: center;">
-                        <h2 style="color: #333; margin-top: 0;">Password Reset Code</h2>
-                        <p style="color: #666; font-size: 14px;">Use the following OTP code to reset your password:</p>
-                        <div style="background: #0078d4; color: white; font-size: 32px; font-weight: bold; letter-spacing: 8px; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                            {otp_code}
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                </head>
+                <body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: 'Segoe UI', Arial, sans-serif;">
+                    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                        <!-- Header -->
+                        <div style="text-align: center; padding: 30px 0;">
+                            <h1 style="color: #0078d4; margin: 0; font-size: 32px; font-weight: 600;">🛡️ SecureScript</h1>
+                            <p style="color: #666; margin: 10px 0 0 0; font-size: 14px;">Security Configuration Management</p>
                         </div>
-                        <p style="color: #999; font-size: 12px; margin-bottom: 0;">This code is valid for 5 minutes.<br>If you didn't request this, please ignore this email.</p>
+                        
+                        <!-- Main Content -->
+                        <div style="background: #ffffff; border-radius: 12px; padding: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <h2 style="color: #333; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">Password Reset Request</h2>
+                            
+                            <p style="color: #555; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0;">
+                                Hello,
+                            </p>
+                            
+                            <p style="color: #555; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0;">
+                                We received a request to reset your password. Please use the verification code below to complete the process:
+                            </p>
+                            
+                            <!-- OTP Box -->
+                            <div style="background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%); border-radius: 10px; padding: 30px; text-align: center; margin: 30px 0;">
+                                <p style="color: #ffffff; font-size: 14px; margin: 0 0 15px 0; opacity: 0.9;">Your Verification Code</p>
+                                <div style="background: rgba(255,255,255,0.15); border-radius: 8px; padding: 20px; display: inline-block;">
+                                    <span style="color: #ffffff; font-size: 36px; font-weight: bold; letter-spacing: 10px; font-family: 'Courier New', monospace;">
+                                        {otp_code}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Instructions -->
+                            <div style="background: #f8f9fa; border-left: 4px solid #0078d4; padding: 20px; border-radius: 5px; margin: 25px 0;">
+                                <p style="margin: 0; color: #555; font-size: 14px; line-height: 1.6;">
+                                    <strong>⏱️ Time Limit:</strong> This code will expire in <strong>5 minutes</strong><br>
+                                    <strong>🔒 Security:</strong> Never share this code with anyone<br>
+                                    <strong>❓ Didn't request this?</strong> Ignore this email - your account is safe
+                                </p>
+                            </div>
+                            
+                            <p style="color: #666; font-size: 14px; line-height: 1.6; margin: 25px 0 0 0;">
+                                If you didn't request a password reset, please ignore this email or contact our support team if you have concerns.
+                            </p>
+                        </div>
+                        
+                        <!-- Footer -->
+                        <div style="text-align: center; padding: 30px 20px;">
+                            <p style="color: #999; font-size: 12px; margin: 0 0 5px 0;">
+                                This is an automated message from SecureScript
+                            </p>
+                            <p style="color: #999; font-size: 11px; margin: 0;">
+                                © 2026 SecureScript. All rights reserved.
+                            </p>
+                        </div>
                     </div>
-                    <p style="color: #999; font-size: 11px; text-align: center; margin-top: 20px;">© 2026 SecureScript. All rights reserved.</p>
-                </div>
+                </body>
+                </html>
                 '''
-                
-                params = {
-                    "from": settings.RESEND_FROM_EMAIL,
-                    "to": [email],
-                    "subject": "SecureScript - Password Reset OTP",
-                    "html": html_content,
-                }
                 
                 # Print OTP to console for development/testing
                 print(f"\n{'='*60}")
@@ -103,13 +143,19 @@ class RequestPasswordResetOTPView(APIView):
                 print(f"Valid for: 5 minutes")
                 print(f"{'='*60}\n")
                 
-                email_response = resend.Emails.send(params)
+                email_message = EmailMultiAlternatives(
+                    subject="SecureScript - Password Reset OTP",
+                    body=f"Your OTP for password reset is: {otp_code}. It is valid for 5 minutes.",
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    to=[email],
+                )
+                email_message.attach_alternative(html_content, "text/html")
+                email_message.send(fail_silently=True)
                 
-                # Email sent successfully or failed, but OTP is still valid
                 return Response({"message": "An OTP has been sent to your email."})
                     
             except Exception as e:
-                print(f"Resend Error: {str(e)}")
+                print(f"Email Error: {str(e)}")
                 # Even if email fails, print OTP to console for testing
                 print(f"\n{'='*60}")
                 print(f"PASSWORD RESET OTP (Email failed, but OTP is valid)")

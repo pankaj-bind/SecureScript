@@ -102,9 +102,14 @@ REST_AUTH = {'REGISTER_SERIALIZER': 'api.serializers.CustomRegisterSerializer'}
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
-# --- Resend Email Configuration ---
-RESEND_API_KEY = 're_39rWQswT_CtUiUg6DdKGAwpQ9PJtRNbAR'
-RESEND_FROM_EMAIL = 'onboarding@resend.dev'  # Resend's default sender
+# --- Email Configuration (Gmail SMTP) ---
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'pankajbind30@gmail.com'  # Your Gmail address
+EMAIL_HOST_PASSWORD = 'dyut xnwm rruo efmi'  # Generate at myaccount.google.com/apppasswords
+DEFAULT_FROM_EMAIL = 'pankajbind30@gmail.com'
 
 # --- CORS Settings ---
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
