@@ -38,8 +38,8 @@ const RevertHardeingPage = lazy(() => import('./pages/Report/Windows/RevertHarde
 const LoadingComponent = () => (
     <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-300">Loading page...</p>
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-win-accent border-t-transparent mx-auto"></div>
+            <p className="mt-4 text-sm text-gray-600 dark:text-win-text-secondary">Loading page...</p>
         </div>
     </div>
 );
@@ -94,7 +94,7 @@ const App: React.FC = () => {
         <AuthProvider>
           <ProfileProvider>
             <ProfileUpdater />
-            <div className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 min-h-screen transition-colors duration-300">
+            <div className="bg-win-light-bg dark:bg-win-bg-solid text-gray-800 dark:text-win-text-primary min-h-screen transition-colors duration-200 font-segoe">
               <Navbar />
               <main>
                 <Routes>

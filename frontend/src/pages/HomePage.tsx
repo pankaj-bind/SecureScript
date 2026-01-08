@@ -23,20 +23,20 @@ interface TechnologyType {
 }
 
 const SearchIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-win-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
   </svg>
 );
 
 const CategoryIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-win-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
   </svg>
 );
 
 const DefaultLogoIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-win-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
   </svg>
 );
 
@@ -91,8 +91,8 @@ const HomePage: React.FC = () => {
     return (
        <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-300">Loading benchmarks...</p>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-win-accent border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-sm text-gray-600 dark:text-win-text-secondary">Loading benchmarks...</p>
         </div>
       </div>
     );
@@ -102,10 +102,10 @@ const HomePage: React.FC = () => {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
-          <p className="text-red-500 text-lg">{error}</p>
+          <p className="text-red-400 text-sm">{error}</p>
           <button 
             onClick={() => window.location.reload()} 
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="mt-4 win-btn-primary"
           >
             Retry
           </button>
@@ -115,20 +115,20 @@ const HomePage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <header className="text-center my-12">
-        <h1 className="text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="text-center my-10">
+        <h1 className="win-title text-3xl sm:text-4xl text-gray-900 dark:text-win-text-primary tracking-tight">
           Benchmark Directory
         </h1>
-        <p className="mt-4 text-xl text-gray-600 dark:text-gray-300">
+        <p className="mt-3 text-base text-gray-600 dark:text-win-text-secondary">
           Select a technology to generate its CIS hardening script.
         </p>
       </header>
 
       <main>
-        <div className="max-w-2xl mx-auto mb-16">
+        <div className="max-w-xl mx-auto mb-12">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
               <SearchIcon />
             </div>
             <input
@@ -136,35 +136,35 @@ const HomePage: React.FC = () => {
               placeholder="Search for an organization..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full py-3 pl-10 pr-4 text-gray-700 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-200"
+              className="win-input pl-10 rounded-full dark:bg-win-bg-layer dark:border-win-border-default dark:text-win-text-primary dark:placeholder-win-text-tertiary focus:ring-2 focus:ring-win-accent dark:focus:border-win-accent"
             />
           </div>
         </div>
 
         {filteredData.length > 0 ? (
           filteredData.map(techType => (
-            <section key={techType.id} className="mb-12">
-              <div className="flex items-center mb-6">
+            <section key={techType.id} className="mb-10">
+              <div className="flex items-center mb-5 px-1">
                 <CategoryIcon />
-                <h2 className="ml-3 text-2xl font-bold text-gray-800 dark:text-gray-100">
+                <h2 className="ml-2 text-lg font-semibold text-gray-800 dark:text-win-text-primary">
                   {techType.name}
                 </h2>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                 {techType.organizations.map(org => (
                   <Link 
                     to={`/organization/${org.id}`} 
                     key={org.id} 
-                    className="block p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 border border-gray-200 dark:border-gray-700"
+                    className="win-card block p-5 hover:border-win-accent/50 group"
                   >
                     <div className="flex flex-col items-center text-center">
-                      <div className="relative h-12 w-12 mb-4 flex items-center justify-center">
+                      <div className="relative h-10 w-10 mb-3 flex items-center justify-center">
                         {org.logo ? (
                           <>
                             <img 
                               src={org.logo}
                               alt={`${org.name} Logo`} 
-                              className="h-12 w-12 object-contain"
+                              className="h-10 w-10 object-contain"
                               onError={handleImageError}
                             />
                             <div className="fallback-logo hidden items-center justify-center">
@@ -175,10 +175,10 @@ const HomePage: React.FC = () => {
                           <DefaultLogoIcon />
                         )}
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      <h3 className="text-sm font-medium text-gray-900 dark:text-win-text-primary group-hover:text-win-accent transition-colors duration-150 line-clamp-2">
                         {org.name}
                       </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                      <p className="text-xs text-gray-500 dark:text-win-text-tertiary mt-1">
                         {org.products.length} benchmark{org.products.length !== 1 ? 's' : ''}
                       </p>
                     </div>
@@ -188,8 +188,8 @@ const HomePage: React.FC = () => {
             </section>
           ))
         ) : (
-          <div className="text-center py-20">
-            <p className="text-lg text-gray-500 dark:text-gray-400">
+          <div className="text-center py-16">
+            <p className="text-sm text-gray-500 dark:text-win-text-tertiary">
               {searchQuery ? `No results found for "${searchQuery}".` : 'No organizations available yet.'}
             </p>
           </div>

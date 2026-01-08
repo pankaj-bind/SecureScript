@@ -2,8 +2,181 @@
 @tailwind components;
 @tailwind utilities;
 
-/* You can add any custom base styles here */
+/* Windows 11 Fluent Design System Styles */
+
+/* Font imports for Segoe UI Variable (Windows 11 system font) */
+@font-face {
+  font-family: 'Segoe UI Variable';
+  src: local('Segoe UI Variable Display'), local('Segoe UI Variable Text'), local('Segoe UI');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+/* Base styles */
+:root {
+  /* Windows 11 color tokens */
+  --win-bg-mica-dark: #1f1f1f;
+  --win-bg-acrylic-dark: rgba(44, 44, 44, 0.96);
+  --win-bg-solid-dark: #202020;
+  --win-accent: #60cdff;
+  --win-accent-hover: #98d9ff;
+  --win-radius: 8px;
+  --win-radius-lg: 12px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #5a5a5a transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #5a5a5a;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #787878;
+}
+
 body {
+  font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Mica effect simulation for dark mode */
+.dark body {
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #1f1f1f 100%);
+  background-attachment: fixed;
+}
+
+/* Acrylic effect */
+.acrylic {
+  backdrop-filter: blur(30px) saturate(125%);
+  -webkit-backdrop-filter: blur(30px) saturate(125%);
+}
+
+.dark .acrylic {
+  background-color: rgba(32, 32, 32, 0.85);
+}
+
+.light .acrylic {
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+/* Windows 11 card style */
+@layer components {
+  .win-card {
+    @apply rounded-win-lg border transition-all duration-200;
+  }
+  
+  .dark .win-card {
+    @apply bg-win-bg-layer border-win-border-default;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
+  }
+  
+  .light .win-card, .win-card:not(.dark *) {
+    @apply bg-white border-gray-200;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  }
+  
+  .win-card:hover {
+    @apply border-opacity-60;
+    transform: translateY(-1px);
+  }
+  
+  .dark .win-card:hover {
+    @apply bg-win-bg-hover;
+  }
+  
+  /* Windows 11 button styles */
+  .win-btn {
+    @apply px-4 py-2 rounded-win font-medium transition-all duration-150;
+    font-size: 14px;
+  }
+  
+  .win-btn-primary {
+    @apply win-btn text-black;
+    background-color: var(--win-accent);
+  }
+  
+  .win-btn-primary:hover {
+    background-color: var(--win-accent-hover);
+  }
+  
+  .dark .win-btn-secondary {
+    @apply win-btn bg-win-bg-subtle text-win-text-primary border border-win-border-default;
+  }
+  
+  .dark .win-btn-secondary:hover {
+    @apply bg-win-bg-hover;
+  }
+  
+  /* Windows 11 input styles */
+  .win-input {
+    @apply w-full px-4 py-2.5 rounded-win border transition-all duration-150;
+    font-size: 14px;
+  }
+  
+  .dark .win-input {
+    @apply bg-win-bg-layer border-win-border-default text-win-text-primary;
+  }
+  
+  .dark .win-input:focus {
+    @apply outline-none;
+    border-bottom: 2px solid var(--win-accent);
+  }
+  
+  .dark .win-input::placeholder {
+    @apply text-win-text-tertiary;
+  }
+  
+  /* Windows 11 navigation bar */
+  .win-navbar {
+    @apply sticky top-0 z-50 border-b;
+    backdrop-filter: blur(30px) saturate(125%);
+    -webkit-backdrop-filter: blur(30px) saturate(125%);
+  }
+  
+  .dark .win-navbar {
+    @apply border-win-border-subtle;
+    background-color: rgba(32, 32, 32, 0.75);
+  }
+  
+  /* Text styles matching Windows 11 */
+  .win-title {
+    @apply font-semibold;
+    font-size: 28px;
+    line-height: 36px;
+  }
+  
+  .win-subtitle {
+    @apply font-semibold;
+    font-size: 20px;
+    line-height: 28px;
+  }
+  
+  .win-body {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  
+  .win-caption {
+    @apply text-win-text-secondary;
+    font-size: 12px;
+    line-height: 16px;
+  }
 }
