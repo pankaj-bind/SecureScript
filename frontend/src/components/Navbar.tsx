@@ -23,7 +23,44 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [hasUnviewedUpdates, setHasUnviewedUpdates] = useState(false);
   const userDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Check for new updates
+  const hasNewUpdates = () => hasUnviewedUpdates;
+
+  // Check if there are unviewed products
+  useEffect(() => {
+    const checkForNewUpdates = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/products/recent/');
+        if (response.ok) {
+          const products = await response.json();
+          const viewedData = localStorage.getItem('viewedUpdates');
+          
+          if (!viewedData) {
+            // No viewed data, show notification if there are products
+            setHasUnviewedUpdates(products.length > 0);
+          } else {
+            const { lastViewed, productIds } = JSON.parse(viewedData);
+            // Check if any product is new or updated after last viewed
+            const hasNew = products.some((product: any) => 
+              !productIds.includes(product.id) || 
+              new Date(product.updated_at) > new Date(lastViewed)
+            );
+            setHasUnviewedUpdates(hasNew);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to check for updates:', error);
+      }
+    };
+
+    checkForNewUpdates();
+    // Check every 5 minutes
+    const interval = setInterval(checkForNewUpdates, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -64,7 +101,12 @@ const Navbar: React.FC = () => {
             <div className="flex items-center">
               <Link to="/" className="px-3 py-1.5 rounded-win text-sm font-medium text-win-text-secondary hover:bg-win-bg-hover transition-colors duration-150">Home</Link>
               {token && <Link to="/dashboard" className="px-3 py-1.5 rounded-win text-sm font-medium text-win-text-secondary hover:bg-win-bg-hover transition-colors duration-150">Dashboard</Link>}
-              <Link to="/updates" className="px-3 py-1.5 rounded-win text-sm font-medium text-win-text-secondary hover:bg-win-bg-hover transition-colors duration-150">New Updates</Link>
+              <Link to="/updates" className="px-3 py-1.5 rounded-win text-sm font-medium text-win-text-secondary hover:bg-win-bg-hover transition-colors duration-150 relative">
+                New Updates
+                {hasNewUpdates() && (
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                )}
+              </Link>
             </div>
             
             <div className="flex items-center ml-4 space-x-1">
@@ -141,7 +183,12 @@ const Navbar: React.FC = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-win-text-secondary hover:bg-win-bg-hover block px-3 py-2 rounded-win text-sm font-medium transition-colors duration-150">Home</Link>
             {token && <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="text-win-text-secondary hover:bg-win-bg-hover block px-3 py-2 rounded-win text-sm font-medium transition-colors duration-150">Dashboard</Link>}
-            <Link to="/updates" onClick={() => setIsMobileMenuOpen(false)} className="text-win-text-secondary hover:bg-win-bg-hover block px-3 py-2 rounded-win text-sm font-medium transition-colors duration-150">New Updates</Link>
+            <Link to="/updates" onClick={() => setIsMobileMenuOpen(false)} className="text-win-text-secondary hover:bg-win-bg-hover block px-3 py-2 rounded-win text-sm font-medium transition-colors duration-150 relative">
+              New Updates
+              {hasNewUpdates() && (
+                <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+              )}
+            </Link>
           </div>
           <div className="pt-4 pb-3 border-t border-win-border-default">
             {token ? (
