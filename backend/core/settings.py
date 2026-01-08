@@ -102,14 +102,9 @@ REST_AUTH = {'REGISTER_SERIALIZER': 'api.serializers.CustomRegisterSerializer'}
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
-# --- Email Configuration (SendGrid) ---
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'apikey'  # This is literally the string 'apikey'
-EMAIL_HOST_PASSWORD = 'YOUR_SENDGRID_API_KEY_HERE'
-DEFAULT_FROM_EMAIL = 'securescript@pankajbind.me'  # Use a verified sender email
+# --- Resend Email Configuration ---
+RESEND_API_KEY = 're_39rWQswT_CtUiUg6DdKGAwpQ9PJtRNbAR'
+RESEND_FROM_EMAIL = 'onboarding@resend.dev'  # Resend's default sender
 
 # --- CORS Settings ---
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
