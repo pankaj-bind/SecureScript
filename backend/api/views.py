@@ -66,6 +66,13 @@ class RequestPasswordResetOTPView(APIView):
             PasswordResetOTP.objects.create(user=user, otp=otp_code)
             
             try:
+                # Debug logging
+                print(f"Attempting to send email to: {email}")
+                print(f"From email: {settings.DEFAULT_FROM_EMAIL}")
+                print(f"EMAIL_HOST_USER: {settings.EMAIL_HOST_USER}")
+                print(f"EMAIL_HOST: {settings.EMAIL_HOST}")
+                print(f"EMAIL_PORT: {settings.EMAIL_PORT}")
+                
                 send_mail(
                     subject="Your Password Reset OTP Code",
                     message=f"Your OTP for password reset is: {otp_code}. It is valid for 5 minutes.",
@@ -75,7 +82,10 @@ class RequestPasswordResetOTPView(APIView):
                 )
                 return Response({"message": "An OTP has been sent to your email."})
             except Exception as e:
-                return Response({"error": f"Failed to send OTP. Please check email configuration: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                print(f"Email send error: {type(e).__name__}: {str(e)}")
+                import traceback
+                traceback.print_exc()
+                return Response({"error": f"Failed to send OTP: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
