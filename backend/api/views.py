@@ -55,9 +55,10 @@ class RequestPasswordResetOTPView(APIView):
         serializer = OTPRequestSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data["email"]
-            try:
-                user = User.objects.get(email__iexact=email)
-            except User.DoesNotExist:
+            # Use filter().first() to handle multiple users with same email
+            user = User.objects.filter(email__iexact=email).first()
+            
+            if not user:
                 return Response({"error": "No user found with this email address."}, status=status.HTTP_404_NOT_FOUND)
             
             PasswordResetOTP.objects.filter(user=user).delete()
@@ -86,16 +87,20 @@ class VerifyPasswordResetOTPView(APIView):
         if serializer.is_valid():
             email = serializer.validated_data["email"]
             otp_code = serializer.validated_data["otp"]
-            try:
-                user = User.objects.get(email__iexact=email)
-                otp_instance = PasswordResetOTP.objects.get(user=user, otp=otp_code)
-                if otp_instance.is_valid():
-                    return Response({"message": "OTP verified successfully."})
-                else:
-                    otp_instance.delete()
-                    return Response({"error": "OTP has expired."}, status=status.HTTP_400_BAD_REQUEST)
-            except (User.DoesNotExist, PasswordResetOTP.DoesNotExist):
+            # Use filter().first() to handle multiple users with same email
+            user = User.objects.filter(email__iexact=email).first()
+            if not user:
                 return Response({"error": "Invalid OTP or email."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            otp_instance = PasswordResetOTP.objects.filter(user=user, otp=otp_code).first()
+            if not otp_instance:
+                return Response({"error": "Invalid OTP or email."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if otp_instance.is_valid():
+                return Response({"message": "OTP verified successfully."})
+            else:
+                otp_instance.delete()
+                return Response({"error": "OTP has expired."}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -108,23 +113,26 @@ class SetNewPasswordView(APIView):
             email = serializer.validated_data["email"]
             otp_code = serializer.validated_data["otp"]
             password = serializer.validated_data["password"]
-            try:
-                user = User.objects.get(email__iexact=email)
-                otp_instance = PasswordResetOTP.objects.get(user=user, otp=otp_code)
-                if otp_instance.is_valid():
-                    user.set_password(password)
-                    user.save()
-                    otp_instance.delete()
-                    return Response(
-                        {"message": "Password has been reset successfully."}
-                    )
-                else:
-                    otp_instance.delete()
-                    return Response({"error": "OTP has expired."}, status=status.HTTP_400_BAD_REQUEST)
-            except (User.DoesNotExist, PasswordResetOTP.DoesNotExist):
+            
+            # Use filter().first() to handle multiple users with same email
+            user = User.objects.filter(email__iexact=email).first()
+            if not user:
+                return Response({"error": "Invalid OTP or email. Please start over."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            otp_instance = PasswordResetOTP.objects.filter(user=user, otp=otp_code).first()
+            if not otp_instance:
+                return Response({"error": "Invalid OTP or email. Please start over."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if otp_instance.is_valid():
+                user.set_password(password)
+                user.save()
+                otp_instance.delete()
                 return Response(
-                    {"error": "Invalid OTP or email. Please start over."}, status=status.HTTP_400_BAD_REQUEST
+                    {"message": "Password has been reset successfully."}
                 )
+            else:
+                otp_instance.delete()
+                return Response({"error": "OTP has expired."}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -585,10 +585,17 @@ const ProfilePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-4 flex items-center justify-between">
-              <span className="text-sm text-win-text-tertiary">
-                Enter your current password and new password above
-              </span>
+            <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  authLogout();
+                  navigate('/forgot-password');
+                }}
+                className="text-sm text-win-accent hover:underline transition-colors"
+              >
+                Forgot your current password?
+              </button>
               <button
                 type="button"
                 onClick={handlePasswordChange}
