@@ -119,6 +119,43 @@ class SetNewPasswordView(APIView):
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class ChangePasswordView(APIView):
+    """Change password for authenticated users"""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        current_password = request.data.get('current_password')
+        new_password = request.data.get('new_password')
+
+        if not current_password or not new_password:
+            return Response(
+                {"error": "Both current password and new password are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user = request.user
+
+        # Check if current password is correct
+        if not user.check_password(current_password):
+            return Response(
+                {"error": "Current password is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Validate new password length
+        if len(new_password) < 8:
+            return Response(
+                {"error": "New password must be at least 8 characters long."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Set new password
+        user.set_password(new_password)
+        user.save()
+
+        return Response({"message": "Password changed successfully."})
+
 # --- Audit Parser Views ---
 class AuditParserListView(generics.ListAPIView):
     queryset = AuditParser.objects.all()

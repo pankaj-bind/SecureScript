@@ -116,6 +116,14 @@ export const setNewPasswordWithOTP = async (email: string, otp: string, password
   return response.data;
 };
 
+export const changePassword = async (currentPassword: string, newPassword: string) => {
+  const response = await apiClient.post('/change-password/', {
+    current_password: currentPassword,
+    new_password: newPassword,
+  });
+  return response.data;
+};
+
 
 // --- Technology directory functions ---
 export const getTechnologies = async () => {

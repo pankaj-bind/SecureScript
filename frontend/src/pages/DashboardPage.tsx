@@ -292,7 +292,7 @@ const DashboardPage: React.FC = () => {
                             <table className="w-full">
                                 <thead>
                                     <tr className="bg-win-bg-layer border-b border-win-border-subtle">
-                                        <th className="px-4 py-3 text-left text-xs font-medium text-win-text-secondary uppercase tracking-wider">ID</th>
+                                        <th className="px-4 py-3 text-left text-xs font-medium text-win-text-secondary uppercase tracking-wider">Template ID</th>
                                         <th className="px-4 py-3 text-left text-xs font-medium text-win-text-secondary uppercase tracking-wider">Organization</th>
                                         <th className="px-4 py-3 text-left text-xs font-medium text-win-text-secondary uppercase tracking-wider">Benchmark</th>
                                         <th className="px-4 py-3 text-center text-xs font-medium text-win-text-secondary uppercase tracking-wider">Policies</th>
@@ -310,7 +310,7 @@ const DashboardPage: React.FC = () => {
                                                         className="inline-flex items-center gap-2 text-win-text-primary hover:text-win-accent transition-colors"
                                                     >
                                                         <ChevronIcon isOpen={expandedTemplates.has(template.id)} />
-                                                        <span className="text-xs font-mono bg-win-bg-layer px-2 py-0.5 rounded">{template.id.slice(0, 8)}...</span>
+                                                        <span className="text-xs font-mono bg-win-bg-layer px-2 py-0.5 rounded">{template.id}</span>
                                                     </button>
                                                 </td>
                                                 <td className="px-4 py-3 whitespace-nowrap text-sm text-win-text-primary font-medium">{template.organization_name}</td>

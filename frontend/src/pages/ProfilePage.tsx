@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { getUserProfile, updateUserProfile, checkUsername } from "../services/authService";
+import { useNavigate, Link } from "react-router-dom";
+import { getUserProfile, updateUserProfile, checkUsername, changePassword } from "../services/authService";
 import { useProfile } from "../contexts/ProfileContext";
 
 // Icons
@@ -47,6 +47,12 @@ const XIcon = () => (
   </svg>
 );
 
+const LockIcon = () => (
+  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+  </svg>
+);
+
 interface UserProfile {
   id: number;
   username: string;
@@ -86,6 +92,13 @@ const ProfilePage: React.FC = () => {
   });
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Password change states
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const navigate = useNavigate();
 
@@ -173,6 +186,37 @@ const ProfilePage: React.FC = () => {
         setPreviewUrl(reader.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError(null);
+    setPasswordSuccess(null);
+
+    if (!currentPassword || !newPassword) {
+      setPasswordError("Both current and new password are required");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      setPasswordError("New password must be at least 8 characters long");
+      return;
+    }
+
+    setIsChangingPassword(true);
+
+    try {
+      await changePassword(currentPassword, newPassword);
+      setPasswordSuccess("Password changed successfully!");
+      setCurrentPassword("");
+      setNewPassword("");
+    } catch (err: any) {
+      console.error("Password change error:", err);
+      const errorMessage = err.response?.data?.error || "Failed to change password";
+      setPasswordError(errorMessage);
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -434,30 +478,107 @@ const ProfilePage: React.FC = () => {
                   />
                 </div>
               </div>
+            </div>
+          </div>
 
-              {/* Gender */}
+          {/* Update Password */}
+          <div className="win-card p-6">
+            <h3 className="text-base font-semibold text-win-text-primary mb-4 flex items-center gap-2">
+              <LockIcon />
+              Update Password
+            </h3>
+            
+            {/* Password Feedback Messages */}
+            {passwordError && (
+              <div className="mb-4 p-3 rounded-win bg-red-500/10 border border-red-500/30 text-red-400 text-sm flex items-center gap-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {passwordError}
+              </div>
+            )}
+            {passwordSuccess && (
+              <div className="mb-4 p-3 rounded-win bg-green-500/10 border border-green-500/30 text-green-400 text-sm flex items-center gap-2">
+                <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                {passwordSuccess}
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Current Password */}
               <div>
-                <label className="block text-sm font-medium text-win-text-secondary mb-1.5">Gender</label>
+                <label className="block text-sm font-medium text-win-text-secondary mb-1.5">
+                  Current Password
+                </label>
                 <div className="relative">
-                  <select
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleInputChange}
-                    className="win-input appearance-none pr-10 py-2.5"
-                  >
-                    <option value="">Select gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                    <option value="prefer_not_to_say">Prefer not to say</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 pr-3 flex items-center text-win-text-tertiary">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-win-text-tertiary">
+                    <LockIcon />
                   </div>
+                  <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => {
+                      setCurrentPassword(e.target.value);
+                      setPasswordError(null);
+                      setPasswordSuccess(null);
+                    }}
+                    className="win-input pl-10 py-2.5"
+                    placeholder="Enter current password"
+                  />
                 </div>
               </div>
+
+              {/* New Password */}
+              <div>
+                <label className="block text-sm font-medium text-win-text-secondary mb-1.5">
+                  New Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-win-text-tertiary">
+                    <LockIcon />
+                  </div>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => {
+                      setNewPassword(e.target.value);
+                      setPasswordError(null);
+                      setPasswordSuccess(null);
+                    }}
+                    className="win-input pl-10 py-2.5"
+                    placeholder="Enter new password"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 flex items-center justify-between">
+              <Link 
+                to="/forgot-password" 
+                className="text-sm text-win-accent hover:underline transition-colors"
+              >
+                Forgot password?
+              </Link>
+              <button
+                type="button"
+                onClick={handlePasswordChange}
+                disabled={isChangingPassword || !currentPassword || !newPassword}
+                className="win-btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isChangingPassword ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <LockIcon />
+                    Update Password
+                  </>
+                )}
+              </button>
             </div>
           </div>
 
@@ -494,6 +615,30 @@ const ProfilePage: React.FC = () => {
                   className="win-input py-2.5"
                   placeholder="Enter last name"
                 />
+              </div>
+
+              {/* Gender */}
+              <div>
+                <label className="block text-sm font-medium text-win-text-secondary mb-1.5">Gender</label>
+                <div className="relative">
+                  <select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                    className="win-input appearance-none pr-10 py-2.5"
+                  >
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer_not_to_say">Prefer not to say</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 pr-3 flex items-center text-win-text-tertiary">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
