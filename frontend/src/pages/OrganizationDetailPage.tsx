@@ -45,7 +45,7 @@ const OrganizationDetailPage: React.FC = () => {
       <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-2 border-win-accent border-t-transparent mx-auto"></div>
-          <p className="mt-4 text-sm text-gray-600 dark:text-win-text-secondary">Loading organization details...</p>
+          <p className="mt-4 text-sm text-win-text-secondary">Loading organization details...</p>
         </div>
       </div>
     );
@@ -55,7 +55,7 @@ const OrganizationDetailPage: React.FC = () => {
     return (
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center py-16">
-          <p className="text-red-400 text-sm">{error || 'Organization not found.'}</p>
+          <p className="text-red-500 text-sm">{error || 'Organization not found.'}</p>
           <Link to="/" className="mt-4 inline-block win-btn-primary">
             Back to Directory
           </Link>
@@ -74,7 +74,7 @@ const OrganizationDetailPage: React.FC = () => {
       </div>
 
       <header className="flex items-center mb-10">
-        <div className="relative h-16 w-16 mr-5 flex items-center justify-center bg-white dark:bg-win-bg-layer p-2 rounded-win-lg border border-gray-200 dark:border-win-border-default">
+        <div className="relative h-16 w-16 mr-5 flex items-center justify-center bg-win-bg-layer p-2 rounded-win-lg border border-win-border-default">
           {organization.logo && (
             <img 
               src={organization.logo} 
@@ -84,17 +84,17 @@ const OrganizationDetailPage: React.FC = () => {
           )}
         </div>
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-win-text-primary">
+          <h1 className="text-2xl font-semibold text-win-text-primary">
             {organization.name}
           </h1>
-          <p className="text-sm text-gray-600 dark:text-win-text-secondary mt-1">
+          <p className="text-sm text-win-text-secondary mt-1">
             {organization.products.length} available benchmark{organization.products.length !== 1 ? 's' : ''}
           </p>
         </div>
       </header>
 
       <main>
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-win-text-primary mb-5">
+        <h2 className="text-lg font-semibold text-win-text-primary mb-5">
           Available Benchmarks
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -104,7 +104,7 @@ const OrganizationDetailPage: React.FC = () => {
                 key={product.id} 
                 className="win-card p-5 flex flex-col justify-between"
               >
-                <h3 className="font-medium text-sm text-gray-900 dark:text-win-text-primary mb-4">
+                <h3 className="font-medium text-sm text-win-text-primary mb-4">
                   {product.name}
                 </h3>
                 
@@ -120,7 +120,7 @@ const OrganizationDetailPage: React.FC = () => {
             ))
           ) : (
             <div className="col-span-full text-center py-10">
-              <p className="text-sm text-gray-500 dark:text-win-text-tertiary">
+              <p className="text-sm text-win-text-tertiary">
                 No products available for this organization yet.
               </p>
             </div>

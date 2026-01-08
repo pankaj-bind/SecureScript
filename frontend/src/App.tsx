@@ -39,7 +39,7 @@ const LoadingComponent = () => (
     <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
             <div className="animate-spin rounded-full h-10 w-10 border-2 border-win-accent border-t-transparent mx-auto"></div>
-            <p className="mt-4 text-sm text-gray-600 dark:text-win-text-secondary">Loading page...</p>
+            <p className="mt-4 text-sm text-win-text-secondary">Loading page...</p>
         </div>
     </div>
 );
@@ -94,7 +94,7 @@ const App: React.FC = () => {
         <AuthProvider>
           <ProfileProvider>
             <ProfileUpdater />
-            <div className="bg-win-light-bg dark:bg-win-bg-solid text-gray-800 dark:text-win-text-primary min-h-screen transition-colors duration-200 font-segoe">
+            <div className="bg-win-bg-solid text-win-text-primary min-h-screen transition-colors duration-200 font-segoe">
               <Navbar />
               <main>
                 <Routes>

@@ -92,7 +92,7 @@ const HomePage: React.FC = () => {
        <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-10 w-10 border-2 border-win-accent border-t-transparent mx-auto"></div>
-          <p className="mt-4 text-sm text-gray-600 dark:text-win-text-secondary">Loading benchmarks...</p>
+          <p className="mt-4 text-sm text-win-text-secondary">Loading benchmarks...</p>
         </div>
       </div>
     );
@@ -102,7 +102,7 @@ const HomePage: React.FC = () => {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="text-center">
-          <p className="text-red-400 text-sm">{error}</p>
+          <p className="text-red-500 text-sm">{error}</p>
           <button 
             onClick={() => window.location.reload()} 
             className="mt-4 win-btn-primary"
@@ -117,10 +117,10 @@ const HomePage: React.FC = () => {
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <header className="text-center my-10">
-        <h1 className="win-title text-3xl sm:text-4xl text-gray-900 dark:text-win-text-primary tracking-tight">
+        <h1 className="win-title text-3xl sm:text-4xl text-win-text-primary tracking-tight">
           Benchmark Directory
         </h1>
-        <p className="mt-3 text-base text-gray-600 dark:text-win-text-secondary">
+        <p className="mt-3 text-base text-win-text-secondary">
           Select a technology to generate its CIS hardening script.
         </p>
       </header>
@@ -136,7 +136,7 @@ const HomePage: React.FC = () => {
               placeholder="Search for an organization..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="win-input pl-10 rounded-full dark:bg-win-bg-layer dark:border-win-border-default dark:text-win-text-primary dark:placeholder-win-text-tertiary focus:ring-2 focus:ring-win-accent dark:focus:border-win-accent"
+              className="win-input pl-10 rounded-full focus:ring-2 focus:ring-win-accent"
             />
           </div>
         </div>
@@ -146,7 +146,7 @@ const HomePage: React.FC = () => {
             <section key={techType.id} className="mb-10">
               <div className="flex items-center mb-5 px-1">
                 <CategoryIcon />
-                <h2 className="ml-2 text-lg font-semibold text-gray-800 dark:text-win-text-primary">
+                <h2 className="ml-2 text-lg font-semibold text-win-text-primary">
                   {techType.name}
                 </h2>
               </div>
@@ -175,10 +175,10 @@ const HomePage: React.FC = () => {
                           <DefaultLogoIcon />
                         )}
                       </div>
-                      <h3 className="text-sm font-medium text-gray-900 dark:text-win-text-primary group-hover:text-win-accent transition-colors duration-150 line-clamp-2">
+                      <h3 className="text-sm font-medium text-win-text-primary group-hover:text-win-accent transition-colors duration-150 line-clamp-2">
                         {org.name}
                       </h3>
-                      <p className="text-xs text-gray-500 dark:text-win-text-tertiary mt-1">
+                      <p className="text-xs text-win-text-tertiary mt-1">
                         {org.products.length} benchmark{org.products.length !== 1 ? 's' : ''}
                       </p>
                     </div>
@@ -189,7 +189,7 @@ const HomePage: React.FC = () => {
           ))
         ) : (
           <div className="text-center py-16">
-            <p className="text-sm text-gray-500 dark:text-win-text-tertiary">
+            <p className="text-sm text-win-text-tertiary">
               {searchQuery ? `No results found for "${searchQuery}".` : 'No organizations available yet.'}
             </p>
           </div>

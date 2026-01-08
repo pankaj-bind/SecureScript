@@ -119,12 +119,12 @@ const PolicyDetails: React.FC<{ policyData: any
 
     return (
         <>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{policyData.description}</h2>
+            <h2 className="text-xl font-semibold text-win-text-primary">{policyData.description}</h2>
             {displayKeys.map(({ key, title }) => (
                 policyData[key] && (
-                    <div key={key}>
-                        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mt-4">{title}</h3>
-                        <p className="mt-1 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words">
+                    <div key={key} className="mt-4">
+                        <h3 className="text-sm font-medium text-win-accent mb-1">{title}</h3>
+                        <p className="text-sm text-win-text-secondary whitespace-pre-wrap break-words leading-relaxed">
                             {String(policyData[key])}
                         </p>
                     </div>
@@ -392,8 +392,7 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
         value={policyValues[key] || ''}
         rows={inputType === 'textarea' ? 5 : undefined}
         onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setPolicyValues(prev => ({ ...prev, [key]: e.target.value }))}
-        className="block w-full max-w-xs rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 
- text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition px-4 py-2"
+        className="win-input max-w-xs"
         placeholder="Enter required value..."
       />
     );
@@ -414,199 +413,232 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
     });
   };
 
-  if (initialLoading) return <div className="text-center p-10 dark:text-white">Loading policies...</div>;
-  if (initialError) return <div className="text-center p-10 text-red-500">{initialError}</div>;
-
-  return (
-    <div className="container mx-auto px-4 
- sm:px-6 lg:px-8 py-8">
-      <div className="mb-4">
-        {product.organization_id && (
-          <Link to={`/organization/${product.organization_id}`} className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
-            ← Back to Organization
-          </Link>
-        )}
-      </div>
-
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-6" title={product.name}>
-        {product.name}
-    
-      </h1>
-
-      <div className="flex h-[calc(100vh-12rem)] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-
-        <aside className="w-[450px] flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
-          <div className="p-4 border-b border-gray-200 dark:border-gray-600">
-
-            <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300">Security Policies</h2>
-            <div className="relative mt-4">
-              <input
-                type="text"
-                placeholder="Search policies..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full p-2 pl-4 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-blue-500 
- focus:border-blue-500 text-sm"
-              />
-            </div>
-            <div className="flex justify-between items-center mt-3 text-sm text-gray-500 dark:text-gray-400">
-              <span>Showing {filteredPolicies.length} of {policies.length} policies</span>
-            </div>
-          </div>
-
-          <div className="p-4 border-b border-gray-200 dark:border-gray-600 space-y-3">
-            {/* FIX: Added proper null check for templateFeedback */}
-            {templateFeedback && (
-              <div className={`p-2 rounded-md text-sm text-center 
- ${templateFeedback.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                {templateFeedback.message}
-              </div>
-            )}
-            <button
-              onClick={handleCreateTemplate}
-              
-              disabled={selectedForTemplate.size === 0 || isCreatingTemplate}
-              className="w-full h-10 px-4 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-
-            >
-              {isCreatingTemplate ? 'Creating...' : `Create Template (${selectedForTemplate.size})`}
-            </button>
-            <div className="flex items-center">
-              <input
-                id="select-all"
-                type="checkbox"
-                className="h-4 w-4 rounded border-gray-300 dark:border-gray-500 text-blue-600 focus:ring-blue-500 bg-gray-100 dark:bg-gray-900"
-
-                checked={isAllSelected}
-                onChange={handleSelectAll}
-              
-                disabled={filteredPolicies.length === 0}
-              />
-              <label htmlFor="select-all" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
-                Select All ({filteredPolicies.length} visible)
-              </label>
-            </div>
-
-          </div>
-
-          <ul className="overflow-y-auto flex-grow">
-            {/* FIX: Cast filteredPolicies as an array to resolve TypeScript error */}
-            {Array.isArray(filteredPolicies) && filteredPolicies.map((policy: PolicyWithPassedValue) => {
-              const displayPolicy = policy.check_type === 'CONDITIONAL' ? (policy.then?.report || policy) : policy;
-              const key = getPolicyKey(policy);
-              const isSelectedForTemplate = selectedForTemplate.has(key);
-              const isSelectedForView = selectedPolicy && getPolicyKey(selectedPolicy) === key;
-              return (
-                <li key={key} className={`flex items-center transition-colors border-b border-gray-200 dark:border-gray-700 relative ${isSelectedForView ? 'bg-blue-50 dark:bg-blue-900/30' : 'hover:bg-gray-100 dark:hover:bg-gray-700/50'}`}>
-                  {isSelectedForView && <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600 rounded-r-full"></div>}
-
-                  <div className="pl-4">
-                    <input
-                      type="checkbox"
-                      aria-label={`Select policy ${displayPolicy.description}`}
-                      className="h-4 w-4 rounded border-gray-300 dark:border-gray-500 text-blue-600 focus:ring-blue-500 bg-gray-100 dark:bg-gray-900"
-
-                      checked={isSelectedForTemplate}
-                      onChange={(e) => handleTemplateSelection(key, e.target.checked)}
-                   
-                    />
-                  </div>
-                  <button
-                    onClick={() => setSelectedPolicy(policy)}
-
-                    className={`w-full text-left p-4 pl-3 text-sm font-medium ${isSelectedForView ? 'text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'}`}
-                  >
-                    {displayPolicy.description}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-
-        </aside>
-
-        <main className="w-2/3 
- overflow-y-auto p-8">
-          {!selectedPolicy ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center">
-                <p className="text-xl text-gray-500 dark:text-gray-400">Select a policy from the list to view its details.</p>
-              </div>
-            </div>
-          ) : (
-            (() => {
-                // FIX: Added null check for selectedPolicy
-              if (!selectedPolicy) return null; 
-
-              const key = getPolicyKey(selectedPolicy);
-              const status = statuses[key];
-              const policyToDisplay = selectedPolicy.check_type === 'CONDITIONAL' && selectedPolicy.then?.report ? selectedPolicy.then.report : selectedPolicy;
-              const config = selectedPolicyConfig;
-      
-              const targetPolicy = selectedPolicy.check_type === 'CONDITIONAL' ? (selectedPolicy.condition?.rules?.[0] || {}) : selectedPolicy;
-              const showInput = config?.needsInput?.(targetPolicy);
-
-              return (
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 space-y-4">
-
-                  <PolicyDetails policyData={policyToDisplay} />
-
-                  <div className="mt-6">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Recommended State</h3>
-                    <p className="mt-1 text-gray-600 dark:text-gray-400 whitespace-pre-wrap break-words">
-                      {resolvePolicyVariables(
-                      
-                        config?.getRecommendedText(targetPolicy) || '',
-
-                        targetPolicy
-                      )}
-                    </p>
-                  </div>
-
-                  {status?.feedback && (
-                    <div className={`p-4 mt-4 rounded-md text-sm break-words whitespace-pre-wrap ${status.feedback.type === 'success'
-                      ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}`}>
-                      {status.feedback.message}
-                
-                    </div>
-                  )}
-
-                  <div className="flex flex-col sm:flex-row justify-end items-center gap-4 pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
-                    {showInput &&
-                      // FIX: Added null check to renderPolicyInput call
-                      renderPolicyInput(selectedPolicy)}
-
-                    {showInput && (
-                      <button
-                        onClick={() => handleResetValue(selectedPolicy)}
-                        disabled={policyValues[key] === defaultPolicyValues[key] || status?.isLoading}
-              
-                        className="h-12 w-full sm:w-auto px-6 bg-gray-500 text-white font-semibold rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
-
-                      >
-                        Reset
-                      </button>
-                    )}
-                    <button
-                      onClick={() =>
-                        handlePolicySubmit(selectedPolicy)}
-                      disabled={Object.values(statuses).some(s => s.isLoading)}
- 
-                      className="h-12 w-full sm:w-auto px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400 transition-colors"
-                    >
-                      {status?.isLoading ? 'Applying...' : 'Apply Policy'}
-                    </button>
-
-                  </div>
-                </div>
-              );
-            })()
-          )}
-        </main>
+  if (initialLoading) return (
+    <div className="min-h-screen bg-win-bg-solid flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-8 h-8 border-2 border-win-accent border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        <p className="text-sm text-win-text-secondary">Loading policies...</p>
       </div>
     </div>
   );
-  // FIX: Removed trailing semicolon here, fixing the syntax error on line 583
+  if (initialError) return (
+    <div className="min-h-screen bg-win-bg-solid flex items-center justify-center">
+      <div className="win-card max-w-md text-center">
+        <svg className="w-12 h-12 mx-auto text-red-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+        <p className="text-sm text-red-400">{initialError}</p>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-win-bg-solid">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Breadcrumb */}
+        <div className="mb-4">
+          {product.organization_id && (
+            <Link to={`/organization/${product.organization_id}`} className="inline-flex items-center gap-1.5 text-sm text-win-text-secondary hover:text-win-accent transition-colors">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+              Back to Organization
+            </Link>
+          )}
+        </div>
+
+        {/* Page Title */}
+        <h1 className="text-xl font-semibold text-win-text-primary mb-4 truncate" title={product.name}>
+          {product.name}
+        </h1>
+
+        {/* Main Layout */}
+        <div className="flex h-[calc(100vh-10rem)] gap-4">
+          {/* Sidebar */}
+          <aside className="w-[400px] flex-shrink-0 win-card flex flex-col overflow-hidden">
+            {/* Sidebar Header */}
+            <div className="p-4 border-b border-win-border-subtle">
+              <h2 className="text-sm font-medium text-win-text-primary mb-3">Security Policies</h2>
+              {/* Search */}
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="w-4 h-4 text-win-text-tertiary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search policies..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="win-input pl-9 text-sm"
+                />
+              </div>
+              <p className="text-xs text-win-text-tertiary mt-2">{filteredPolicies.length} of {policies.length} policies</p>
+            </div>
+
+            {/* Template Actions */}
+            <div className="p-4 border-b border-win-border-subtle space-y-3">
+              {templateFeedback && (
+                <div className={`p-2.5 rounded-win text-xs flex items-center gap-2 ${
+                  templateFeedback.type === 'success' 
+                    ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                    : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                }`}>
+                  {templateFeedback.type === 'success' ? (
+                    <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  ) : (
+                    <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  )}
+                  {templateFeedback.message}
+                </div>
+              )}
+              <button
+                onClick={handleCreateTemplate}
+                disabled={selectedForTemplate.size === 0 || isCreatingTemplate}
+                className="w-full win-btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isCreatingTemplate ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                    Create Template ({selectedForTemplate.size})
+                  </>
+                )}
+              </button>
+              <label className="flex items-center gap-2 text-sm text-win-text-secondary cursor-pointer hover:text-win-text-primary transition-colors">
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-win-border-subtle bg-win-bg-layer text-win-accent focus:ring-win-accent/50 focus:ring-offset-0"
+                  checked={isAllSelected}
+                  onChange={handleSelectAll}
+                  disabled={filteredPolicies.length === 0}
+                />
+                Select all ({filteredPolicies.length})
+              </label>
+            </div>
+
+            {/* Policy List */}
+            <ul className="overflow-y-auto flex-grow">
+              {Array.isArray(filteredPolicies) && filteredPolicies.map((policy: PolicyWithPassedValue) => {
+                const displayPolicy = policy.check_type === 'CONDITIONAL' ? (policy.then?.report || policy) : policy;
+                const key = getPolicyKey(policy);
+                const isSelectedForTemplate = selectedForTemplate.has(key);
+                const isSelectedForView = selectedPolicy && getPolicyKey(selectedPolicy) === key;
+                return (
+                  <li key={key} className={`flex items-center border-b border-win-border-subtle transition-colors ${isSelectedForView ? 'bg-win-accent/10' : 'hover:bg-win-bg-subtle/50'}`}>
+                    <div className="pl-4">
+                      <input
+                        type="checkbox"
+                        aria-label={`Select policy ${displayPolicy.description}`}
+                        className="w-4 h-4 rounded border-win-border-subtle bg-win-bg-layer text-win-accent focus:ring-win-accent/50 focus:ring-offset-0"
+                        checked={isSelectedForTemplate}
+                        onChange={(e) => handleTemplateSelection(key, e.target.checked)}
+                      />
+                    </div>
+                    <button
+                      onClick={() => setSelectedPolicy(policy)}
+                      className={`w-full text-left p-3 pl-3 text-sm ${isSelectedForView ? 'text-win-accent font-medium' : 'text-win-text-secondary hover:text-win-text-primary'} transition-colors`}
+                    >
+                      {displayPolicy.description}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </aside>
+
+          {/* Main Content */}
+          <main className="flex-1 win-card overflow-y-auto">
+            {!selectedPolicy ? (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center">
+                  <svg className="w-16 h-16 mx-auto text-win-text-tertiary mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p className="text-win-text-secondary">Select a policy from the list to view details</p>
+                </div>
+              </div>
+            ) : (
+              (() => {
+                if (!selectedPolicy) return null; 
+
+                const key = getPolicyKey(selectedPolicy);
+                const status = statuses[key];
+                const policyToDisplay = selectedPolicy.check_type === 'CONDITIONAL' && selectedPolicy.then?.report ? selectedPolicy.then.report : selectedPolicy;
+                const config = selectedPolicyConfig;
+                const targetPolicy = selectedPolicy.check_type === 'CONDITIONAL' ? (selectedPolicy.condition?.rules?.[0] || {}) : selectedPolicy;
+                const showInput = config?.needsInput?.(targetPolicy);
+
+                return (
+                  <div className="p-6 space-y-5">
+                    <PolicyDetails policyData={policyToDisplay} />
+
+                    {/* Recommended State */}
+                    <div className="p-4 bg-win-bg-layer rounded-win border border-win-border-subtle">
+                      <h3 className="text-sm font-medium text-win-accent mb-2 flex items-center gap-2">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        Recommended State
+                      </h3>
+                      <p className="text-sm text-win-text-secondary whitespace-pre-wrap break-words">
+                        {resolvePolicyVariables(config?.getRecommendedText(targetPolicy) || '', targetPolicy)}
+                      </p>
+                    </div>
+
+                    {/* Feedback */}
+                    {status?.feedback && (
+                      <div className={`p-3 rounded-win text-sm flex items-start gap-2 ${
+                        status.feedback.type === 'success' 
+                          ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                          : 'bg-red-500/10 text-red-400 border border-red-500/20'
+                      }`}>
+                        {status.feedback.type === 'success' ? (
+                          <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                        ) : (
+                          <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        )}
+                        <span className="break-words whitespace-pre-wrap">{status.feedback.message}</span>
+                      </div>
+                    )}
+
+                    {/* Actions */}
+                    <div className="flex flex-col sm:flex-row justify-end items-center gap-3 pt-4 border-t border-win-border-subtle">
+                      {showInput && renderPolicyInput(selectedPolicy)}
+
+                      {showInput && (
+                        <button
+                          onClick={() => handleResetValue(selectedPolicy)}
+                          disabled={policyValues[key] === defaultPolicyValues[key] || status?.isLoading}
+                          className="win-btn-secondary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Reset
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handlePolicySubmit(selectedPolicy)}
+                        disabled={Object.values(statuses).some(s => s.isLoading)}
+                        className="win-btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        {status?.isLoading ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            Applying...
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                            Apply Policy
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })()
+            )}
+          </main>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ProductDetailPage;

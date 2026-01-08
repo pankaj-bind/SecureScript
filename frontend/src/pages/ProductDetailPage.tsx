@@ -55,10 +55,10 @@ const ProductDetailPageRouter: React.FC = () => {
     }, [id]);
 
     const LoadingComponent = () => (
-        <div className="flex justify-center items-center min-h-screen">
+        <div className="min-h-screen bg-win-bg-solid flex items-center justify-center">
             <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="mt-4 text-gray-600 dark:text-gray-300">Loading product viewer...</p>
+                <div className="w-10 h-10 border-2 border-win-accent border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <p className="mt-4 text-sm text-win-text-secondary">Loading product viewer...</p>
             </div>
         </div>
     );
@@ -69,11 +69,22 @@ const ProductDetailPageRouter: React.FC = () => {
 
     if (error) {
         return (
-            <div className="container mx-auto px-4 py-8 text-center">
-                <p className="text-red-500 text-lg">{error}</p>
-                <Link to="/" className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-                    Back to Directory
-                </Link>
+            <div className="min-h-screen bg-win-bg-solid flex items-center justify-center">
+                <div className="win-card p-8 max-w-md text-center">
+                    <svg className="w-12 h-12 mx-auto text-red-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <p className="text-red-400 mb-4">{error}</p>
+                    <Link 
+                        to="/" 
+                        className="win-btn-primary inline-flex items-center gap-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                        Back to Directory
+                    </Link>
+                </div>
             </div>
         );
     }
