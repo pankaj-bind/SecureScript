@@ -59,13 +59,36 @@ class RequestPasswordResetOTPView(APIView):
             PasswordResetOTP.objects.filter(user=user).delete()
             otp_code = PasswordResetOTP.generate_otp()
             PasswordResetOTP.objects.create(user=user, otp=otp_code)
-            send_mail(
-                subject="Your Password Reset OTP Code",
-                message=f"Your OTP for password reset is: {otp_code}. It is valid for 5 minutes.",
-                from_email="noreply@yourapp.com",
-                recipient_list=[email],
-                fail_silently=False,
+            
+            # Send email with HTML content
+            html_message = f'''
+            <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #0078d4; margin: 0;">SecureScript</h1>
+                </div>
+                <div style="background: #f5f5f5; border-radius: 8px; padding: 30px; text-align: center;">
+                    <h2 style="color: #333; margin-top: 0;">Password Reset Code</h2>
+                    <p style="color: #666; font-size: 14px;">Use the following OTP code to reset your password:</p>
+                    <div style="background: #0078d4; color: white; font-size: 32px; font-weight: bold; letter-spacing: 8px; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        {otp_code}
+                    </div>
+                    <p style="color: #999; font-size: 12px; margin-bottom: 0;">This code is valid for 5 minutes.<br>If you didn't request this, please ignore this email.</p>
+                </div>
+                <p style="color: #999; font-size: 11px; text-align: center; margin-top: 20px;">© 2026 SecureScript. All rights reserved.</p>
+            </div>
+            '''
+            
+            from django.core.mail import EmailMultiAlternatives
+            
+            email_message = EmailMultiAlternatives(
+                subject="SecureScript - Password Reset OTP",
+                body=f"Your OTP for password reset is: {otp_code}. It is valid for 5 minutes.",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[email],
             )
+            email_message.attach_alternative(html_message, "text/html")
+            email_message.send(fail_silently=False)
+            
             return Response({"message": "An OTP has been sent to your email."})
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
