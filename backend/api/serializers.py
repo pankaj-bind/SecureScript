@@ -424,18 +424,44 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UserProfileUpdateSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True, allow_blank=False, min_length=3, max_length=150)
     email = serializers.EmailField(required=True, allow_blank=False)
+    
     class Meta:
         model = UserProfile
         fields = [
             'first_name', 'last_name', 'phone_number', 'company_name',
             'profile_picture', 'username', 'email', 'gender'
         ]
+    
     def validate_username(self, value):
-        # Validation logic here
+        user = self.context['request'].user
+        # Check if username is taken by another user
+        if User.objects.filter(username__iexact=value).exclude(pk=user.pk).exists():
+            raise serializers.ValidationError("This username is already taken.")
         return value
+    
     def validate_email(self, value):
-        # Validation logic here
+        user = self.context['request'].user
+        # Check if email is taken by another user
+        if User.objects.filter(email__iexact=value).exclude(pk=user.pk).exists():
+            raise serializers.ValidationError("This email is already in use.")
         return value
+    
     def update(self, instance, validated_data):
-        # Update logic here
+        # Extract user fields
+        username = validated_data.pop('username', None)
+        email = validated_data.pop('email', None)
+        
+        # Update User model fields
+        user = instance.user
+        if username:
+            user.username = username
+        if email:
+            user.email = email
+        user.save()
+        
+        # Update UserProfile fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        
         return instance

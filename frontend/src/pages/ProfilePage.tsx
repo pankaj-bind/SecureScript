@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { getUserProfile, updateUserProfile } from "../services/authService";
+import { getUserProfile, updateUserProfile, checkUsername } from "../services/authService";
 import { useProfile } from "../contexts/ProfileContext";
 
 // Icons
@@ -35,6 +35,18 @@ const CameraIcon = () => (
   </svg>
 );
 
+const CheckIcon = () => (
+  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+  </svg>
+);
+
+const XIcon = () => (
+  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
 interface UserProfile {
   id: number;
   username: string;
@@ -48,23 +60,18 @@ interface UserProfile {
   gender?: string;
 }
 
-// Debounce utility function
-function debounce<T extends (...args: any[]) => any>(func: T, wait: number): T {
-  let timeout: NodeJS.Timeout;
-  return ((...args: any[]) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
-  }) as T;
-}
-
 const ProfilePage: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [originalUsername, setOriginalUsername] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // setProfilePicture function from context
+  // Username availability check states
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean | null>(null);
+
   const { setProfilePicture: setGlobalProfilePicture } = useProfile();
 
   // Form state
@@ -86,6 +93,7 @@ const ProfilePage: React.FC = () => {
     try {
       const profileData = await getUserProfile();
       setProfile(profileData);
+      setOriginalUsername(profileData.username || "");
       setFormData({
         username: profileData.username || "",
         first_name: profileData.first_name || "",
@@ -93,7 +101,7 @@ const ProfilePage: React.FC = () => {
         phone_number: profileData.phone_number || "",
         email: profileData.email || "",
         company_name: profileData.company_name || "",
-        gender: profileData.gender || "", // support for gender field
+        gender: profileData.gender || "",
       });
       setGlobalProfilePicture(profileData.profile_picture_url);
     } catch (err: any) {
@@ -112,6 +120,29 @@ const ProfilePage: React.FC = () => {
     fetchData();
   }, [fetchData]);
 
+  // Username availability check with debounce
+  useEffect(() => {
+    // Don't check if username is empty or same as original
+    if (!formData.username || formData.username === originalUsername) {
+      setIsUsernameAvailable(null);
+      setIsCheckingUsername(false);
+      return;
+    }
+
+    setIsCheckingUsername(true);
+    const timerId = setTimeout(() => {
+      checkUsername(formData.username).then((data) => {
+        setIsUsernameAvailable(!data.exists);
+        setIsCheckingUsername(false);
+      }).catch(() => {
+        setIsCheckingUsername(false);
+        setIsUsernameAvailable(null);
+      });
+    }, 500);
+
+    return () => clearTimeout(timerId);
+  }, [formData.username, originalUsername]);
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -120,6 +151,8 @@ const ProfilePage: React.FC = () => {
       ...prev,
       [name]: value,
     }));
+    setError(null);
+    setSuccess(null);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,18 +162,12 @@ const ProfilePage: React.FC = () => {
         setError("Profile picture must be less than 5MB");
         return;
       }
-      const allowedTypes = [
-        "image/jpeg",
-        "image/png",
-        "image/gif",
-        "image/webp",
-      ];
+      const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
       if (!allowedTypes.includes(file.type)) {
         setError("Please upload a valid image file (JPEG, PNG, GIF, or WebP)");
         return;
       }
       setProfilePicture(file);
-      // Create preview URL
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result as string);
@@ -159,6 +186,12 @@ const ProfilePage: React.FC = () => {
       setError("Email is required");
       return;
     }
+    // Prevent submit if username is taken
+    if (formData.username !== originalUsername && isUsernameAvailable === false) {
+      setError("This username is already taken");
+      return;
+    }
+
     setIsSaving(true);
     setError(null);
     setSuccess(null);
@@ -174,9 +207,11 @@ const ProfilePage: React.FC = () => {
       const response = await updateUserProfile(formDataToSend);
       setSuccess("Profile updated successfully!");
       setProfile(response);
+      setOriginalUsername(response.username || formData.username);
       setGlobalProfilePicture(response.profile_picture_url);
       setProfilePicture(null);
       setPreviewUrl(null);
+      setIsUsernameAvailable(null);
     } catch (err: any) {
       console.error("Profile update error:", err);
       const errorMessage =
@@ -188,6 +223,43 @@ const ProfilePage: React.FC = () => {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  // Username feedback UI
+  const renderUsernameFeedback = () => {
+    if (!formData.username || formData.username === originalUsername) return null;
+    
+    if (isCheckingUsername) {
+      return (
+        <div className="flex items-center gap-1.5 mt-1.5 text-xs text-win-text-tertiary">
+          <svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>Checking availability...</span>
+        </div>
+      );
+    }
+    
+    if (isUsernameAvailable === true) {
+      return (
+        <div className="flex items-center gap-1.5 mt-1.5 text-xs text-green-400">
+          <CheckIcon />
+          <span>Username is available</span>
+        </div>
+      );
+    }
+    
+    if (isUsernameAvailable === false) {
+      return (
+        <div className="flex items-center gap-1.5 mt-1.5 text-xs text-red-400">
+          <XIcon />
+          <span>Username is already taken</span>
+        </div>
+      );
+    }
+    
+    return null;
   };
 
   if (isLoading) {
@@ -210,232 +282,289 @@ const ProfilePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-win-bg-solid">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
-        <div className="mb-4">
-          <h1 className="text-xl font-semibold text-win-text-primary">Profile Settings</h1>
-          <p className="text-xs text-win-text-secondary mt-0.5">Manage your account information and preferences</p>
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-win-text-primary">Profile Settings</h1>
+          <p className="text-sm text-win-text-secondary mt-1">Manage your account information and preferences</p>
         </div>
 
         {/* Feedback Messages */}
         {error && (
-          <div className="mb-3 p-2 rounded-win bg-red-500/10 border border-red-500/20 text-red-500 text-xs flex items-center gap-2">
-            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <div className="mb-4 p-3 rounded-win bg-red-500/10 border border-red-500/30 text-red-400 text-sm flex items-center gap-2">
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             {error}
           </div>
         )}
         {success && (
-          <div className="mb-3 p-2 rounded-win bg-green-500/10 border border-green-500/20 text-green-500 text-xs flex items-center gap-2">
-            <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+          <div className="mb-4 p-3 rounded-win bg-green-500/10 border border-green-500/30 text-green-400 text-sm flex items-center gap-2">
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
             {success}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-3">
-          {/* Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            {/* Left Column */}
-            <div className="space-y-3">
-              {/* Profile Picture Card */}
-              <div className="win-card p-4">
-                <h2 className="text-xs font-medium text-win-text-primary mb-3">Profile Picture</h2>
-                <div className="flex items-center gap-4">
-                  <div className="relative group">
-                    <img
-                      src={currentProfileImage}
-                      alt="Profile"
-                      className="h-16 w-16 object-cover rounded-full ring-2 ring-win-border-subtle"
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Profile Header Card */}
+          <div className="win-card p-6">
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              {/* Profile Picture */}
+              <div className="relative group">
+                <img
+                  src={currentProfileImage}
+                  alt="Profile"
+                  className="h-24 w-24 object-cover rounded-full ring-4 ring-win-border-subtle"
+                />
+                <label className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                  <div className="text-white flex flex-col items-center">
+                    <CameraIcon />
+                    <span className="text-xs mt-1">Change</span>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+              
+              {/* Profile Info */}
+              <div className="text-center sm:text-left flex-1">
+                <h2 className="text-xl font-semibold text-win-text-primary">
+                  {profile?.display_name || "User"}
+                </h2>
+                <p className="text-sm text-win-text-secondary mt-0.5">@{profile?.username}</p>
+                {profile?.email && (
+                  <p className="text-sm text-win-text-tertiary mt-1">{profile.email}</p>
+                )}
+                <div className="mt-3">
+                  <label className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-win-accent bg-win-accent/10 rounded-win hover:bg-win-accent/20 transition-colors cursor-pointer border border-win-accent/30">
+                    <CameraIcon />
+                    Upload new photo
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
                     />
-                    <label className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                      <CameraIcon />
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
-                    </label>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Account Information */}
+          <div className="win-card p-6">
+            <h3 className="text-base font-semibold text-win-text-primary mb-4 flex items-center gap-2">
+              <UserIcon />
+              Account Information
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Username */}
+              <div>
+                <label className="block text-sm font-medium text-win-text-secondary mb-1.5">
+                  Username <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-win-text-tertiary">
+                    <UserIcon />
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-win-text-primary font-medium">{profile?.display_name || 'User'}</p>
-                    <p className="text-xs text-win-text-tertiary mt-0.5">@{profile?.username}</p>
-                    <label className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-win-accent bg-win-accent/10 rounded-win hover:bg-win-accent/20 transition-colors cursor-pointer">
-                      <CameraIcon />
-                      Change
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="hidden"
-                      />
-                    </label>
+                  <input
+                    type="text"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    required
+                    minLength={3}
+                    className={`win-input pl-10 py-2.5 ${
+                      formData.username !== originalUsername
+                        ? isUsernameAvailable === true
+                          ? "border-green-500/50 focus:border-green-500"
+                          : isUsernameAvailable === false
+                          ? "border-red-500/50 focus:border-red-500"
+                          : ""
+                        : ""
+                    }`}
+                    placeholder="Enter username"
+                  />
+                  {/* Status indicator inside input */}
+                  {formData.username && formData.username !== originalUsername && !isCheckingUsername && (
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      {isUsernameAvailable === true && (
+                        <span className="text-green-400"><CheckIcon /></span>
+                      )}
+                      {isUsernameAvailable === false && (
+                        <span className="text-red-400"><XIcon /></span>
+                      )}
+                    </div>
+                  )}
+                  {isCheckingUsername && (
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                      <svg className="animate-spin h-4 w-4 text-win-text-tertiary" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                {renderUsernameFeedback()}
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-win-text-secondary mb-1.5">
+                  Email <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-win-text-tertiary">
+                    <EmailIcon />
                   </div>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="win-input pl-10 py-2.5"
+                    placeholder="Enter email"
+                  />
                 </div>
               </div>
 
-              {/* Account Information Card */}
-              <div className="win-card p-4">
-                <h2 className="text-xs font-medium text-win-text-primary mb-3">Account Information</h2>
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Username */}
-                  <div>
-                    <label className="block text-xs font-medium text-win-text-secondary mb-1">
-                      Username <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-win-text-tertiary">
-                        <UserIcon />
-                      </div>
-                      <input
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleInputChange}
-                        required
-                        className="win-input pl-9 py-2 text-sm"
-                      />
-                    </div>
-                  </div>
-                  {/* Gender */}
-                  <div>
-                    <label className="block text-xs font-medium text-win-text-secondary mb-1">Gender</label>
-                    <div className="relative">
-                      <select
-                        name="gender"
-                        value={formData.gender}
-                        onChange={handleInputChange}
-                        className="win-input appearance-none pr-8 py-2 text-sm"
-                      >
-                        <option value="">Select</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                        <option value="prefer_not_to_say">Prefer not to say</option>
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 pr-2.5 flex items-center text-win-text-tertiary">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Personal Information Card */}
-              <div className="win-card p-4">
-                <h2 className="text-xs font-medium text-win-text-primary mb-3">Personal Information</h2>
-                <div className="grid grid-cols-2 gap-3">
-                  {/* First Name */}
-                  <div>
-                    <label className="block text-xs font-medium text-win-text-secondary mb-1">First Name</label>
-                    <input
-                      type="text"
-                      name="first_name"
-                      value={formData.first_name}
-                      onChange={handleInputChange}
-                      placeholder="First name"
-                      className="win-input py-2 text-sm"
-                    />
-                  </div>
-                  {/* Last Name */}
-                  <div>
-                    <label className="block text-xs font-medium text-win-text-secondary mb-1">Last Name</label>
-                    <input
-                      type="text"
-                      name="last_name"
-                      value={formData.last_name}
-                      onChange={handleInputChange}
-                      placeholder="Last name"
-                      className="win-input py-2 text-sm"
-                    />
+              {/* Gender */}
+              <div>
+                <label className="block text-sm font-medium text-win-text-secondary mb-1.5">Gender</label>
+                <div className="relative">
+                  <select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                    className="win-input appearance-none pr-10 py-2.5"
+                  >
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer_not_to_say">Prefer not to say</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 pr-3 flex items-center text-win-text-tertiary">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Right Column */}
-            <div className="space-y-3">
+          {/* Personal Information */}
+          <div className="win-card p-6">
+            <h3 className="text-base font-semibold text-win-text-primary mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
+              </svg>
+              Personal Information
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* First Name */}
+              <div>
+                <label className="block text-sm font-medium text-win-text-secondary mb-1.5">First Name</label>
+                <input
+                  type="text"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleInputChange}
+                  className="win-input py-2.5"
+                  placeholder="Enter first name"
+                />
+              </div>
 
-              {/* Contact Information Card */}
-              <div className="win-card p-4">
-                <h2 className="text-xs font-medium text-win-text-primary mb-3">Contact Information</h2>
-                <div className="grid grid-cols-2 gap-3">
-                  {/* Email */}
-                  <div>
-                    <label className="block text-xs font-medium text-win-text-secondary mb-1">
-                      Email <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-win-text-tertiary">
-                        <EmailIcon />
-                      </div>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        required
-                        className="win-input pl-9 py-2 text-sm"
-                      />
-                    </div>
+              {/* Last Name */}
+              <div>
+                <label className="block text-sm font-medium text-win-text-secondary mb-1.5">Last Name</label>
+                <input
+                  type="text"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleInputChange}
+                  className="win-input py-2.5"
+                  placeholder="Enter last name"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Contact & Company Information */}
+          <div className="win-card p-6">
+            <h3 className="text-base font-semibold text-win-text-primary mb-4 flex items-center gap-2">
+              <BuildingIcon />
+              Contact & Company
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium text-win-text-secondary mb-1.5">Phone Number</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-win-text-tertiary">
+                    <PhoneIcon />
                   </div>
-                  {/* Phone */}
-                  <div>
-                    <label className="block text-xs font-medium text-win-text-secondary mb-1">Phone</label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-win-text-tertiary">
-                        <PhoneIcon />
-                      </div>
-                      <input
-                        type="tel"
-                        name="phone_number"
-                        value={formData.phone_number}
-                        onChange={handleInputChange}
-                        placeholder="Phone number"
-                        className="win-input pl-9 py-2 text-sm"
-                      />
-                    </div>
-                  </div>
+                  <input
+                    type="tel"
+                    name="phone_number"
+                    value={formData.phone_number}
+                    onChange={handleInputChange}
+                    className="win-input pl-10 py-2.5"
+                    placeholder="Enter phone number"
+                  />
                 </div>
               </div>
 
-              {/* Company Information Card */}
-              <div className="win-card p-4">
-                <h2 className="text-xs font-medium text-win-text-primary mb-3">Company Information</h2>
-                <div>
-                  <label className="block text-xs font-medium text-win-text-secondary mb-1">Company Name</label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-win-text-tertiary">
-                      <BuildingIcon />
-                    </div>
-                    <input
-                      type="text"
-                      name="company_name"
-                      value={formData.company_name}
-                      onChange={handleInputChange}
-                      placeholder="Company name"
-                      className="win-input pl-9 py-2 text-sm"
-                    />
+              {/* Company */}
+              <div>
+                <label className="block text-sm font-medium text-win-text-secondary mb-1.5">Company Name</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-win-text-tertiary">
+                    <BuildingIcon />
                   </div>
+                  <input
+                    type="text"
+                    name="company_name"
+                    value={formData.company_name}
+                    onChange={handleInputChange}
+                    className="win-input pl-10 py-2.5"
+                    placeholder="Enter company name"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="px-6 py-2.5 text-sm font-medium text-win-text-secondary bg-win-bg-subtle border border-win-border-default rounded-win hover:bg-win-bg-subtle/80 transition-colors"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
-              disabled={isSaving}
-              className="win-btn-primary inline-flex items-center gap-2 py-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isSaving || (formData.username !== originalUsername && isUsernameAvailable === false)}
+              className="win-btn-primary inline-flex items-center gap-2 px-6 py-2.5 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSaving ? (
                 <>
-                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                   Saving...
                 </>
               ) : (
                 <>
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                   Save Changes
