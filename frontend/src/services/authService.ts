@@ -3,12 +3,9 @@ import axios from 'axios';
 import apiClient from '../api/apiClient'; 
 
 // Ensure consistent API URL with trailing slash
-// Use production URL as fallback for deployed sites
 const API_URL = process.env.REACT_APP_API_URL 
   ? `${process.env.REACT_APP_API_URL.replace(/\/+$/, '')}/` 
-  : (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
-    ? 'http://localhost:8000/api/'
-    : 'https://pankajbind.pythonanywhere.com/api/';
+  : 'http://localhost:8000/api/';
 
 // --- Interfaces for data types ---
 export interface AuditParser {

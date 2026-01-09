@@ -183,23 +183,16 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
             } else {
                 // Browser: Fetch from API
                 try {
-                    console.log('Fetching policies for product:', product.id);
                     const result = await getProductPolicies(product.id);
-                    console.log('API Response:', result);
                     if (result.success && result.data) {
                         policiesData = result.data;
-                        console.log('Loaded', policiesData.length, 'policies');
                     } else {
-                        setInitialError(`Failed to load policies: ${result.success ? 'No data returned' : 'Server returned error'}`);
+                        setInitialError('Failed to load policies from server.');
                         setInitialLoading(false);
                         return;
                     }
                 } catch (apiError: any) {
-                    console.error('API Error:', apiError);
-                    const errorMessage = apiError.response?.data?.error 
-                        || apiError.message 
-                        || 'Failed to load policies. Please try again.';
-                    setInitialError(`Error: ${errorMessage}`);
+                    setInitialError(apiError.response?.data?.error || 'Failed to load policies. Please try again.');
                     setInitialLoading(false);
                     return;
                 }
