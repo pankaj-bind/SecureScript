@@ -23,6 +23,8 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: path.join(__dirname, 'build-resources/icon.png'),
+    title: 'SecureScript',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
@@ -30,15 +32,25 @@ function createWindow() {
     },
   });
 
-  win.loadURL(
-    isDev
-      ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../build/index.html')}`
-  );
+  // Determine the correct path to load
+  const indexPath = isDev
+    ? 'http://localhost:3000'
+    : `file://${path.join(__dirname, 'build', 'index.html')}`;
+  
+  console.log('Loading URL:', indexPath);
+  console.log('__dirname:', __dirname);
+  console.log('isDev:', isDev);
+  
+  win.loadURL(indexPath);
 
   if (isDev) {
     win.webContents.openDevTools({ mode: 'detach' });
   }
+  
+  // Handle load errors
+  win.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
+    console.error('Failed to load:', errorCode, errorDescription);
+  });
 }
 
 // --- System Info Logic ---

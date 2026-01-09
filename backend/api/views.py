@@ -559,3 +559,64 @@ def update_user_profile(request):
         updated_profile = UserProfileSerializer(profile, context={"request": request})
         return Response(updated_profile.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductPoliciesView(APIView):
+    """
+    Returns all policy JSON files for a product.
+    Used by the web browser version when Electron API is not available.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        try:
+            product = Product.objects.get(pk=pk)
+        except Product.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        if not product.audit_json_output_path:
+            return Response({"error": "No policies available for this product"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Get the absolute path to the policy files directory
+        policy_dir = os.path.join(settings.MEDIA_ROOT, product.audit_json_output_path)
+        
+        if not os.path.exists(policy_dir):
+            return Response({"error": "Policy directory not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        policies = []
+        
+        # Read all JSON files from the directory
+        try:
+            for filename in sorted(os.listdir(policy_dir)):
+                if filename.endswith('.json') and filename not in ['metadata.json', 'script.json']:
+                    file_path = os.path.join(policy_dir, filename)
+                    try:
+                        with open(file_path, 'r', encoding='utf-8') as f:
+                            policy_data = json.load(f)
+                            policies.append(policy_data)
+                    except (json.JSONDecodeError, IOError) as e:
+                        print(f"Error reading policy file {filename}: {e}")
+                        continue
+            
+            # Also check subdirectories (like 'commands' folder)
+            commands_dir = os.path.join(policy_dir, 'commands')
+            if os.path.exists(commands_dir):
+                for filename in sorted(os.listdir(commands_dir)):
+                    if filename.endswith('.json') and filename not in ['metadata.json', 'script.json']:
+                        file_path = os.path.join(commands_dir, filename)
+                        try:
+                            with open(file_path, 'r', encoding='utf-8') as f:
+                                policy_data = json.load(f)
+                                policies.append(policy_data)
+                        except (json.JSONDecodeError, IOError) as e:
+                            print(f"Error reading policy file {filename}: {e}")
+                            continue
+                            
+        except OSError as e:
+            return Response({"error": f"Error reading policy directory: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        return Response({
+            "success": True,
+            "data": policies,
+            "count": len(policies)
+        })

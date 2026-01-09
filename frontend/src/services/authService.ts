@@ -232,3 +232,9 @@ export const getReportsForTemplate = async (templateId: string): Promise<Report[
 export const deleteReport = async (reportId: number): Promise<void> => {
     await apiClient.delete(`/reports/${reportId}/`);
 };
+
+// --- Product Policies for Browser ---
+export const getProductPolicies = async (productId: number): Promise<{ success: boolean; data: any[]; count: number }> => {
+    const response = await apiClient.get(`/products/${productId}/policies/`);
+    return response.data;
+};

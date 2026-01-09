@@ -1,7 +1,16 @@
 // src/App.tsx
 
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Routes, Route, useParams } from 'react-router-dom';
+
+// Detect if running in Electron
+const isElectron = () => {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return userAgent.indexOf(' electron/') > -1;
+};
+
+// Use HashRouter for Electron, BrowserRouter for web
+const Router = isElectron() ? HashRouter : BrowserRouter;
 import { getTemplateDetails, getProductDetails, ProductDetails, Template } from './services/authService';
 import { ViewerPageProps as ProductViewerPageProps } from './pages/ProductDetailPage';
 

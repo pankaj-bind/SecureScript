@@ -30,8 +30,10 @@
           "electron-builder": "^26.4.0",
           "electron-packager": "^17.1.2",
           "icon-gen": "^5.0.0",
+          "png-to-ico": "^3.0.1",
           "png2icons": "^2.0.1",
           "postcss": "^8.4.38",
+          "rcedit": "^5.0.2",
           "sharp": "^0.34.5",
           "tailwindcss": "^3.4.3",
           "wait-on": "^8.0.1"
@@ -55,31 +57,28 @@
           "productName": "SecureScript",
           "files": [
                "build/**/*",
+               "build-resources/**/*",
                "main.js",
                "preload.js"
           ],
           "directories": {
                "buildResources": "build-resources",
-               "output": "dist"
+               "output": "release"
           },
           "win": {
                "target": [
                     {
-                         "target": "nsis",
+                         "target": "portable",
                          "arch": [
                               "x64"
                          ]
                     }
                ],
-               "icon": "build-resources/icon.png",
-               "artifactName": "${productName}-Setup-${version}.${ext}"
+               "icon": "build-resources/icon.ico",
+               "artifactName": "${productName}-${version}-Portable.${ext}"
           },
-          "nsis": {
-               "oneClick": false,
-               "allowToChangeInstallationDirectory": true,
-               "createDesktopShortcut": true,
-               "createStartMenuShortcut": true,
-               "shortcutName": "SecureScript"
+          "portable": {
+               "artifactName": "${productName}-${version}-Portable.${ext}"
           },
           "mac": {
                "target": "dmg",

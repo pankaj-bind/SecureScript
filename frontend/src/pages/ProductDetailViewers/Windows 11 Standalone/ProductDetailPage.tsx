@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Policy } from '../../../electron-api.d';
-import { createTemplate } from '../../../services/authService';
+import { createTemplate, getProductPolicies } from '../../../services/authService';
 import { ViewerPageProps } from '../../../pages/ProductDetailPage';
 
 const policyTypeConfigs: { [key: string]: any } = {
@@ -143,6 +143,10 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
   const [initialError, setInitialError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Check if running in Electron or Browser
+  const isElectron = typeof window !== 'undefined' && !!window.electronAPI;
+  const [showInstallModal, setShowInstallModal] = useState(false);
+
   // --- PERSISTENCE & RESET LOGIC START ---
   const [policyValues, setPolicyValues] = useState<{ [key: string]: string }>({});
   const [defaultPolicyValues, setDefaultPolicyValues] = useState<{ [key: string]: string }>({});
@@ -154,83 +158,103 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
         setInitialLoading(true);
         setInitialError(null);
 
-        const policyDirectoryPath = product.audit_json_output_path;
-
-        if (!policyDirectoryPath) {
-            setInitialError("Audit file path is not configured for this product.");
-            setInitialLoading(false);
-            return;
-        }
-
-        if (!window.electronAPI) {
-            setInitialError('Electron API is not available.');
-            setInitialLoading(false);
-            return;
-        }
-
         try {
-            const result = await window.electronAPI.getPolicyFiles(policyDirectoryPath);
-            if (result.success && result.data) {
-                const filteredPolicies: PolicyWithPassedValue[] = result.data.filter(p => {
-                    // Check for null or undefined policy object before accessing properties
-                    if (!p || !p.description) {
-                        const rawJson = JSON.stringify(p).toLowerCase();
-                        return !rawJson.includes('metadata.json') && !rawJson.includes('script.json');
-                    }
-                    // Extract the policy to check if it's not a metadata/script file
-                    const displayPolicy = p.check_type === 'CONDITIONAL' ? (p.then?.report || p) : p;
-                    const description = displayPolicy.description.toLowerCase();
-                    return description !== 'metadata.json' && description !== 'script.json';
-                });
-
-                setPolicies(filteredPolicies);
-                if (filteredPolicies.length > 0) setSelectedPolicy(filteredPolicies[0]);
-
-                const defaultValues: { [key: string]: string } = {};
-                const initialStatuses: { [key: string]: Status } = {};
-
-                filteredPolicies.forEach(policy => {
-                    const key = getPolicyKey(policy);
-                    initialStatuses[key] = { isLoading: false, feedback: null };
-                    const policyType = (policy.check_type === 'CONDITIONAL') ? policy.condition?.rules?.[0]?.type : policy.type;
-                    const config = policyType ? policyTypeConfigs[policyType] : null;
-                    const targetPolicy = policy.check_type === 'CONDITIONAL' ? 
-                    (policy.condition?.rules?.[0] || {}) : policy;
-
-                    if (config?.needsInput?.(targetPolicy)) {
-                        let defaultValue = '';
-                        // Prioritize existing passed_value if available (e.g., from an imported template)
-                        if (policy.passed_value) {
-                             defaultValue = String(policy.passed_value);
-                        } else if (targetPolicy.variable?.default) {
-                            defaultValue = targetPolicy.variable.default.replace(/\[|\]/g, '').split('..')[0];
-                        } else if ((targetPolicy.value_data || "").includes('..')) {
-                          defaultValue = targetPolicy.value_data!.match(/\[(\d+)\.\./)?.[1] || targetPolicy.value_data!.split('..')[0];
-                        } else if (targetPolicy.value_type === 'POLICY_MULTI_TEXT') {
-                          defaultValue = (targetPolicy.value_data || "").split('&&').map(s => s.trim().replace(/"/g, '')).join('\n');
-                        } else if (targetPolicy.account_type === 'ADMINISTRATOR_ACCOUNT') {
-                          defaultValue = 'LclAdmin';
-                        } else 
- if (targetPolicy.account_type === 'GUEST_ACCOUNT') {
-                          defaultValue = 'LclGuest';
-                        } else if (targetPolicy.value_data) {
-                          defaultValue = targetPolicy.value_data.split('||')[0].replace(/"/g, '').trim();
-                        }
-                      defaultValues[key] = defaultValue;
-                    }
-                });
+            let policiesData: PolicyWithPassedValue[] = [];
+            
+            // Check if running in Electron or Browser
+            if (isElectron && window.electronAPI) {
+                // Electron: Read from local files
+                const policyDirectoryPath = product.audit_json_output_path;
                 
-                setDefaultPolicyValues(defaultValues);
-                setStatuses(initialStatuses);
+                if (!policyDirectoryPath) {
+                    setInitialError("Audit file path is not configured for this product.");
+                    setInitialLoading(false);
+                    return;
+                }
                 
-                // Load saved values from localStorage and merge with defaults
-                const savedValuesRaw = localStorage.getItem(storageKey);
-                const savedValues = savedValuesRaw ? JSON.parse(savedValuesRaw) : {};
-                setPolicyValues({ ...defaultValues, ...savedValues });
-
+                const result = await window.electronAPI.getPolicyFiles(policyDirectoryPath);
+                if (result.success && result.data) {
+                    policiesData = result.data;
+                } else {
+                    setInitialError(result.message || 'Failed to load policies.');
+                    setInitialLoading(false);
+                    return;
+                }
             } else {
-                setInitialError(result.message || 'Failed to load policies.');
+                // Browser: Fetch from API
+                try {
+                    const result = await getProductPolicies(product.id);
+                    if (result.success && result.data) {
+                        policiesData = result.data;
+                    } else {
+                        setInitialError('Failed to load policies from server.');
+                        setInitialLoading(false);
+                        return;
+                    }
+                } catch (apiError: any) {
+                    setInitialError(apiError.response?.data?.error || 'Failed to load policies. Please try again.');
+                    setInitialLoading(false);
+                    return;
+                }
             }
+            
+            // Filter and process policies
+            const filteredPolicies: PolicyWithPassedValue[] = policiesData.filter(p => {
+                // Check for null or undefined policy object before accessing properties
+                if (!p || !p.description) {
+                    const rawJson = JSON.stringify(p).toLowerCase();
+                    return !rawJson.includes('metadata.json') && !rawJson.includes('script.json');
+                }
+                // Extract the policy to check if it's not a metadata/script file
+                const displayPolicy = p.check_type === 'CONDITIONAL' ? (p.then?.report || p) : p;
+                const description = displayPolicy.description.toLowerCase();
+                return description !== 'metadata.json' && description !== 'script.json';
+            });
+
+            setPolicies(filteredPolicies);
+            if (filteredPolicies.length > 0) setSelectedPolicy(filteredPolicies[0]);
+
+            const defaultValues: { [key: string]: string } = {};
+            const initialStatuses: { [key: string]: Status } = {};
+
+            filteredPolicies.forEach(policy => {
+                const key = getPolicyKey(policy);
+                initialStatuses[key] = { isLoading: false, feedback: null };
+                const policyType = (policy.check_type === 'CONDITIONAL') ? policy.condition?.rules?.[0]?.type : policy.type;
+                const config = policyType ? policyTypeConfigs[policyType] : null;
+                const targetPolicy = policy.check_type === 'CONDITIONAL' ? 
+                (policy.condition?.rules?.[0] || {}) : policy;
+
+                if (config?.needsInput?.(targetPolicy)) {
+                    let defaultValue = '';
+                    // Prioritize existing passed_value if available (e.g., from an imported template)
+                    if (policy.passed_value) {
+                         defaultValue = String(policy.passed_value);
+                    } else if (targetPolicy.variable?.default) {
+                        defaultValue = targetPolicy.variable.default.replace(/\[|\]/g, '').split('..')[0];
+                    } else if ((targetPolicy.value_data || "").includes('..')) {
+                      defaultValue = targetPolicy.value_data!.match(/\[(\d+)\.\./)?.[1] || targetPolicy.value_data!.split('..')[0];
+                    } else if (targetPolicy.value_type === 'POLICY_MULTI_TEXT') {
+                      defaultValue = (targetPolicy.value_data || "").split('&&').map(s => s.trim().replace(/"/g, '')).join('\n');
+                    } else if (targetPolicy.account_type === 'ADMINISTRATOR_ACCOUNT') {
+                      defaultValue = 'LclAdmin';
+                    } else if (targetPolicy.account_type === 'GUEST_ACCOUNT') {
+                      defaultValue = 'LclGuest';
+                    } else if (targetPolicy.value_data) {
+                      defaultValue = targetPolicy.value_data.split('||')[0].replace(/"/g, '').trim();
+                    }
+                  defaultValues[key] = defaultValue;
+                }
+            });
+            
+            setDefaultPolicyValues(defaultValues);
+            setStatuses(initialStatuses);
+            
+            // Load saved values from localStorage and merge with defaults
+            const savedValuesRaw = localStorage.getItem(storageKey);
+            const savedValues = savedValuesRaw ? JSON.parse(savedValuesRaw) : {};
+            setPolicyValues({ ...defaultValues, ...savedValues });
+
         } catch (err: any) {
             setInitialError(`An error occurred while fetching policies: ${err.message}`);
         } finally {
@@ -238,7 +262,7 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
         }
     };
     fetchAndSetupPolicies();
-  }, [product.audit_json_output_path, product.id, storageKey]);
+  }, [product.audit_json_output_path, product.id, storageKey, isElectron]);
 
   // Save values to localStorage whenever they change
   useEffect(() => {
@@ -613,7 +637,13 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
                         </button>
                       )}
                       <button
-                        onClick={() => handlePolicySubmit(selectedPolicy)}
+                        onClick={() => {
+                          if (!isElectron) {
+                            setShowInstallModal(true);
+                          } else {
+                            handlePolicySubmit(selectedPolicy);
+                          }
+                        }}
                         disabled={Object.values(statuses).some(s => s.isLoading)}
                         className="win-btn-primary w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
@@ -637,6 +667,43 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
           </main>
         </div>
       </div>
+
+      {/* Install Desktop App Modal */}
+      {showInstallModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="win-card max-w-md mx-4 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-win-accent/10 flex items-center justify-center">
+              <svg className="w-8 h-8 text-win-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-win-text-primary mb-2">Desktop App Required</h3>
+            <p className="text-sm text-win-text-secondary mb-6">
+              To apply security policies to your system, please install and use our desktop application. 
+              The web version is for viewing and creating templates only.
+            </p>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => setShowInstallModal(false)}
+                className="win-btn-secondary"
+              >
+                Close
+              </button>
+              <a
+                href="https://github.com/pankaj-bind/SecureScript/releases"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="win-btn-primary inline-flex items-center gap-2"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download App
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
