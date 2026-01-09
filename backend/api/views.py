@@ -577,8 +577,11 @@ class ProductPoliciesView(APIView):
         if not product.audit_json_output_path:
             return Response({"error": "No policies available for this product"}, status=status.HTTP_404_NOT_FOUND)
         
+        # Normalize path separators for cross-platform compatibility (Windows uses \, Linux uses /)
+        normalized_path = product.audit_json_output_path.replace('\\', '/')
+        
         # Get the absolute path to the policy files directory
-        policy_dir = os.path.join(settings.MEDIA_ROOT, product.audit_json_output_path)
+        policy_dir = os.path.join(settings.MEDIA_ROOT, normalized_path)
         
         if not os.path.exists(policy_dir):
             return Response({"error": "Policy directory not found"}, status=status.HTTP_404_NOT_FOUND)
