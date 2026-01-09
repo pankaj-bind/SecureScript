@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
+import apiClient from '../api/apiClient';
 
 interface Product {
   id: number;
@@ -37,12 +38,8 @@ const NewUpdatesPage: React.FC = () => {
 
   const fetchRecentProducts = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/products/recent/');
-      if (!response.ok) {
-        throw new Error('Failed to fetch recent products');
-      }
-      const data = await response.json();
-      setProducts(data);
+      const response = await apiClient.get('/products/recent/');
+      setProducts(response.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load products');
     } finally {

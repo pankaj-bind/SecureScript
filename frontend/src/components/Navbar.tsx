@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useProfile } from '../contexts/ProfileContext'; // Add this import
+import apiClient from '../api/apiClient';
 
 // SVG Icons for the theme toggle button (Windows 11 style)
 const SunIcon = () => (
@@ -33,9 +34,9 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     const checkForNewUpdates = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/products/recent/');
-        if (response.ok) {
-          const products = await response.json();
+        const response = await apiClient.get('/products/recent/');
+        if (response.status === 200) {
+          const products = response.data;
           const viewedData = localStorage.getItem('viewedUpdates');
           
           if (!viewedData) {
