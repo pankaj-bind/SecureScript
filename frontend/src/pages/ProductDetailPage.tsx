@@ -9,12 +9,23 @@ export interface ViewerPageProps {
   product: ProductDetails;
 }
 
+// Static imports for viewer components to avoid dynamic import issues with spaces in paths
+const DefaultViewer = lazy(() => import('./ProductDetailViewers/DefaultViewer'));
+const Windows11StandaloneViewer = lazy(() => import('./ProductDetailViewers/Windows 11 Standalone/ProductDetailPage'));
+
+// Map page_viewer values to components
+const viewerMap: { [key: string]: React.LazyExoticComponent<React.ComponentType<ViewerPageProps>> } = {
+    'Default': DefaultViewer,
+    'Windows 11 Standalone': Windows11StandaloneViewer,
+    'Windows 11 Enterprise': Windows11StandaloneViewer, // Use same viewer for now
+};
+
 // --- Main Router Component ---
 
 const ProductDetailPageRouter: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     // The state holds the component to be rendered, not the data
-    const [ViewerComponent, setViewerComponent] = useState<React.ComponentType<ViewerPageProps> | null>(null);
+    const [ViewerComponent, setViewerComponent] = useState<React.LazyExoticComponent<React.ComponentType<ViewerPageProps>> | null>(null);
     const [product, setProduct] = useState<ProductDetails | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -33,17 +44,9 @@ const ProductDetailPageRouter: React.FC = () => {
 
                 const viewerIdentifier = productData.page_viewer || 'Default';
 
-                // Dynamically import the component based on the product's page_viewer field
-                const component = lazy(() => 
-                    import(`./ProductDetailViewers/${viewerIdentifier}/ProductDetailPage.tsx`)
-                    .catch(() => {
-                        // If a specific viewer is not found, fall back to the DefaultViewer
-                        console.warn(`Viewer component "${viewerIdentifier}" not found. Falling back to default.`);
-                        return import(`./ProductDetailViewers/DefaultViewer`);
-                    })
-                );
-
-                setViewerComponent(() => component); // Use a functional update for the component
+                // Use static mapping instead of dynamic imports
+                const component = viewerMap[viewerIdentifier] || DefaultViewer;
+                setViewerComponent(component);
             } catch (err) {
                 setError('Could not fetch product data. It may have been removed.');
             } finally {
