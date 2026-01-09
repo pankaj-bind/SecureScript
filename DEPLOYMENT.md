@@ -1,6 +1,34 @@
 # SecureScript Deployment Guide
 
-## 🚀 Netlify Deployment
+This guide covers deployment for both the frontend (Netlify) and backend (PythonAnywhere).
+
+## 📋 Table of Contents
+1. [Backend Deployment (PythonAnywhere)](#backend-deployment)
+2. [Frontend Deployment (Netlify)](#frontend-deployment)
+3. [Connecting Frontend and Backend](#connecting-frontend-and-backend)
+
+---
+
+## 🔧 Backend Deployment
+
+For detailed backend deployment instructions on PythonAnywhere, see **[BACKEND_DEPLOYMENT.md](./BACKEND_DEPLOYMENT.md)**.
+
+### Quick Backend Deployment Steps:
+
+1. Create a PythonAnywhere account
+2. Clone repository: `git clone https://github.com/pankaj-bind/SecureScript.git`
+3. Create virtual environment and install dependencies
+4. Configure `.env` file with production settings
+5. Run migrations and collect static files
+6. Configure WSGI file on PythonAnywhere
+7. Set up static and media file mappings
+8. Reload web app
+
+**Your backend will be live at**: `https://yourusername.pythonanywhere.com/api/`
+
+---
+
+## 🚀 Frontend Deployment
 
 ### Prerequisites
 - GitHub account
@@ -125,9 +153,56 @@ The app automatically detects the environment:
 - Check `netlify.toml` configuration
 - Clear cache and redeploy if needed
 
-## 📊 Backend Deployment
+## 📊 Connecting Frontend and Backend
 
-The backend (Django) needs to be deployed separately. Options:
+### Step 1: Deploy Backend First
+Follow the [BACKEND_DEPLOYMENT.md](./BACKEND_DEPLOYMENT.md) guide to deploy on PythonAnywhere.
+
+### Step 2: Update Frontend Environment Variables
+
+Once your backend is deployed, update the frontend environment variables on Netlify:
+
+1. Go to **Site settings** → **Environment variables**
+2. Add:
+   ```env
+   REACT_APP_API_URL=https://yourusername.pythonanywhere.com/api
+   REACT_APP_MEDIA_URL=https://yourusername.pythonanywhere.com/media
+   ```
+3. Click **Save** and **Redeploy**
+
+### Step 3: Update Backend CORS Settings
+
+Update your backend `.env` file on PythonAnywhere:
+
+```env
+CORS_ALLOWED_ORIGINS=https://your-app.netlify.app,http://localhost:3000
+ALLOWED_HOSTS=yourusername.pythonanywhere.com,localhost,127.0.0.1
+```
+
+Then reload your PythonAnywhere web app.
+
+### Testing the Connection
+
+1. Open your Netlify site
+2. Try logging in or registering
+3. Check browser console for any CORS errors
+4. Verify API calls are going to the correct backend URL
+
+---
+
+## 📝 Additional Resources
+
+- **Frontend Deployment**: See sections above
+- **Backend Deployment**: [BACKEND_DEPLOYMENT.md](./BACKEND_DEPLOYMENT.md)
+- **Netlify Documentation**: https://docs.netlify.com/
+- **PythonAnywhere Documentation**: https://help.pythonanywhere.com/
+
+## 🎉 Your App is Live!
+
+- **Frontend (Web)**: `https://your-app.netlify.app`
+- **Frontend (Desktop)**: `frontend/release/win-unpacked/SecureScript.exe`
+- **Backend API**: `https://yourusername.pythonanywhere.com/api/`
+- **Admin Panel**: `https://yourusername.pythonanywhere.com/admin/`
 - **Railway**: Easy Python/Django hosting
 - **Heroku**: Classic platform-as-a-service
 - **DigitalOcean**: VPS with more control

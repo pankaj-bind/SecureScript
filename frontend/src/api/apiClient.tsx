@@ -1,8 +1,11 @@
 // src/api/apiClient.ts
 import axios from 'axios';
 
+// Use environment variable or fallback to localhost
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8000/api/', // Adjust to your backend URL
+  baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
