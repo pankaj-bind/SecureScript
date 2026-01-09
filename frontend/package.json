@@ -1,6 +1,8 @@
 {
-     "name": "frontend",
-     "version": "0.1.0",
+     "name": "securescript",
+     "version": "1.0.0",
+     "description": "SecureScript - Windows Security Policy Management Tool",
+     "author": "SecureScript Team",
      "main": "main.js",
      "private": true,
      "homepage": "./",
@@ -25,8 +27,12 @@
           "autoprefixer": "^10.4.19",
           "concurrently": "^9.2.1",
           "electron": "^37.2.5",
-          "electron-builder": "^25.1.8",
+          "electron-builder": "^26.4.0",
+          "electron-packager": "^17.1.2",
+          "icon-gen": "^5.0.0",
+          "png2icons": "^2.0.1",
           "postcss": "^8.4.38",
+          "sharp": "^0.34.5",
           "tailwindcss": "^3.4.3",
           "wait-on": "^8.0.1"
      },
@@ -37,24 +43,52 @@
           "eject": "react-scripts eject",
           "electron": "electron .",
           "dev": "concurrently \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
-          "package": "npm run build && electron-builder"
+          "generate-icons": "node generate-icons.js",
+          "package": "npm run build && electron-builder",
+          "package:win": "npm run build && electron-builder --win",
+          "package:win:simple": "electron-packager . SecureScript --platform=win32 --arch=x64 --icon=build-resources/icon.png --out=dist --overwrite --asar",
+          "package:mac": "npm run build && electron-builder --mac",
+          "package:linux": "npm run build && electron-builder --linux"
      },
      "build": {
-          "appId": "com.example.frontend",
-          "productName": "Frontend App",
+          "appId": "com.securescript.app",
+          "productName": "SecureScript",
           "files": [
                "build/**/*",
                "main.js",
                "preload.js"
           ],
+          "directories": {
+               "buildResources": "build-resources",
+               "output": "dist"
+          },
           "win": {
-               "target": "nsis"
+               "target": [
+                    {
+                         "target": "nsis",
+                         "arch": [
+                              "x64"
+                         ]
+                    }
+               ],
+               "icon": "build-resources/icon.png",
+               "artifactName": "${productName}-Setup-${version}.${ext}"
+          },
+          "nsis": {
+               "oneClick": false,
+               "allowToChangeInstallationDirectory": true,
+               "createDesktopShortcut": true,
+               "createStartMenuShortcut": true,
+               "shortcutName": "SecureScript"
           },
           "mac": {
-               "target": "dmg"
+               "target": "dmg",
+               "icon": "build-resources/icon.png"
           },
           "linux": {
-               "target": "AppImage"
+               "target": "AppImage",
+               "icon": "build-resources/icon.png",
+               "category": "Security"
           }
      },
      "browserslist": {
