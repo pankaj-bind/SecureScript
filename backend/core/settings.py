@@ -118,7 +118,7 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', '')
 
 # --- CORS Settings ---
 # Get CORS origins from environment, with default fallback including all deployment platforms
-default_cors = 'http://localhost:3000,https://securescript.vercel.app,https://securescript.netlify.app,app://.'
+default_cors = 'http://localhost:3000,https://securescript.vercel.app,app://.'
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', default_cors).split(',')
 CORS_ALLOW_CREDENTIALS = True
 

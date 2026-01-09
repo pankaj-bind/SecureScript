@@ -1,0 +1,41 @@
+# Electron build artifacts
+/release
+/dist
+
+# Dependencies (Vercel installs these)
+/node_modules
+
+# Environment files
+.env.local
+.env.development.local
+.env.test.local
+
+# Electron files
+main.js
+preload.js
+electron-api.d.ts
+
+# Build cache
+.cache
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode
+.idea
+
+# Git
+.git
+.gitignore
+
+# Test files
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+/src/setupTests.ts
+
+# Documentation
+README.md
