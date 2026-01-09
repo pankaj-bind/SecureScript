@@ -1,7 +1,11 @@
 // src/services/authService.ts
 import axios from 'axios';
 import apiClient from '../api/apiClient'; 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/';
+
+// Ensure consistent API URL with trailing slash
+const API_URL = process.env.REACT_APP_API_URL 
+  ? `${process.env.REACT_APP_API_URL.replace(/\/+$/, '')}/` 
+  : 'http://localhost:8000/api/';
 
 // --- Interfaces for data types ---
 export interface AuditParser {
