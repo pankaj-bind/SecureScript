@@ -35,6 +35,7 @@ import './App.css';
 const ApplyHardeingPage = lazy(() => import('./pages/Report/Windows/ApplyHardeing'));
 const SystemAuditPage = lazy(() => import('./pages/Report/Windows/SystemAudit'));
 const RevertHardeingPage = lazy(() => import('./pages/Report/Windows/RevertHardeing')); // NEW
+const TemplatePoliciesViewPage = lazy(() => import('./pages/TemplatePoliciesViewPage')); // Browser-only view
 
 const LoadingComponent = () => (
     <div className="flex justify-center items-center min-h-screen">
@@ -115,6 +116,7 @@ const App: React.FC = () => {
                   <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
                   <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
                   <Route path="/template/edit/:id" element={<ProtectedRoute><TemplateEditPage /></ProtectedRoute>} />
+                  <Route path="/template/view/:id" element={<ProtectedRoute><Suspense fallback={<LoadingComponent />}><TemplatePoliciesViewPage /></Suspense></ProtectedRoute>} />
                   
                   {/* Dedicated Pages for Report Actions */}
                   <Route path="/report/harden/:id" element={<ProtectedRoute><Suspense fallback={<LoadingComponent />}><ApplyHardeingPageWrapper /></Suspense></ProtectedRoute>} />
