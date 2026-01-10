@@ -1,8 +1,71 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const DownloadPage: React.FC = () => {
+  const navigate = useNavigate();
+  
+  // Detect if running in Electron
+  const isElectron = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    return userAgent.indexOf(' electron/') > -1;
+  };
+  
   // Replace this with your actual download link
   const downloadLink = "https://yourdomain.com/downloads/SecureScript-Setup.exe";
+  
+  // If running in Electron, show message that download is not needed
+  if (isElectron()) {
+    return (
+      <div className="min-h-screen bg-win-bg-solid py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="bg-win-bg-layer border border-win-border-default rounded-win-lg shadow-win-card p-12 backdrop-blur-win">
+            <div className="flex justify-center mb-6">
+              <div className="rounded-full bg-win-accent/10 p-6">
+                <svg 
+                  className="h-16 w-16 text-win-accent" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" 
+                  />
+                </svg>
+              </div>
+            </div>
+            <h1 className="text-3xl font-bold text-win-text-primary mb-4">
+              You're Already Using SecureScript!
+            </h1>
+            <p className="text-lg text-win-text-secondary mb-8">
+              The download page is only available on the web version. You're currently using the desktop application, so no download is needed.
+            </p>
+            <button
+              onClick={() => navigate('/')}
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-win text-white bg-win-accent hover:bg-win-accent-hover transition-colors duration-150 shadow-sm"
+            >
+              <svg 
+                className="h-5 w-5 mr-2" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18" 
+                />
+              </svg>
+              Go to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="min-h-screen bg-win-bg-solid py-12 px-4 sm:px-6 lg:px-8">
