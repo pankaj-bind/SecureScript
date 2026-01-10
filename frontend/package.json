@@ -53,13 +53,15 @@
           "package:linux": "npm run build && electron-builder --linux"
      },
      "build": {
+          "extends": null,
           "appId": "com.securescript.app",
           "productName": "SecureScript",
           "files": [
                "build/**/*",
                "build-resources/**/*",
                "main.js",
-               "preload.js"
+               "preload.js",
+               "package.json"
           ],
           "directories": {
                "buildResources": "build-resources",

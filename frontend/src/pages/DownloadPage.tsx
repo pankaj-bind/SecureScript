@@ -10,8 +10,8 @@ const DownloadPage: React.FC = () => {
     return userAgent.indexOf(' electron/') > -1;
   };
   
-  // Replace this with your actual download link
-  const downloadLink = "https://yourdomain.com/downloads/SecureScript-Setup.exe";
+  // GitHub release download link - update after pushing to GitHub
+  const downloadLink = "https://github.com/pankaj-bind/SecureScript/raw/main/frontend/release/SecureScript-1.0.0-Portable.exe";
   
   // If running in Electron, show message that download is not needed
   if (isElectron()) {
@@ -178,7 +178,7 @@ const DownloadPage: React.FC = () => {
                 </a>
                 
                 <p className="mt-4 text-xs text-win-text-tertiary">
-                  Latest version • Installer size: ~150 MB
+                  Version 1.0.0 • Portable exe: ~99 MB
                 </p>
               </div>
             </div>

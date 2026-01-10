@@ -1,6 +1,7 @@
 # Electron build artifacts
 /release
 /dist
+*.exe
 
 # Dependencies (Vercel installs these)
 /node_modules
