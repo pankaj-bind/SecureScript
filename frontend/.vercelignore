@@ -13,7 +13,6 @@
 # Electron files
 main.js
 preload.js
-electron-api.d.ts
 
 # Build cache
 .cache
