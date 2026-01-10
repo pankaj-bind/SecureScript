@@ -22,47 +22,48 @@ const policyTypeConfigs: { [key: string]: any } = {
   PASSWORD_POLICY: {
     apiCall: (policy: Policy, value: string) => window.electronAPI.setAccountPolicy({ policyName: policy.password_policy!, value }),
     getRecommendedText: (policy: Partial<Policy>) => {
-        // MODIFIED: Added 'LOCKOUT_ADMINS' to the list of policies with a fixed recommended state.
-        if (['COMPLEXITY_REQUIREMENTS', 'REVERSIBLE_ENCRYPTION', 'LOCKOUT_ADMINS'].includes(policy.password_policy!)) {
-            return `Should be set to: "${policy.value_data}"`;
-        }
-        return `Recommended value is between ${policy.value_data?.replace(/"/g, '')}`;
+      // MODIFIED: Added 'LOCKOUT_ADMINS' to the list of policies with a fixed recommended state.
+      if (['COMPLEXITY_REQUIREMENTS', 'REVERSIBLE_ENCRYPTION', 'LOCKOUT_ADMINS'].includes(policy.password_policy!)) {
+        return `Should be set to: "${policy.value_data}"`;
+      }
+      return `Recommended value is between ${policy.value_data?.replace(/"/g, '')}`;
     },
     needsInput: (policy: Partial<Policy>) => {
-        // MODIFIED: Added 'LOCKOUT_ADMINS' 
-        return !['COMPLEXITY_REQUIREMENTS', 'REVERSIBLE_ENCRYPTION', 'LOCKOUT_ADMINS'].includes(policy.password_policy!);
+      // MODIFIED: Added 'LOCKOUT_ADMINS' 
+      return !['COMPLEXITY_REQUIREMENTS', 'REVERSIBLE_ENCRYPTION', 'LOCKOUT_ADMINS'].includes(policy.password_policy!);
     },
     inputType: 'number',
   },
   LOCKOUT_POLICY: {
-    apiCall: (policy: Policy, value: string) => window.electronAPI.setAccountPolicy({ 
- policyName: policy.lockout_policy!, value }),
+    apiCall: (policy: Policy, value: string) => window.electronAPI.setAccountPolicy({
+      policyName: policy.lockout_policy!, value
+    }),
     getRecommendedText: (policy: Partial<Policy>) => {
-        if (policy.lockout_policy === 'LOCKOUT_ADMINS') {
-            return `Should be set to: "${policy.value_data}"`;
-        }
-        return `Recommended value is between ${policy.value_data?.replace(/"/g, '')}`;
+      if (policy.lockout_policy === 'LOCKOUT_ADMINS') {
+        return `Should be set to: "${policy.value_data}"`;
+      }
+      return `Recommended value is between ${policy.value_data?.replace(/"/g, '')}`;
     },
     needsInput: (policy: Partial<Policy>) => {
-        // Do not show an input for the fixed admin lockout policy
-        return policy.lockout_policy !== 'LOCKOUT_ADMINS';
+      // Do not show an input for the fixed admin lockout policy
+      return policy.lockout_policy !== 'LOCKOUT_ADMINS';
     },
     inputType: 'number',
   },
   CHECK_ACCOUNT: {
     apiCall: (policy: Policy, value: string) => window.electronAPI.setCheckAccount({ policy, newValue: value }),
     getRecommendedText: (policy: Partial<Policy>) => {
-        if (policy.value_data === 'Disabled') return 'Account should be disabled.';
-        if (policy.check_type === 'CHECK_NOT_EQUAL') return `Account name should not be "${policy.value_data}".`;
-        if (policy.check_type === 'CHECK_NOT_REGEX') return `Account name should not match regex "${policy.value_data}".`;
-        return 'Check account status or name.';
+      if (policy.value_data === 'Disabled') return 'Account should be disabled.';
+      if (policy.check_type === 'CHECK_NOT_EQUAL') return `Account name should not be "${policy.value_data}".`;
+      if (policy.check_type === 'CHECK_NOT_REGEX') return `Account name should not match regex "${policy.value_data}".`;
+      return 'Check account status or name.';
     },
     needsInput: (policy: Partial<Policy>) => policy.check_type !== 'CHECK_EQUAL',
     inputType: 'text',
   },
   AUDIT_POWERSHELL: {
-    apiCall: (policy: 
- Policy) => window.electronAPI.setPowershellPolicy({ script: policy.powershell_args! }),
+    apiCall: (policy:
+      Policy) => window.electronAPI.setPowershellPolicy({ script: policy.powershell_args! }),
     getRecommendedText: () => 'A PowerShell script must be run for this audit.',
     needsInput: () => false,
   },
@@ -99,39 +100,40 @@ const getPolicyKey = (policy: Policy): string => {
 
 // Extend the Policy interface locally for frontend use
 interface PolicyWithPassedValue extends Policy {
-    passed_value?: string;
-    custom_value?: string;
+  passed_value?: string;
+  custom_value?: string;
 }
 
-const PolicyDetails: React.FC<{ policyData: any 
- }> = ({ policyData }) => {
-    // Note: We use 'any' here as the object structure is dynamic and validated on API boundaries
-    const displayKeys: { key: keyof Policy; title: string }[] = [
-        { key: 'info', title: 'Info' },
-        { key: 'Note', title: 'Note' },
-        { key: 'solution', title: 'Solution' },
-        { key: 'Impact', title: 'Impact' },
-        { key: 'reference', title: 'Reference' },
-        { key: 'see_also', title: 'See Also' },
-    ];
+const PolicyDetails: React.FC<{
+  policyData: any
+}> = ({ policyData }) => {
+  // Note: We use 'any' here as the object structure is dynamic and validated on API boundaries
+  const displayKeys: { key: keyof Policy; title: string }[] = [
+    { key: 'info', title: 'Info' },
+    { key: 'Note', title: 'Note' },
+    { key: 'solution', title: 'Solution' },
+    { key: 'Impact', title: 'Impact' },
+    { key: 'reference', title: 'Reference' },
+    { key: 'see_also', title: 'See Also' },
+  ];
 
-    if (!policyData) return null;
+  if (!policyData) return null;
 
-    return (
-        <>
-            <h2 className="text-xl font-semibold text-win-text-primary">{policyData.description}</h2>
-            {displayKeys.map(({ key, title }) => (
-                policyData[key] && (
-                    <div key={key} className="mt-4">
-                        <h3 className="text-sm font-medium text-win-accent mb-1">{title}</h3>
-                        <p className="text-sm text-win-text-secondary whitespace-pre-wrap break-words leading-relaxed">
-                            {String(policyData[key])}
-                        </p>
-                    </div>
-                )
-            ))}
-        </>
-    );
+  return (
+    <>
+      <h2 className="text-xl font-semibold text-win-text-primary">{policyData.description}</h2>
+      {displayKeys.map(({ key, title }) => (
+        policyData[key] && (
+          <div key={key} className="mt-4">
+            <h3 className="text-sm font-medium text-win-accent mb-1">{title}</h3>
+            <p className="text-sm text-win-text-secondary whitespace-pre-wrap break-words leading-relaxed">
+              {String(policyData[key])}
+            </p>
+          </div>
+        )
+      ))}
+    </>
+  );
 };
 
 
@@ -155,111 +157,111 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
   // Load values from localStorage on initial component mount
   useEffect(() => {
     const fetchAndSetupPolicies = async () => {
-        setInitialLoading(true);
-        setInitialError(null);
+      setInitialLoading(true);
+      setInitialError(null);
 
-        try {
-            let policiesData: PolicyWithPassedValue[] = [];
-            
-            // Check if running in Electron or Browser
-            if (isElectron && window.electronAPI) {
-                // Electron: Read from local files
-                const policyDirectoryPath = product.audit_json_output_path;
-                
-                if (!policyDirectoryPath) {
-                    setInitialError("Audit file path is not configured for this product.");
-                    setInitialLoading(false);
-                    return;
-                }
-                
-                const result = await window.electronAPI.getPolicyFiles(policyDirectoryPath);
-                if (result.success && result.data) {
-                    policiesData = result.data;
-                } else {
-                    setInitialError(result.message || 'Failed to load policies.');
-                    setInitialLoading(false);
-                    return;
-                }
-            } else {
-                // Browser: Fetch from API
-                try {
-                    const result = await getProductPolicies(product.id);
-                    if (result.success && result.data) {
-                        policiesData = result.data;
-                    } else {
-                        setInitialError('Failed to load policies from server.');
-                        setInitialLoading(false);
-                        return;
-                    }
-                } catch (apiError: any) {
-                    setInitialError(apiError.response?.data?.error || 'Failed to load policies. Please try again.');
-                    setInitialLoading(false);
-                    return;
-                }
-            }
-            
-            // Filter and process policies
-            const filteredPolicies: PolicyWithPassedValue[] = policiesData.filter(p => {
-                // Check for null or undefined policy object before accessing properties
-                if (!p || !p.description) {
-                    const rawJson = JSON.stringify(p).toLowerCase();
-                    return !rawJson.includes('metadata.json') && !rawJson.includes('script.json');
-                }
-                // Extract the policy to check if it's not a metadata/script file
-                const displayPolicy = p.check_type === 'CONDITIONAL' ? (p.then?.report || p) : p;
-                const description = displayPolicy.description.toLowerCase();
-                return description !== 'metadata.json' && description !== 'script.json';
-            });
+      try {
+        let policiesData: PolicyWithPassedValue[] = [];
 
-            setPolicies(filteredPolicies);
-            if (filteredPolicies.length > 0) setSelectedPolicy(filteredPolicies[0]);
+        // Check if running in Electron or Browser
+        if (isElectron && window.electronAPI) {
+          // Electron: Read from local files
+          const policyDirectoryPath = product.audit_json_output_path;
 
-            const defaultValues: { [key: string]: string } = {};
-            const initialStatuses: { [key: string]: Status } = {};
-
-            filteredPolicies.forEach(policy => {
-                const key = getPolicyKey(policy);
-                initialStatuses[key] = { isLoading: false, feedback: null };
-                const policyType = (policy.check_type === 'CONDITIONAL') ? policy.condition?.rules?.[0]?.type : policy.type;
-                const config = policyType ? policyTypeConfigs[policyType] : null;
-                const targetPolicy = policy.check_type === 'CONDITIONAL' ? 
-                (policy.condition?.rules?.[0] || {}) : policy;
-
-                if (config?.needsInput?.(targetPolicy)) {
-                    let defaultValue = '';
-                    // Prioritize existing passed_value if available (e.g., from an imported template)
-                    if (policy.passed_value) {
-                         defaultValue = String(policy.passed_value);
-                    } else if (targetPolicy.variable?.default) {
-                        defaultValue = targetPolicy.variable.default.replace(/\[|\]/g, '').split('..')[0];
-                    } else if ((targetPolicy.value_data || "").includes('..')) {
-                      defaultValue = targetPolicy.value_data!.match(/\[(\d+)\.\./)?.[1] || targetPolicy.value_data!.split('..')[0];
-                    } else if (targetPolicy.value_type === 'POLICY_MULTI_TEXT') {
-                      defaultValue = (targetPolicy.value_data || "").split('&&').map(s => s.trim().replace(/"/g, '')).join('\n');
-                    } else if (targetPolicy.account_type === 'ADMINISTRATOR_ACCOUNT') {
-                      defaultValue = 'LclAdmin';
-                    } else if (targetPolicy.account_type === 'GUEST_ACCOUNT') {
-                      defaultValue = 'LclGuest';
-                    } else if (targetPolicy.value_data) {
-                      defaultValue = targetPolicy.value_data.split('||')[0].replace(/"/g, '').trim();
-                    }
-                  defaultValues[key] = defaultValue;
-                }
-            });
-            
-            setDefaultPolicyValues(defaultValues);
-            setStatuses(initialStatuses);
-            
-            // Load saved values from localStorage and merge with defaults
-            const savedValuesRaw = localStorage.getItem(storageKey);
-            const savedValues = savedValuesRaw ? JSON.parse(savedValuesRaw) : {};
-            setPolicyValues({ ...defaultValues, ...savedValues });
-
-        } catch (err: any) {
-            setInitialError(`An error occurred while fetching policies: ${err.message}`);
-        } finally {
+          if (!policyDirectoryPath) {
+            setInitialError("Audit file path is not configured for this product.");
             setInitialLoading(false);
+            return;
+          }
+
+          const result = await window.electronAPI.getPolicyFiles(policyDirectoryPath);
+          if (result.success && result.data) {
+            policiesData = result.data;
+          } else {
+            setInitialError(result.message || 'Failed to load policies.');
+            setInitialLoading(false);
+            return;
+          }
+        } else {
+          // Browser: Fetch from API
+          try {
+            const result = await getProductPolicies(product.id);
+            if (result.success && result.data) {
+              policiesData = result.data;
+            } else {
+              setInitialError('Failed to load policies from server.');
+              setInitialLoading(false);
+              return;
+            }
+          } catch (apiError: any) {
+            setInitialError(apiError.response?.data?.error || 'Failed to load policies. Please try again.');
+            setInitialLoading(false);
+            return;
+          }
         }
+
+        // Filter and process policies
+        const filteredPolicies: PolicyWithPassedValue[] = policiesData.filter(p => {
+          // Check for null or undefined policy object before accessing properties
+          if (!p || !p.description) {
+            const rawJson = JSON.stringify(p).toLowerCase();
+            return !rawJson.includes('metadata.json') && !rawJson.includes('script.json');
+          }
+          // Extract the policy to check if it's not a metadata/script file
+          const displayPolicy = p.check_type === 'CONDITIONAL' ? (p.then?.report || p) : p;
+          const description = displayPolicy.description.toLowerCase();
+          return description !== 'metadata.json' && description !== 'script.json';
+        });
+
+        setPolicies(filteredPolicies);
+        if (filteredPolicies.length > 0) setSelectedPolicy(filteredPolicies[0]);
+
+        const defaultValues: { [key: string]: string } = {};
+        const initialStatuses: { [key: string]: Status } = {};
+
+        filteredPolicies.forEach(policy => {
+          const key = getPolicyKey(policy);
+          initialStatuses[key] = { isLoading: false, feedback: null };
+          const policyType = (policy.check_type === 'CONDITIONAL') ? policy.condition?.rules?.[0]?.type : policy.type;
+          const config = policyType ? policyTypeConfigs[policyType] : null;
+          const targetPolicy = policy.check_type === 'CONDITIONAL' ?
+            (policy.condition?.rules?.[0] || {}) : policy;
+
+          if (config?.needsInput?.(targetPolicy)) {
+            let defaultValue = '';
+            // Prioritize existing passed_value if available (e.g., from an imported template)
+            if (policy.passed_value) {
+              defaultValue = String(policy.passed_value);
+            } else if (targetPolicy.variable?.default) {
+              defaultValue = targetPolicy.variable.default.replace(/\[|\]/g, '').split('..')[0];
+            } else if ((targetPolicy.value_data || "").includes('..')) {
+              defaultValue = targetPolicy.value_data!.match(/\[(\d+)\.\./)?.[1] || targetPolicy.value_data!.split('..')[0];
+            } else if (targetPolicy.value_type === 'POLICY_MULTI_TEXT') {
+              defaultValue = (targetPolicy.value_data || "").split('&&').map(s => s.trim().replace(/"/g, '')).join('\n');
+            } else if (targetPolicy.account_type === 'ADMINISTRATOR_ACCOUNT') {
+              defaultValue = 'LclAdmin';
+            } else if (targetPolicy.account_type === 'GUEST_ACCOUNT') {
+              defaultValue = 'LclGuest';
+            } else if (targetPolicy.value_data) {
+              defaultValue = targetPolicy.value_data.split('||')[0].replace(/"/g, '').trim();
+            }
+            defaultValues[key] = defaultValue;
+          }
+        });
+
+        setDefaultPolicyValues(defaultValues);
+        setStatuses(initialStatuses);
+
+        // Load saved values from localStorage and merge with defaults
+        const savedValuesRaw = localStorage.getItem(storageKey);
+        const savedValues = savedValuesRaw ? JSON.parse(savedValuesRaw) : {};
+        setPolicyValues({ ...defaultValues, ...savedValues });
+
+      } catch (err: any) {
+        setInitialError(`An error occurred while fetching policies: ${err.message}`);
+      } finally {
+        setInitialLoading(false);
+      }
     };
     fetchAndSetupPolicies();
   }, [product.audit_json_output_path, product.id, storageKey, isElectron]);
@@ -293,8 +295,8 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
     const lowercasedQuery = searchQuery.toLowerCase();
     // FIX: Moved '=>' to same line and added explicit type for 'policy'
     return policies.filter((policy: PolicyWithPassedValue) => {
-        const displayPolicy = policy.check_type === 'CONDITIONAL' ? (policy.then?.report || policy) : policy;
-        return displayPolicy.description.toLowerCase().includes(lowercasedQuery);
+      const displayPolicy = policy.check_type === 'CONDITIONAL' ? (policy.then?.report || policy) : policy;
+      return displayPolicy.description.toLowerCase().includes(lowercasedQuery);
     });
   }, [searchQuery, policies]);
 
@@ -304,57 +306,58 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     // FIX: Ensure filteredPolicies is treated as an array
     if (e.target.checked && Array.isArray(filteredPolicies)) {
-        setSelectedForTemplate(new Set(filteredPolicies.map(getPolicyKey)));
+      setSelectedForTemplate(new Set(filteredPolicies.map(getPolicyKey)));
     } else {
-        setSelectedForTemplate(new Set());
+      setSelectedForTemplate(new Set());
     }
   };
 
 
   const handleTemplateSelection = (policyKey: string, isChecked: boolean) => {
     setSelectedForTemplate(prev => {
-        const newSet = new Set(prev);
-        if (isChecked) newSet.add(policyKey); else newSet.delete(policyKey);
-        return newSet;
+      const newSet = new Set(prev);
+      if (isChecked) newSet.add(policyKey); else newSet.delete(policyKey);
+      return newSet;
     });
   };
 
   const handleCreateTemplate = async () => {
     if (selectedForTemplate.size === 0) {
-        setTemplateFeedback({ type: 'error', message: 'Please select at least one policy.' });
-        return;
+      setTemplateFeedback({ type: 'error', message: 'Please select at least one policy.' });
+      return;
     }
     setIsCreatingTemplate(true);
     setTemplateFeedback(null);
     try {
-        const policiesToSubmit = policies
-            .filter(p => selectedForTemplate.has(getPolicyKey(p)))
-            .map(p => {
-                const key = getPolicyKey(p);
-                const policyType = p.type || p.condition?.rules?.[0]?.type;
-                const config = policyType ? policyTypeConfigs[policyType] : null;
-                const targetPolicy = p.check_type === 'CONDITIONAL' ? (p.condition?.rules?.[0] || {}) : p;
-                
-                // Deep clone the policy object
-                const clonedPolicy = JSON.parse(JSON.stringify(p));
+      const policiesToSubmit = policies
+        .filter(p => selectedForTemplate.has(getPolicyKey(p)))
+        .map(p => {
+          const key = getPolicyKey(p);
+          const policyType = p.type || p.condition?.rules?.[0]?.type;
+          const config = policyType ? policyTypeConfigs[policyType] : null;
+          const targetPolicy = p.check_type === 'CONDITIONAL' ? (p.condition?.rules?.[0] || {}) : p;
 
-                // Check if the policy is the type that needs user input AND has a value in state
-                if (config?.needsInput?.(targetPolicy) && policyValues[key] !== undefined) {
-                    // Inject the user-defined value into a custom field for the backend to handle
-                    clonedPolicy.custom_value = policyValues[key]; 
-                }
-                
-                return clonedPolicy;
-            });
-            
-        await createTemplate({ product: product.id, policies: policiesToSubmit });
-        setTemplateFeedback({ type: 'success', message: 'Template created successfully! Redirecting...' 
- });
-        setTimeout(() => navigate('/dashboard'), 2000);
+          // Deep clone the policy object
+          const clonedPolicy = JSON.parse(JSON.stringify(p));
+
+          // Check if the policy is the type that needs user input AND has a value in state
+          if (config?.needsInput?.(targetPolicy) && policyValues[key] !== undefined) {
+            // Inject the user-defined value into a custom field for the backend to handle
+            clonedPolicy.custom_value = policyValues[key];
+          }
+
+          return clonedPolicy;
+        });
+
+      await createTemplate({ product: product.id, policies: policiesToSubmit });
+      setTemplateFeedback({
+        type: 'success', message: 'Template created successfully! Redirecting...'
+      });
+      setTimeout(() => navigate('/dashboard'), 2000);
     } catch (err: any) {
-        setTemplateFeedback({ type: 'error', message: err.response?.data?.error || 'Failed to create template.' });
+      setTemplateFeedback({ type: 'error', message: err.response?.data?.error || 'Failed to create template.' });
     } finally {
-        setIsCreatingTemplate(false);
+      setIsCreatingTemplate(false);
     }
   };
 
@@ -364,7 +367,7 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
     const config = policyType ? policyTypeConfigs[policyType] : null;
     // FIX: Added null checks for selectedPolicy
     const policyToApply = policy.check_type === 'CONDITIONAL' ? (policy.condition?.rules?.[0] || null) : policy;
-    
+
     if (!config || !policyToApply || !key) {
       setStatuses(prev => ({ ...prev, [key]: { isLoading: false, feedback: { type: 'error', message: 'Invalid policy configuration.' } } }));
       return;
@@ -377,18 +380,18 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
       const valueToSubmit = config.needsInput(policyToApply) ? policyValues[key] : policyToApply.value_data;
       const result = await config.apiCall(policyToApply, valueToSubmit);
       // FIXED: Corrected setStatuses usage to maintain the correct type structure
-      setStatuses(prev => ({ 
-        ...prev, 
-        [key]: { isLoading: false, feedback: { type: result.success ? 'success' : 'error', message: result.message } } 
+      setStatuses(prev => ({
+        ...prev,
+        [key]: { isLoading: false, feedback: { type: result.success ? 'success' : 'error', message: result.message } }
       }));
     } catch (err: any) {
       setStatuses(prev => ({
-        ...prev, 
-        [key]: { isLoading: false, feedback: { type: 'error', message: `An IPC error occurred: ${err.message}` } } 
+        ...prev,
+        [key]: { isLoading: false, feedback: { type: 'error', message: `An IPC error occurred: ${err.message}` } }
       }));
     }
   };
-  
+
   const selectedPolicyConfig = useMemo(() => {
     if (!selectedPolicy) return null;
     const policyType = (selectedPolicy.check_type === 'CONDITIONAL') ? selectedPolicy.condition?.rules?.[0]?.type : selectedPolicy.type;
@@ -404,12 +407,12 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
     const targetPolicy = policy.check_type === 'CONDITIONAL' ? (policy.condition?.rules?.[0] || {}) : policy;
 
     if (!config || !config.needsInput?.(targetPolicy)) {
-        return null;
+      return null;
     }
 
     const inputType = typeof config.inputType === 'function' ? config.inputType(targetPolicy) : config.inputType;
     const InputComponent = inputType === 'textarea' ? 'textarea' : 'input';
-    
+
     return (
       <InputComponent
         type={inputType === 'textarea' ? undefined : inputType}
@@ -498,11 +501,10 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
             {/* Template Actions */}
             <div className="p-4 border-b border-win-border-subtle space-y-3">
               {templateFeedback && (
-                <div className={`p-2.5 rounded-win text-xs flex items-center gap-2 ${
-                  templateFeedback.type === 'success' 
-                    ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                <div className={`p-2.5 rounded-win text-xs flex items-center gap-2 ${templateFeedback.type === 'success'
+                    ? 'bg-green-500/10 text-green-400 border border-green-500/20'
                     : 'bg-red-500/10 text-red-400 border border-red-500/20'
-                }`}>
+                  }`}>
                   {templateFeedback.type === 'success' ? (
                     <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                   ) : (
@@ -583,7 +585,7 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
               </div>
             ) : (
               (() => {
-                if (!selectedPolicy) return null; 
+                if (!selectedPolicy) return null;
 
                 const key = getPolicyKey(selectedPolicy);
                 const status = statuses[key];
@@ -609,11 +611,10 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
 
                     {/* Feedback */}
                     {status?.feedback && (
-                      <div className={`p-3 rounded-win text-sm flex items-start gap-2 ${
-                        status.feedback.type === 'success' 
-                          ? 'bg-green-500/10 text-green-400 border border-green-500/20' 
+                      <div className={`p-3 rounded-win text-sm flex items-start gap-2 ${status.feedback.type === 'success'
+                          ? 'bg-green-500/10 text-green-400 border border-green-500/20'
                           : 'bg-red-500/10 text-red-400 border border-red-500/20'
-                      }`}>
+                        }`}>
                         {status.feedback.type === 'success' ? (
                           <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                         ) : (
@@ -679,7 +680,7 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
             </div>
             <h3 className="text-lg font-semibold text-win-text-primary mb-2">Desktop App Required</h3>
             <p className="text-sm text-win-text-secondary mb-6">
-              To apply security policies to your system, please install and use our desktop application. 
+              To apply security policies to your system, please install and use our desktop application.
               The web version is for viewing and creating templates only.
             </p>
             <div className="flex gap-3 justify-center">
@@ -689,17 +690,15 @@ const ProductDetailPage: React.FC<ViewerPageProps> = ({ product }) => {
               >
                 Close
               </button>
-              <a
-                href="https://github.com/pankaj-bind/SecureScript/releases"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/download"
                 className="win-btn-primary inline-flex items-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 Download App
-              </a>
+              </Link>
             </div>
           </div>
         </div>
