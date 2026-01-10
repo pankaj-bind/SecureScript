@@ -1,0 +1,21 @@
+{
+  "framework": "create-react-app",
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
+  "installCommand": "npm install",
+  "devCommand": "npm start",
+  "env": {
+    "CI": "false"
+  },
+  "build": {
+    "env": {
+      "CI": "false"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
