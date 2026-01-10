@@ -108,6 +108,9 @@ const Navbar: React.FC = () => {
                   <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                 )}
               </Link>
+              <Link to="/download" className="px-3 py-1.5 rounded-win text-sm font-medium text-win-text-secondary hover:bg-win-bg-hover transition-colors duration-150">
+                Download
+              </Link>
             </div>
             
             <div className="flex items-center ml-4 space-x-1">
@@ -190,6 +193,7 @@ const Navbar: React.FC = () => {
                 <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
               )}
             </Link>
+            <Link to="/download" onClick={() => setIsMobileMenuOpen(false)} className="text-win-text-secondary hover:bg-win-bg-hover block px-3 py-2 rounded-win text-sm font-medium transition-colors duration-150">Download</Link>
           </div>
           <div className="pt-4 pb-3 border-t border-win-border-default">
             {token ? (

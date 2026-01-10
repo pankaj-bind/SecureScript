@@ -38,6 +38,7 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import AuditParserUploadPage from './pages/AuditParserUploadPage';
 import TemplateEditPage from './pages/TemplateEditPage';
 import NewUpdatesPage from './pages/NewUpdatesPage';
+import DownloadPage from './pages/DownloadPage';
 import './App.css';
 
 // Lazy load the new components
@@ -115,6 +116,7 @@ const App: React.FC = () => {
                   <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
                   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                   <Route path="/password/reset/:uid/:token" element={<ResetPasswordPage />} />
+                  <Route path="/download" element={<DownloadPage />} />
                   
                   {/* Organization and Product Detail Routes */}
                   <Route path="/organization/:id" element={<OrganizationDetailPage />} />
