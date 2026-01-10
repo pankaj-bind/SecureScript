@@ -25,31 +25,46 @@ function createWindow() {
     height: 800,
     icon: path.join(__dirname, 'build-resources/icon.png'),
     title: 'SecureScript',
+    backgroundColor: '#0F172A',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
+      devTools: isDev
     },
   });
 
   // Determine the correct path to load
-  const indexPath = isDev
-    ? 'http://localhost:3000'
-    : `file://${path.join(__dirname, 'build', 'index.html')}`;
+  let indexPath;
+  if (isDev) {
+    indexPath = 'http://localhost:3000';
+  } else {
+    // In production, the build folder is at the root level in the packaged app
+    indexPath = `file://${path.join(__dirname, 'build', 'index.html')}`;
+  }
   
   console.log('Loading URL:', indexPath);
   console.log('__dirname:', __dirname);
   console.log('isDev:', isDev);
+  console.log('app.isPackaged:', app.isPackaged);
   
-  win.loadURL(indexPath);
+  win.loadURL(indexPath).catch(err => {
+    console.error('Failed to load URL:', err);
+  });
 
   if (isDev) {
     win.webContents.openDevTools({ mode: 'detach' });
   }
   
   // Handle load errors
-  win.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
-    console.error('Failed to load:', errorCode, errorDescription);
+  win.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+    console.error('Failed to load:', errorCode, errorDescription, validatedURL);
+    console.error('Attempted to load from:', validatedURL);
+  });
+  
+  // Log when content is loaded
+  win.webContents.on('did-finish-load', () => {
+    console.log('Content loaded successfully');
   });
 }
 
